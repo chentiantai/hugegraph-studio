@@ -1,0 +1,1 @@
+BUILD_SUBMITTER -x -m baidu/xbu-data/hugegraph-studio -c "cd baidu/xbu-data/hugegraph-studio && mkdir output && cp BCLOUD ./output/" -u ./
