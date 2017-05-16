@@ -1,0 +1,53 @@
+body {
+    font-family: 'Helvetica Neue','Microsoft YaHei','Hiragino Sans GB','WenQuanYi Micro Hei',Helvetica,Arial,Sans-serif;
+    color: #444444;
+}
+.navbar{
+    min-height:28px;
+    border-radius: 0px;
+    margin-bottom: 0;
+}
+.navbar-inverse {
+    border-radius: 0;
+}
+.navbar-brand{
+    padding: 4px 4px;
+    height: 28px;
+}
+.navbar-nav>li>a {
+    padding-top: 4px;
+    padding-bottom:4px;
+}
+
+.studio-header {
+    padding: 0 15px;
+    margin: 0 0 20px;
+    border-bottom: 1px solid #dddddd;
+    background-color: #f0f0f0;
+}
+.studio-header .header-title {
+    float: left;
+    width: 60%;
+}
+.studio-header .header-control {
+    float: right;
+    padding-right: 15px;
+    width: 40%;
+}
+
+.studio-header .header-title h1 {
+    font-size: 18px;
+    margin:10px 0;
+}
+.studio-header .header-title h1 i {
+   margin-right: 5px;
+}
+
+.studio-header .header-control .header-form {
+    margin: 5px 0 0 0;
+}
+.studio-header .header-control .form-group {
+    padding: 0;
+}
+
+
