@@ -2,16 +2,15 @@ package com.baidu.hugegraph.studio.notebook.repository;
 
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jishilei on 2017/5/14.
  */
-@Component
+@Repository("notebookRepository")
 public class FileNotebookRepository implements NotebookRepository {
 
     @Override
