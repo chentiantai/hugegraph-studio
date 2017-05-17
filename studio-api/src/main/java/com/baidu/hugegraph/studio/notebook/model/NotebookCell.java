@@ -4,10 +4,9 @@ import com.baidu.hugegraph.studio.common.errors.StudioError;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Optional;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NotebookCell {
     public enum DataViewType {
         TABLE, GRAPH;
@@ -17,7 +16,7 @@ public class NotebookCell {
         SUCCESS, CANCELLED, ERROR;
     }
 
-    public class GremlinExecutionEngine{
+    public class GremlinExecutionEngine {
 
     }
 
@@ -34,8 +33,7 @@ public class NotebookCell {
 
 
     @JsonCreator
-    public NotebookCell(@JsonProperty("id") String id, @JsonProperty("status") NotebookCell.Status status, @JsonProperty("errorDetails") Optional<StudioError> errorDetails, @JsonProperty("code") String code, @JsonProperty("language") String language, @JsonProperty("gremlinExecutionEngine") NotebookCell.GremlinExecutionEngine gremlinExecutionEngine, @JsonProperty("result") Result result, @JsonProperty("msg") String msg, @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType, @JsonProperty("viewSettings") ViewSettings viewSettings)
-    {
+    public NotebookCell(@JsonProperty("id") String id, @JsonProperty("status") NotebookCell.Status status, @JsonProperty("errorDetails") Optional<StudioError> errorDetails, @JsonProperty("code") String code, @JsonProperty("language") String language, @JsonProperty("gremlinExecutionEngine") NotebookCell.GremlinExecutionEngine gremlinExecutionEngine, @JsonProperty("result") Result result, @JsonProperty("msg") String msg, @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType, @JsonProperty("viewSettings") ViewSettings viewSettings) {
         this.id = id;
         this.status = status;
         this.errorDetails = errorDetails;
@@ -48,72 +46,60 @@ public class NotebookCell {
         this.viewSettings = viewSettings;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return this.id;
     }
 
-    public String getLanguage()
-    {
+    public String getLanguage() {
         return this.language;
     }
 
-    public NotebookCell.GremlinExecutionEngine getGremlinExecutionEngine()
-    {
+    public NotebookCell.GremlinExecutionEngine getGremlinExecutionEngine() {
         return this.gremlinExecutionEngine;
     }
 
-    public String getCode()
-    {
+    public String getCode() {
         return this.code;
     }
 
-    public NotebookCell.Status getStatus()
-    {
+    public NotebookCell.Status getStatus() {
         return this.status;
     }
 
-    public Optional<StudioError> getErrorDetails()
-    {
+    public Optional<StudioError> getErrorDetails() {
         return this.errorDetails;
     }
 
 
-    public String getMsg()
-    {
+    public String getMsg() {
         return this.msg;
     }
 
-    public Result getResult()
-    {
+    public Result getResult() {
         return this.result;
     }
 
-    public ViewSettings getViewSettings()
-    {
+    public ViewSettings getViewSettings() {
         return this.viewSettings;
     }
 
-    public NotebookCell.DataViewType getDataViewType()
-    {
+    public NotebookCell.DataViewType getDataViewType() {
         return this.dataViewType;
     }
 
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if ((o == null) || (getClass() != o.getClass())) {
             return false;
         }
-        NotebookCell that = (NotebookCell)o;
+        NotebookCell that = (NotebookCell) o;
 
         return that.id == null ? true : this.id != null ? this.id.equals(that.id) : false;
     }
 
-    public int hashCode()
-    {
+    public int hashCode() {
         return this.id != null ? this.id.hashCode() : 0;
     }
 }

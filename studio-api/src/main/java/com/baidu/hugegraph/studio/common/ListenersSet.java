@@ -7,18 +7,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class ListenersSet<L>
-{
+public class ListenersSet<L> {
     private volatile Set<L> listeners = Collections.newSetFromMap(new HashMap());
 
-    public void add(L listener)
-    {
+    public void add(L listener) {
         Objects.requireNonNull(listener);
         if (this.listeners.contains(listener)) {
             return;
         }
-        synchronized (this)
-        {
+        synchronized (this) {
             if (this.listeners.contains(listener)) {
                 return;
             }
@@ -29,14 +26,12 @@ public class ListenersSet<L>
         }
     }
 
-    public void remove(L listener)
-    {
+    public void remove(L listener) {
         Objects.requireNonNull(listener);
         if (!this.listeners.contains(listener)) {
             return;
         }
-        synchronized (this)
-        {
+        synchronized (this) {
             if (!this.listeners.contains(listener)) {
                 return;
             }
@@ -47,18 +42,15 @@ public class ListenersSet<L>
         }
     }
 
-    public void clear()
-    {
+    public void clear() {
         this.listeners.clear();
     }
 
-    public void forEach(Consumer<? super L> consumer)
-    {
+    public void forEach(Consumer<? super L> consumer) {
         this.listeners.parallelStream().forEach(consumer);
     }
 
-    public String toString()
-    {
+    public String toString() {
         return this.listeners.toString();
     }
 }

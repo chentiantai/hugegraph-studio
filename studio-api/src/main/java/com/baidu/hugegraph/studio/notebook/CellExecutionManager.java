@@ -10,7 +10,8 @@ import java.util.Optional;
  * Created by jishilei on 2017/5/13.
  */
 public class CellExecutionManager {
-    public void setNotebookCellResult(String notebookId, String cellId, Result result, NotebookCell.Status status, Optional<StudioError> error, Throwable ex) {
+    public void setNotebookCellResult(String notebookId, String cellId, Result result,
+                                      NotebookCell.Status status, Optional<StudioError> error, Throwable ex) {
 
     }
 }

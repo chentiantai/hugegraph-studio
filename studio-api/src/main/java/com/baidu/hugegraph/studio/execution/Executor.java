@@ -48,16 +48,21 @@ public class Executor {
                     result = this.markdownExecutor.execute(cell.getCode());
                     break;
                 default:
-                    throw StudioError.invalidRequest(String.format("Attempt to execute code for an unrecognized language: '%s'.", new Object[]{cell.getLanguage()}));
+                    throw StudioError.invalidRequest(String.format("Attempt to execute code for an unrecognized language: '%s'.",
+                            new Object[]{cell.getLanguage()}));
             }
             logger.debug(String.format("Execution completed for cell %s.", new Object[]{cell.getId()}));
 
-            notebookManager.setNotebookCellResult(notebookId, cell.getId(), result, NotebookCell.Status.SUCCESS, Optional.empty(), null);
+            notebookManager.setNotebookCellResult(notebookId, cell.getId(), result,
+                    NotebookCell.Status.SUCCESS, Optional.empty(), null);
         } catch (InterruptedException e) {
-            logger.debug(String.format("Execution interrupted/cancelled for cell %s.", new Object[]{cell.getId()}));
-            notebookManager.setNotebookCellResult(notebookId, cell.getId(), null, NotebookCell.Status.CANCELLED, Optional.empty(), null);
+            logger.debug(String.format("Execution interrupted/cancelled for cell %s.",
+                    new Object[]{cell.getId()}));
+            notebookManager.setNotebookCellResult(notebookId, cell.getId(), null,
+                    NotebookCell.Status.CANCELLED, Optional.empty(), null);
         } catch (Exception e) {
-            logger.error(String.format("Exception while executing cell %s.", new Object[]{cell.getId()}), e);
+            logger.error(String.format("Exception while executing cell %s.",
+                    new Object[]{cell.getId()}), e);
             StudioError studioError = null;
             Object temp = e;
             while (temp != null) {
@@ -70,12 +75,14 @@ public class Executor {
             if (studioError == null) {
                 Pair<Response.Status, StudioError> errorDetailsPair = this.exceptionMapper.toErrorDetails(e);
                 if ((errorDetailsPair == null) || (errorDetailsPair.getRight() == null)) {
-                    studioError = new StudioError(0, 0, e.getMessage() != null ? e.getMessage() : "Unknown error cause, see the Studio logs");
+                    studioError = new StudioError(0, 0,
+                            e.getMessage() != null ? e.getMessage() : "Unknown error cause, see the Studio logs");
                 } else {
                     studioError = errorDetailsPair.getRight();
                 }
             }
-            notebookManager.setNotebookCellResult(notebookId, cell.getId(), null, NotebookCell.Status.ERROR, Optional.of(studioError), e);
+            notebookManager.setNotebookCellResult(notebookId, cell.getId(), null,
+                    NotebookCell.Status.ERROR, Optional.of(studioError), e);
         }
         return new AsyncResult(null);
     }

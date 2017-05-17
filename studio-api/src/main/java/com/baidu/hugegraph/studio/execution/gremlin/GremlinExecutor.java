@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GremlinExecutor {
     private static final Logger logger = LoggerFactory.getLogger(GremlinExecutor.class);
-    private static final int RESULT_SIZE_LIMIT=1000;
+    private static final int RESULT_SIZE_LIMIT = 1000;
 
     public Result execute(String notebookId, String code, String executionEngine) throws Exception {
         return null;
