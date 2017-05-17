@@ -1,41 +1,46 @@
 body {
-    font-family: 'Helvetica Neue','Microsoft YaHei','Hiragino Sans GB','WenQuanYi Micro Hei',Helvetica,Arial,Sans-serif;
+    font-family: 'Helvetica Neue', 'Microsoft YaHei', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', Helvetica, Arial, Sans-serif;
     background: #ecf0f1;
 }
-.navbar{
-    min-height:28px;
+
+.navbar {
+    min-height: 28px;
     border-radius: 0px;
     margin-bottom: 0;
     background: #3071a9;
 }
+
 .navbar-inverse {
     border-radius: 0;
     background: #3071a9;
     border-color: #3071a9;
-    color:#fff;
+    color: #fff;
 }
-.navbar-brand{
+
+.navbar-brand {
     padding: 4px 4px;
     height: 28px;
 }
-.navbar-nav>li>a {
+
+.navbar-nav > li > a {
     padding-top: 4px;
-    padding-bottom:4px;
+    padding-bottom: 4px;
     /*color:#fff;*/
 }
-
 
 .navbar-inverse .navbar-nav > li > a.dropdown-toggle {
     color: #fff;
 }
 
 .studio-header {
-    padding-top: 5px;padding-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     margin: 0 0 20px;
     border-bottom: 1px solid #dddddd;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
+
 .studio-header .header-title {
     float: left;
     width: auto;
@@ -45,41 +50,37 @@ body {
 .studio-header .header-control-middle {
     margin-left: 30px;
     width: 20%;
-    float:left;
+    float: left;
 }
-.studio-header .header-control-right{
-    width:20%;
-    float:right
+
+.studio-header .header-control-right {
+    width: 20%;
+    float: right;
 }
+
 .studio-header .header-title h1 {
     font-size: 14px;
-    margin:5px 0;
+    margin: 5px 0;
 }
+
 .studio-header .header-title h1 i {
-   margin-right: 5px;
+    margin-right: 5px;
 }
 
 .studio-header .header-control .header-form {
     margin: 5px 0 0 0;
 }
-.studio-header .header-control .form-group {
-    padding: 0;
-}
 
 .btn-default {
-    background-image:none;
+    background-image: none;
 }
 
-.studio-header .header-title p{
-    color:#666;
+.studio-header .header-title p {
+    color: #666;
 }
 
-.panel{
-    margin-top: 0px;
-}
-
-td > button.btn{
-   padding: 6px 6px;
+td > button.btn {
+    padding: 6px 6px;
     margin-left: 4px;
 }
 
