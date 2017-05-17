@@ -2,7 +2,10 @@ package com.baidu.hugegraph.studio.notebook.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by jishilei on 2017/5/13.
@@ -10,13 +13,56 @@ import java.util.Date;
 public class Notebook {
     @JsonProperty("id")
     private String id;
-//    private String connectionId;
-//    private String name;
-//    private Date created;
-//    private Date lastUsed;
-//    private boolean favorite;
+
+    @JsonProperty("connectionId")
+    private String connectionId;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("created")
+    private Instant created;
+
+    @JsonProperty("lastUsed")
+    private Instant lastUsed;
+
+    @JsonProperty("favorite")
+    private boolean favorite;
+
+    private List<NotebookCell> cells;
 
     public Notebook() {
-        this.id = "id";
+        cells = new ArrayList<>();
+        created = Instant.now();
+        lastUsed = Instant.now();
+        favorite = false;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getConnectionId() {
+        return connectionId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Instant getCreated() {
+        return created;
+    }
+
+    public Instant getLastUsed() {
+        return lastUsed;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public List<NotebookCell> getCells() {
+        return cells;
     }
 }
