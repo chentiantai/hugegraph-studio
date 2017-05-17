@@ -3,11 +3,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="vendors/boostrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="vendors/boostrap/css/bootstrap-theme.css">
+    <title>HugeGraph Studio</title>
+    <link rel="stylesheet" type="text/css" href="vendors/boostrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="vendors/boostrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="vendors/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="assets/style/main.css">
-    <title>HugeGraph Studio</title>
 </head>
 <body>
 <nav class="navbar navbar-inverse">
@@ -21,7 +21,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">HugeGraph</a>
+            <a class="navbar-brand" href="#" style="margin-top:-2px;"><img src="assets/images/logo.png"></a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -29,9 +29,10 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Notebook <span class="caret"></span></a>
+                       aria-expanded="false">Notebook <span class="caret active"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#"> <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Notebook</a></li>
+                        <li><a href="#"> <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;
+                            Notebook</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="#">logout</a></li>
                     </ul>
@@ -51,44 +52,134 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container -->
 </nav>
+
 <div class="studio-header">
     <div class="container">
         <div class="row">
             <div class="header-title">
                 <h1><i class="fa fa-book" aria-hidden="true"></i>HugeGraph Notebook Quick Start</h1>
             </div>
-            <div class="header-control">
-                <div style="float: right">aaa</div>
+            <div class="header-control-middle">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-default"><i class="fa fa-play" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-arrows-alt" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="header-control-right">
+                <div class="btn-group btn-group-sm pull-right" role="group">
+                    <button type="button" class="btn btn-default"><i class="fa fa-cog" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-keyboard-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h4>
+                    Connections information
+                    <div style="float:right;padding-bottom: 10px;">
+                        <button type="button" class="btn btn-default" data-toggle="modal"
+                                data-target="#connectionModal">
+                            <i class="fa fa-plus" aria-hidden="true"><span style="margin-left: 5px;">add</span></i>
+                        </button>
+                    </div>
+                </h4>
+                <table class="table table-striped">
+                    <tr>
+                        <th>name</th>
+                        <th>port</th>
+                        <th>host</th>
+                        <th>operation</th>
+                    </tr>
+                    <tr>
+                        <td>Tutorial Connetion</td>
+                        <td>9042</td>
+                        <td>127.0.0.1</td>
+                        <td>
+                            <button type="button" class="btn btn-link"><i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-link"><i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tutorial Connetion</td>
+                        <td>9042</td>
+                        <td>127.0.0.1</td>
+                        <td>
+                            <button type="button" class="btn btn-link"><i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-link"><i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tutorial Connetion</td>
+                        <td>9042</td>
+                        <td>127.0.0.1</td>
+                        <td>
+                            <button type="button" class="btn btn-link"><i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn btn-link"><i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
 </div>
-<div class="container">
-    <div class="row">
-        <div class="col-xs-6 col-md-3">
-            <a href="#" class="thumbnail">
-                <img src="assets/images/logo.png" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3">
-            <a href="#" class="thumbnail">
-                <img src="assets/images/logo.png" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3">
-            <a href="#" class="thumbnail">
-                <img src="assets/images/logo.png" alt="...">
-            </a>
-        </div>
-        <div class="col-xs-6 col-md-3">
-            <a href="#" class="thumbnail">
-                <img src="assets/images/logo.png" alt="...">
-            </a>
-        </div>
-    </div>
 
 
-</div>
+<div id="connectionModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="gridSystemModalLabel">Connetion information </h4>
+            </div>
+            <div class="modal-body">
+
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputName" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Port</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPort" placeholder="Port">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Host</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputHost" placeholder="Host">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script src="vendors/jquery/jquery-3.2.1.min.js"></script>
 <script src="vendors/boostrap/js/bootstrap.min.js"></script>
