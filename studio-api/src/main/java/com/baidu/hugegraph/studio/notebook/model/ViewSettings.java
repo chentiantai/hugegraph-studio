@@ -29,7 +29,13 @@ public final class ViewSettings {
     }
 
     public String toString() {
-        return "ViewSettings{chart=" + this.chart + ", graph=" + this.graph + ", code=" + this.code + ", validations=" + this.validations + ", cellHeight=" + this.cellHeight + ", editorHeight=" + this.editorHeight + '}';
+        return "ViewSettings{chart=" + this.chart +
+                ", graph=" + this.graph +
+                ", code=" + this.code +
+                ", validations=" + this.validations +
+                ", cellHeight=" + this.cellHeight +
+                ", editorHeight=" + this.editorHeight +
+                '}';
     }
 
     public class ChartSettings {
@@ -41,11 +47,13 @@ public final class ViewSettings {
     }
 
     public class CodeSettings {
+        @JsonProperty("hidden")
         private boolean hidden;
         //TODO : implement.
     }
 
     public class ValidationSettings {
-        //TODO : implement.
+        @JsonProperty("enabled")
+        private boolean enabled;
     }
 }

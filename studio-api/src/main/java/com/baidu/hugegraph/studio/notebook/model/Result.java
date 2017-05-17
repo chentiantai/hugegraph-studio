@@ -21,13 +21,22 @@ public class Result {
     private final boolean truncated;
     @JsonProperty("duration")
     private Long duration = null;
+
+    // graph.put("edges",new HashSet<Edge>);
+    // graph.put("vertices",new HashSet<Vertex>);
     @JsonProperty("graph")
     private Map<String, Set> graph;
     @JsonProperty("id")
     private String id;
 
     @JsonCreator
-    public Result(@JsonProperty("value") Object value, @JsonProperty("type") Result.Type type, @JsonProperty("truncated") boolean truncated, @JsonProperty("duration") Long duration, @JsonProperty("graph") Map<String, Set> graph, @JsonProperty("id") String id) {
+    public Result(
+            @JsonProperty("value") Object value,
+            @JsonProperty("type") Result.Type type,
+            @JsonProperty("truncated") boolean truncated,
+            @JsonProperty("duration") Long duration,
+            @JsonProperty("graph") Map<String, Set> graph,
+            @JsonProperty("id") String id) {
         this.graph = graph;
         this.value = value;
         this.type = type;
@@ -78,6 +87,6 @@ public class Result {
     }
 
     public enum Type {
-        HTML, GREMLIN;
+        HTML, VERTEX, EDGE, EMPTY;
     }
 }
