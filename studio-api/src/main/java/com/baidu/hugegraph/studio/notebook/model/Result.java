@@ -13,6 +13,9 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
+    // g.V().count() -> type=Number , value = Array(i,n) : i is index, n is count number
+    // g.V() -> type=vertex , value = Array<Vertex>
+    // g.E() -> type=edge , value = Array<Edge>
     @JsonProperty("value")
     private final Object value;
     @JsonProperty("type")
@@ -86,7 +89,11 @@ public class Result {
         return this.duration;
     }
 
+    // markdown -> HTML
+    // g.V() -> VERTEX
+    // g.E() -> EDGE
+    // g.V().count() -> NUMBER
     public enum Type {
-        HTML, VERTEX, EDGE, EMPTY;
+        HTML, VERTEX, EDGE, EMPTY, NUMBER;
     }
 }
