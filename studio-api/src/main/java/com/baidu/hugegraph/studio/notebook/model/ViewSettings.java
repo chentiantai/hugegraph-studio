@@ -19,7 +19,13 @@ public final class ViewSettings {
     public final Integer editorHeight;
 
     @JsonCreator
-    public ViewSettings(@JsonProperty("CHART") ViewSettings.ChartSettings chartSettings, @JsonProperty("GRAPH") ViewSettings.GraphSettings graphSettings, @JsonProperty("CODE") ViewSettings.CodeSettings codeSettings, @JsonProperty("VALIDATIONS") ViewSettings.ValidationSettings validationSettings, @JsonProperty("CELL_HEIGHT") Integer cellHeight, @JsonProperty("EDITOR_HEIGHT") Integer editorHeight) {
+    public ViewSettings(
+            @JsonProperty("CHART") ViewSettings.ChartSettings chartSettings,
+            @JsonProperty("GRAPH") ViewSettings.GraphSettings graphSettings,
+            @JsonProperty("CODE") ViewSettings.CodeSettings codeSettings,
+            @JsonProperty("VALIDATIONS") ViewSettings.ValidationSettings validationSettings,
+            @JsonProperty("CELL_HEIGHT") Integer cellHeight,
+            @JsonProperty("EDITOR_HEIGHT") Integer editorHeight) {
         this.chart = chartSettings;
         this.graph = graphSettings;
         this.code = (codeSettings != null ? codeSettings : new ViewSettings.CodeSettings());
@@ -29,13 +35,13 @@ public final class ViewSettings {
     }
 
     public String toString() {
-        return "ViewSettings{chart=" + this.chart +
-                ", graph=" + this.graph +
-                ", code=" + this.code +
-                ", validations=" + this.validations +
-                ", cellHeight=" + this.cellHeight +
-                ", editorHeight=" + this.editorHeight +
-                '}';
+        return "ViewSettings{chart=" + this.chart
+                + ", graph=" + this.graph
+                + ", code=" + this.code
+                + ", validations=" + this.validations
+                + ", cellHeight=" + this.cellHeight
+                + ", editorHeight=" + this.editorHeight
+                + '}';
     }
 
     public class ChartSettings {
