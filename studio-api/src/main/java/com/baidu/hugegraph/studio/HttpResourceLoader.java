@@ -36,7 +36,9 @@ public abstract class HttpResourceLoader<T> {
     }
 
     @Inject
-    public HttpResourceLoader(String connectionServiceURL, Integer connectionServicePort, ResourceMapper<T> resourceMapper) {
+    public HttpResourceLoader(String connectionServiceURL,
+                              Integer connectionServicePort,
+                              ResourceMapper<T> resourceMapper) {
         this.serviceBaseUrl = connectionServiceURL;
         this.servicePort = connectionServicePort.intValue();
         this.resourceMapper = resourceMapper;
@@ -56,7 +58,9 @@ public abstract class HttpResourceLoader<T> {
         try {
             httpResponse = this.httpClient.execute(request);
             if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                response = IOUtils.toString(httpResponse.getEntity().getContent(), Charset.defaultCharset());
+                response = IOUtils.toString(
+                        httpResponse.getEntity().getContent(),
+                        Charset.defaultCharset());
             } else {
                 logger.error(String.format("Request to load resource failed: %s", new Object[]{httpResponse.toString()}));
             }
@@ -103,6 +107,4 @@ public abstract class HttpResourceLoader<T> {
         return this.resourceMapper;
     }
 
-    public HttpResourceLoader() {
-    }
 }

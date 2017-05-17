@@ -48,7 +48,8 @@ public class Executor {
                     result = this.markdownExecutor.execute(cell.getCode());
                     break;
                 default:
-                    throw StudioError.invalidRequest(String.format("Attempt to execute code for an unrecognized language: '%s'.",
+                    throw StudioError.invalidRequest(
+                            String.format("Attempt to execute code for an unrecognized language: '%s'.",
                             new Object[]{cell.getLanguage()}));
             }
             logger.debug(String.format("Execution completed for cell %s.", new Object[]{cell.getId()}));

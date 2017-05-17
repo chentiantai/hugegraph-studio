@@ -38,7 +38,8 @@ public class NotebookCell {
                         @JsonProperty("errorDetails") Optional<StudioError> errorDetails,
                         @JsonProperty("code") String code,
                         @JsonProperty("language") String language,
-                        @JsonProperty("gremlinExecutionEngine") NotebookCell.GremlinExecutionEngine gremlinExecutionEngine,
+                        @JsonProperty("gremlinExecutionEngine")
+                                    NotebookCell.GremlinExecutionEngine gremlinExecutionEngine,
                         @JsonProperty("result") Result result,
                         @JsonProperty("msg") String msg,
                         @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType,
