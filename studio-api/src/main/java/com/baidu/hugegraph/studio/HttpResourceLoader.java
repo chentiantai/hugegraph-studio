@@ -62,7 +62,9 @@ public abstract class HttpResourceLoader<T> {
                         httpResponse.getEntity().getContent(),
                         Charset.defaultCharset());
             } else {
-                logger.error(String.format("Request to load resource failed: %s", new Object[]{httpResponse.toString()}));
+                logger.error(
+                        String.format("Request to load resource failed: %s",
+                                new Object[]{httpResponse.toString()}));
             }
             return response;
         } catch (Exception e) {

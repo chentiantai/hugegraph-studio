@@ -49,8 +49,9 @@ public class Executor {
                     break;
                 default:
                     throw StudioError.invalidRequest(
-                            String.format("Attempt to execute code for an unrecognized language: '%s'.",
-                            new Object[]{cell.getLanguage()}));
+                            String.format("Attempt to execute code for an unrecognized language: '%s'."
+                                    , new Object[]{cell.getLanguage()})
+                    );
             }
             logger.debug(String.format("Execution completed for cell %s.", new Object[]{cell.getId()}));
 
