@@ -84,4 +84,15 @@ td > button.btn {
     margin-left: 4px;
 }
 
+.page-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    color: inherit;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+
 
