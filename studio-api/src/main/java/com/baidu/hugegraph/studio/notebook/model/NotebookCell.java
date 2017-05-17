@@ -33,7 +33,16 @@ public class NotebookCell {
 
 
     @JsonCreator
-    public NotebookCell(@JsonProperty("id") String id, @JsonProperty("status") NotebookCell.Status status, @JsonProperty("errorDetails") Optional<StudioError> errorDetails, @JsonProperty("code") String code, @JsonProperty("language") String language, @JsonProperty("gremlinExecutionEngine") NotebookCell.GremlinExecutionEngine gremlinExecutionEngine, @JsonProperty("result") Result result, @JsonProperty("msg") String msg, @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType, @JsonProperty("viewSettings") ViewSettings viewSettings) {
+    public NotebookCell(@JsonProperty("id") String id,
+                        @JsonProperty("status") NotebookCell.Status status,
+                        @JsonProperty("errorDetails") Optional<StudioError> errorDetails,
+                        @JsonProperty("code") String code,
+                        @JsonProperty("language") String language,
+                        @JsonProperty("gremlinExecutionEngine") NotebookCell.GremlinExecutionEngine gremlinExecutionEngine,
+                        @JsonProperty("result") Result result,
+                        @JsonProperty("msg") String msg,
+                        @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType,
+                        @JsonProperty("viewSettings") ViewSettings viewSettings) {
         this.id = id;
         this.status = status;
         this.errorDetails = errorDetails;
