@@ -15,8 +15,10 @@ import java.util.List;
 public class FileNotebookRepository implements NotebookRepository {
 
     private String notebooksDataDirectory;
+
     private StudioConfiguration configuration;
-    public FileNotebookRepository(){
+
+    public FileNotebookRepository() {
 
         configuration = new StudioConfiguration();
         notebooksDataDirectory = "";
