@@ -2,8 +2,11 @@ package com.baidu.hugegraph.studio.conf;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,29 +20,28 @@ import org.springframework.core.io.Resource;
 
 @Configuration
 @Provider
-public class StudioConfiguration implements ContextResolver<ObjectMapper>
-{
+public class StudioConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(StudioConfiguration.class);
+
+    //Spring PropertySourcesPlaceholderConfigurer @Value annotations
     @Value("${userData.baseDirectory}")
     private String baseUserDataDirectory;
 
-    //TODO : should be fixed
-    public ObjectMapper getContext(Class<?> aClass)
-    {
-        return new ObjectMapper();
-    }
+    @Value("${userData.connectionsDirectory}")
+    private String connectionsDirectory;
 
-    public static String getConfigFileLocation()
-    {
+    @Value("${userData.notebooksDirectory}")
+    private String notebooksDirectory;
+
+    public static String getConfigFileLocation() {
         String confDir = System.getProperty("studio.conf.dir");
         if ((confDir == null) || (confDir.isEmpty())) {
             confDir = "conf";
         }
-        return String.format("%s/configuration.yaml", new Object[] { confDir });
+        return String.format("%s/configuration.yaml", new Object[]{confDir});
     }
 
-    public static String getConfigDirLocation()
-    {
+    public static String getConfigDirLocation() {
         String confDir = System.getProperty("studio.conf.dir");
         if ((confDir == null) || (confDir.isEmpty())) {
             confDir = "conf";
@@ -47,14 +49,18 @@ public class StudioConfiguration implements ContextResolver<ObjectMapper>
         return confDir;
     }
 
+    /**
+     * Spring PropertySourcesPlaceholderConfigurer
+     *
+     * @return
+     */
     @Bean
-    public static PropertySourcesPlaceholderConfigurer properties()
-    {
+    public static PropertySourcesPlaceholderConfigurer properties() {
         FileSystemResource fileSystemResource = new FileSystemResource(getConfigFileLocation());
 
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
         YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new Resource[] { fileSystemResource });
+        yaml.setResources(new Resource[]{fileSystemResource});
 
         propertySourcesPlaceholderConfigurer.setLocalOverride(false);
         propertySourcesPlaceholderConfigurer.setProperties(yaml.getObject());
@@ -65,8 +71,34 @@ public class StudioConfiguration implements ContextResolver<ObjectMapper>
         return propertySourcesPlaceholderConfigurer;
     }
 
-    public String getBaseUserDataDirectory()
-    {
+    public String getBaseUserDataDirectoryOrignal() {
         return this.baseUserDataDirectory;
+    }
+
+    public String getConnectionsDirectory() {
+        return getBaseUserDataDirectory() + "/" + this.connectionsDirectory;
+    }
+
+    public String getNotebooksDirectory() {
+        return getBaseUserDataDirectory() + "/" + this.notebooksDirectory;
+
+    }
+
+    public String getBaseUserDataDirectory() {
+        String userDataDir = this.baseUserDataDirectory;
+        if (StringUtils.isEmpty(this.baseUserDataDirectory) || this.baseUserDataDirectory.equals("null")) {
+            userDataDir = "~/.hugestudio";
+        }
+        return replaceHomeDirReferences(userDataDir);
+    }
+
+    private String replaceHomeDirReferences(String confDir) {
+        if (confDir != null) {
+            if (System.getProperty("user.home") != null) {
+                return confDir.replaceFirst("^~", System.getProperty("user.home"));
+            }
+            return confDir;
+        }
+        return null;
     }
 }

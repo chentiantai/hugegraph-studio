@@ -1,5 +1,6 @@
 package com.baidu.hugegraph.studio.notebook.repository;
 
+import com.baidu.hugegraph.studio.conf.StudioConfiguration;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,14 @@ import java.util.List;
  */
 @Repository("notebookRepository")
 public class FileNotebookRepository implements NotebookRepository {
+
+    private String notebooksDataDirectory;
+    private StudioConfiguration configuration;
+    public FileNotebookRepository(){
+
+        configuration = new StudioConfiguration();
+        notebooksDataDirectory = "";
+    }
 
     @Override
     public Notebook createNotebook(Notebook notebook) {
