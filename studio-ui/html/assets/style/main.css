@@ -116,7 +116,7 @@ td > button.btn {
 }
 
 .notebook-card:hover {
-    box-shadow: 0px 0px 8px #3071a9;
+    box-shadow: 0 0 8px #3071a9;
 }
 
 .notebook-card-info {
@@ -130,7 +130,7 @@ td > button.btn {
     font-size: 14px;
     margin-bottom: 10px;
     margin-top: -10px;
-    ont-family: inherit;
+    font-family: inherit;
     font-weight: 500;
     line-height: 1.1;
     float: left;
@@ -146,7 +146,7 @@ td > button.btn {
 }
 
 .notebook-card-description {
-    color: #CCCCCC;
+    color: #CCC;
     font-size: 12px;
     font-style: normal;
     float: left;
@@ -208,7 +208,7 @@ td > button.btn {
 }
 
 .modal-body {
-    padding: 0px 50px;
+    padding:0 50px;
 }
 
 .modal-footer {

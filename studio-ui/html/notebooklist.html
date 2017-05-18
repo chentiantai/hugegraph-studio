@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
 <head>
     <meta charset="utf-8" name="viewport" http-equiv="X-UA-Compatible"
           content="IE=edge,width=device-width, initial-scale=1">
@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="vendors/boostrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="vendors/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="vendors/bootstrap-select/css/bootstrap-select.min.css">
-
     <link rel="stylesheet" type="text/css" href="assets/style/main.css">
 </head>
 <body>
@@ -369,7 +368,7 @@
                     <div class="form-group">
                         <label for="notebookDescription">Description</label>
                         <textarea id="notebookDescription" placeholder="Description" class="form-control"
-                                  rows="3"></textarea>
+                                  rows="2"></textarea>
                     </div>
 
                 </form>
@@ -387,20 +386,7 @@
 <script src="vendors/jquery/jquery-3.2.1.min.js"></script>
 <script src="vendors/boostrap/js/bootstrap.min.js"></script>
 <script src="vendors/bootstrap-select/js/bootstrap-select.min.js"></script>
-<script>
-    $('.notebook-card').mouseover(function () {
-        $(this).find('.notebook-card-close').css('visibility', 'visible');
-    });
-    $('.notebook-card').mouseout(function () {
-        $(this).find('.notebook-card-close').css('visibility', 'hidden');
-    });
-    $('.notebook-card-close').click(function () {
-        $(this).parents('.notebook-card').hide('fast', function () {
-            $(this).remove();
-        });
-    });
-    $('#notebookCardModal').draggable();
-</script>
+<script src="assets/js/notebooklist.js"></script>
 </body>
 </html>
 
