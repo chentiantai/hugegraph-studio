@@ -103,6 +103,21 @@ public class Notebook {
         this.cells.add(cell);
     }
 
+    public void addCell(NotebookCell cell) {
+        if (this.cells == null) {
+            this.cells = new ArrayList<>();
+        }
+        int index = 0;
+        for (int i = 0; i < this.cells.size(); i++) {
+            if (this.cells.get(i).getId().equals(cell.getId())) {
+                index = i;
+                break;
+            }
+        }
+        this.cells.removeIf(c -> c.getId().equals(cell.getId()));
+        this.cells.add(index, cell);
+    }
+
     public void removeCell(String cellId) {
         this.cells.removeIf(c -> c.getId().equals(cellId));
     }

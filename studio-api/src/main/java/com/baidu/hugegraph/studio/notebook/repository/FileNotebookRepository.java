@@ -132,7 +132,7 @@ public class FileNotebookRepository implements NotebookRepository {
         Preconditions.checkNotNull(notebook);
 
         notebook.setLastUsed(Instant.now());
-        notebook.addCell(cell);
+        notebook.addCell(cell,index);
         writeNotebook(notebook);
         return cell;
     }
