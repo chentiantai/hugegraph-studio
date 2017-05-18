@@ -58,11 +58,41 @@ public class Notebook {
         return lastUsed;
     }
 
-    public boolean isFavorite() {
-        return favorite;
-    }
 
     public List<NotebookCell> getCells() {
         return cells;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+    public void setCreated(Instant created) {
+        this.created = created;
+    }
+
+    public void setLastUsed(Instant lastUsed) {
+        this.lastUsed = lastUsed;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public void setCells(List<NotebookCell> cells) {
+        this.cells = cells;
+    }
+
+    public void addCell(NotebookCell cell) {
+        if (this.cells == null) {
+            this.cells = new ArrayList<>();
+        }
+        this.cells.removeIf(c -> c.getId().equals(cell.getId()));
+        this.cells.add(cell);
+    }
+
+    public void removeCell(String cellId) {
+        this.cells.removeIf(c -> c.getId().equals(cellId));
     }
 }
