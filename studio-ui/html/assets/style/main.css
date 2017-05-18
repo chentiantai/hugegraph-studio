@@ -67,6 +67,12 @@ body {
     margin-right: 5px;
 }
 
+.studio-header .nav > li > a {
+    display: block;
+    padding: 4px 15px 0px 15px;
+    position: relative;
+}
+
 .studio-header .header-control .header-form {
     margin: 5px 0 0 0;
 }
@@ -94,5 +100,118 @@ td > button.btn {
     line-height: 1.1;
 }
 
+.notebook-cards {
+    margin: 10px 9px;
+    padding: 0;
+}
 
+.notebook-card {
+    background-color: #fff;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1), 0 5px 15px 0 rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    float: left;
+    margin: 0 10px 20px;
+    width: 172px;
+    height: 215px;
+}
+
+.notebook-card:hover {
+    box-shadow: 0px 0px 8px #3071a9;
+}
+
+.notebook-card-info {
+    min-height: 185px;
+    max-height: 185px;
+    border-bottom: 1px solid #e4e4e4;
+    padding: 5px 10px;
+}
+
+.notebook-card-title {
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-top: -10px;
+    ont-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    float: left;
+
+}
+
+.notebook-card-close {
+    float: right;
+    margin-top: -5px;
+    margin-right: -8px;
+    visibility: hidden;
+
+}
+
+.notebook-card-description {
+    color: #CCCCCC;
+    font-size: 12px;
+    font-style: normal;
+    float: left;
+    line-height: 18px;
+    margin-top: -5px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+.notebook-card-control {
+    padding: 5px;
+}
+
+.notebook-card-createtime {
+    float: left;
+    width: 65%;
+    font-size: 12px;
+    font-style: normal;
+    line-height: 18px;
+    color: #CCC;
+    margin-left: 5px;
+    /*text-align: center;*/
+}
+
+.notebook-card-operation {
+    float: right;
+    margin-top: -1px;
+    width: 12%;
+    color: #999;
+}
+
+.notebook-card .btn {
+    padding: 5px 5px;
+    color: #999;
+}
+
+.notebook-card .btn:hover {
+    color: #3071a9;
+}
+
+.notebook-card-add {
+    padding-top: 65px;
+    text-align: center;
+    width: 100%;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding-left: 50px;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.modal-content {
+    border-radius: 0;
+    background-color: #fff;
+}
+
+.modal-body{
+    padding: 0px 50px;
+}
+
+.modal-footer{
+    text-align: center;
+}
 
