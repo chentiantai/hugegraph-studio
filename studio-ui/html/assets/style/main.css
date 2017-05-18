@@ -18,14 +18,13 @@ body {
 }
 
 .navbar-brand {
-    padding: 4px 4px;
+    padding: 1px 5px;
     height: 28px;
 }
 
 .navbar-nav > li > a {
-    padding-top: 4px;
-    padding-bottom: 4px;
-    /*color:#fff;*/
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 .navbar-inverse .navbar-nav > li > a.dropdown-toggle {
