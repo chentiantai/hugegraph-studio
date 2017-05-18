@@ -31,9 +31,12 @@ public class StudioConfigurationTest {
     public void testConfiguration() {
 
         Assert.assertTrue(StringUtils.isEmpty(configuration.getBaseUserDataDirectoryOrignal()));
-        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio", configuration.getBaseUserDataDirectory());
-        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/connections", configuration.getConnectionsDirectory());
-        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/notebooks", configuration.getNotebooksDirectory());
+        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio",
+                configuration.getBaseUserDataDirectory());
+        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/connections",
+                configuration.getConnectionsDirectory());
+        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/notebooks",
+                configuration.getNotebooksDirectory());
 
 
     }

@@ -24,7 +24,7 @@ public class HttpServer {
         System.setProperty("studio.conf.dir", basedir + "/studio-api/conf");
 
         StudioConfiguration configuration = new StudioConfiguration();
-        logger.info("userData="+configuration.getBaseUserDataDirectoryOrignal());
+        logger.info("userData=" + configuration.getBaseUserDataDirectoryOrignal());
 
 
         Tomcat tomcat = new Tomcat();
@@ -32,7 +32,7 @@ public class HttpServer {
 
         StandardContext ctx = (StandardContext) tomcat.addWebapp("", new File(docBase).getAbsolutePath());
         tomcat.start();
-        System.out.println("HugeGraph studio-api is now running at: http://127.0.0.1:" + PORT+"/v1/notebooks");
+        System.out.println("HugeGraph studio-api is now running at: http://127.0.0.1:" + PORT + "/v1/notebooks");
         tomcat.getServer().await();
     }
 }

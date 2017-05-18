@@ -23,7 +23,7 @@ import org.springframework.core.io.Resource;
 public class StudioConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(StudioConfiguration.class);
 
-    //Spring PropertySourcesPlaceholderConfigurer @Value annotations
+    // Spring PropertySourcesPlaceholderConfigurer @Value annotations
     @Value("${userData.baseDirectory}")
     private String baseUserDataDirectory;
 
