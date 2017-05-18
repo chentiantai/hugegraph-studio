@@ -123,7 +123,7 @@ public class FileNotebookRepository implements NotebookRepository {
     }
 
     @Override
-    public NotebookCell addCellToNotebook(String notebookId, NotebookCell cell) {
+    public NotebookCell addCellToNotebook(String notebookId, NotebookCell cell,Integer index) {
         Preconditions.checkNotNull(cell);
         if (StringUtils.isEmpty(cell.getId())) {
             cell.setId(UUID.randomUUID().toString());

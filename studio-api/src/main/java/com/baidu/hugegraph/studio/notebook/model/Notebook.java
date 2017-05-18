@@ -38,6 +38,14 @@ public class Notebook {
         favorite = false;
     }
 
+    public void setConnectionId(String connectionId) {
+        this.connectionId = connectionId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }
@@ -84,11 +92,14 @@ public class Notebook {
         this.cells = cells;
     }
 
-    public void addCell(NotebookCell cell) {
+    public void addCell(NotebookCell cell, Integer index) {
         if (this.cells == null) {
             this.cells = new ArrayList<>();
         }
         this.cells.removeIf(c -> c.getId().equals(cell.getId()));
+        if (index != null) {
+            this.cells.add(index.intValue(), cell);
+        }
         this.cells.add(cell);
     }
 

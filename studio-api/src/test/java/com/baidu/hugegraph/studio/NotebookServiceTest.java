@@ -1,5 +1,6 @@
 package com.baidu.hugegraph.studio;
 
+import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.service.NoteBookService;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -44,7 +45,10 @@ public class NotebookServiceTest extends JerseyTest {
     }
 
     @Test
-    public void getNotebooks() {
+    public void testNotebookCURD() {
+        Notebook notebook = new Notebook();
+        notebook.setConnectionId("test-connectionId");
+        notebook.setName("test");
         Response response = target("notebooks").request().get();
         Assert.assertEquals(200, response.getStatus());
     }
