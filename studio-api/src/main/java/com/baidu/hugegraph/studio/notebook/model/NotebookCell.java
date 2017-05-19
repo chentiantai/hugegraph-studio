@@ -4,12 +4,13 @@ import com.baidu.hugegraph.studio.common.errors.StudioError;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Optional;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NotebookCell {
     public enum DataViewType {
-        TABLE, GRAPH;
+        TABLE, RAW, GRAPH;
     }
 
     public enum Status {
@@ -39,7 +40,7 @@ public class NotebookCell {
                         @JsonProperty("code") String code,
                         @JsonProperty("language") String language,
                         @JsonProperty("gremlinExecutionEngine")
-                                    NotebookCell.GremlinExecutionEngine gremlinExecutionEngine,
+                                NotebookCell.GremlinExecutionEngine gremlinExecutionEngine,
                         @JsonProperty("result") Result result,
                         @JsonProperty("msg") String msg,
                         @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType,
@@ -54,6 +55,10 @@ public class NotebookCell {
         this.msg = msg;
         this.dataViewType = dataViewType;
         this.viewSettings = viewSettings;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getId() {

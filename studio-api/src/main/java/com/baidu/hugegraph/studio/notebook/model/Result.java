@@ -13,6 +13,9 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
+    // g.V().count() -> type=Number , value = Array(i,n) : i is index, n is count number
+    // g.V() -> type=vertex , value = Array<Vertex>
+    // g.E() -> type=edge , value = Array<Edge>
     @JsonProperty("value")
     private final Object value;
     @JsonProperty("type")
@@ -21,13 +24,22 @@ public class Result {
     private final boolean truncated;
     @JsonProperty("duration")
     private Long duration = null;
+
+    // graph.put("edges",new HashSet<Edge>);
+    // graph.put("vertices",new HashSet<Vertex>);
     @JsonProperty("graph")
     private Map<String, Set> graph;
     @JsonProperty("id")
     private String id;
 
     @JsonCreator
-    public Result(@JsonProperty("value") Object value, @JsonProperty("type") Result.Type type, @JsonProperty("truncated") boolean truncated, @JsonProperty("duration") Long duration, @JsonProperty("graph") Map<String, Set> graph, @JsonProperty("id") String id) {
+    public Result(
+            @JsonProperty("value") Object value,
+            @JsonProperty("type") Result.Type type,
+            @JsonProperty("truncated") boolean truncated,
+            @JsonProperty("duration") Long duration,
+            @JsonProperty("graph") Map<String, Set> graph,
+            @JsonProperty("id") String id) {
         this.graph = graph;
         this.value = value;
         this.type = type;
@@ -77,7 +89,11 @@ public class Result {
         return this.duration;
     }
 
+    // markdown -> HTML
+    // g.V() -> VERTEX
+    // g.E() -> EDGE
+    // g.V().count() -> NUMBER
     public enum Type {
-        HTML, GREMLIN;
+        HTML, VERTEX, EDGE, EMPTY, NUMBER;
     }
 }
