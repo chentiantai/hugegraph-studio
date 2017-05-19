@@ -17,5 +17,5 @@ public interface ConnectionRepository {
 
     Connection get(String connectionId);
 
-    void delete(String connectionId);
+    void deleteConnection(String connectionId);
 }

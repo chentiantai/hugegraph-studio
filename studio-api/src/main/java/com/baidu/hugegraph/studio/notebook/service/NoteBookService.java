@@ -20,16 +20,9 @@ import javax.ws.rs.core.Response;
 @Path("notebooks")
 public class NoteBookService {
     private static final Logger logger = LoggerFactory.getLogger(NoteBookService.class);
-    private EventBus eventBus;
-    private CellExecutionManager executionManager;
 
     @Autowired
     private NotebookRepository notebookRepository;
-
-    public NoteBookService() {
-        eventBus = new EventBus();
-        executionManager = new CellExecutionManager();
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +70,9 @@ public class NoteBookService {
     public Response editNotebook(@PathParam("notebookId") String notebookId,
                                  Notebook notebook) {
         Preconditions.checkArgument(notebookId != null && notebookId.equals(notebook.getId()));
+
+        notebookRepository.editNotebook(notebook);
+
         Response response = Response.status(200)
                 .entity(notebook)
                 .build();

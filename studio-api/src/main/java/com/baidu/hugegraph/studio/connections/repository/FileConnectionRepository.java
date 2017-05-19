@@ -128,7 +128,7 @@ public class FileConnectionRepository implements ConnectionRepository {
     }
 
     @Override
-    public void delete(String connectionId) {
+    public void deleteConnection(String connectionId) {
         try {
             FileUtils.forceDelete(FileUtils.getFile(connectionsDataDirectory, connectionId));
         } catch (IOException e) {

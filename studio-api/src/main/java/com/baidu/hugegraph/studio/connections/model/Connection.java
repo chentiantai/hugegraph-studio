@@ -3,6 +3,8 @@ package com.baidu.hugegraph.studio.connections.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -12,6 +14,8 @@ import java.util.List;
 public class Connection {
     public Connection() {
         this.port = 0;
+        this.connectionHosts = new ArrayList<>();
+        this.connectionHosts.add("127.0.0.1");
     }
 
     @JsonProperty("id")
