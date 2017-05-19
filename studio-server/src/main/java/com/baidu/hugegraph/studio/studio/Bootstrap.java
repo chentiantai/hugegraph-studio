@@ -65,7 +65,7 @@ public class Bootstrap {
     }
 
     public static String getAbsolutePath(String path) {
-        if (path.isEmpty()) {
+        if (path == null || path.length() == 0) {
             return "";
         }
         File dir = new File(path);
