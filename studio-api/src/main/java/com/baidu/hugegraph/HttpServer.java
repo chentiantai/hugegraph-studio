@@ -5,6 +5,7 @@ import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 
@@ -15,6 +16,7 @@ public class HttpServer {
     private static final int PORT = 8082;
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
+
     public static void main(String[] args) throws Exception {
 
 
@@ -22,9 +24,6 @@ public class HttpServer {
         String docBase = basedir + "/studio-api/src/main/webapp";
 
         System.setProperty("studio.conf.dir", basedir + "/studio-api/conf");
-
-        StudioConfiguration configuration = new StudioConfiguration();
-        logger.info("userData=" + configuration.getBaseUserDataDirectoryOrignal());
 
 
         Tomcat tomcat = new Tomcat();

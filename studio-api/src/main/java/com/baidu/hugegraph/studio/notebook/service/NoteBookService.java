@@ -55,7 +55,7 @@ public class NoteBookService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addNotebook(Notebook notebook) {
         Response response = Response.status(201)
-                .entity(notebook)
+                .entity(notebookRepository.createNotebook(notebook))
                 .build();
         return response;
     }

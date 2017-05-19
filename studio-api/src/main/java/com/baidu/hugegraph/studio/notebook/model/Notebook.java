@@ -1,5 +1,7 @@
 package com.baidu.hugegraph.studio.notebook.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
@@ -10,6 +12,7 @@ import java.util.List;
 /**
  * Created by jishilei on 2017/5/13.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Notebook {
     @JsonProperty("id")
     private String id;
@@ -21,10 +24,10 @@ public class Notebook {
     private String name;
 
     @JsonProperty("created")
-    private Instant created;
+    private Long created;
 
     @JsonProperty("lastUsed")
-    private Instant lastUsed;
+    private Long lastUsed;
 
     @JsonProperty("favorite")
     private boolean favorite;
@@ -32,11 +35,13 @@ public class Notebook {
     private List<NotebookCell> cells;
 
     public Notebook() {
-        cells = new ArrayList<>();
-        created = Instant.now();
-        lastUsed = Instant.now();
-        favorite = false;
     }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+
 
     public void setConnectionId(String connectionId) {
         this.connectionId = connectionId;
@@ -58,11 +63,11 @@ public class Notebook {
         return name;
     }
 
-    public Instant getCreated() {
+    public Long getCreated() {
         return created;
     }
 
-    public Instant getLastUsed() {
+    public Long getLastUsed() {
         return lastUsed;
     }
 
@@ -76,11 +81,11 @@ public class Notebook {
     }
 
 
-    public void setCreated(Instant created) {
+    public void setCreated(Long created) {
         this.created = created;
     }
 
-    public void setLastUsed(Instant lastUsed) {
+    public void setLastUsed(Long lastUsed) {
         this.lastUsed = lastUsed;
     }
 

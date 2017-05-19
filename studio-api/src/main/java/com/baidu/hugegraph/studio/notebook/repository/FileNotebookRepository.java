@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.BufferedWriter;
@@ -32,13 +31,18 @@ public class FileNotebookRepository implements NotebookRepository {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    @Autowired
     private StudioConfiguration configuration;
 
     private String notebooksDataDirectory;
 
     public FileNotebookRepository() {
+        initNotebookRepository();
+    }
+
+    private void initNotebookRepository() {
+        configuration = new StudioConfiguration();
         notebooksDataDirectory = configuration.getNotebooksDirectory();
+        logger.info("notebooksDataDirectory=" + notebooksDataDirectory);
         Preconditions.checkNotNull(notebooksDataDirectory);
         File dir = new File(notebooksDataDirectory);
         if (!dir.exists()) {
@@ -54,6 +58,7 @@ public class FileNotebookRepository implements NotebookRepository {
             try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                 writer.write(mapper.writeValueAsString(notebook));
             }
+            logger.info("Write File :" + filePath);
         } catch (IOException e) {
             logger.error("Could Not Write File : " + filePath, e);
         }
@@ -66,8 +71,8 @@ public class FileNotebookRepository implements NotebookRepository {
                 && StringUtils.isNotEmpty(notebook.getConnectionId()));
         if (StringUtils.isEmpty(notebook.getId())) {
             notebook.setId(UUID.randomUUID().toString());
-            notebook.setCreated(Instant.now());
-            notebook.setLastUsed(Instant.now());
+            notebook.setCreated(Instant.now().getEpochSecond());
+            notebook.setLastUsed(Instant.now().getEpochSecond());
             notebook.setFavorite(false);
             notebook.setCells(new ArrayList<>());
         }
@@ -77,7 +82,7 @@ public class FileNotebookRepository implements NotebookRepository {
 
     @Override
     public Notebook editNotebook(Notebook notebook) {
-        notebook.setLastUsed(Instant.now());
+        notebook.setLastUsed(Instant.now().getEpochSecond());
         writeNotebook(notebook);
         return notebook;
     }
@@ -93,6 +98,8 @@ public class FileNotebookRepository implements NotebookRepository {
                             notebooks.add(mapper.readValue(Files.readAllBytes(path), Notebook.class));
                         } catch (IOException e) {
                             logger.error("Could Not Read File : " + notebooksDataDirectory + "/" + path.getFileName(), e);
+                            // only skips this iteration.
+                            return;
                         }
                     });
         } catch (IOException e) {
@@ -123,7 +130,7 @@ public class FileNotebookRepository implements NotebookRepository {
     }
 
     @Override
-    public NotebookCell addCellToNotebook(String notebookId, NotebookCell cell,Integer index) {
+    public NotebookCell addCellToNotebook(String notebookId, NotebookCell cell, Integer index) {
         Preconditions.checkNotNull(cell);
         if (StringUtils.isEmpty(cell.getId())) {
             cell.setId(UUID.randomUUID().toString());
@@ -131,8 +138,8 @@ public class FileNotebookRepository implements NotebookRepository {
         Notebook notebook = getNotebook(notebookId);
         Preconditions.checkNotNull(notebook);
 
-        notebook.setLastUsed(Instant.now());
-        notebook.addCell(cell,index);
+        notebook.setLastUsed(Instant.now().getEpochSecond());
+        notebook.addCell(cell, index);
         writeNotebook(notebook);
         return cell;
     }
@@ -144,7 +151,7 @@ public class FileNotebookRepository implements NotebookRepository {
         Notebook notebook = getNotebook(notebookId);
         Preconditions.checkNotNull(notebook);
 
-        notebook.setLastUsed(Instant.now());
+        notebook.setLastUsed(Instant.now().getEpochSecond());
         notebook.addCell(cell);
         writeNotebook(notebook);
         return cell;

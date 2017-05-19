@@ -10,27 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * Created by jishilei on 2017/5/18.
- */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
 public class StudioConfigurationTest {
 
-
-    @Autowired
     private StudioConfiguration configuration;
-
     @Before
     public void setUp() throws Exception {
         String basedir = System.getProperty("user.dir");
-        System.setProperty("studio.conf.dir", basedir + "/studio-api/conf");
+        System.setProperty("studio.conf.dir", basedir + "/conf");
+        configuration = new StudioConfiguration();
     }
 
     @Test
     public void testConfiguration() {
 
-        Assert.assertTrue(StringUtils.isEmpty(configuration.getBaseUserDataDirectoryOrignal()));
+        Assert.assertTrue(StringUtils.isEmpty(configuration.getBaseUserDataDirectoryOriginal()));
         Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio",
                 configuration.getBaseUserDataDirectory());
         Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/connections",

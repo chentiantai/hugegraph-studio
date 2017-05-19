@@ -1,78 +1,74 @@
 package com.baidu.hugegraph.studio.conf;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.StandardEnvironment;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
+import org.yaml.snakeyaml.Yaml;
 
-@Configuration
-@Provider
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Map;
+
+
 public class StudioConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(StudioConfiguration.class);
 
-    // Spring PropertySourcesPlaceholderConfigurer @Value annotations
-    @Value("${userData.baseDirectory}")
-    private String baseUserDataDirectory;
-
-    @Value("${userData.connectionsDirectory}")
+    private String userDataBaseDir;
     private String connectionsDirectory;
-
-    @Value("${userData.notebooksDirectory}")
     private String notebooksDirectory;
 
-    public static String getConfigFileLocation() {
+    public StudioConfiguration() {
+        loadStudioConfiguration();
+    }
+
+    public void loadStudioConfiguration() {
         String confDir = System.getProperty("studio.conf.dir");
         if ((confDir == null) || (confDir.isEmpty())) {
             confDir = "conf";
         }
-        return String.format("%s/configuration.yaml", new Object[]{confDir});
-    }
+        String configurationFile = String.format("%s/configuration.yaml", confDir);
 
-    public static String getConfigDirLocation() {
-        String confDir = System.getProperty("studio.conf.dir");
-        if ((confDir == null) || (confDir.isEmpty())) {
-            confDir = "conf";
+        try {
+            InputStream is = new FileInputStream(new File(configurationFile));
+            Throwable throwable = null;
+            try {
+                Yaml yaml = new Yaml();
+                Map<String, Object> map = (Map<String, Object>) yaml.load(is);
+                Map<String, Object> dataConfig = (Map) map.get("userData");
+
+                if (dataConfig != null) {
+                    this.userDataBaseDir = ((String) dataConfig.get("baseDirectory"));
+                    this.connectionsDirectory = ((String) dataConfig.get("connectionsDirectory"));
+                    this.notebooksDirectory = ((String) dataConfig.get("notebooksDirectory"));
+                }
+            } catch (Throwable ex) {
+                throwable = ex;
+                throw ex;
+            } finally {
+                if (is != null) {
+                    if (throwable != null) {
+                        try {
+                            is.close();
+                        } catch (Throwable ex) {
+                            throwable.addSuppressed(ex);
+                        }
+                    } else {
+                        is.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    String.format("Caught exception loading properties from %s: ",
+                            new Object[]{configurationFile}), e);
         }
-        return confDir;
     }
 
-    /**
-     * Spring PropertySourcesPlaceholderConfigurer
-     *
-     * @return
-     */
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-        FileSystemResource fileSystemResource = new FileSystemResource(getConfigFileLocation());
 
-        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new Resource[]{fileSystemResource});
-
-        propertySourcesPlaceholderConfigurer.setLocalOverride(false);
-        propertySourcesPlaceholderConfigurer.setProperties(yaml.getObject());
-
-        StandardEnvironment env = new StandardEnvironment();
-        propertySourcesPlaceholderConfigurer.setEnvironment(env);
-
-        return propertySourcesPlaceholderConfigurer;
-    }
-
-    public String getBaseUserDataDirectoryOrignal() {
-        return this.baseUserDataDirectory;
+    public String getBaseUserDataDirectoryOriginal() {
+        return this.userDataBaseDir;
     }
 
     public String getConnectionsDirectory() {
@@ -85,8 +81,8 @@ public class StudioConfiguration {
     }
 
     public String getBaseUserDataDirectory() {
-        String userDataDir = this.baseUserDataDirectory;
-        if (StringUtils.isEmpty(this.baseUserDataDirectory) || this.baseUserDataDirectory.equals("null")) {
+        String userDataDir = this.userDataBaseDir;
+        if (StringUtils.isEmpty(this.userDataBaseDir) || this.userDataBaseDir.equals("null")) {
             userDataDir = "~/.hugestudio";
         }
         return replaceHomeDirReferences(userDataDir);
