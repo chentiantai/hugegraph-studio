@@ -17,7 +17,7 @@ public class Example {
 
         StudioConfiguration configuration =new StudioConfiguration();
 
-        System.out.println(configuration.getConfigDirLocation());
+        System.out.println(configuration.getBaseUserDataDirectoryOriginal());
 
 
     }

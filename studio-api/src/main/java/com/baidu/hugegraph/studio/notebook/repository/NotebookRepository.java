@@ -19,7 +19,7 @@ public interface NotebookRepository {
 
     Notebook getNotebook(String notebookId);
 
-    NotebookCell addCellToNotebook(String notebookId, NotebookCell cell);
+    NotebookCell addCellToNotebook(String notebookId, NotebookCell cell,Integer index);
 
     NotebookCell editNotebookCell(String paramString, NotebookCell cell);
 
