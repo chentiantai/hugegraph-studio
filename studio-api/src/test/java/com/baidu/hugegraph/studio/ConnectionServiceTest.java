@@ -2,9 +2,6 @@ package com.baidu.hugegraph.studio;
 
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.service.ConnectionService;
-import com.baidu.hugegraph.studio.notebook.model.Notebook;
-import com.baidu.hugegraph.studio.notebook.service.NoteBookService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +12,7 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -25,8 +23,10 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.time.Instant;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by jishilei on 2017/5/17.
@@ -35,9 +35,27 @@ public class ConnectionServiceTest extends JerseyTest {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionServiceTest.class);
     private ObjectMapper mapper;
 
+    private Set<String> connectionIds;
+
+    private void addConnectionId(String connnectionId) {
+        this.connectionIds.add(connnectionId);
+    }
+
     public ConnectionServiceTest() {
         mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        this.connectionIds = new HashSet<>();
+    }
+
+    @After
+    public void postTest() {
+        if (connectionIds == null) {
+            return;
+        }
+        connectionIds.stream().forEach(id -> {
+            deleteConnection(id);
+            logger.info("delete connection=" + id);
+        });
     }
 
     public class ResourceRegister extends ResourceConfig {
@@ -61,43 +79,87 @@ public class ConnectionServiceTest extends JerseyTest {
                 .build();
     }
 
-    @Test
-    public void testConnection() {
-        logger.info("------------------ Test:  add ------------------");
+    private Connection buildConnection() {
         Connection connection = new Connection();
+        connection.setGraphName("demoGraphName");
+        connection.setPort(8080);
+        connection.setConnectionHosts(Arrays.asList("127.0.0.1"));
+        return addConnection(connection);
+    }
 
-        connection.setPort(8083);
-        Response response = null;
-        try {
-            String jsonConnection = mapper.writeValueAsString(connection);
+    private Connection addConnection(Connection connection) {
+        Response response = target("connections")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.json(connection));
+        return response.readEntity(Connection.class);
+    }
 
-            logger.info("jsonConnection = " + jsonConnection);
+    private void deleteConnection(String connectionId) {
+        target("connections/" + connectionId)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .delete();
+    }
 
-            response = target("connections")
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.json(connection));
-            logger.info(response.toString());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void testAdd() {
+
+        // Build connection with connectionId;
+        Connection connection = new Connection();
+        connection.setGraphName("demoGraphName");
+        connection.setPort(8080);
+        connection.setConnectionHosts(Arrays.asList("127.0.0.1"));
+
+        Response response = target("connections")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.json(connection));
 
         Assert.assertEquals("should return status 201", 201, response.getStatus());
-        connection = response.readEntity(Connection.class);
 
+        connection = response.readEntity(Connection.class);
         String connectionId = connection.getId();
+
         Assert.assertTrue(StringUtils.isNotEmpty(connectionId));
         logger.info("connectionId=" + connectionId);
 
+        addConnectionId(connectionId);
+    }
 
-        logger.info("------------------ Test:  get single------------------");
+    @Test
+    public void testDelete() {
+        Connection connection = buildConnection();
+        Assert.assertTrue(connection != null && StringUtils.isNotEmpty(connection.getId()));
+        String connectionId = connection.getId();
+        Response responseDelete = target("connections/" + connectionId)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .delete();
+        Assert.assertEquals(204, responseDelete.getStatus());
+
+        addConnectionId(connectionId);
+
+    }
+
+    @Test
+    public void testGetSingle() {
+        Connection connection = buildConnection();
+        Assert.assertTrue(connection != null && StringUtils.isNotEmpty(connection.getId()));
+        String connectionId = connection.getId();
+
         Connection connection1 = target("connections/" + connectionId)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(Connection.class);
-
         Assert.assertTrue(connection1 != null && connection1.getId().equals(connectionId));
 
+        addConnectionId(connectionId);
 
-        logger.info("------------------ Test:  get list------------------");
+
+    }
+
+    @Test
+    public void testGetList() {
+        Connection connection = buildConnection();
+        Assert.assertTrue(connection != null && StringUtils.isNotEmpty(connection.getId()));
+        String connectionId = connection.getId();
+
         Response responseList = target("connections")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
@@ -109,24 +171,29 @@ public class ConnectionServiceTest extends JerseyTest {
         Assert.assertTrue(connections != null
                 && connections.stream().anyMatch(n -> n.getId().equals(connectionId)));
 
-        logger.info("------------------ Test:  update ------------------");
+        addConnectionId(connectionId);
 
-        connection1.setPort(8084);
-        Response responseUpdate = target("connections/" + connectionId)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .put(Entity.json(connection1));
-        Assert.assertEquals(200, responseList.getStatus());
-        Connection connection2 = responseUpdate.readEntity(Connection.class);
-        Assert.assertTrue(connection2 != null && connection2.getId().equals(connectionId));
-
-
-        logger.info("------------------ Test:  delete ------------------");
-        Response responseDelete = target("connections/" + connectionId)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .delete();
-
-        Assert.assertEquals(204, responseDelete.getStatus());
 
     }
+
+    @Test
+    public void testUpdate() {
+        Connection connection = buildConnection();
+        Assert.assertTrue(connection != null && StringUtils.isNotEmpty(connection.getId()));
+        String connectionId = connection.getId();
+        connection.setPort(8084);
+        Response responseUpdate = target("connections/" + connectionId)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.json(connection));
+        Assert.assertEquals(200, responseUpdate.getStatus());
+        Connection connection2 = responseUpdate.readEntity(Connection.class);
+
+        Assert.assertTrue(connection2 != null && connection2.getId().equals(connectionId));
+        Assert.assertEquals(8084, connection2.getPort());
+
+        addConnectionId(connectionId);
+
+    }
+
 
 }

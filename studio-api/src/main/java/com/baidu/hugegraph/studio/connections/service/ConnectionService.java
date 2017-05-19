@@ -1,6 +1,7 @@
 package com.baidu.hugegraph.studio.connections.service;
 
 import com.baidu.hugegraph.studio.connections.model.Connection;
+import com.baidu.hugegraph.studio.connections.model.ConnectionState;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.google.common.base.Preconditions;
@@ -78,11 +79,13 @@ public class ConnectionService {
     }
 
     @POST
-    @Path("ack")
+    @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response ackConnection(Connection connection) {
+    public Response getConnectionStatus(Connection connection) {
+        // TODO : connect HugeServer to get connection status
         Response response = Response.status(200)
+                .entity(ConnectionState.CLOSED)
                 .build();
         return response;
     }
