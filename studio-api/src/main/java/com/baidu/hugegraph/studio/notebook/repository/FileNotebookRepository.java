@@ -42,8 +42,9 @@ public class FileNotebookRepository implements NotebookRepository {
     private void initNotebookRepository() {
         configuration = new StudioConfiguration();
         notebooksDataDirectory = configuration.getNotebooksDirectory();
-        logger.info("notebooksDataDirectory=" + notebooksDataDirectory);
         Preconditions.checkNotNull(notebooksDataDirectory);
+
+        logger.info("notebooksDataDirectory=" + notebooksDataDirectory);
         File dir = new File(notebooksDataDirectory);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -52,13 +53,16 @@ public class FileNotebookRepository implements NotebookRepository {
     }
 
     private void writeNotebook(Notebook notebook) {
+        Preconditions.checkNotNull(notebook);
+        Preconditions.checkArgument(StringUtils.isNotEmpty(notebook.getId()));
+
         String filePath = notebooksDataDirectory + "/" + notebook.getId();
         Path path = Paths.get(filePath);
         try {
             try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                 writer.write(mapper.writeValueAsString(notebook));
             }
-            logger.info("Write File :" + filePath);
+            logger.debug("Write Notebook File :" + filePath);
         } catch (IOException e) {
             logger.error("Could Not Write File : " + filePath, e);
         }
@@ -69,6 +73,7 @@ public class FileNotebookRepository implements NotebookRepository {
         Preconditions.checkNotNull(notebook);
         Preconditions.checkArgument(StringUtils.isNotEmpty(notebook.getName())
                 && StringUtils.isNotEmpty(notebook.getConnectionId()));
+        // create new uuid when notebookId is empty
         if (StringUtils.isEmpty(notebook.getId())) {
             notebook.setId(UUID.randomUUID().toString());
             notebook.setCreated(Instant.now().getEpochSecond());
@@ -82,6 +87,11 @@ public class FileNotebookRepository implements NotebookRepository {
 
     @Override
     public Notebook editNotebook(Notebook notebook) {
+        Preconditions.checkNotNull(notebook);
+        // ensure notebookId is not empty.
+        Preconditions.checkArgument(StringUtils.isNotEmpty(notebook.getName())
+                && StringUtils.isNotEmpty(notebook.getId()));
+
         notebook.setLastUsed(Instant.now().getEpochSecond());
         writeNotebook(notebook);
         return notebook;
