@@ -191,13 +191,10 @@ public class Bootstrap {
     }
 
     private static String replaceHomeDirReferences(String confDir) {
-        if (confDir != null) {
-            if (System.getProperty("user.home") != null) {
+        if ((confDir != null) && (System.getProperty("user.home") != null)) {
                 return confDir.replaceFirst("^~", System.getProperty("user.home"));
-            }
-            return confDir;
         }
-        return null;
+        return confDir;
     }
 
     private static void validateConfiguration(int httpPort, String httpBindAddress, String logDir, String userDataDir, String passwordEncryptionFile) {
