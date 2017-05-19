@@ -42,7 +42,7 @@ security:
 # in the application.  For the short-term this is the file system, which
 # is why we need to explicitly configure a location
 userData:
-  #defaults to a .datastax_studio folder in your home directory, such as  ~/.datastax_studio
+  #defaults to a .hugestudio folder in your home directory, such as  ~/.hugestudio
   #set to a non-null value to override
   baseDirectory: null
   connectionsDirectory: connections
