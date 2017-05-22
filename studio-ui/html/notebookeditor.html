@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" name="viewport" http-equiv="X-UA-Compatible"
+          content="IE=edge,width=device-width, initial-scale=1">
+    <title>HugeGraph Studio</title>
+    <link rel="stylesheet" type="text/css" href="vendors/boostrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="vendors/boostrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/style/main.css">
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#studio-navbar-collapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img src="assets/images/logo.png"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="studio-navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Notebook <span class="caret active"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#"> <i class="fa fa-plus" aria-hidden="true"></i>&nbsp;
+                            Notebook</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">anonymous <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">connections</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+</nav>
+
+<div class="studio-header">
+    <div class="container">
+        <div class="row">
+            <div class="header-title">
+                <h1><i class="fa fa-book" aria-hidden="true"></i>HugeGraph Notebook Quick Start</h1>
+            </div>
+            <div class="header-control-middle">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-default"><i class="fa fa-play" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-arrows-alt" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="header-control-right">
+                <div class="btn-group btn-group-sm pull-right" role="group">
+                    <button type="button" class="btn btn-default"><i class="fa fa-cog" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-default"><i class="fa fa-keyboard-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="page-title">
+                    Edit Codes
+                    <div style="float:right;padding-bottom: 10px;">
+                        <button type="button" class="btn btn-default" data-toggle="modal"
+                                data-target="#connectionModal">
+                            <i class="fa fa-plus" aria-hidden="true"><span style="margin-left: 5px;">run</span></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="vendors/ace/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="vendors/ace/ace-builds/src-noconflict/ext-language_tools.js" type="text/javascript"
+        charset="utf-8"></script>
+
+<div class="container">
+    <div class="row">
+        <div class=" .col-md-4 .col-md-offset-4 ">
+            <pre id="editor" style="min-height:400px"></pre>
+        </div>
+
+    </div>
+</div>
+<script src="vendors/jquery/jquery-3.2.1.min.js"></script>
+<script src="vendors/boostrap/js/bootstrap.min.js"></script>
+<script src="assets/js/notebookeditor.js"></script>
+
+</body>
+</html>
