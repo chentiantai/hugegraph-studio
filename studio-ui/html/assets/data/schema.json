@@ -1,0 +1,112 @@
+{
+  "status": 200,
+  "data": {
+    "propertyKeys": [
+      {
+        "name": "age",
+        "type": "INT",
+        "cardinality": "SINGLE"
+      },
+      {
+        "name": "lang",
+        "type": "TEXT",
+        "cardinality": "SINGLE"
+      },
+      {
+        "name": "weight",
+        "type": "INT",
+        "cardinality": "SINGLE"
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "cardinality": "SINGLE"
+      }
+    ],
+    "vertexLabels": [
+      {
+        "name": "person",
+        "primaryKeys": [
+          {
+            "name": "name",
+            "type": "TEXT",
+            "cardinality": "SINGLE"
+          }
+        ],
+        "properties": [
+          {
+            "name": "name",
+            "type": "TEXT",
+            "cardinality": "SINGLE"
+          },
+          {
+            "name": "age",
+            "type": "INT",
+            "cardinality": "SINGLE"
+          }
+        ]
+      },
+      {
+        "name": "software",
+        "primaryKeys": [
+          {
+            "name": "name",
+            "type": "TEXT",
+            "cardinality": "SINGLE"
+          }
+        ],
+        "properties": [
+          {
+            "name": "name",
+            "type": "TEXT",
+            "cardinality": "SINGLE"
+          },
+          {
+            "name": "lang",
+            "type": "TEXT",
+            "cardinality": "SINGLE"
+          }
+        ]
+      }
+    ],
+    "edgeLabels": [
+      {
+        "name": "created",
+        "multiplicity": "SINGLE",
+        "connections": [
+          {
+            "srcVertex": "person",
+            "tgtVertex": "software"
+          }
+        ],
+        "sortKeys": [ ],
+        "properties": [
+          {
+            "name": "weight",
+            "type": "INT",
+            "cardinality": "SINGLE"
+          }
+        ]
+      },
+      {
+        "name": "knows",
+        "multiplicity": "SINGLE",
+        "connections": [
+          {
+            "srcVertex": "person",
+            "tgtVertex": "person"
+          }
+        ],
+        "sortKeys": [ ],
+        "properties": [
+          {
+            "name": "weight",
+            "type": "INT",
+            "cardinality": "SINGLE"
+          }
+        ]
+      }
+    ]
+  }
+
+}
