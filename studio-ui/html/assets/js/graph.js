@@ -9,7 +9,6 @@ $(function () {
 
         $.getJSON('/assets/data/schema.json', function (result) {
             if (result.status === 200) {
-
                 var schema = result.data;
                 drawGraph(schema);
             } else {
@@ -84,8 +83,8 @@ $(function () {
                     size: 8
                 },
                 arrows: 'to',
-                color: {highlight: '#0fa2f6', hover: '#06e4f8'},
-                length: 150
+                color: {highlight: '#0fa2f6', hover: '#06e4f8'}
+                // length: 150
 
             }
         };
