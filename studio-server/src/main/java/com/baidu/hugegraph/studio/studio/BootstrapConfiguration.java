@@ -24,13 +24,14 @@ public class BootstrapConfiguration
             configurationFile = "conf/configuration.yaml";
         }
         System.setProperty("hugegraph.studio.config.yaml", configurationFile);
-        try
-        {
+
+        try {
             InputStream is = new FileInputStream(new File(configurationFile));
             Throwable localThrowable = null;
-            try
-            {
+
+            try {
                 Yaml yaml = new Yaml();
+
                 Map<String, Object> map = (Map)yaml.load(is);
                 Map<String, Object> serverConfig = (Map)map.get("server");
                 Map<String, Object> loggingConfig = (Map)map.get("logging");
@@ -47,6 +48,7 @@ public class BootstrapConfiguration
                 } else {
                     this.httpBindAddress = "localhost";
                 }
+
                 String configuredLogDir = null;
                 String configuredLogFileName = null;
                 String configuredMaxLogFileSize = null;
@@ -88,33 +90,23 @@ public class BootstrapConfiguration
                 } else {
                     this.maxLogArchives = Integer.valueOf(10);
                 }
-            }
-            catch (Throwable localThrowable1)
-            {
+            } catch (Throwable localThrowable1) {
                 localThrowable = localThrowable1;
                 throw localThrowable1;
-            }
-            finally
-            {
-                if (is != null) {
-                    if (localThrowable != null) {
-                        try
-                        {
-                            is.close();
-                        }
-                        catch (Throwable localThrowable2)
-                        {
-                            localThrowable.addSuppressed(localThrowable2);
-                        }
-                    } else {
+            } finally {
+                if (is != null && localThrowable != null) {
+                    try {
                         is.close();
+                    } catch (Throwable localThrowable2) {
+                        localThrowable.addSuppressed(localThrowable2);
                     }
+                } else {
+                    is.close();
                 }
             }
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException(String.format("Caught exception loading properties from %s: ", new Object[] { configurationFile }), e);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Caught exception loading properties from %s: ",
+                                                      new Object[] { configurationFile }), e);
         }
     }
 
