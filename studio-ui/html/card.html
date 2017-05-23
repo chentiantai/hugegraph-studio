@@ -42,6 +42,9 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" id="schema-view-nav">Schema View</a>
+                </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">anonymous <span class="caret"></span></a>
@@ -82,9 +85,19 @@
     </div>
 </div>
 
+<div class="schema-view">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                schema view
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container ">
     <div class="row card">
-        <div class="col-md-12 col-box">
+        <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="panel-body">
@@ -120,8 +133,8 @@
                         <div class="card-para">
                             <form>
                                 <div class="form-group">
-                                    <label for="maxAge">maxAge</label>
-                                    <input type="text" id="maxAge" placeholder="maxAge">
+                                    <label for="maxAge1">maxAge</label>
+                                    <input type="text" id="maxAge1" placeholder="maxAge">
                                 </div>
                             </form>
                         </div>
@@ -163,6 +176,21 @@
             </div>
         </div>
     </div>
+
+
+    <div class="row card">
+        <div class="col-md-12 col-box card-add">
+            <div class="card-add-line"></div>
+            <div class="card-add-btn">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-default">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -175,7 +203,7 @@
 <script src="assets/js/notebookeditor.js"></script>
 <script src="vendors/vis/js/vis.min.js"></script>
 <script src="assets/js/graph.js"></script>
-
+<script src="assets/js/card.js"></script>
 </body>
 </html>
 
