@@ -26,7 +26,7 @@ import java.util.UUID;
  */
 @Repository("connectionRepository")
 public class FileConnectionRepository implements ConnectionRepository {
-    private static final Logger logger = LoggerFactory.getLogger(FileNotebookRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileConnectionRepository.class);
 
     private ObjectMapper mapper = new ObjectMapper();
 

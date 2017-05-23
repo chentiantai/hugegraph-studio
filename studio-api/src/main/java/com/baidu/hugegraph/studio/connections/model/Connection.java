@@ -14,6 +14,9 @@ public class Connection {
     @JsonProperty("id")
     private String id;
 
+    @JsonProperty("name")
+    private int name;
+
     @JsonProperty("port")
     private int port;
 
@@ -29,6 +32,14 @@ public class Connection {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getName() {
+        return name;
+    }
+
+    public void setName(int name) {
+        this.name = name;
     }
 
     public int getPort() {
