@@ -16,6 +16,7 @@ $(function () {
                 alert(result.message);
             }
         });
+        // $('canvas').css('height','250px');
     };
 
     onLoad();
@@ -55,6 +56,9 @@ $(function () {
             edges: edges
         };
         var options = {
+          /*  autoResize: true,
+            height:250,
+            width: '100%',*/
             interaction: {hover: true},
             physics: true,
             nodes: {
@@ -75,6 +79,14 @@ $(function () {
                 }
             },
             edges: {
+                interaction: {hover: true},
+                physics: true,
+                configure: function (option, path) {
+                    if (path.indexOf('dynamic') !== -1 || option === 'dynamic') {
+                        return true;
+                    }
+                    return false;
+                },
                 shadow: true,
                 smooth: {
                     type: 'dynamic'
@@ -92,6 +104,7 @@ $(function () {
         network.on('showPopup', function (params) {
             document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
         });
+
     }
 });
 

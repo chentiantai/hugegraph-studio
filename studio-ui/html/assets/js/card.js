@@ -13,3 +13,10 @@ $(function () {
     });
 
 });
+
+
+function selectOnchange(obj) {
+    var value = obj.options[obj.selectedIndex].value;
+    $('pre').hide();
+    $('#' + value).show();
+}
