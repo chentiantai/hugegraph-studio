@@ -67,7 +67,7 @@ public class ConnectionService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editConnection(@PathParam("connectionId") String connectionId,
-                                 Connection connection) {
+                                   Connection connection) {
         Preconditions.checkArgument(connectionId != null && connectionId.equals(connection.getId()));
         connectionRepository.editConnection(connection);
 
@@ -92,7 +92,7 @@ public class ConnectionService {
     @GET
     @Path("schema")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConnectionSchema(@PathParam("connectionId") String connectionId){
+    public Response getConnectionSchema(@PathParam("connectionId") String connectionId) {
         Preconditions.checkNotNull(connectionId);
 
         // TODO : check connection status first
