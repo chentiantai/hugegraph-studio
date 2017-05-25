@@ -2,8 +2,6 @@
  * @file Created by huanghaiping02 on 17/5/9.
  */
 
-
-
 $(function () {
     var onLoad = function onLoad() {
 
@@ -12,7 +10,6 @@ $(function () {
                 var schema = result.data;
                 drawGraph(schema);
             } else {
-
                 alert(result.message);
             }
         });
@@ -21,10 +18,9 @@ $(function () {
 
     onLoad();
 
-
     function drawGraph(schema) {
-
         var nodes = new vis.DataSet();
+
         nodes.on('*', function () {
             //  do something
         });
@@ -39,10 +35,11 @@ $(function () {
         edges.on('*', function () {
             // do something
         });
+
         var i = 0;
         schema.edgeLabels.map(function (item) {
             item.connections.map(function (conn) {
-                i = i + 1;
+                ++i;
                 edges.add([
                     {id: i, from: conn.srcVertex, to: conn.tgtVertex, label: item.name},
                 ]);
@@ -53,12 +50,14 @@ $(function () {
         var container = document.getElementById('graph');
         var data = {
             nodes: nodes,
-            edges: edges
+            edges: edges,
         };
         var options = {
-          /*  autoResize: true,
-            height:250,
-            width: '100%',*/
+          /*
+           *autoResize: true,
+           * height:250,
+           * width: '100%'
+           */
             interaction: {hover: true},
             physics: true,
             nodes: {
@@ -76,7 +75,7 @@ $(function () {
                     background: '#b9baba', border: '#b9baba',
                     highlight: {background: '#0fa2f6', border: '#0fa2f6'},
                     hover: {background: '#06e4f8', border: '#06e4f8'}
-                }
+                },
             },
             edges: {
                 interaction: {hover: true},
@@ -95,16 +94,14 @@ $(function () {
                     size: 8
                 },
                 arrows: 'to',
-                color: {highlight: '#0fa2f6', hover: '#06e4f8'}
+                color: {highlight: '#0fa2f6', hover: '#06e4f8'},
                 // length: 150
-
-            }
+            },
         };
         var network = new vis.Network(container, data, options);
         network.on('showPopup', function (params) {
-            document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
+            //document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
+            document.getElementById('eventSpan').firstChild.nodeValue = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
         });
-
     }
 });
-
