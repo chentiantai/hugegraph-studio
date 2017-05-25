@@ -3,7 +3,6 @@ package com.baidu.hugegraph.studio.connections.service;
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.model.ConnectionState;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
-import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +67,7 @@ public class ConnectionService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editConnection(@PathParam("connectionId") String connectionId,
-                                 Connection connection) {
+                                   Connection connection) {
         Preconditions.checkArgument(connectionId != null && connectionId.equals(connection.getId()));
         connectionRepository.editConnection(connection);
 
@@ -86,6 +85,21 @@ public class ConnectionService {
         // TODO : connect HugeServer to get connection status
         Response response = Response.status(200)
                 .entity(ConnectionState.CLOSED)
+                .build();
+        return response;
+    }
+
+    @GET
+    @Path("schema")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getConnectionSchema(@PathParam("connectionId") String connectionId) {
+        Preconditions.checkNotNull(connectionId);
+
+        // TODO : check connection status first
+
+        // TODO : use hugegraph-client , return get schema ;
+
+        Response response = Response.status(200)
                 .build();
         return response;
     }
