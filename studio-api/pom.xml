@@ -10,7 +10,12 @@
     <packaging>war</packaging>
     <name>studio-api: RESTful api for hugegraph-studio</name>
     <url>http://maven.apache.org</url>
+
     <dependencies>
+        <dependency>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>hugegraph-client</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.tinkerpop</groupId>
             <artifactId>gremlin-core</artifactId>

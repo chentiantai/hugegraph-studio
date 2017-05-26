@@ -30,8 +30,22 @@
         <guava.version>19.0</guava.version>
 
     </properties>
+
+    <repositories>
+        <repository>
+            <id>any</id>
+            <url>http://10.103.169.46:8081/repository/hugegraph-repostiory/</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.baidu.hugegraph</groupId>
+                <artifactId>hugegraph-client</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>

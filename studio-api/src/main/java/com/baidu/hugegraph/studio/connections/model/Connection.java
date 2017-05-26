@@ -2,8 +2,7 @@ package com.baidu.hugegraph.studio.connections.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
+import com.google.common.base.Preconditions;
 
 /**
  * Created by jishilei on 2017/5/18.
@@ -23,8 +22,8 @@ public class Connection {
     @JsonProperty("graphName")
     private String graphName;
 
-    @JsonProperty("connectionHosts")
-    private List<String> connectionHosts;
+    @JsonProperty("connectionHost")
+    private String connectionHost;
 
     public String getId() {
         return id;
@@ -58,11 +57,21 @@ public class Connection {
         this.graphName = graphName;
     }
 
-    public List<String> getConnectionHosts() {
-        return connectionHosts;
+    public String getConnectionHost() {
+        return connectionHost;
     }
 
-    public void setConnectionHosts(List<String> connectionHosts) {
-        this.connectionHosts = connectionHosts;
+    public void setConnectionHost(String connectionHost) {
+        this.connectionHost = connectionHost;
+    }
+
+    /**
+     * Gets connection uri.
+     *
+     * @return the connection uri ,  http://{connectionHost}:{port}
+     */
+    public String getConnectionUri() {
+        Preconditions.checkNotNull(connectionHost);
+        return String.format("http://%s:%d", connectionHost, port);
     }
 }

@@ -1,5 +1,9 @@
 package com.baidu.hugegraph.studio.connections.service;
 
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.structure.schema.EdgeLabel;
+import com.baidu.hugegraph.structure.schema.PropertyKey;
+import com.baidu.hugegraph.structure.schema.VertexLabel;
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.model.ConnectionState;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
@@ -11,11 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.*;
 
 /**
  * Created by jishilei on 2017/5/19.
  */
-
 @Path("connections")
 public class ConnectionService {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionService.class);
@@ -23,6 +27,11 @@ public class ConnectionService {
     @Autowired
     private ConnectionRepository connectionRepository;
 
+    /**
+     * Gets connections.
+     *
+     * @return the connections
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConnections() {
@@ -32,6 +41,12 @@ public class ConnectionService {
         return response;
     }
 
+    /**
+     * Gets connection.
+     *
+     * @param connectionId the connection id
+     * @return the connection
+     */
     @GET
     @Path("{connectionId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,6 +57,12 @@ public class ConnectionService {
         return response;
     }
 
+    /**
+     * Create connection response.
+     *
+     * @param connection the connection
+     * @return the response
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -52,6 +73,12 @@ public class ConnectionService {
         return response;
     }
 
+    /**
+     * Delete connection response.
+     *
+     * @param connectionId the connection id
+     * @return the response
+     */
     @DELETE
     @Path("{connectionId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,6 +89,13 @@ public class ConnectionService {
         return response;
     }
 
+    /**
+     * Edit connection response.
+     *
+     * @param connectionId the connection id
+     * @param connection   the connection
+     * @return the response
+     */
     @PUT
     @Path("{connectionId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +111,12 @@ public class ConnectionService {
         return response;
     }
 
+    /**
+     * Gets connection status.
+     *
+     * @param connection the connection
+     * @return the connection status
+     */
     @POST
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
@@ -89,17 +129,37 @@ public class ConnectionService {
         return response;
     }
 
+
+    /**
+     * Gets connection schema.
+     *
+     * @param connectionId the connection id
+     * @return the connection schema
+     */
     @GET
     @Path("schema")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConnectionSchema(@PathParam("connectionId") String connectionId) {
         Preconditions.checkNotNull(connectionId);
+        Connection connection = connectionRepository.get(connectionId);
+        Preconditions.checkNotNull(connection);
+        Preconditions.checkArgument(connection.getId().equals(connectionId));
 
+        HugeClient hugeClient = HugeClient.open(connection.getConnectionUri(),
+                connection.getGraphName());
         // TODO : check connection status first
 
-        // TODO : use hugegraph-client , return get schema ;
+        Map<String, List> schemas = new HashMap<>();
+        List<PropertyKey> propertyKeys = hugeClient.schema().getPropertyKeys();
+        List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
+        List<EdgeLabel> edgeLabels = hugeClient.schema().getEdgeLabels();
 
+
+        schemas.put("propertyKeys", propertyKeys);
+        schemas.put("vertexLabels", vertexLabels);
+        schemas.put("edgeLabels", edgeLabels);
         Response response = Response.status(200)
+                .entity(schemas)
                 .build();
         return response;
     }

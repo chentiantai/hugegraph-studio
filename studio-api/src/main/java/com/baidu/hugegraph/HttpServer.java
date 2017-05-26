@@ -1,11 +1,9 @@
 package com.baidu.hugegraph;
 
-import com.baidu.hugegraph.studio.conf.StudioConfiguration;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 
