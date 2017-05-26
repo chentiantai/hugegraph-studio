@@ -83,7 +83,7 @@ public class ConnectionServiceTest extends JerseyTest {
         Connection connection = new Connection();
         connection.setGraphName("demoGraphName");
         connection.setPort(8080);
-        connection.setConnectionHosts(Arrays.asList("127.0.0.1"));
+        connection.setConnectionHost("127.0.0.1");
         return addConnection(connection);
     }
 
@@ -107,7 +107,7 @@ public class ConnectionServiceTest extends JerseyTest {
         Connection connection = new Connection();
         connection.setGraphName("demoGraphName");
         connection.setPort(8080);
-        connection.setConnectionHosts(Arrays.asList("127.0.0.1"));
+        connection.setConnectionHost("127.0.0.1");
 
         Response response = target("connections")
                 .request(MediaType.APPLICATION_JSON_TYPE)

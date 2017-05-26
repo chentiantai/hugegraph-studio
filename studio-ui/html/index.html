@@ -71,92 +71,74 @@
 </div>
 
 <script type="text/babel">
-
-    var NotebookCard = React.createClass({
+    var NotebookAdd = React.createClass({
         render: function () {
             return (
-                    <div class="notebook-card">
-                        <NotebookCardInfo></NotebookCardInfo>
-                        <NotebookCardControl></NotebookCardControl>
-                    </div>
-            )
-                    ;
-        }
-    });
-    var NotebookCardInfo = React.createClass({
-        render: function () {
-            return (
-                    <div class="notebook-card-info">
-                        <div>
-                            <NotebookCardInfoClose />
-                            <NotebookCardInfoTitle />
-                            <NotebookCardInfoDescription />
+                    <div className="notebook-card">
+                        <div className="notebook-card-add">
+                            <button type="button" className="btn btn-link">
+                                <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
+                            </button>
                         </div>
-                    </div>
-            )
-                    ;
-        }
-    });
-    var NotebookCardInfoClose = React.createClass({
-        render: function () {
-            return (
-                    <div class="notebook-card-close">
-                        <button type="button" class="btn btn-link">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </button>
-                    </div>);
-        }
-    });
-    var NotebookCardInfoTitle = React.createClass({
-        render: function () {
-            return ( <div class="notebook-card-title">
-                Title:Welcome to a b c d HugeGraph!
-            </div>)
-                    ;
-        }
-    });
-    var NotebookCardInfoDescription = React.createClass({
-        render: function () {
-            return (<div class="notebook-card-description">
-                Description:HugeGraph focos on bigdata analyse.
-            </div>)
-                    ;
-        }
-    });
-
-    var NotebookCardControl = React.createClass({
-        render: function () {
-            return (
-                    <div class="notebook-card-control">
-                        <NotebookCardControlCreateTime />
-                        <NotebookCardControlOperation />
                     </div>
             );
         }
-
     });
-    var NotebookCardControlCreateTime = React.createClass({
-        render: function () {
-            return( <div class="notebook-card-createtime">
-                1 day ago
-            </div>)
-           ;
-        }
-    });
-    var NotebookCardControlOperation = React.createClass({
-
+    var NotebookCard = React.createClass({
         render: function () {
             return (
-                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#notebookCardModal">
-                        <span><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
-                    </button>
-            )
-                    ;
+                    <div className="notebook-card">
+                        <div className="notebook-card-info">
+                            <div>
+                                <div className="notebook-card-close">
+                                    <button type="button" className="btn btn-link">
+                                        <i className="fa fa-times" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div className="notebook-card-title">
+                                    Title:Welcome to a b c d HugeGraph!
+                                </div>
+
+                            </div>
+
+                            <div className="notebook-card-description">
+                                Description:HugeGraph focos on bigdata analyse.
+                            </div>
+                        </div>
+                        <div className="notebook-card-control">
+                            <div className="notebook-card-createtime">
+                                1 day ago
+                            </div>
+                            <div className="notebook-card-operation">
+                                <button type="button" className="btn btn-link" data-toggle="modal" data-target="#notebookCardModal">
+                                    <span><i className="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+            );
         }
     });
 
+
+    var NotebookContainer = React.createClass({
+        render: function () {
+            return (
+                    <div className="notebook-card">
+                        <div className="notebook-card-add">
+                            <button type="button" className="btn btn-link">
+                                <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+            );
+        }
+    });
+
+
+
     ReactDOM.render(
-            <NotebookCard></NotebookCard>,
+            <NotebookCardAdd></NotebookCardAdd>,
             document.getElementById("notebook-cards")
     );
 </script>

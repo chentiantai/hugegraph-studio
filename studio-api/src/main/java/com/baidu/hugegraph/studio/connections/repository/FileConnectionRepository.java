@@ -91,8 +91,7 @@ public class FileConnectionRepository implements ConnectionRepository {
     @Override
     public Connection createConnection(Connection connection) {
         Preconditions.checkNotNull(connection);
-        Preconditions.checkArgument(connection.getConnectionHosts() != null
-                && connection.getConnectionHosts().size() > 0
+        Preconditions.checkArgument(connection.getConnectionHost() != null
                 && connection.getPort() > 0);
 
         if (StringUtils.isEmpty(connection.getId())) {
@@ -106,8 +105,7 @@ public class FileConnectionRepository implements ConnectionRepository {
     public Connection editConnection(Connection connection) {
         Preconditions.checkNotNull(connection);
         // ensure connectionId is not empty.
-        Preconditions.checkArgument(connection.getConnectionHosts() != null
-                && connection.getConnectionHosts().size() > 0
+        Preconditions.checkArgument(connection.getConnectionHost() != null
                 && connection.getPort() > 0
                 && StringUtils.isNotEmpty(connection.getId()));
         writeConnection(connection);
