@@ -2,10 +2,8 @@ package com.baidu.hugegraph.studio;
 
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.service.NoteBookService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.sun.tools.javap.TypeAnnotationWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
