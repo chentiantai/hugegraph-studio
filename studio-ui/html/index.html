@@ -67,25 +67,43 @@
     </div>
 </div>
 
-<script type="application/javascript">
-    var notebooks = [];
-    var i;
-    for (i = 0; i < 10; i++) {
-        var notebook = {};
-        notebook.name = "HugeGraph Quick Start"+i;
-        notebook.id = "id" + i;
-        notebook.connectionName = "Sample Connection"+i;
-        notebooks.push(notebook);
 
-    }
-</script>
 <script type="text/babel">
 
 
+    class NoteBooks extends React.Component {
+        constructor() {
+            super();
+            this.state = {
+                notebooks: []
+            };
+        }
+        componentDidMount() {
+            fetch('/api/v1/notebooks')
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            console.error('Server Side Error；\r\nCode:' + response.status)
+                        }
+                    })
+                    .then((data) => {
+                        this.setState({notebooks: data});
+                    })
+                    .catch((err)=> {
+                        console.error(err)
+                    });
+        }
 
+        render() {
+            return (
+                    <NotebookCards notebooks={this.state.notebooks}></NotebookCards>
+            )
+        }
+
+    }
 
     function NotebookAdd() {
-
         return (
                 <div className="notebook-card">
                     <div className="notebook-card-add">
@@ -95,27 +113,11 @@
                     </div>
                 </div>
         );
-
     }
-
-    function NotebooksList() {
-        return (
-                <div className="notebook-cards">
-                    <NotebookAdd></NotebookAdd>
-                    {
-                            notebooks.map(function (notebook) {
-                                return <NotebookCard notebook={notebook}></NotebookCard>;
-                            })
-                    }
-                </div>
-        );
-    }
-
-
 
     function NotebookCard(props) {
-        return (
-
+        const notebook = props.notebook;
+        return(
                 <div className="notebook-card">
                     <div className="notebook-card-info">
                         <div>
@@ -125,13 +127,13 @@
                                 </button>
                             </div>
                             <div className="notebook-card-title">
-                                {props.notebook.name}
+                                {notebook.name}
                             </div>
 
                         </div>
 
                         <div className="notebook-card-description">
-                            {props.notebook.connectionName}
+                            connectionName
                         </div>
                     </div>
                     <div className="notebook-card-control">
@@ -146,29 +148,27 @@
                         </div>
                     </div>
                 </div>
-        );
+        )
 
     }
 
-
+    function NotebookCards(props) {
+        const notebooks = props.notebooks;
+        const listItems = notebooks.map((notebook) =>
+                <NotebookCard notebook={notebook}/>
+        );
+        return (
+                <div className="notebook-cards">
+                    <NotebookAdd/>
+                    {listItems}
+                </div>
+        );
+    }
 
     ReactDOM.render(
-            <NotebooksList></NotebooksList>,
+            <NoteBooks></NoteBooks>,
             document.getElementById('notebooksContainer')
     );
-</script>
-
-<script>
-    // TODO: crud
-    function loadNotebooks() {
-
-    }
-    function deleteNotebook(notebookId) {
-
-    }
-    function saveNotebook(notebook) {
-
-    }
 </script>
 </body>
 </html>

@@ -31,10 +31,8 @@ public class Bootstrap {
     public static final String DEFAULT_CONF_DIR = "/conf";
 
     public static final String DEFAULT_WAR_API_FILE = "/war/studio-api.war";
-    public static final String DEFAULT_WAR_GREMLIN_FILE = "/war/studio-gremlin.war";
     public static final String UI_BASE = "";
     public static final String API_BASE = "/api";
-    public static final String GREMLIN_BASE = "/gremlin";
     static Server server;
 
     public static void shutdown()
@@ -53,7 +51,6 @@ public class Bootstrap {
         options.addOption("conf", true, " conf dir location. Default : {user.home}/conf");
         options.addOption("html", true, " html dir location. Default : {user.home}/html");
         options.addOption("api", true, "api war file location. Default : {user.home}/war/studio-api.war");
-        options.addOption("gremlin", true, "gremlin war file location. Default : {user.home}/war/studio-gremlin.war");
 
         return options;
     }
@@ -61,7 +58,7 @@ public class Bootstrap {
     public static void printHelp() {
         Options options = buildOptions();
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("Bootstrap -html  /html - api /war/studio-api.war -gremlin /war/studio-gremlin.war", options);
+        formatter.printHelp("Bootstrap -html  /html - api /war/studio-api.war", options);
     }
 
     public static String getAbsolutePath(String path) {
@@ -81,7 +78,8 @@ public class Bootstrap {
         String htmlDir = baseDir + DEFAULT_HTML_DIR;
         String confDir = baseDir + DEFAULT_CONF_DIR;
         String apiWar = baseDir + DEFAULT_WAR_API_FILE;
-        String gremlinWar = baseDir + DEFAULT_WAR_GREMLIN_FILE;
+
+
 
         CommandLineParser parser = new DefaultParser();
 
@@ -101,9 +99,7 @@ public class Bootstrap {
                 if (cmdLine.hasOption("api")) {
                     apiWar = cmdLine.getOptionValue("html", DEFAULT_WAR_API_FILE);
                 }
-                if (cmdLine.hasOption("gremlin")) {
-                    gremlinWar = cmdLine.getOptionValue("html", DEFAULT_WAR_GREMLIN_FILE);
-                }
+
             }
 
         } catch (ParseException e) {
@@ -112,12 +108,15 @@ public class Bootstrap {
             System.exit(0);
         }
 
-        run(confDir, htmlDir, apiWar, gremlinWar);
+        htmlDir = System.getProperty("user.dir") + "/studio-ui/html";
+        apiWar = System.getProperty("user.dir") + "/studio-api/target/studio-api.war";
+
+        run(confDir, htmlDir, apiWar);
 
         server.await();
     }
 
-    public static void run(String confDir, String uiDirectory, String apiWar, String gremlinIdeWar)
+    public static void run(String confDir, String uiDirectory, String apiWar)
             throws Exception {
         if ((confDir == null) || (confDir.isEmpty())) {
             confDir = "conf";
@@ -128,7 +127,6 @@ public class Bootstrap {
         uiDirectory = getAbsolutePath(uiDirectory);
         confDir = getAbsolutePath(confDir);
         apiWar = getAbsolutePath(apiWar);
-        gremlinIdeWar = getAbsolutePath(gremlinIdeWar);
 
         BootstrapConfiguration configuration = new BootstrapConfiguration(String.format("%s/configuration.yaml", new Object[]{confDir}));
 
@@ -154,7 +152,6 @@ public class Bootstrap {
 
         StandardContext ui = configureUi(tomcat, uiDirectory);
         StandardContext api = configureWar(apiWar, "/api", tomcat);
-        StandardContext ide = configureWar(gremlinIdeWar, "/gremlin", tomcat);
 
         tomcat.start();
 
@@ -171,10 +168,7 @@ public class Bootstrap {
             System.out.println("\nStudio-api failed to start.  Please see the logs for more details");
             System.exit(1);
         }
-        if ((!ide.getState().equals(LifecycleState.STARTED)) ) {
-            System.out.println("\nStudio-gremlin failed to start.  Please see the logs for more details");
-            System.exit(1);
-        }
+
 //        if ((!ui.getState().equals(LifecycleState.STARTED)) ||
 //                (!api.getState().equals(LifecycleState.STARTED)) ||
 //                (!ide.getState().equals(LifecycleState.STARTED))) {

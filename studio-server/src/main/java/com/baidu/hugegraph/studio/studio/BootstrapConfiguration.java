@@ -40,7 +40,7 @@ public class BootstrapConfiguration
                 if ((serverConfig != null) && (serverConfig.get("httpPort") != null)) {
                     this.httpPort = ((Integer)serverConfig.get("httpPort"));
                 } else {
-                    this.httpPort = Integer.valueOf(9091);
+                    this.httpPort = Integer.valueOf(8080);
                 }
                 String configuredHttpBindAddress = (String)serverConfig.get("httpBindAddress");
                 if ((configuredHttpBindAddress != null) && (!configuredHttpBindAddress.isEmpty())) {
