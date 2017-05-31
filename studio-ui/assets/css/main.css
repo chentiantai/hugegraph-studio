@@ -1,11 +1,12 @@
 body {
-    font-family: 'Helvetica Neue', 'Microsoft YaHei', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', Helvetica, Arial, Sans-serif;
+    font-family: "Helvetica Neue", "Microsoft YaHei", "Hiragino Sans GB", "WenQuanYi Micro Hei",
+    Helvetica, Arial, Sans-serif;
     background: #ecf0f1;
 }
 
 .navbar {
     min-height: 28px;
-    border-radius: 0px;
+    border-radius: 0;
     margin-bottom: 0;
     background: #3071a9;
 }
@@ -37,7 +38,7 @@ body {
     padding-top: 3px;
     padding-bottom: 3px;
     margin: 0 0 20px;
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid #ddd;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }

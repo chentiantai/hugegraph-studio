@@ -3,10 +3,10 @@
  * @author huanghaiping(huanghaiping02@baidu.com)
  * Created on 17/5/31
  */
-const {resolve} = require('path');
+const resolve = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = {
@@ -56,21 +56,21 @@ module.exports = {
         rules: [
             {
                 test: /\.js[x]?$/,
-                use: ['babel-loader',],
+                use: ['babel-loader'],
                 exclude: /node_modules/
             },
             {
                 test: /\.css$/,
                 use: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader'})
             },
-            {test: /\.(jpg|png|gif)$/, loader: 'url-loader?limit=25000&name=image/[hash].[ext]'},
+            {test: /\.(jpg|png|gif)$/, use: 'url-loader?limit=25000&name=image/[hash].[ext]'},
             {test: /\.woff[2]?$/, use: 'url-loader?limit=10000&minetype=application/font-woff&name=fonts/[hash].[ext]'},
             {test: /\.ttf$/, use: 'url-loader?limit=10000&name=fonts/[hash].[ext]'},
             {test: /\.eot$/, use: 'url-loader?limit=10000&name=fonts/[hash].[ext]'},
             {test: /\.svg$/, use: 'url-loader?limit=10000&name=fonts/[hash].[ext]'},
-            //加载html
+            // load html
             {test: /\.html$/, use: 'html-loader'},
-        ],
+        ]
     },
 
     plugins: [
@@ -81,7 +81,7 @@ module.exports = {
             inject: 'body',
             hash: true,
             chunks: ['vendors', 'index'],
-            //min html
+            // min html
             minify: {
                 removeComments: true,
                 collapseWhitespace: false
