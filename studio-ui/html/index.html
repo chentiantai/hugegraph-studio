@@ -11,7 +11,8 @@
 
     <script src="vendors/react/react.min.js"></script>
     <script src="vendors/react/react-dom.min.js"></script>
-    <script src="vendors/react/browser.min.js"></script>
+    <script src="vendors/react/babel.min.js"></script>
+
     <script src="vendors/jquery/jquery-3.2.1.min.js"></script>
     <script src="vendors/boostrap/js/bootstrap.min.js"></script>
 </head>
@@ -62,97 +63,111 @@
 
 
 <div class="container">
-    <div class="row">
-        <div id="notebook-cards" class="notebook-cards">
-
-
-        </div>
+    <div id="notebooksContainer" class="row">
     </div>
 </div>
 
+<script type="application/javascript">
+    var notebooks = [];
+    var i;
+    for (i = 0; i < 10; i++) {
+        var notebook = {};
+        notebook.name = "HugeGraph Quick Start"+i;
+        notebook.id = "id" + i;
+        notebook.connectionName = "Sample Connection"+i;
+        notebooks.push(notebook);
+
+    }
+</script>
 <script type="text/babel">
-    var NotebookAdd = React.createClass({
-        render: function () {
-            return (
-                    <div className="notebook-card">
-                        <div className="notebook-card-add">
-                            <button type="button" className="btn btn-link">
-                                <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
-                            </button>
-                        </div>
+
+
+
+
+    function NotebookAdd() {
+
+        return (
+                <div className="notebook-card">
+                    <div className="notebook-card-add">
+                        <button type="button" className="btn btn-link">
+                            <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
+                        </button>
                     </div>
-            );
-        }
-    });
-    var NotebookCard = React.createClass({
-        render: function () {
-            return (
-                    <div className="notebook-card">
-                        <div className="notebook-card-info">
-                            <div>
-                                <div className="notebook-card-close">
-                                    <button type="button" className="btn btn-link">
-                                        <i className="fa fa-times" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                                <div className="notebook-card-title">
-                                    Title:Welcome to a b c d HugeGraph!
-                                </div>
+                </div>
+        );
 
-                            </div>
+    }
 
-                            <div className="notebook-card-description">
-                                Description:HugeGraph focos on bigdata analyse.
-                            </div>
-                        </div>
-                        <div className="notebook-card-control">
-                            <div className="notebook-card-createtime">
-                                1 day ago
-                            </div>
-                            <div className="notebook-card-operation">
-                                <button type="button" className="btn btn-link" data-toggle="modal" data-target="#notebookCardModal">
-                                    <span><i className="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+    function NotebooksList() {
+        return (
+                <div className="notebook-cards">
+                    <NotebookAdd></NotebookAdd>
+                    {
+                            notebooks.map(function (notebook) {
+                                return <NotebookCard notebook={notebook}></NotebookCard>;
+                            })
+                    }
+                </div>
+        );
+    }
+
+
+
+    function NotebookCard(props) {
+        return (
+
+                <div className="notebook-card">
+                    <div className="notebook-card-info">
+                        <div>
+                            <div className="notebook-card-close">
+                                <button type="button" className="btn btn-link">
+                                    <i className="fa fa-times" aria-hidden="true"></i>
                                 </button>
                             </div>
+                            <div className="notebook-card-title">
+                                {props.notebook.name}
+                            </div>
+
+                        </div>
+
+                        <div className="notebook-card-description">
+                            {props.notebook.connectionName}
                         </div>
                     </div>
-            );
-        }
-    });
-
-
-    var NotebookContainer = React.createClass({
-        render: function () {
-            return (
-                    <div className="notebook-card">
-                        <div className="notebook-card-add">
-                            <button type="button" className="btn btn-link">
-                                <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
+                    <div className="notebook-card-control">
+                        <div className="notebook-card-createtime">
+                            1 day ago
+                        </div>
+                        <div className="notebook-card-operation">
+                            <button type="button" className="btn btn-link" data-toggle="modal"
+                                    data-target="#notebookCardModal">
+                                <span><i className="fa fa-pencil-square-o" aria-hidden="true"></i></span>
                             </button>
                         </div>
                     </div>
-            );
-        }
-    });
+                </div>
+        );
+
+    }
 
 
 
     ReactDOM.render(
-            <NotebookCardAdd></NotebookCardAdd>,
-            document.getElementById("notebook-cards")
+            <NotebooksList></NotebooksList>,
+            document.getElementById('notebooksContainer')
     );
 </script>
 
 <script>
     // TODO: crud
     function loadNotebooks() {
-        
+
     }
     function deleteNotebook(notebookId) {
-        
+
     }
     function saveNotebook(notebook) {
-        
+
     }
 </script>
 </body>
