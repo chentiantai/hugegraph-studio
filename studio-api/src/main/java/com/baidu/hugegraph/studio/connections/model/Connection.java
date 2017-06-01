@@ -1,5 +1,6 @@
 package com.baidu.hugegraph.studio.connections.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
@@ -14,7 +15,7 @@ public class Connection {
     private String id;
 
     @JsonProperty("name")
-    private int name;
+    private String name;
 
     @JsonProperty("port")
     private int port;
@@ -33,11 +34,11 @@ public class Connection {
         this.id = id;
     }
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(int name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -70,6 +71,7 @@ public class Connection {
      *
      * @return the connection uri ,  http://{connectionHost}:{port}
      */
+    @JsonIgnore
     public String getConnectionUri() {
         Preconditions.checkNotNull(connectionHost);
         return String.format("http://%s:%d", connectionHost, port);
