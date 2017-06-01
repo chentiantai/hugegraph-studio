@@ -9,8 +9,8 @@ import React from 'react';
 import Head from './head';
 import StudioHead from './studiohead';
 
-export default class ConnectionsApp extends React.Component {
 
+export default class ConnectionsApp extends React.Component {
     render() {
         return (
             <div>
@@ -21,6 +21,8 @@ export default class ConnectionsApp extends React.Component {
         );
     }
 }
+
+
 
 
 
