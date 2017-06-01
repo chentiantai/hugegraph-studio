@@ -46,7 +46,7 @@ export default class Head extends React.Component {
                                        aria-haspopup="true"
                                        aria-expanded="false">anonymous <span className="caret"></span></a>
                                     <ul className="dropdown-menu">
-                                        <li><a href="#">connections</a></li>
+                                        <li><a href="./connections.html">connections</a></li>
                                         <li role="separator" className="divider"></li>
                                         <li><a href="#">logout</a></li>
                                     </ul>

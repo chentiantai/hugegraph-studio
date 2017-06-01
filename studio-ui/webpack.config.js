@@ -3,7 +3,7 @@
  * @author huanghaiping(huanghaiping02@baidu.com)
  * Created on 17/5/31
  */
-const resolve = require('path');
+const {resolve} = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -24,8 +24,9 @@ module.exports = {
         C: 'webpack/hot/only-dev-server',
 
         index: './assets/index.js',
+        connections: './assets/connections.js',
         // the entry point of our app
-        vendors: ['react', 'react-dom', 'react-bootstrap']
+        vendors: ['react', 'react-dom']
 
     },
     output: {
@@ -37,7 +38,9 @@ module.exports = {
         // necessary for HMR to know where to load the hot update chunks
         publicPath: '/'
     },
-
+    externals: {
+        jquery: 'jQuery'
+    },
     devtool: 'inline-source-map',
     devServer: {
         // enable HMR on the server
@@ -74,13 +77,25 @@ module.exports = {
     },
 
     plugins: [
-        // new HtmlWebpackPlugin(),
+
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: 'assets/index.html',
             inject: 'body',
             hash: true,
             chunks: ['vendors', 'index'],
+            // min html
+            minify: {
+                removeComments: true,
+                collapseWhitespace: false
+            }
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'connections.html',
+            template: 'assets/connections.html',
+            inject: 'body',
+            hash: true,
+            chunks: ['vendors', 'connections'],
             // min html
             minify: {
                 removeComments: true,
