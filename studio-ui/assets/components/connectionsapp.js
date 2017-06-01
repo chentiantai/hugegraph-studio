@@ -7,6 +7,7 @@ import '../vendors/bootstrap/css/bootstrap.min.css';
 import '../css/main.css';
 import React from 'react';
 import Head from './head';
+import StudioHead from './studiohead';
 
 export default class ConnectionsApp extends React.Component {
 
@@ -14,6 +15,7 @@ export default class ConnectionsApp extends React.Component {
         return (
             <div>
                 <Head/>
+                <StudioHead/>
                 connecitons
             </div>
         );

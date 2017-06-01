@@ -7,14 +7,15 @@ import '../vendors/bootstrap/css/bootstrap.min.css';
 import '../css/main.css';
 import React from 'react';
 import Head from './head';
-import $ from 'jquery';
+import StudioHead from './studiohead';
 
 export default class NotebooksApp extends React.Component {
 
     render() {
         return (
             <div>
-                <Head />
+                <Head/>
+                <StudioHead/>
             </div>
         );
     }
