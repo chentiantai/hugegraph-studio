@@ -76,6 +76,10 @@ module.exports = {
         ]
     },
 
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
+
     plugins: [
 
         new HtmlWebpackPlugin({
@@ -101,9 +105,6 @@ module.exports = {
                 removeComments: true,
                 collapseWhitespace: false
             }
-        }),
-        new webpack.ProvidePlugin({
-            'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
         }),
         // enable HMR globally
         new webpack.HotModuleReplacementPlugin(),
