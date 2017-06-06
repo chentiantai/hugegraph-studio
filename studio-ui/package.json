@@ -27,6 +27,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
     "react-hot-loader": "^3.0.0-beta.7",
+    "redux-devtools": "^3.4.0",
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.8",
     "webpack": "^2.6.0",
@@ -34,7 +35,10 @@
   },
   "dependencies": {
     "react": "^15.5.4",
-    "react-bootstrap": "^0.31.0",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-modal-bootstrap": "^1.1.1",
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0"
   }
 }

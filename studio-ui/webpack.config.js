@@ -15,10 +15,6 @@ module.exports = {
         // activate HMR for React
         A: 'react-hot-loader/patch',
 
-        // bundle the client for webpack-dev-server
-        // and connect to the provided endpoint
-        B: 'webpack-dev-server/client?http://localhost:8082',
-
         // bundle the client for hot reloading
         // only- means to only hot reload for successful updates
         C: 'webpack/hot/only-dev-server',
@@ -51,8 +47,10 @@ module.exports = {
 
         // match the output `publicPath`
         publicPath: '/',
-        port: 8082
-
+        port: 8082,
+        proxy: {
+            '/': 'http://localhost:8080/',
+        }
     },
 
     module: {

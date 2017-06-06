@@ -80,19 +80,19 @@
         }
         componentDidMount() {
             fetch('/api/v1/notebooks')
-                    .then((response) => {
-                        if (response.ok) {
-                            return response.json();
-                        } else {
-                            console.error('Server Side Error；\r\nCode:' + response.status)
-                        }
-                    })
-                    .then((data) => {
-                        this.setState({notebooks: data});
-                    })
-                    .catch((err)=> {
-                        console.error(err)
-                    });
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        console.error('Server Side Error；\r\nCode:' + response.status)
+                    }
+                })
+                .then((data) => {
+                    this.setState({notebooks: data});
+                })
+                .catch((err)=> {
+                    console.error(err)
+                });
         }
 
         render() {
@@ -167,7 +167,7 @@
 
     ReactDOM.render(
             <NoteBooks></NoteBooks>,
-            document.getElementById('notebooksContainer')
+        document.getElementById('notebooksContainer')
     );
 </script>
 </body>

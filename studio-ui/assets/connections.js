@@ -6,12 +6,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {AppContainer} from 'react-hot-loader';
+import {Provider} from 'react-redux';
 import ConnectionsApp from './components/connectionsapp';
+import store from './components/connection/store';
+
 
 const render = (Component) => {
     ReactDOM.render(
         <AppContainer>
-            <Component/>
+            <Provider store={store}>
+                <Component/>
+            </Provider>
         </AppContainer>,
         document.getElementById('root')
     );

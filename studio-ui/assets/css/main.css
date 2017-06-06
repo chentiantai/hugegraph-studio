@@ -331,4 +331,6 @@ li.selected {
     margin-left: 5px;
 }
 
-
+form {
+    font-size: 14px !important;
+}
