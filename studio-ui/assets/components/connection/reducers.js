@@ -49,7 +49,7 @@ export function connectionsOperation(state = initialState, action) {
             const connectionsArr = [];
             // Deep Clone
             const newstate = JSON.parse(JSON.stringify(state));
-            newstate.connections.map((connection) => {
+            newstate.connections.map(connection => {
                 if (!connection.id === action.id) {
                     connectionsArr.push(connection);
                 }

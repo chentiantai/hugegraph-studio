@@ -27,67 +27,21 @@ export default class Head extends React.Component {
                         </div>
 
                         <div className="collapse navbar-collapse" id="studio-navbar-collapse">
-                            <ul className="nav navbar-nav">
-                                <li className="dropdown">
-                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button"
-                                       aria-haspopup="true"
-                                       aria-expanded="false">Notebook <span className="caret active"></span></a>
-                                    <ul className="dropdown-menu">
-                                        <li><a href="#"> <i className="fa fa-plus" aria-hidden="true"></i>&nbsp;
-                                            Notebook</a></li>
-                                        <li role="separator" className="divider"></li>
-                                        <li><a href="#">logout</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
                             <ul className="nav navbar-nav navbar-right">
                                 <li className="dropdown">
                                     <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button"
                                        aria-haspopup="true"
-                                       aria-expanded="false">anonymous <span className="caret"></span></a>
+                                       aria-expanded="false">setting <span className="caret"></span></a>
                                     <ul className="dropdown-menu">
-                                        <li><a href="./connections.html">connections</a></li>
+                                        <li><a href="./connections.html">notebooks</a></li>
                                         <li role="separator" className="divider"></li>
-                                        <li><a href="#">logout</a></li>
+                                        <li><a href="#">connections</a></li>
                                     </ul>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </nav>
-
-                <div className="studio-header">
-                    <div className="container">
-                        <div className="row">
-                            <div className="header-title">
-                                <h1><i className="fa fa-book" aria-hidden="true"></i>HugeGraph Notebook Quick Start</h1>
-                            </div>
-                            <div className="header-control-middle">
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button type="button" className="btn btn-default"><i className="fa fa-play"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" className="btn btn-default"><i className="fa fa-floppy-o"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" className="btn btn-default"><i className="fa fa-arrows-alt"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="header-control-right">
-                                <div className="btn-group btn-group-sm pull-right" role="group">
-                                    <button type="button" className="btn btn-default"><i className="fa fa-cog"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" className="btn btn-default"><i className="fa fa-keyboard-o"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         );
     }

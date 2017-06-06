@@ -129,7 +129,7 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        addConnection: (newConnection) => dispatch(addConnection(newConnection))
+        addConnection: newConnection => dispatch(addConnection(newConnection))
     };
 }
 

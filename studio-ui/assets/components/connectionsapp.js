@@ -8,22 +8,16 @@ import '../css/main.css';
 import React from 'react';
 import Head from './head';
 import {ConnectionsBoardApp} from './connection/connectionBoard';
+import StudioHead from './studiohead';
 
 export default class ConnectionsApp extends React.Component {
     render() {
         return (
             <div>
                 <Head/>
+                <StudioHead/>
                 <ConnectionsBoardApp/>
             </div>
         );
     }
 }
-
-
-
-
-
-
-
-

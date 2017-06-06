@@ -14,7 +14,7 @@ import {ConnectionmodalApp} from './connectionmodal';
 class ConnectionsBoard extends React.Component {
     componentDidMount() {
         fetch('/api/v1/connections')
-            .then((response) => {
+            .then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -22,10 +22,10 @@ class ConnectionsBoard extends React.Component {
                     console.error('Server Side Error；\r\nCode:' + response.status);
                 }
             })
-            .then((data) => {
+            .then(data => {
                 this.props.showConnections(data);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.error(err);
             });
     }
@@ -53,7 +53,7 @@ class ConnectionsBoard extends React.Component {
                                     <th>operation</th>
                                 </tr>
                                 {
-                                    connections.map((connection) =>
+                                    connections.map(connection =>
                                         <Connection key={connection.id} connection={connection}
                                                     deleteConnection={() => this.props.deleteConnection(connection.id)}
                                                     editConnection={() => this.handleEdit(connection.id)}/>)
@@ -80,8 +80,8 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        deleteConnection: (id) => dispatch(deleteConnection(id)),
-        showConnections: (connections) => dispatch(showConnections(connections))
+        deleteConnection: id => dispatch(deleteConnection(id)),
+        showConnections: connections => dispatch(showConnections(connections))
     };
 }
 

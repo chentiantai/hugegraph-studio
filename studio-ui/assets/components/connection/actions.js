@@ -36,7 +36,7 @@ export function addConnection(newConnection) {
     return dispatch => {
         dispatch(addConnectionRequest(newConnection));
         return fetch('/api/v1/connections')
-            .then((response) => {
+            .then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -44,8 +44,8 @@ export function addConnection(newConnection) {
                     console.error('Server Side Error；\r\nCode:' + response.status);
                 }
             })
-            .then((data) => dispatch(addConnectionSuccess(newConnection, data)))
-            .catch((err) => {
+            .then(data => dispatch(addConnectionSuccess(newConnection, data)))
+            .catch(err => {
                 console.error(err);
             });
     };

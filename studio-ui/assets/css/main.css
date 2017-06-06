@@ -123,6 +123,10 @@ td > button.btn {
     height: 215px;
 }
 
+.notebook-card:hover .notebook-card-close {
+    visibility: visible;
+}
+
 .notebook-card:hover {
     box-shadow: 0 0 8px #3071a9;
 }

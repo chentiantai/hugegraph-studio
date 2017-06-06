@@ -49,7 +49,7 @@ module.exports = {
         publicPath: '/',
         port: 8082,
         proxy: {
-            '/': 'http://localhost:8080/',
+            '/': 'http://localhost:8080/'
         }
     },
 
@@ -72,6 +72,10 @@ module.exports = {
             // load html
             {test: /\.html$/, use: 'html-loader'},
         ]
+    },
+
+    resolve: {
+        extensions: ['.js', '.jsx']
     },
 
     plugins: [

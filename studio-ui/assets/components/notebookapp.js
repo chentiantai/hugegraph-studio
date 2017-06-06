@@ -8,6 +8,7 @@ import '../css/main.css';
 import React from 'react';
 import Head from './head';
 import Connections from './connections';
+import StudioHead from './studiohead';
 
 export default class App extends React.Component {
 
@@ -15,6 +16,7 @@ export default class App extends React.Component {
         return (
             <div>
                 <Head/>
+                <StudioHead/>
                 <Connections/>
             </div>
         );
