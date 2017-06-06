@@ -4,9 +4,6 @@
  * Created on 17/6/5
  */
 
-
-
-// Reducer
 const initialState = {
     connections: []
 };
@@ -45,19 +42,18 @@ export function connectionsOperation(state = initialState, action) {
                 ]
             });
         }
-        case 'delete': {
+        case 'delete_success': {
             const connectionsArr = [];
             // Deep Clone
             const newstate = JSON.parse(JSON.stringify(state));
             newstate.connections.map(connection => {
-                if (!connection.id === action.id) {
+                if (connection.id !== action.id) {
                     connectionsArr.push(connection);
                 }
             });
             newstate.connections = connectionsArr;
             return newstate;
         }
-
         default:
             return state;
     }
