@@ -4,31 +4,16 @@
  * Created on 17/6/5
  */
 
-
-
-// Reducer
 const initialState = {
-    connections: []
-};
+    connections: [],
+    modalInfo: {
+        title: '',
+        operation: '',
+        isOpen: false,
+        connection: {}
+    }
 
-// const initialState = {
-//     connections: [
-//         {
-//             "id": "2a6a437c-4f0c-44ae-9ba3-192b10ec7d64",
-//             "name": "demo2",
-//             "port": 83,
-//             "graphName": "Hugegraph",
-//             "connectionHost": "127.0.01"
-//         },
-//         {
-//             "id": "bb86a266-c3e0-4d3f-9e72-80d3c9e6fb2b",
-//             "name": "demo",
-//             "port": 80,
-//             "graphName": "Hugegraph",
-//             "connectionHost": "127.0.01"
-//         }
-//     ]
-// };
+};
 
 export function connectionsOperation(state = initialState, action) {
     switch (action.type) {
@@ -42,15 +27,16 @@ export function connectionsOperation(state = initialState, action) {
                 connections: [
                     ...state.connections,
                     action.newConnection
-                ]
+                ],
+                modalInfo: Object.assign({}, state.modalInfo, {isOpen: false})
             });
         }
-        case 'delete': {
+        case 'delete_success': {
             const connectionsArr = [];
             // Deep Clone
             const newstate = JSON.parse(JSON.stringify(state));
             newstate.connections.map(connection => {
-                if (!connection.id === action.id) {
+                if (connection.id !== action.id) {
                     connectionsArr.push(connection);
                 }
             });
@@ -58,6 +44,43 @@ export function connectionsOperation(state = initialState, action) {
             return newstate;
         }
 
+
+        case 'open_edit_modal': {
+            const newstate = JSON.parse(JSON.stringify(state));
+            newstate.modalInfo.isOpen = true;
+            newstate.modalInfo.operation = action.operation;
+            newstate.modalInfo.title = action.title;
+            if (action.operation === 'update') {
+                newstate.modalInfo.connection = action.connection;
+            } else {
+                newstate.modalInfo.connection = action.connection;
+            }
+            return newstate;
+        }
+        case 'close_edit_modal': {
+            const newstate = JSON.parse(JSON.stringify(state));
+            newstate.modalInfo.isOpen = false;
+            return newstate;
+        }
+        case 'refresh_edit_modal': {
+            const newstate = JSON.parse(JSON.stringify(state));
+            newstate.modalInfo.connection = action.connection;
+            return newstate;
+        }
+        case 'update_success': {
+            const connectionsArr = [];
+            const newstate = JSON.parse(JSON.stringify(state));
+            newstate.connections.map(connection => {
+                if (connection.id !== action.connection.id) {
+                    connectionsArr.push(connection);
+                } else {
+                    connectionsArr.push(action.connection);
+                }
+            });
+            newstate.connections = connectionsArr;
+            newstate.modalInfo.isOpen = false;
+            return newstate;
+        }
         default:
             return state;
     }
