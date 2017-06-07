@@ -3,39 +3,59 @@
  * @author huanghaiping(huanghaiping02@baidu.com)
  * Created on 17/6/5
  */
-import React from 'react';
-
-
-/*
- * action function
- */
 export function showConnections(connections) {
     return {
         type: 'show',
         connections
     };
 }
-// export const addConnection = (newConnection) => ({
-//     type: 'add',
-//     newConnection
-// });
-export function editConnection(text) {
+
+export function openEditModal(connection, operation, title) {
     return {
-        type: 'edit',
-        text
+        type: 'open_edit_modal',
+        connection,
+        operation,
+        title
     };
 }
-export function deleteConnection(id) {
+
+export function closeEditModal() {
+    return {
+        type: 'close_edit_modal'
+    };
+}
+
+export function refreshModal(connection) {
+    return {
+        type: 'refresh_edit_modal',
+        connection
+    };
+}
+
+
+export function saveConnection(modalInfo) {
+    return dispatch => {
+        if (modalInfo.operation === 'update') {
+            dispatch(updateConnection(modalInfo.connection));
+        } else {
+            dispatch(addConnection(modalInfo.connection));
+        }
+    };
+}
+
+export function updateConnection(connection) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     return dispatch => {
-        return fetch('/api/v1/connections/' + id,
+        return fetch('/api/v1/connections/' + connection.id,
             {
-                method: 'DELETE'
+                method: 'PUT',
+                body: JSON.stringify(connection),
+                headers: myHeaders
             })
             .then(response => {
                 if (response.ok) {
-                    dispatch(deleteConnectionSuccess(id));
+                    dispatch(updateConnectionSuccess(connection));
                 } else {
                     alert('error');
                     console.error('Server Side Error；\r\nCode:' + response.status);
@@ -47,11 +67,10 @@ export function deleteConnection(id) {
     };
 }
 
-
-export function deleteConnectionSuccess(id) {
+export function updateConnectionSuccess(connection) {
     return {
-        type: 'delete_success',
-        id
+        type: 'update_success',
+        connection
     };
 }
 
@@ -103,3 +122,33 @@ export function addConnectionFailure(newConnection) {
     };
 }
 
+
+export function deleteConnection(id) {
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    return dispatch => {
+        return fetch('/api/v1/connections/' + id,
+            {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    dispatch(deleteConnectionSuccess(id));
+                } else {
+                    alert('error');
+                    console.error('Server Side Error；\r\nCode:' + response.status);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    };
+}
+
+
+export function deleteConnectionSuccess(id) {
+    return {
+        type: 'delete_success',
+        id
+    };
+}

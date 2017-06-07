@@ -7,7 +7,7 @@
 import React from 'react';
 
 
-export  default class Connection extends  React.Component {
+export  default class Connection extends React.Component {
     render() {
         const connection = this.props.connection;
         return (

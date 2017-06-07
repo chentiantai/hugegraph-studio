@@ -7,8 +7,8 @@
 import React from 'react';
 import Connection from './connection';
 import {connect} from 'react-redux';
-import {deleteConnection, showConnections} from './actions';
-import {ConnectionmodalApp} from './connectionmodal';
+import {deleteConnection, showConnections, openEditModal} from './actions';
+import {ConnectionModalApp} from './connectionmodal';
 
 
 class ConnectionsBoard extends React.Component {
@@ -30,6 +30,15 @@ class ConnectionsBoard extends React.Component {
             });
     }
 
+    openAddModal() {
+        let connection = {id: '', name: '', graphName: '', connectionHost: '', port: ''};
+        this.props.openEditModal(connection, 'add', 'Add Connection Information');
+    }
+
+    openUpdateModal(connection) {
+        this.props.openEditModal(connection, 'update', 'Update Connection Information');
+    }
+
     render() {
         const connections = this.props.connections;
         return (
@@ -40,7 +49,11 @@ class ConnectionsBoard extends React.Component {
                             <div className="page-title">
                                 Connections information
                                 <div className="connection-header">
-                                    <ConnectionmodalApp/>
+                                    <button type="button" className="btn btn-default"
+                                            onClick={() => this.openAddModal()}>
+                                        <i className="fa fa-plus" aria-hidden="true"><span>add</span></i>
+                                    </button>
+                                    <ConnectionModalApp/>
                                 </div>
                             </div>
                             <table className="table table-striped">
@@ -56,7 +69,7 @@ class ConnectionsBoard extends React.Component {
                                     connections.map(connection =>
                                         <Connection key={connection.id} connection={connection}
                                                     deleteConnection={() => this.props.deleteConnection(connection.id)}
-                                                    editConnection={() => this.handleEdit(connection.id)}/>)
+                                                    editConnection={() => this.openUpdateModal(connection)}/>)
                                 }
                                 </tbody>
                             </table>
@@ -66,8 +79,6 @@ class ConnectionsBoard extends React.Component {
             </div>
         );
     }
-
-
 
 
 }
@@ -84,7 +95,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         deleteConnection: id => dispatch(deleteConnection(id)),
-        showConnections: connections => dispatch(showConnections(connections))
+        showConnections: connections => dispatch(showConnections(connections)),
+        openEditModal: (connection, operation, title) => dispatch(openEditModal(connection, operation, title))
     };
 }
 

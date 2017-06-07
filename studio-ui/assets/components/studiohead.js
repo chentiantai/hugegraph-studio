@@ -18,29 +18,6 @@ export default class StudioHead extends React.Component {
                             <div className="header-title">
                                 <h1><i className="fa fa-book" aria-hidden="true"></i>HugeGraph Notebook Quick Start</h1>
                             </div>
-                            <div className="header-control-middle">
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button type="button" className="btn btn-default"><i className="fa fa-play"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" className="btn btn-default"><i className="fa fa-floppy-o"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" className="btn btn-default"><i className="fa fa-arrows-alt"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="header-control-right">
-                                <div className="btn-group btn-group-sm pull-right" role="group">
-                                    <button type="button" className="btn btn-default"><i className="fa fa-cog"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" className="btn btn-default"><i className="fa fa-keyboard-o"
-                                                                                         aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
