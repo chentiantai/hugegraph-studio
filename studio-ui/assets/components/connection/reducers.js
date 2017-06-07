@@ -10,7 +10,13 @@ const initialState = {
         title: '',
         operation: '',
         isOpen: false,
-        connection: {}
+        connection: {
+            id: '',
+            name: '',
+            graphName: '',
+            connectionHost: '',
+            port: ''
+        }
     }
 
 };
