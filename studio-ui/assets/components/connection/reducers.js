@@ -7,6 +7,7 @@
 const initialState = {
     connections: [],
     modalInfo: {
+        validation: true,
         title: '',
         operation: '',
         isOpen: false,

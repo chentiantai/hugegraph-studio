@@ -9,6 +9,7 @@ import React from 'react';
 import Head from './head';
 import {ConnectionsBoardApp} from './connection/connectionboard';
 import StudioHead from './studiohead';
+import 'whatwg-fetch';
 
 export default class ConnectionsApp extends React.Component {
     render() {

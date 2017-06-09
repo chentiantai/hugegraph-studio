@@ -9,9 +9,18 @@ import Connection from './connection';
 import {connect} from 'react-redux';
 import {deleteConnection, showConnections, openEditModal} from './actions';
 import {ConnectionModalApp} from './connectionmodal';
+import Alert from '../commoncomponents/alert';
 
 
 class ConnectionsBoard extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            alert: null
+        };
+    }
+
+
     componentDidMount() {
         fetch('/api/v1/connections')
             .then(response => {
@@ -38,6 +47,34 @@ class ConnectionsBoard extends React.Component {
     openUpdateModal(connection) {
         this.props.openEditModal(connection, 'update', 'Update Connection Information');
     }
+
+    deleteConnection(id) {
+        let alert = (
+            <Alert
+                cancel={() => this.cancelDelete()}
+                confirm={() => this.confirmDelete(id)}
+                message='Do you want to delete this connection'
+            />
+
+        );
+        this.setState({
+            alert: alert
+        });
+    }
+
+    confirmDelete(id) {
+        this.props.deleteConnection(id);
+        this.setState({
+            alert: null
+        });
+    }
+
+    cancelDelete() {
+        this.setState({
+            alert: null
+        });
+    }
+
 
     render() {
         const connections = this.props.connections;
@@ -68,7 +105,7 @@ class ConnectionsBoard extends React.Component {
                                 {
                                     connections.map(connection =>
                                         <Connection key={connection.id} connection={connection}
-                                                    deleteConnection={() => this.props.deleteConnection(connection.id)}
+                                                    deleteConnection={() => this.deleteConnection(connection.id)}
                                                     editConnection={() => this.openUpdateModal(connection)}/>)
                                 }
                                 </tbody>
@@ -76,6 +113,7 @@ class ConnectionsBoard extends React.Component {
                         </div>
                     </div>
                 </div>
+                {this.state.alert}
             </div>
         );
     }
