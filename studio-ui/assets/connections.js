@@ -9,7 +9,7 @@ import {AppContainer} from 'react-hot-loader';
 import {Provider} from 'react-redux';
 import ConnectionsApp from './components/connectionsapp';
 import store from './components/connection/store';
-
+require('react-hot-loader/patch');
 
 const render = (Component) => {
     ReactDOM.render(

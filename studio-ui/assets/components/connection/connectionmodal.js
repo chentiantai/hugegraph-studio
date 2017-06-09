@@ -13,24 +13,62 @@ import {
     ModalBody,
     ModalFooter
 } from 'react-modal-bootstrap';
+import Input from '../commoncomponents/input';
+import {isNull, isIp, isNumber} from '../commoncomponents/validator';
 
 
 class ConnectionModal extends React.Component {
+
     constructor(props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
+        this.state = {
+            isValidateByForce: false
+        };
+        this.validation = {
+            name: true,
+            graphName: true,
+            connectionHost: true,
+            port: true
+        };
+        this.modalInfo = {};
+        this.isValidateByForce = false;
     }
 
-    handleChange(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-        const newConnection = Object.assign({}, this.props.modalInfo.connection, {[name]: value});
-        this.props.refreshModal(newConnection);
+    handleChange = (name, value, ...needles) => {
+        if (needles.length > 0) {
+            this.validation[name] = needles[0];
+        }
+        this.modalInfo.connection = Object.assign({}, this.props.modalInfo.connection, {[name]: value});
+
     }
 
+    saveConnection() {
+        this.setState({isValidateByForce: true});
+        let validationStatus = true;
+        for (let k in this.validation) {
+            validationStatus = validationStatus && this.validation[k];
+            if (!validationStatus) {
+                break;
+            }
+        }
+        if (validationStatus) {
+            this.props.saveConnection(this.modalInfo);
+        }
+
+    }
+
+
+    closeEditModal() {
+        this.props.closeEditModal();
+    }
+
+
+    componentDidUpdate() {
+        this.state.isValidateByForce = false;
+    }
 
     render() {
+        this.modalInfo = this.props.modalInfo;
         let isOpen = this.props.modalInfo.isOpen;
         let connection = this.props.modalInfo.connection;
         return (
@@ -38,47 +76,52 @@ class ConnectionModal extends React.Component {
                 <Modal isOpen={isOpen}>
                     <ModalHeader className="modal-header">
                         <ModalClose onClick={() => this.props.closeEditModal()}/>
-                        <h4 className="modal-title">{this.props.modalInfo.title} </h4>
+                        <h4 className="modal-title">{this.modalInfo.title} </h4>
                     </ModalHeader>
                     <ModalBody>
                         <form className="form-horizontal">
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">Name</label>
-                                <div className="col-sm-10">
-                                    <input type="text" className="form-control" placeholder="Name" name="name"
-                                           value={connection.name} onChange={this.handleChange}/>
-                                </div>
+                                <Input className="col-sm-10" placeholder="Name" name="name"
+                                       validator={isNull}
+                                       message="please enter the name"
+                                       isValidateByForce={this.state.isValidateByForce}
+                                       value={connection.name}
+                                       onChange={this.handleChange}/>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">graphName</label>
-                                <div className="col-sm-10">
-                                    <input type="text" className="form-control" placeholder="graphName" name="graphName"
-                                           value={connection.graphName} onChange={this.handleChange}/>
-                                </div>
+                                <Input className="col-sm-10" placeholder="graphName" name="graphName"
+                                       validator={isNull}
+                                       isValidateByForce={this.state.isValidateByForce}
+                                       value={connection.graphName}
+                                       onChange={this.handleChange}/>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">Host</label>
-                                <div className="col-sm-10">
-                                    <input type="text" className="form-control" placeholder="Host" name="connectionHost"
-                                           value={connection.connectionHost} onChange={this.handleChange}/>
-                                </div>
+                                <Input className="col-sm-10" placeholder="ConnectionHost" name="connectionHost"
+                                       validator={isIp}
+                                       isValidateByForce={this.state.isValidateByForce}
+                                       value={connection.connectionHost}
+                                       onChange={this.handleChange}/>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">Port</label>
-                                <div className="col-sm-10">
-                                    <input type="text" className="form-control" placeholder="Port" name="port"
-                                           value={connection.port} onChange={this.handleChange}/>
-                                </div>
+                                <Input className="col-sm-10" placeholder="Port" name="port"
+                                       validator={isNumber}
+                                       isValidateByForce={this.state.isValidateByForce}
+                                       value={connection.port}
+                                       onChange={this.handleChange}/>
                             </div>
                         </form>
                     </ModalBody>
 
                     <ModalFooter className="modal-footer">
-                        <button type="button" className="btn btn-default" onClick={() => this.props.closeEditModal()}>
+                        <button type="button" className="btn btn-default" onClick={() => this.closeEditModal()}>
                             Close
                         </button>
                         <button type="button" className="btn btn-primary"
-                                onClick={() => this.props.saveConnection(this.props.modalInfo)}>Save
+                                onClick={() => this.saveConnection()}>Save
                         </button>
                     </ModalFooter>
                 </Modal>
@@ -99,7 +142,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         closeEditModal: () => dispatch(closeEditModal()),
-        refreshModal: connection => dispatch(refreshModal(connection)),
         saveConnection: modalInfo => dispatch(saveConnection(modalInfo))
     };
 }
