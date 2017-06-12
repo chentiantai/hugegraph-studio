@@ -71,7 +71,6 @@ class ConnectionModal extends React.Component {
         this.modalInfo = this.props.modalInfo;
         let isOpen = this.props.modalInfo.isOpen;
         let connection = this.props.modalInfo.connection;
-        // alert(connection.name);
         return (
             <div>
                 <Modal isOpen={isOpen}>

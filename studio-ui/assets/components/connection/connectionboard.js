@@ -7,9 +7,10 @@
 import React from 'react';
 import Connection from './connection';
 import {connect} from 'react-redux';
-import {deleteConnection, showConnections, openEditModal} from './actions';
+import {deleteConnection, loadConnections, openEditModal} from './actions';
 import {ConnectionModalApp} from './connectionmodal';
-import Alert from '../commoncomponents/alert';
+import AlertModal from '../commoncomponents/alertmodal';
+import AlertList from './alertlist';
 
 
 class ConnectionsBoard extends React.Component {
@@ -20,23 +21,8 @@ class ConnectionsBoard extends React.Component {
         };
     }
 
-
     componentDidMount() {
-        fetch('/api/v1/connections')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    alert('error');
-                    console.error('Server Side Error；\r\nCode:' + response.status);
-                }
-            })
-            .then(data => {
-                this.props.showConnections(data);
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        this.props.loadConnections();
     }
 
     openAddModal() {
@@ -50,7 +36,7 @@ class ConnectionsBoard extends React.Component {
 
     deleteConnection(id) {
         let alert = (
-            <Alert
+            <AlertModal
                 cancel={() => this.cancelDelete()}
                 confirm={() => this.confirmDelete(id)}
                 message='Do you want to delete this connection'
@@ -75,11 +61,14 @@ class ConnectionsBoard extends React.Component {
         });
     }
 
-
     render() {
         const connections = this.props.connections;
         return (
             <div className="container">
+                <div className="row">
+                    <AlertList/>
+                </div>
+
                 <div className="row">
                     <div className="panel panel-default">
                         <div className="panel-body">
@@ -133,7 +122,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         deleteConnection: id => dispatch(deleteConnection(id)),
-        showConnections: connections => dispatch(showConnections(connections)),
+        loadConnections: () => dispatch(loadConnections()),
         openEditModal: (connection, operation, title) => dispatch(openEditModal(connection, operation, title))
     };
 }

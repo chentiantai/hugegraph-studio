@@ -27,6 +27,4 @@ export  default class Connection extends React.Component {
             </tr>
         );
     }
-
-
 }

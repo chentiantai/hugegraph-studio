@@ -6,7 +6,7 @@
 import React from 'react';
 import Modal from './modal';
 
-export default class Alert extends React.Component {
+export default class AlertModal extends React.Component {
     render() {
         return (
             <Modal isOpen={true}>

@@ -3,16 +3,24 @@
  * @author huanghaiping(huanghaiping02@baidu.com)
  * Created on 17/6/5
  */
-export function showConnections(connections) {
-    return {
-        type: 'show',
-        connections
-    };
-}
+
+
+
+export const OPEN_CONNECTION_MODAL = 'open_connection_modal';
+export const CLOSE_CONNECTION_MODAL = 'close_connection_modal';
+export const SHOW = 'show';
+export const UPDATE_SUCCESS = 'update_success';
+export const ADD_REQUEST = 'add_request';
+export const ADD_SUCCESS = 'add_success';
+export const ADD_FAILURE = 'add_failure';
+export const DELETE_SUCCESS = 'delete_success';
+export const ALERT_SHOW = 'alert_show';
+export const ALERT_HIDE = 'alert_hide';
+
 
 export function openEditModal(connection, operation, title) {
     return {
-        type: 'open_edit_modal',
+        type: OPEN_CONNECTION_MODAL,
         connection,
         operation,
         title
@@ -21,17 +29,37 @@ export function openEditModal(connection, operation, title) {
 
 export function closeEditModal() {
     return {
-        type: 'close_edit_modal'
+        type: CLOSE_CONNECTION_MODAL
     };
 }
 
-export function refreshModal(connection) {
+
+export function loadConnections() {
+    return dispatch => {
+        return fetch('/api/v1/connections')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    dispatch(alertMessage('Load Connection: Server Side Error；\r\nCode:' + response.status, 'danger'));
+                }
+            })
+            .then(data => {
+                dispatch(showConnections(data));
+            })
+            .catch(err => {
+                dispatch(alertMessage('Load Connections Fetch Exception:' + err, 'danger'));
+            });
+    };
+}
+
+
+export function showConnections(connections) {
     return {
-        type: 'refresh_edit_modal',
-        connection
+        type: SHOW,
+        connections
     };
 }
-
 
 export function saveConnection(modalInfo) {
     return dispatch => {
@@ -55,25 +83,26 @@ export function updateConnection(connection) {
             })
             .then(response => {
                 if (response.ok) {
+                    dispatch(closeEditModal());
                     dispatch(updateConnectionSuccess(connection));
+                    dispatch(alertMessage('Update Connection Success', 'success'));
                 } else {
-                    alert('error');
-                    console.error('Server Side Error；\r\nCode:' + response.status);
+                    dispatch(alertMessage('Update Connection:Server Side Error；\r\nCode:' + response.status, 'danger'));
                 }
             })
             .catch(err => {
-                console.error(err);
+                dispatch(alertMessage('Update Connection Fetch Exception:' + err, 'danger'));
+
             });
     };
 }
 
 export function updateConnectionSuccess(connection) {
     return {
-        type: 'update_success',
+        type: UPDATE_SUCCESS,
         connection
     };
 }
-
 
 export function addConnection(newConnection) {
     let myHeaders = new Headers();
@@ -90,38 +119,38 @@ export function addConnection(newConnection) {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    alert('error');
-                    console.error('Server Side Error；\r\nCode:' + response.status);
+                    dispatch(alertMessage('Add Connection: Server Side Error；\r\nCode:' + response.status, 'danger'));
                 }
             })
             .then(data => {
+                dispatch(closeEditModal());
                 dispatch(addConnectionSuccess(data));
+                dispatch(alertMessage('Add Connection Success', 'success'));
             })
             .catch(err => {
-                console.error(err);
+                dispatch(alertMessage('Add Connection Fetch Exception:' + err, 'danger'));
             });
     };
 }
 
 export function addConnectionRequest(newConnection) {
     return {
-        type: 'add_request',
+        type: ADD_REQUEST,
         newConnection
     };
 }
 export function addConnectionSuccess(newConnection) {
     return {
-        type: 'add_success',
+        type: ADD_SUCCESS,
         newConnection
     };
 }
 export function addConnectionFailure(newConnection) {
     return {
-        type: 'add_failure',
+        type: ADD_FAILURE,
         newConnection
     };
 }
-
 
 export function deleteConnection(id) {
     let myHeaders = new Headers();
@@ -133,14 +162,15 @@ export function deleteConnection(id) {
             })
             .then(response => {
                 if (response.ok) {
+                    dispatch(closeEditModal());
                     dispatch(deleteConnectionSuccess(id));
+                    dispatch(alertMessage('Delete Connection Success', 'success'));
                 } else {
-                    alert('error');
-                    console.error('Server Side Error；\r\nCode:' + response.status);
+                    dispatch(alertMessage('Delete Connection:Server Side Error；\r\nCode:' + response.status, 'danger'));
                 }
             })
             .catch(err => {
-                console.error(err);
+                dispatch(alertMessage('Delete Connection Fetch Exception:' + err, 'danger'));
             });
     };
 }
@@ -148,7 +178,47 @@ export function deleteConnection(id) {
 
 export function deleteConnectionSuccess(id) {
     return {
-        type: 'delete_success',
+        type: DELETE_SUCCESS,
         id
     };
 }
+
+
+export function alertShow(messageText, messageType, key) {
+    return {
+        type: ALERT_SHOW,
+        payload: {
+            messageText, messageType, key
+        }
+    };
+}
+
+export function alertHide(key) {
+    return {
+        type: ALERT_HIDE,
+        payload: {key}
+    };
+}
+
+export function alertMessage(messageText, messageType, delay = 1000) {
+    return (dispatch, getState) => {
+        if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
+            const key = getState().alerts.lastKey + 1;
+            dispatch(alertShow(messageText, messageType, key));
+            setTimeout(() => dispatch(alertHide(key)), delay);
+        } else {
+            console.error('messageText must be string and messageType must be success, warning, danger, info');
+        }
+    };
+}
+
+export function hideAllAlert(delay = 1000) {
+    return (dispatch, getState) => {
+        getState().alerts.items.forEach(item => {
+            setTimeout(() => {
+                dispatch(alertHide(item.key));
+            }, delay);
+        });
+    };
+}
+

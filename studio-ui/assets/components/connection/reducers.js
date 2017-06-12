@@ -3,6 +3,17 @@
  * @author huanghaiping(huanghaiping02@baidu.com)
  * Created on 17/6/5
  */
+import {
+    OPEN_CONNECTION_MODAL,
+    CLOSE_CONNECTION_MODAL,
+    ALERT_SHOW,
+    ALERT_HIDE,
+    SHOW,
+    ADD_SUCCESS,
+    DELETE_SUCCESS,
+    UPDATE_SUCCESS
+} from './actions';
+
 
 const initialState = {
     connections: [],
@@ -18,78 +29,89 @@ const initialState = {
             connectionHost: '',
             port: ''
         }
+    },
+    alerts: {
+        items: [],
+        lastKey: -1
     }
-
 };
 
+
 export function connectionsOperation(state = initialState, action) {
+    return {
+        connections: connections(state.connections, action),
+        modalInfo: modalInfo(state.modalInfo, action),
+        alerts: alerts(state.alerts, action)
+    };
+}
+
+
+function modalInfo(state = {}, action) {
     switch (action.type) {
-        case 'show': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.connections = action.connections;
-            return newstate;
-        }
-        case 'add_success': {
-            return Object.assign({}, state, {
-                connections: [
-                    ...state.connections,
-                    action.newConnection
-                ],
-                modalInfo: Object.assign({}, state.modalInfo, {isOpen: false})
-            });
-        }
-        case 'delete_success': {
-            const connectionsArr = [];
-            // Deep Clone
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.connections.map(connection => {
-                if (connection.id !== action.id) {
-                    connectionsArr.push(connection);
-                }
-            });
-            newstate.connections = connectionsArr;
-            return newstate;
-        }
+        case OPEN_CONNECTION_MODAL:
+            return {
+                ...state,
+                isOpen: true,
+                operation: action.operation,
+                title: action.title,
+                connection: action.connection
+            };
+        case CLOSE_CONNECTION_MODAL:
+            return {
+                ...state,
+                isOpen: false
+            };
+        default:
+            return state;
+    }
+
+}
+
+function alerts(state = {items: [], lastKey: -1}, action) {
+    switch (action.type) {
+        case ALERT_SHOW:
+            return {
+                ...state,
+                items: [...state.items, action.payload],
+                lastKey: state.lastKey + 1
+            };
+        case ALERT_HIDE:
+            return {
+                ...state,
+                items: state.items.filter(item => (item.key !== action.payload.key))
+            };
+        default:
+            return state;
+    }
+}
 
 
-        case 'open_edit_modal': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.modalInfo.isOpen = true;
-            newstate.modalInfo.operation = action.operation;
-            newstate.modalInfo.title = action.title;
-            if (action.operation === 'update') {
-                newstate.modalInfo.connection = action.connection;
-            } else {
-                newstate.modalInfo.connection = action.connection;
-            }
-            return newstate;
+function connections(state = [], action) {
+    switch (action.type) {
+        case SHOW: {
+            return JSON.parse(JSON.stringify(action.connections));
         }
-        case 'close_edit_modal': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.modalInfo.isOpen = false;
-            return newstate;
+        case ADD_SUCCESS: {
+            return [
+                ...state,
+                action.newConnection
+            ];
         }
-        case 'refresh_edit_modal': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.modalInfo.connection = action.connection;
-            return newstate;
+        case DELETE_SUCCESS: {
+            return state.filter(connection => connection.id !== action.id);
         }
-        case 'update_success': {
+        case UPDATE_SUCCESS: {
             const connectionsArr = [];
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.connections.map(connection => {
+            state.map(connection => {
                 if (connection.id !== action.connection.id) {
                     connectionsArr.push(connection);
                 } else {
                     connectionsArr.push(action.connection);
                 }
             });
-            newstate.connections = connectionsArr;
-            newstate.modalInfo.isOpen = false;
-            return newstate;
+            return connectionsArr;
         }
         default:
             return state;
     }
 }
-
