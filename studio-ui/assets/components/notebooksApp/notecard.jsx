@@ -32,7 +32,6 @@ class NoteCard extends React.Component {
                     <div className="notebook-card-description">
                         Description:HugeGraph focos on bigdata analyse.
                     </div>
-                    {this.props.count}
                 </div>
 
                 <div className="notebook-card-control">

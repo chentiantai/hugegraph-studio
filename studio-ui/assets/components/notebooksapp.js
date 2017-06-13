@@ -9,8 +9,9 @@ import '../css/main.css';
 import React from 'react';
 import Head from './head';
 import StudioHead from './studiohead';
-import NoteCard from './notebooksApp/notecard';
-import NoteCardAdd from './notebooksApp/notecardadd';
+import {NotebooksCardAddApp} from './notebooksApp/notecardadd';
+// import NoteCard from './notebooksApp/notecard';
+// import NoteCardAdd from './notebooksApp/notecardadd';
 require('react-hot-loader/patch');
 
 export default class NotebooksApp extends React.Component {
@@ -28,9 +29,11 @@ export default class NotebooksApp extends React.Component {
 
 class Finally extends React.Component {
     render() {
+        alert('dfd');
         return (
             <div className="container">
                 <div className="row">
+
                     <NotebookCards/>
                 </div>
             </div>
@@ -43,35 +46,13 @@ class NotebookCards extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            list: [],
-            count: 0,
-        };
-    }
-
-    changeList = e => {
-        // console.log(e)
-        let count = this.state.count;
-        const list = this.state.list.concat();
-        if (e.type === 'add') {
-            list.push(`Card: ${count}`);
-            count++;
-        } else if (e.type === 'remove') {
-            list.splice(e.eventKey, 1);
-            count--;
-        }
-
-        this.setState({list, count});
+        this.state = {};
     }
 
     render() {
-        const {list} = this.state;
         return (
             <div className="notebook-cards">
-                <NoteCardAdd changeList={this.changeList}/>
-                {list.map((count, i) => <NoteCard key={i} eventKey={i}
-                                                  count={count}
-                                                  changeList={this.changeList}/>)}
+                <NotebooksCardAddApp />
             </div>
         );
     }

@@ -5,16 +5,17 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-// AppContainer is a necessary wrapper component for HMR
 import {AppContainer} from 'react-hot-loader';
 import NotebooksApp from './components/notebooksapp';
-import Container from './components/notebooksApp/container';
-
+import {Provider} from 'react-redux';
+import store from './components/notebooksApp/stores';
 
 const render = (Component) => {
     ReactDOM.render(
         <AppContainer>
-            <Component/>
+            <Provider store={store}>
+                <Component/>
+            </Provider>
         </AppContainer>,
         document.getElementById('root')
     );

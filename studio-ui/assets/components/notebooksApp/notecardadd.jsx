@@ -1,16 +1,22 @@
 import React from 'react';
+import {openEditModal} from './actions';
+import {NotebooksModalApp} from './notebooksmodal';
+import {connect} from 'react-redux';
 
 
 class NoteCardAdd extends React.Component {
+    addNotebook() {
 
-    add = e => {
-        let event = {
-            domEvent: e,
-            type: 'add',
-            item: '123',
-        }
-        this.props.changeList(event)
+        let notebooks = {
+            id: '',
+            name: '',
+            connectionName: ''
+        };
+        let operation = 'add';
+        let title = 'Add notebook';
+        this.props.openEditModal(notebooks, operation, title);
     }
+
 
     render() {
         return (
@@ -18,13 +24,40 @@ class NoteCardAdd extends React.Component {
 
                 <div className="notebook-card-add">
                     <button type="button" className="btn btn-link"
-                            onClick={this.add}>
+                            onClick={() => this.addNotebook()}>
                         <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
                     </button>
+                    <NotebooksModalApp/>
                 </div>
             </div>
         )
     }
+
+
 }
 
-export default NoteCardAdd
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {
+        notebooks: state.notebooks
+    };
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        deleteNotebooks: id => dispatch(deleteNotebooks(id)),
+        showNotebooks: notebooks => dispatch(showNotebooks(notebooks)),
+        openEditModal: (notebooks, operation, title) => dispatch(openEditModal(notebooks, operation, title)),
+        getConnectionName: () => dispatch(getConnectionName())
+
+    };
+}
+
+// Connected Component
+export const NotebooksCardAddApp = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(NoteCardAdd);
+
+//export default NoteCardAdd
