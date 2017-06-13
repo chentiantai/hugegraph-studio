@@ -21,3 +21,4 @@ build
 dist
 .tar.bz2
 node_modules
+ace
