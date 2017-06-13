@@ -19,9 +19,10 @@ module.exports = {
         // only- means to only hot reload for successful updates
         C: 'webpack/hot/only-dev-server',
 
+        // the entry point of our app
         index: './assets/index.js',
         connections: './assets/connections.js',
-        // the entry point of our app
+        notebook: './assets/notebook.jsx',
         vendors: ['react', 'react-dom']
 
     },
@@ -48,8 +49,15 @@ module.exports = {
         // match the output `publicPath`
         publicPath: '/',
         port: 8082,
+        // proxy: {
+        //     '/': 'http://localhost:8080/'
+        // }
         proxy: {
-            '/': 'http://localhost:8080/'
+            '/api': {
+                target: 'http://localhost:8080/',
+                pathRewrite: {'^/api': '/api/'},
+                changeOrigin: true
+            }
         }
     },
 
@@ -98,6 +106,18 @@ module.exports = {
             inject: 'body',
             hash: true,
             chunks: ['vendors', 'connections'],
+            // min html
+            minify: {
+                removeComments: true,
+                collapseWhitespace: false
+            }
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'notebook.html',
+            template: 'assets/notebook.html',
+            inject: 'body',
+            hash: true,
+            chunks: ['vendors', 'notebook'],
             // min html
             minify: {
                 removeComments: true,

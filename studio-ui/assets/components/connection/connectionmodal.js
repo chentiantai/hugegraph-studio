@@ -100,7 +100,7 @@ class ConnectionModal extends React.Component {
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">Host</label>
                                 <Input className="col-sm-10" placeholder="ConnectionHost" name="connectionHost"
-                                       validator={isIp}
+                                       validator={isNull}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.connectionHost}
                                        onChange={this.handleChange}/>
