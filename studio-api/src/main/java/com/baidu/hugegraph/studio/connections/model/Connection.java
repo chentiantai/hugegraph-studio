@@ -9,7 +9,7 @@ import com.google.common.base.Preconditions;
  * Created by jishilei on 2017/5/18.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Connection {
+public class Connection implements Comparable<Connection> {
 
     @JsonProperty("id")
     private String id;
@@ -25,6 +25,9 @@ public class Connection {
 
     @JsonProperty("connectionHost")
     private String connectionHost;
+
+    @JsonProperty("lastModified")
+    private Long lastModified;
 
     public String getId() {
         return id;
@@ -66,6 +69,14 @@ public class Connection {
         this.connectionHost = connectionHost;
     }
 
+    public Long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Long lastModified) {
+        this.lastModified = lastModified;
+    }
+
     /**
      * Gets connection uri.
      *
@@ -75,5 +86,16 @@ public class Connection {
     public String getConnectionUri() {
         Preconditions.checkNotNull(connectionHost);
         return String.format("http://%s:%d", connectionHost, port);
+    }
+
+    @Override
+    public int compareTo(Connection connection) {
+        if (this.lastModified > connection.lastModified) {
+            return 1;
+        } else if (this.lastModified < connection.lastModified) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

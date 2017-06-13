@@ -1,6 +1,7 @@
 package com.baidu.hugegraph.studio.connections.service;
 
 import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.exception.ClientException;
 import com.baidu.hugegraph.structure.schema.EdgeLabel;
 import com.baidu.hugegraph.structure.schema.PropertyKey;
 import com.baidu.hugegraph.structure.schema.VertexLabel;
@@ -92,6 +93,7 @@ public class ConnectionService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createConnection(Connection connection) {
+        connection.setLastModified(System.currentTimeMillis());
         Response response = Response.status(201)
                 .entity(connectionRepository.createConnection(connection))
                 .build();
@@ -127,7 +129,9 @@ public class ConnectionService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response editConnection(@PathParam("connectionId") String connectionId,
                                    Connection connection) {
-        Preconditions.checkArgument(connectionId != null && connectionId.equals(connection.getId()));
+        Preconditions.checkArgument(connectionId != null
+                && connectionId.equals(connection.getId()));
+        connection.setLastModified(System.currentTimeMillis());
         connectionRepository.editConnection(connection);
 
         Response response = Response.status(200)
@@ -142,15 +146,23 @@ public class ConnectionService {
      * @param connection the connection
      * @return the connection status
      */
-    @POST
+    @GET
     @Path("status")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getConnectionStatus(Connection connection) {
-        // TODO : connect HugeServer to get connection status
+        Preconditions.checkNotNull(connection);
         Response response = Response.status(200)
-                .entity(ConnectionState.CLOSED)
+                .entity(ConnectionState.OPEN)
                 .build();
+        try {
+            HugeClient.open(connection.getConnectionUri(),
+                    connection.getGraphName());
+        } catch (ClientException ex) {
+            response = Response.status(ex.status())
+                    .entity(ConnectionState.CLOSED)
+                    .build();
+        }
         return response;
     }
 
@@ -162,30 +174,33 @@ public class ConnectionService {
      * @return the connection schema
      */
     @GET
-    @Path("schema")
+    @Path("{connectionId}/schema")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConnectionSchema(@PathParam("connectionId") String connectionId) {
         Preconditions.checkNotNull(connectionId);
         Connection connection = connectionRepository.get(connectionId);
         Preconditions.checkNotNull(connection);
         Preconditions.checkArgument(connection.getId().equals(connectionId));
-
-        HugeClient hugeClient = HugeClient.open(connection.getConnectionUri(),
-                connection.getGraphName());
-        // TODO : check connection status first
-
-        Map<String, List> schemas = new HashMap<>();
-        List<PropertyKey> propertyKeys = hugeClient.schema().getPropertyKeys();
-        List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
-        List<EdgeLabel> edgeLabels = hugeClient.schema().getEdgeLabels();
-
-
-        schemas.put("propertyKeys", propertyKeys);
-        schemas.put("vertexLabels", vertexLabels);
-        schemas.put("edgeLabels", edgeLabels);
-        Response response = Response.status(200)
-                .entity(schemas)
-                .build();
+        Response response = null;
+        HugeClient hugeClient = null;
+        try {
+            hugeClient = HugeClient.open(connection.getConnectionUri(),
+                    connection.getGraphName());
+            Map<String, List> schemas = new HashMap<>();
+            List<PropertyKey> propertyKeys = hugeClient.schema().getPropertyKeys();
+            List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
+            List<EdgeLabel> edgeLabels = hugeClient.schema().getEdgeLabels();
+            schemas.put("propertyKeys", propertyKeys);
+            schemas.put("vertexLabels", vertexLabels);
+            schemas.put("edgeLabels", edgeLabels);
+            response = Response.status(200)
+                    .entity(schemas)
+                    .build();
+        } catch (ClientException ex) {
+            response = Response.status(ex.status())
+                    .entity(ex.message())
+                    .build();
+        }
         return response;
     }
 }

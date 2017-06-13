@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by jishilei on 2017/5/19.
@@ -82,8 +80,13 @@ public class FileConnectionRepository implements ConnectionRepository {
                             return;
                         }
                     });
+            Collections.sort(connections, (connection1, connection2) ->
+                        connection2.getLastModified().compareTo(connection1.getLastModified()));
         } catch (IOException e) {
             logger.error("Could Not Read File : " + connectionsDataDirectory, e);
+        } catch (NullPointerException e) {
+            logger.error("Could Not Sort File, Some Files May Not Have A lastModified Field : "
+                    + connectionsDataDirectory, e);
         }
         return connections;
     }
