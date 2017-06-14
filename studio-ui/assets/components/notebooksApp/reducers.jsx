@@ -4,87 +4,70 @@
  * Created on 17/6/6
  */
 
+import {OPEN_NOTECARD_MODAL, CLOSE_NOTECARD_MODAL, ALERT_HIDE, ALERT_SHOW} from './actions';
+
 const initialState = {
-    notebooks: [],
-    modalInfo: {
+    cardModalInfo: {
         title: '',
         operation: '',
         isOpen: false,
-        notebooks: {//TODO.......paras should be change
+        noteCard: {
             id: '',
             name: '',
             connectionName: ''
         }
+    },
+    alerts: {
+        items: [],
+        lastKey: -1
     }
 
 };
 
 export function notebooksOperation(state = initialState, action) {
+    return {
+        cardModalInfo: cardModalInfo(state.cardModalInfo, action),
+        alerts: alerts(state.alerts, action)
+    };
+}
+
+
+function cardModalInfo(state, action) {
     switch (action.type) {
-        case 'show': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.notebooks = action.notebooks;
-            return newstate;
-        }
-        case 'add_success': {
-            return Object.assign({}, state, {
-                notebooks: [
-                    ...state.notebooks,
-                    action.newConnection
-                ],
-                modalInfo: Object.assign({}, state.modalInfo, {isOpen: false})
-            });
-        }
-        case 'delete_success': {
-            const notebooksArr = [];
-            // Deep Clone
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.notebooks.map(notebooks => {
-                if (notebooks.id !== action.id) {
-                    notebooksArr.push(notebooks);
-                }
-            });
-            newstate.notebooks = notebooksArr;
-            return newstate;
-        }
+        case OPEN_NOTECARD_MODAL:
+            return {
+                ...state,
+                isOpen: true,
+                operation: action.operation,
+                title: action.title,
+                noteCard: action.noteCard
+
+            };
+        case CLOSE_NOTECARD_MODAL:
+            return {
+                ...state,
+                isOpen: false
+            };
+        default:
+            return state;
+    }
+
+}
 
 
-        case 'open_edit_modal': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.modalInfo.isOpen = true;
-            newstate.modalInfo.operation = action.operation;
-            newstate.modalInfo.title = action.title;
-            if (action.operation === 'update') {
-                newstate.modalInfo.notebooks = action.notebooks;
-            } else {
-                newstate.modalInfo.notebooks = action.notebooks;
-            }
-            return newstate;
-        }
-        case 'close_edit_modal': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.modalInfo.isOpen = false;
-            return newstate;
-        }
-        case 'refresh_edit_modal': {
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.modalInfo.notebooks = action.notebooks;
-            return newstate;
-        }
-        case 'update_success': {
-            const notebooksArr = [];
-            const newstate = JSON.parse(JSON.stringify(state));
-            newstate.notebooks.map(notebooks => {
-                if (notebooks.id !== action.notebooks.id) {
-                    notebooksArr.push(notebooks);
-                } else {
-                    notebooksArr.push(action.notebooks);
-                }
-            });
-            newstate.notebooks = notebooksArr;
-            newstate.modalInfo.isOpen = false;
-            return newstate;
-        }
+function alerts(state = {items: [], lastKey: -1}, action) {
+    switch (action.type) {
+        case ALERT_SHOW:
+            return {
+                ...state,
+                items: [...state.items, action.payload],
+                lastKey: state.lastKey + 1
+            };
+        case ALERT_HIDE:
+            return {
+                ...state,
+                items: state.items.filter(item => (item.key !== action.payload.key))
+            };
         default:
             return state;
     }

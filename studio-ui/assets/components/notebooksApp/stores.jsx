@@ -6,7 +6,6 @@
 import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
 import {notebooksOperation} from './reducers';
-// import * as reducers from './reducers';
 
 
 let store;
