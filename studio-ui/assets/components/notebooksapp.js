@@ -9,9 +9,9 @@ import '../css/main.css';
 import React from 'react';
 import Head from './head';
 import StudioHead from './studiohead';
-import {NotebooksCardAddApp} from './notebooksApp/notecardadd';
-// import NoteCard from './notebooksApp/notecard';
-// import NoteCardAdd from './notebooksApp/notecardadd';
+import NoteCardAdd from './notebooksApp/notecardadd';
+import AlertList from './notebooksApp/alertlist';
+
 require('react-hot-loader/patch');
 
 export default class NotebooksApp extends React.Component {
@@ -29,12 +29,14 @@ export default class NotebooksApp extends React.Component {
 
 class Finally extends React.Component {
     render() {
-        alert('dfd');
         return (
             <div className="container">
                 <div className="row">
+                    <AlertList/>
+                </div>
 
-                    <NotebookCards/>
+                <div className="row">
+                    <NoteCards/>
                 </div>
             </div>
         );
@@ -42,7 +44,7 @@ class Finally extends React.Component {
 }
 
 
-class NotebookCards extends React.Component {
+class NoteCards extends React.Component {
 
     constructor(props) {
         super(props);
@@ -52,7 +54,7 @@ class NotebookCards extends React.Component {
     render() {
         return (
             <div className="notebook-cards">
-                <NotebooksCardAddApp />
+                <NoteCardAdd />
             </div>
         );
     }
