@@ -84,6 +84,9 @@ public class FileConnectionRepository implements ConnectionRepository {
                         connection2.getLastModified().compareTo(connection1.getLastModified()));
         } catch (IOException e) {
             logger.error("Could Not Read File : " + connectionsDataDirectory, e);
+        } catch (NullPointerException e) {
+            logger.error("Could Not Sort File, Some Files May Not Have A lastModified Field : "
+                    + connectionsDataDirectory, e);
         }
         return connections;
     }
