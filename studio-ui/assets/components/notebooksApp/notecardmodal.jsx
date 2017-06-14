@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {closeNoteCardModal} from './actions';
+import {saveNoteCard} from './actions';
 import {
     Modal,
     ModalHeader,
@@ -21,15 +21,15 @@ import {isNull} from '../commoncomponents/validator';
 class NoteCardModal extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
+            operation: 'add',
             isValidateByForce: false,
             connections: [],
             isOpen: false,
             noteCard: {
                 id: '',
                 name: '',
-                connectionName: ''
+                connectionId: ''
             }
         };
 
@@ -65,9 +65,29 @@ class NoteCardModal extends React.Component {
             }
         }
         if (validationStatus) {
-            alert(this.state.noteCard.name + ':' + this.state.noteCard.connectionName);
-        }
+            let modalInfo = {}
+            if (this.props.operation == 'add') {
+                modalInfo = {
+                    operation: this.props.operation,
+                    noteCard: {
+                        name: this.state.noteCard.name,
+                        connectionId: this.state.noteCard.connectionId
+                    }
+                }
+            } else {
+                modalInfo = {
+                    operation: this.props.operation,
+                    noteCard: {
+                        id: this.state.noteCard.id,
+                        name: this.state.noteCard.name,
+                        connectionId: this.state.noteCard.connectionId
+                    }
+                }
+            }
 
+            this.props.saveNoteCard(modalInfo);
+            this.closeModal();
+        }
     }
 
 
@@ -90,20 +110,18 @@ class NoteCardModal extends React.Component {
 
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.noteCard !== undefined) {
-            this.setState({isOpen: nextProps.isOpen, noteCard: nextProps.noteCard});
-        } else {
-            let noteCard = {
-                id: '',
-                name: '',
-                connectionName: ''
-            };
-
-            this.setState({isOpen: nextProps.isOpen, noteCard: noteCard});
-        }
+        this.setState({
+            isOpen: nextProps.isOpen,
+            noteCard: nextProps.noteCard,
+            operation: nextProps.operation
+        });
     }
 
     render() {
+        let selectValue =
+            this.state.noteCard.connectionId === '' && this.state.connections.length > 0 ?
+                this.state.connections[0].id : this.state.noteCard.connectionId;
+
         return (
             <div>
                 <Modal isOpen={this.state.isOpen}>
@@ -126,8 +144,8 @@ class NoteCardModal extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">Connection*</label>
-                                <Select className="col-sm-10" name="connectionName"
-                                        value={this.state.noteCard.connectionName === '' ? this.state.connections[0].id : this.state.noteCard.connectionName }
+                                <Select className="col-sm-10" name="connectionId"
+                                        value={selectValue}
                                         options={
                                             this.state.connections.map(connection =>
                                                 <option key={connection.id}
@@ -176,7 +194,7 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        closeModal: () => dispatch(closeNoteCardModal())
+        saveNoteCard: (modalInfo) => dispatch(saveNoteCard(modalInfo))
     };
 }
 

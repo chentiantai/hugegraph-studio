@@ -1,0 +1,87 @@
+import React from 'react'
+import {deleteNoteCard} from './actions';
+import {connect} from 'react-redux';
+
+class NoteCard extends React.Component {
+
+    del() {
+        this.props.delete(this.props.value.id);
+    }
+
+    update() {
+        this.props.onUpdate(this.props.value);
+    }
+
+
+    render() {
+        const noteCard = this.props.value;
+        return (
+            <div className="notebook-card">
+                <div className="notebook-card-info">
+
+                    <div>
+                        <div className="notebook-card-close">
+                            <button type="button" className="btn btn-link"
+                                    onClick={() => this.del()}>
+                                <i className="fa fa-times"
+                                   aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div className="notebook-card-title">
+                            {
+                                noteCard.name
+                            }
+                        </div>
+                    </div>
+                    <div className="notebook-card-description">
+                        {
+                            noteCard.connection.name
+                        }
+                    </div>
+                </div>
+
+                <div className="notebook-card-control">
+
+                    <div className="notebook-card-createtime">
+                        {
+                            noteCard.lastUsed
+                        }
+                    </div>
+
+                    <div className="notebook-card-operation">
+                        <button type="button" className="btn btn-link"
+                                data-toggle="modal"
+                                data-target="#notebookCardModal" onClick={() => this.update()}>
+                    <span>
+                        <i className="fa fa-pencil-square-o"
+                           aria-hidden="true"></i>
+                    </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {
+        noteCards: state.noteCards
+    };
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        delete: id => dispatch(deleteNoteCard(id))
+    };
+}
+
+// Connected Component
+export default  connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(NoteCard);
+

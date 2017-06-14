@@ -13,14 +13,14 @@ export  default class Select extends React.Component {
         this.handleSelectChange = this.handleSelectChange.bind(this);
     }
 
-    handleSelectChange(event){
+    handleSelectChange(event) {
         this.setState({value: event.target.value});
-        this.props.onChange(event.target.name,event.target.value);
+        this.props.onChange(event.target.name, event.target.value);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({value: nextProps.value});
-        this.props.onChange(nextProps.name,nextProps.value);
+        this.props.onChange(nextProps.name, nextProps.value);
     }
 
     render() {

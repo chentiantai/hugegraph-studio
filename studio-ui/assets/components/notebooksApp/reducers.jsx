@@ -4,54 +4,57 @@
  * Created on 17/6/6
  */
 
-import {OPEN_NOTECARD_MODAL, CLOSE_NOTECARD_MODAL, ALERT_HIDE, ALERT_SHOW} from './actions';
+import {
+    ALERT_HIDE,
+    ALERT_SHOW,
+    ADD_NOTE_CARD_SUCCESS,
+    SHOW_NOTE_CARDS,
+    DELETE_NOTE_CARD_SUCCESS,
+    UPDATE_NOTE_CARD_SUCCESS
+} from './actions';
 
 const initialState = {
-    cardModalInfo: {
-        title: '',
-        operation: '',
-        isOpen: false,
-        noteCard: {
-            id: '',
-            name: '',
-            connectionName: ''
-        }
-    },
+    noteCards: [],
     alerts: {
         items: [],
         lastKey: -1
     }
-
 };
 
 export function notebooksOperation(state = initialState, action) {
     return {
-        cardModalInfo: cardModalInfo(state.cardModalInfo, action),
+        noteCards: noteCards(state.noteCards, action),
         alerts: alerts(state.alerts, action)
     };
 }
 
 
-function cardModalInfo(state, action) {
+function noteCards(state, action) {
     switch (action.type) {
-        case OPEN_NOTECARD_MODAL:
-            return {
-                ...state,
-                isOpen: true,
-                operation: action.operation,
-                title: action.title,
-                noteCard: action.noteCard
-
-            };
-        case CLOSE_NOTECARD_MODAL:
-            return {
-                ...state,
-                isOpen: false
-            };
+        case ADD_NOTE_CARD_SUCCESS:
+            return [
+                action.noteCard,
+                ...state
+            ];
+        case SHOW_NOTE_CARDS:
+            return [...action.noteCards];
+        case DELETE_NOTE_CARD_SUCCESS: {
+            return state.filter(noteCard => noteCard.id !== action.id);
+        }
+        case UPDATE_NOTE_CARD_SUCCESS: {
+            const noteCardArr = [];
+            state.map(noteCard => {
+                if (noteCard.id !== action.noteCard.id) {
+                    noteCardArr.push(noteCard);
+                } else {
+                    noteCardArr.push(action.noteCard);
+                }
+            });
+            return noteCardArr;
+        }
         default:
             return state;
     }
-
 }
 
 
