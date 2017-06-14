@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by jishilei on 2017/5/13.
@@ -32,8 +34,13 @@ public class NoteBookService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getNotebooks() {
+        List<Notebook> notebookList = notebookRepository.getNotebooks();
+        notebookList.forEach( notebook -> {
+            Connection connection = connectionRepository.get(notebook.getConnectionId());
+            notebook.setConnection(connection);
+        });
         Response response = Response.status(200)
-                .entity(notebookRepository.getNotebooks())
+                .entity(notebookList)
                 .build();
         return response;
     }
@@ -42,8 +49,12 @@ public class NoteBookService {
     @Path("{notebookId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getNotebook(@PathParam("notebookId") String notebookId) {
+        Preconditions.checkArgument(StringUtils.isNotEmpty(notebookId));
+        Notebook notebook = notebookRepository.getNotebook(notebookId);
+        Connection connection = connectionRepository.get(notebook.getConnectionId());
+        notebook.setConnection(connection);
         Response response = Response.status(200)
-                .entity(notebookRepository.getNotebook(notebookId))
+                .entity(notebook)
                 .build();
         return response;
     }
@@ -79,9 +90,9 @@ public class NoteBookService {
     public Response editNotebook(@PathParam("notebookId") String notebookId,
                                  Notebook notebook) {
         Preconditions.checkArgument(notebookId != null && notebookId.equals(notebook.getId()));
-
-        notebookRepository.editNotebook(notebook);
-
+        notebook = notebookRepository.editNotebook(notebook);
+        Connection connection = connectionRepository.get(notebook.getConnectionId());
+        notebook.setConnection(connection);
         Response response = Response.status(200)
                 .entity(notebook)
                 .build();
