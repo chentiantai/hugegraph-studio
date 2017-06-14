@@ -1,11 +1,14 @@
 package com.baidu.hugegraph.studio.notebook.service;
 
+import com.baidu.hugegraph.studio.connections.model.Connection;
+import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
 import com.baidu.hugegraph.studio.notebook.CellExecutionManager;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.EventBus;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ public class NoteBookService {
 
     @Autowired
     private NotebookRepository notebookRepository;
+    @Autowired
+    private ConnectionRepository connectionRepository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,6 +52,10 @@ public class NoteBookService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addNotebook(Notebook notebook) {
+        Preconditions.checkNotNull(notebook);
+        Preconditions.checkArgument(StringUtils.isNotEmpty(notebook.getConnectionId()));
+        Connection connection = connectionRepository.get(notebook.getConnectionId());
+        notebook.setConnection(connection);
         Response response = Response.status(201)
                 .entity(notebookRepository.createNotebook(notebook))
                 .build();

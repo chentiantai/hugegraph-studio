@@ -1,5 +1,6 @@
 package com.baidu.hugegraph.studio.notebook.model;
 
+import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,6 +32,8 @@ public class Notebook {
 
     @JsonProperty("favorite")
     private boolean favorite;
+
+    private Connection connection;
 
     private List<NotebookCell> cells;
 
@@ -70,7 +73,6 @@ public class Notebook {
     public Long getLastUsed() {
         return lastUsed;
     }
-
 
     public List<NotebookCell> getCells() {
         return cells;
@@ -125,5 +127,13 @@ public class Notebook {
 
     public void removeCell(String cellId) {
         this.cells.removeIf(c -> c.getId().equals(cellId));
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }
