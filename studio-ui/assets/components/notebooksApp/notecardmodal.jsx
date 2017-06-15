@@ -47,7 +47,7 @@ class NoteCardModal extends React.Component {
     }
 
 
-    handleSelectChange = (name, value, ...needles) => {
+    handleSelectChange = (name, value) => {
         this.state.noteCard[name] = value;
     }
 
