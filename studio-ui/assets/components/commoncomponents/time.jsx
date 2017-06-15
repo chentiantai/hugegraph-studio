@@ -5,18 +5,20 @@
  */
 
 import React from 'react';
+import Time from 'react-time';
 
-export default class Time extends React.Component{
-    constructor(){
+export  default class TimeFormat extends React.Component {
+    constructor() {
         super();
-
     }
 
-    render(){
-        return(
+    render() {
+        let lastUsedTime = (this.props.timeFormat) * 1000;
+        return (
             <div>
-
+                <p><Time value={lastUsedTime} titleFormat="YYYY/MM/DD HH:mm"
+                         relative/></p>
             </div>
-        );
+        )
     }
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import {deleteNoteCard} from './actions';
 import {connect} from 'react-redux';
+import TimeFormat from '../commoncomponents/time';
 
 class NoteCard extends React.Component {
 
@@ -43,15 +44,14 @@ class NoteCard extends React.Component {
                 <div className="notebook-card-control">
 
                     <div className="notebook-card-createtime">
-                        {
-                            noteCard.lastUsed
-                        }
+                        <TimeFormat timeFormat={noteCard.lastUsed}/>
                     </div>
 
                     <div className="notebook-card-operation">
                         <button type="button" className="btn btn-link"
                                 data-toggle="modal"
-                                data-target="#notebookCardModal" onClick={() => this.update()}>
+                                data-target="#notebookCardModal"
+                                onClick={() => this.update()}>
                     <span>
                         <i className="fa fa-pencil-square-o"
                            aria-hidden="true"></i>

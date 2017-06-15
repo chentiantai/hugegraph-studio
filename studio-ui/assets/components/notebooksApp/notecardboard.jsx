@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import {loadNoteCards} from './actions';
 import NoteCardModal from './notecardmodal';
 
-
 class NoteCardBoard extends React.Component {
     constructor(props) {
         super(props);

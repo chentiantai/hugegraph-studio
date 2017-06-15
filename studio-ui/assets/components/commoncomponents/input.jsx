@@ -43,14 +43,15 @@ export  default class Input extends React.Component {
 
     render() {
         let value = this.state.value;
-        if (value === null || value === undefined){
+        if (value === null || value === undefined) {
             value = '';
         }
 
         if (this.state.status === COMMON)
             return (
                 <div className={this.props.className}>
-                    <input type="text" className="form-control" placeholder={this.props.placeholder}
+                    <input type="text" className="form-control"
+                           placeholder={this.props.placeholder}
                            name={this.props.name}
                            value={value} onChange={this.handleChange}/>
                 </div>
@@ -58,7 +59,8 @@ export  default class Input extends React.Component {
         else
             return (
                 <div className={this.props.className}>
-                    <input type="text" className="form-control has-error" placeholder={this.props.placeholder}
+                    <input type="text" className="form-control has-error"
+                           placeholder={this.props.placeholder}
                            name={this.props.name}
                            value={value} onChange={this.handleChange}/>
                     <div className="form-err-message">{this.state.message}</div>
@@ -92,12 +94,24 @@ export  default class Input extends React.Component {
             this.setState({status: COMMON, value: value});
         } else {
             if (this.state.isValidateByForce) {
-                this.setState({status: ERR, message: validation.message, value: value});
+                this.setState({
+                    status: ERR,
+                    message: validation.message,
+                    value: value
+                });
             } else {
                 if (!this.state.isChange)
-                    this.setState({status: COMMON, message: validation.message, value: value});
+                    this.setState({
+                        status: COMMON,
+                        message: validation.message,
+                        value: value
+                    });
                 else
-                    this.setState({status: ERR, message: validation.message, value: value});
+                    this.setState({
+                        status: ERR,
+                        message: validation.message,
+                        value: value
+                    });
             }
         }
         return validation;

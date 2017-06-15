@@ -135,7 +135,8 @@ class NoteCardModal extends React.Component {
                             <div className="form-group">
                                 <label
                                     className="col-sm-2 control-label">Name*</label>
-                                <Input className="col-sm-10" placeholder="Name" name="name"
+                                <Input className="col-sm-10" placeholder="Name"
+                                       name="name"
                                        validator={isNull}
                                        message="please enter the notebook name"
                                        isValidateByForce={this.state.isValidateByForce}
@@ -144,7 +145,8 @@ class NoteCardModal extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">Connection*</label>
-                                <Select className="col-sm-10" name="connectionId"
+                                <Select className="col-sm-10"
+                                        name="connectionId"
                                         value={selectValue}
                                         options={
                                             this.state.connections.map(connection =>

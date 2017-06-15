@@ -16,6 +16,10 @@ require('react-hot-loader/patch');
 
 export default class NotebooksApp extends React.Component {
 
+    constructor() {
+        super();
+
+    }
 
     render() {
         return (
