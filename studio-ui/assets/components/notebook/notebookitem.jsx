@@ -4,16 +4,17 @@
  * Created on 17/6/12
  */
 import React from 'react';
-
+import {connect} from 'react-redux';
+import {itemScreenMode} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 
 
-export default class NotebookItem extends React.Component {
+class NotebookItem extends React.Component {
     constructor() {
         super();
         this.state = {
-            screenMode: 'container'
+            fullScreen: false
         }
     }
 
@@ -43,22 +44,24 @@ export default class NotebookItem extends React.Component {
     }
 
 
-
     screenMode = cssFlag => {
-        let screenMode = cssFlag ? 'container-fluid' : 'container';
         this.setState({
-            screenMode: screenMode
-        })
+            fullScreen: cssFlag
+        });
+        this.props.itemScreenMode(cssFlag, this.props.itemKey);
     }
 
 
-
     render() {
+        let screenMode = this.state.fullScreen ? 'container-fluid full-screen' : 'container';
+        let screenCol = this.state.fullScreen ? 'col-md-12 full-screen-col-md-12' : 'col-md-12';
         let items = ['Gremlin', 'Markdown'];
+
+
         return (
-            <div className={this.state.screenMode}>
+            <div className={screenMode} style={{display: this.props.display}}>
                 <div className="row card">
-                    <div className="col-md-12">
+                    <div className={screenCol}>
                         <div className="panel panel-default">
                             <div className="panel-body">
                                 <div className="card-header">
@@ -85,9 +88,6 @@ export default class NotebookItem extends React.Component {
                                 <div style={{clear: 'both'}}></div>
 
 
-
-
-
                                 <div className="card-editor">
                                     <pre id="editor" ref={el => this.geditor = el}></pre>
                                     <pre id="editorM" style={{display: 'none'}}></pre>
@@ -102,16 +102,6 @@ export default class NotebookItem extends React.Component {
                                         </div>
                                     </form>
                                 </div>
-
-
-                                    <div className="card-para">
-                                        <form>
-                                            <div className="form-group">
-                                                <label>maxAge</label>
-                                                <input type="text" id="maxAge1" placeholder="maxAge"/>
-                                            </div>
-                                        </form>
-                                    </div>
 
 
                                 <div className="card-content-toolbox btn-toolbar">
@@ -134,7 +124,6 @@ export default class NotebookItem extends React.Component {
                                         <button type="button" className="btn btn-default">
                                             <i className="fa fa-picture-o" aria-hidden="true"></i>
                                         </button>
-
                                     </div>
                                     <div className="card-content">
                                         <div id="graph" className="graph"></div>
@@ -151,3 +140,24 @@ export default class NotebookItem extends React.Component {
         );
     }
 }
+
+
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {
+        fullScreen: state.fullScreen
+    };
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        itemScreenMode: (flag, itemKey) => dispatch(itemScreenMode(flag, itemKey))
+    };
+}
+
+// Connected Component
+export default  connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(NotebookItem);

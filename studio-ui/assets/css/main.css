@@ -236,7 +236,7 @@ td > button.btn {
 }
 
 .card .panel .panel-body {
-    padding: 10px;
+    padding: 5px 10px;
 }
 
 .card .btn-link {
@@ -301,7 +301,7 @@ td > button.btn {
 
 .graph {
     width: 100%;
-    height: 250px;
+    height: 350px;
 }
 
 .bootstrap-select .dropdown-toggle:focus {
@@ -361,3 +361,12 @@ form {
 .drop-down-menu a:hover {
     color: #3071a9;
 }
+
+.full-screen {
+    margin-top: -3px;
+}
+
+.full-screen-col-md-12 {
+    padding: 0 0;
+}
+

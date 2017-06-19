@@ -4,31 +4,16 @@
  * Created on 17/6/5
  */
 import {
-    OPEN_CONNECTION_MODAL,
-    CLOSE_CONNECTION_MODAL,
     ALERT_SHOW,
     ALERT_HIDE,
-    SHOW,
-    ADD_SUCCESS,
-    DELETE_SUCCESS,
-    UPDATE_SUCCESS
+    FULL_SCREEN
 } from './actions';
 
 
 const initialState = {
-    connections: [],
-    modalInfo: {
-        validation: true,
-        title: '',
-        operation: '',
-        isOpen: false,
-        connection: {
-            id: '',
-            name: '',
-            graphName: '',
-            connectionHost: '',
-            port: ''
-        }
+    screenMode: {
+        fullScreen: false,
+        itemKey: 0
     },
     alerts: {
         items: [],
@@ -37,35 +22,28 @@ const initialState = {
 };
 
 
-export function connectionsOperation(state = initialState, action) {
+export function notebookOperation(state = initialState, action) {
     return {
-        connections: connections(state.connections, action),
-        modalInfo: modalInfo(state.modalInfo, action),
+        screenMode: screenMode(state.screenMode, action),
         alerts: alerts(state.alerts, action)
     };
 }
 
 
-function modalInfo(state = {}, action) {
+function screenMode(state = {fullScreen: false, itemKey: 0}, action) {
     switch (action.type) {
-        case OPEN_CONNECTION_MODAL:
+        case FULL_SCREEN:
             return {
                 ...state,
-                isOpen: true,
-                operation: action.operation,
-                title: action.title,
-                connection: action.connection
+                fullScreen: action.flag,
+                itemKey: action.itemKey
             };
-        case CLOSE_CONNECTION_MODAL:
-            return {
-                ...state,
-                isOpen: false
-            };
+
         default:
             return state;
     }
-
 }
+
 
 function alerts(state = {items: [], lastKey: -1}, action) {
     switch (action.type) {
@@ -86,32 +64,3 @@ function alerts(state = {items: [], lastKey: -1}, action) {
 }
 
 
-function connections(state = [], action) {
-    switch (action.type) {
-        case SHOW: {
-            return JSON.parse(JSON.stringify(action.connections));
-        }
-        case ADD_SUCCESS: {
-            return [
-                ...state,
-                action.newConnection
-            ];
-        }
-        case DELETE_SUCCESS: {
-            return state.filter(connection => connection.id !== action.id);
-        }
-        case UPDATE_SUCCESS: {
-            const connectionsArr = [];
-            state.map(connection => {
-                if (connection.id !== action.connection.id) {
-                    connectionsArr.push(connection);
-                } else {
-                    connectionsArr.push(action.connection);
-                }
-            });
-            return connectionsArr;
-        }
-        default:
-            return state;
-    }
-}

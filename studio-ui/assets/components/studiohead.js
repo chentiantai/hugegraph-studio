@@ -9,9 +9,12 @@ import React from 'react';
 
 export default class StudioHead extends React.Component {
 
+
     render() {
+        let display = this.props.display === undefined ? 'block' : this.props.display;
+
         return (
-            <div>
+            <div style={{display: display}}>
                 <div className="studio-header">
                     <div className="container">
                         <div className="row">

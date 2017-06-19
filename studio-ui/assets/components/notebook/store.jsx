@@ -5,19 +5,18 @@
  */
 import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
-import {connectionsOperation} from './reducers';
-// import * as reducers from './reducers';
+import {notebookOperation} from './reducers';
 
 
 let store;
 if (!(window.__REDUX_DEVTOOLS_EXTENSION__ || window.__REDUX_DEVTOOLS_EXTENSION__)) {
     store = createStore(
-        connectionsOperation,
+        notebookOperation,
         applyMiddleware(thunk)
     );
 } else {
     store = createStore(
-        connectionsOperation,
+        notebookOperation,
         compose(applyMiddleware(thunk), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
     );
 }

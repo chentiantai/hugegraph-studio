@@ -10,15 +10,38 @@ import Head from './head';
 import NotebookBoard from './notebook/notebookboard';
 import StudioHead from './studiohead';
 import 'whatwg-fetch';
+import {connect} from 'react-redux';
+import {itemScreenMode} from './notebook/actions';
 
-export default class NotebookApp extends React.Component {
+class NotebookApp extends React.Component {
     render() {
         return (
             <div>
                 <Head/>
-                <StudioHead/>
+                <StudioHead display={this.props.screenMode.fullScreen ? 'none' : 'block'}/>
                 <NotebookBoard/>
             </div>
         );
     }
 }
+
+
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {
+        screenMode: state.screenMode
+    };
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        itemScreenMode: (flag, itemKey) => dispatch(itemScreenMode(flag, itemKey))
+    };
+}
+
+// Connected Component
+export default  connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(NotebookApp);
