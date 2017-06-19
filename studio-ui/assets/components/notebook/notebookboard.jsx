@@ -8,7 +8,7 @@ import NotebookItem from './notebookitem';
 export default class NotebookBoard extends React.Component {
     render() {
         return (
-            <div className="container ">
+            <div>
                 <NotebookItem/>
                 <NoteBookItemAdd></NoteBookItemAdd>
             </div>
@@ -19,14 +19,16 @@ export default class NotebookBoard extends React.Component {
 
 function NoteBookItemAdd() {
     return (
-        <div className="row card">
-            <div className="col-md-12 col-box card-add">
-                <div className="card-add-line"></div>
-                <div className="card-add-btn">
-                    <div className="btn-group btn-group-sm" role="group">
-                        <button type="button" className="btn btn-default">
-                            <i className="fa fa-plus" aria-hidden="true"></i>
-                        </button>
+        <div className="container ">
+            <div className="row card">
+                <div className="col-md-12 col-box card-add">
+                    <div className="card-add-line"></div>
+                    <div className="card-add-btn">
+                        <div className="btn-group btn-group-sm" role="group">
+                            <button type="button" className="btn btn-default">
+                                <i className="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

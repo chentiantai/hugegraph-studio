@@ -4,11 +4,17 @@
  * Created on 17/6/12
  */
 import React from 'react';
+
+import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
+
 
 export default class NotebookItem extends React.Component {
     constructor() {
         super();
+        this.state = {
+            screenMode: 'container'
+        }
     }
 
     componentDidMount() {
@@ -37,13 +43,23 @@ export default class NotebookItem extends React.Component {
     }
 
 
+
+    screenMode = cssFlag => {
+        let screenMode = cssFlag ? 'container-fluid' : 'container';
+        this.setState({
+            screenMode: screenMode
+        })
+    }
+
+
+
     render() {
         let items = ['Gremlin', 'Markdown'];
         return (
-            <div className="row card">
-                <div className="col-md-12">
-                    <div className="panel panel-default">
-                        <div className="panel-body">
+            <div className={this.state.screenMode}>
+                <div className="row card">
+                    <div className="col-md-12">
+                        <div className="panel panel-default">
                             <div className="panel-body">
                                 <div className="card-header">
                                     <div className="pull-left">
@@ -53,10 +69,9 @@ export default class NotebookItem extends React.Component {
                                         <button type="button" className="btn btn-link ">
                                             <i className="fa fa-play" aria-hidden="true"></i>
                                         </button>
-                                        <button type="button" className="btn btn-link ">
-                                            <i className="fa fa-expand" aria-hidden="true"></i>
-                                            {/*<!--<i className="fa fa-compress" aria-hidden="true"></i>-->*/}
-                                        </button>
+                                        <ChangeButton defaultCss="fa fa-expand"
+                                                      changeCss="fa fa-compress"
+                                                      onClick={this.screenMode}/>
                                         <button type="button" className="btn btn-link ">
                                             <i className="fa fa-eye" aria-hidden="true"></i>
                                             {/*<!--<i className="fa fa-eye-slash" aria-hidden="true"></i>-->*/}
@@ -68,6 +83,9 @@ export default class NotebookItem extends React.Component {
                                 </div>
 
                                 <div style={{clear: 'both'}}></div>
+
+
+
 
 
                                 <div className="card-editor">
@@ -84,6 +102,16 @@ export default class NotebookItem extends React.Component {
                                         </div>
                                     </form>
                                 </div>
+
+
+                                    <div className="card-para">
+                                        <form>
+                                            <div className="form-group">
+                                                <label>maxAge</label>
+                                                <input type="text" id="maxAge1" placeholder="maxAge"/>
+                                            </div>
+                                        </form>
+                                    </div>
 
 
                                 <div className="card-content-toolbox btn-toolbar">
@@ -106,18 +134,14 @@ export default class NotebookItem extends React.Component {
                                         <button type="button" className="btn btn-default">
                                             <i className="fa fa-picture-o" aria-hidden="true"></i>
                                         </button>
+
                                     </div>
-                                    <div className="btn-group btn-group-sm" role="group">
-                                        <button type="button" className="btn btn-default">
-                                            <i className="fa fa-floppy-o" aria-hidden="true"></i>
-                                        </button>
+                                    <div className="card-content">
+                                        <div id="graph" className="graph"></div>
                                     </div>
-                                </div>
-                                <div className="card-content">
-                                    <div id="graph" className="graph"></div>
-                                </div>
-                                <div className="card-footer">
-                                    Real-time Success. 1 element returned. Duration: 0.186 s.
+                                    <div className="card-footer">
+                                        Real-time Success. 1 element returned. Duration: 0.186 s.
+                                    </div>
                                 </div>
                             </div>
                         </div>
