@@ -4,17 +4,14 @@
  * Created on 17/6/12
  */
 import React from 'react';
-
-
-
-
+import DropDownMenu from '../commoncomponents/dropdownmenu';
 
 export default class NotebookItem extends React.Component {
     constructor() {
         super();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         var editor = ace.edit(this.geditor);
         ace.require('ace/ext/old_ie');
         ace.require('ace/ext/language_tools');
@@ -32,17 +29,16 @@ export default class NotebookItem extends React.Component {
             enableLiveAutocompletion: true
         });
         console.log('componentDidMount');
-
     }
 
 
-    handleChange(event) {
-        // alert(event.target.value);
+    changeMenu = item => {
+        console.log(item);
     }
+
 
     render() {
-        console.log('r');
-
+        let items = ['Gremlin', 'Markdown'];
         return (
             <div className="row card">
                 <div className="col-md-12">
@@ -50,11 +46,8 @@ export default class NotebookItem extends React.Component {
                         <div className="panel-body">
                             <div className="panel-body">
                                 <div className="card-header">
-                                    <div className="pull-left" >
-                                        <select className="form-control" onChange={(event)=>this.handleChange(event)}>
-                                            <option value="editor">Gremlin</option>
-                                            <option value="editorM">Markdown</option>
-                                        </select>
+                                    <div className="pull-left">
+                                        <DropDownMenu menuItems={items} onChange={this.changeMenu}/>
                                     </div>
                                     <div className="btn-group btn-group-sm pull-right" role="group">
                                         <button type="button" className="btn btn-link ">
@@ -78,10 +71,9 @@ export default class NotebookItem extends React.Component {
 
 
                                 <div className="card-editor">
-                                    <pre id="editor" ref={el=>this.geditor=el}></pre>
+                                    <pre id="editor" ref={el => this.geditor = el}></pre>
                                     <pre id="editorM" style={{display: 'none'}}></pre>
                                 </div>
-
 
 
                                 <div className="card-para">
@@ -92,7 +84,6 @@ export default class NotebookItem extends React.Component {
                                         </div>
                                     </form>
                                 </div>
-
 
 
                                 <div className="card-content-toolbox btn-toolbar">

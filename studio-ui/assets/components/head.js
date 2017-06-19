@@ -29,13 +29,14 @@ export default class Head extends React.Component {
                         <div className="collapse navbar-collapse" id="studio-navbar-collapse">
                             <ul className="nav navbar-nav navbar-right">
                                 <li className="dropdown">
-                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    <a href="./index.html" className="dropdown-toggle" data-toggle="dropdown"
+                                       role="button"
                                        aria-haspopup="true"
                                        aria-expanded="false">setting <span className="caret"></span></a>
                                     <ul className="dropdown-menu">
-                                        <li><a href="./connections.html">notebooks</a></li>
+                                        <li><a href="./index.html">notebooks</a></li>
                                         <li role="separator" className="divider"></li>
-                                        <li><a href="#">connections</a></li>
+                                        <li><a href="./connections.html">connections</a></li>
                                     </ul>
                                 </li>
                             </ul>

@@ -10,6 +10,7 @@ import React from 'react';
 import Head from './head';
 import StudioHead from './studiohead';
 import NoteCardBoard from './notebooksApp/notecardboard';
+import 'whatwg-fetch';
 
 
 require('react-hot-loader/patch');

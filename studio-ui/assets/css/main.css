@@ -354,4 +354,10 @@ form {
     text-align: center;
 }
 
+.drop-down-menu a {
+    color: #333;
+}
 
+.drop-down-menu a:hover {
+    color: #3071a9;
+}
