@@ -44,7 +44,9 @@ class NotebookItem extends React.Component {
 
 
     changeMenu = item => {
-        console.log(item);
+        let mode = item === 'gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
+        var editor = ace.edit(this.geditor);
+        editor.session.setMode(mode);
     }
 
 
@@ -70,7 +72,7 @@ class NotebookItem extends React.Component {
         })
     }
 
-    runMode = ()=> {
+    runMode = () => {
         this.setState({})
     }
 

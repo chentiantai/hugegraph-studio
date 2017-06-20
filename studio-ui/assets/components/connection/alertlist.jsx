@@ -6,8 +6,8 @@
 
 import React from 'react';
 import {Alert} from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { hideAllAlert, alertHide } from './actions';
+import {connect} from 'react-redux';
+import {hideAllAlert, alertHide} from './actions';
 
 class AlertList extends React.Component {
     constructor() {
@@ -20,7 +20,7 @@ class AlertList extends React.Component {
     }
 
     render() {
-        return(
+        return (
             <div>
                 {this.props.alerts.items.map((item, i) => (
                     <Alert
@@ -37,7 +37,6 @@ class AlertList extends React.Component {
 }
 
 
-
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
@@ -49,7 +48,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         alertHide: key => dispatch(alertHide(key)),
-        hideAllAlert:() => dispatch(hideAllAlert())
+        hideAllAlert: () => dispatch(hideAllAlert())
     };
 }
 

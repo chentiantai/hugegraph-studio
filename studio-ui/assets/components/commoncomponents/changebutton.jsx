@@ -21,7 +21,8 @@ export default class ChangeButton extends React.Component {
     render() {
         let cssMode = this.state.cssFlag ? this.props.defaultCss : this.props.changeCss;
         return (
-            <button type="button" className="btn btn-link" onClick={this.onClick}>
+            <button type="button" className="btn btn-link"
+                    onClick={this.onClick}>
                 <i className={cssMode} aria-hidden="true"></i>
             </button>
         );

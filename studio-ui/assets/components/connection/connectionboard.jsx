@@ -26,7 +26,13 @@ class ConnectionsBoard extends React.Component {
     }
 
     openAddModal() {
-        let connection = {id: '', name: '', graphName: '', connectionHost: '', port: ''};
+        let connection = {
+            id: '',
+            name: '',
+            graphName: '',
+            connectionHost: '',
+            port: ''
+        };
         this.props.openEditModal(connection, 'add', 'Add Connection Information');
     }
 
@@ -75,9 +81,11 @@ class ConnectionsBoard extends React.Component {
                             <div className="page-title">
                                 Connections information
                                 <div className="connection-header">
-                                    <button type="button" className="btn btn-default"
+                                    <button type="button"
+                                            className="btn btn-default"
                                             onClick={() => this.openAddModal()}>
-                                        <i className="fa fa-plus" aria-hidden="true"><span>add</span></i>
+                                        <i className="fa fa-plus"
+                                           aria-hidden="true"><span>add</span></i>
                                     </button>
                                     <ConnectionModalApp/>
                                 </div>
@@ -93,7 +101,8 @@ class ConnectionsBoard extends React.Component {
                                 </tr>
                                 {
                                     connections.map(connection =>
-                                        <Connection key={connection.id} connection={connection}
+                                        <Connection key={connection.id}
+                                                    connection={connection}
                                                     deleteConnection={() => this.deleteConnection(connection.id)}
                                                     editConnection={() => this.openUpdateModal(connection)}/>)
                                 }

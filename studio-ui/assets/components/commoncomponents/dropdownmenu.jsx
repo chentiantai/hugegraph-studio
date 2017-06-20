@@ -31,7 +31,8 @@ export default class DropDownMenu extends React.Component {
         return (
             <ul className="nav nav-pills drop-down-menu">
                 <li role="presentation" className="dropdown">
-                    <a className="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                    <a className="dropdown-toggle" data-toggle="dropdown"
+                       href="#" role="button" aria-haspopup="true"
                        aria-expanded="false">
                         {this.state.selectMenu}
                         <span className="caret"></span>
@@ -39,7 +40,9 @@ export default class DropDownMenu extends React.Component {
                     <ul className="dropdown-menu">
                         {
                             this.props.menuItems.map((item, index) =>
-                                <li key={index} onClick={() => this.handleClick(item)}><a>{item}</a></li>)
+                                <li key={index}
+                                    onClick={() => this.handleClick(item)}>
+                                    <a>{item}</a></li>)
                         }
                     </ul>
                 </li>

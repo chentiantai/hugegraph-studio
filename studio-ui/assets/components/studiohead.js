@@ -19,7 +19,9 @@ export default class StudioHead extends React.Component {
                     <div className="container">
                         <div className="row">
                             <div className="header-title">
-                                <h1><i className="fa fa-book" aria-hidden="true"></i>HugeGraph Notebook Quick Start</h1>
+                                <h1><i className="fa fa-book"
+                                       aria-hidden="true"></i>HugeGraph Notebook
+                                    Quick Start</h1>
                             </div>
                         </div>
                     </div>

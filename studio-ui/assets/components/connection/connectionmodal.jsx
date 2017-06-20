@@ -75,14 +75,17 @@ class ConnectionModal extends React.Component {
             <div>
                 <Modal isOpen={isOpen}>
                     <ModalHeader className="modal-header">
-                        <ModalClose onClick={() => this.props.closeEditModal()}/>
+                        <ModalClose
+                            onClick={() => this.props.closeEditModal()}/>
                         <h4 className="modal-title">{this.modalInfo.title} </h4>
                     </ModalHeader>
                     <ModalBody>
                         <form className="form-horizontal">
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">Name</label>
-                                <Input className="col-sm-10" placeholder="Name" name="name"
+                                <label
+                                    className="col-sm-2 control-label">Name</label>
+                                <Input className="col-sm-10" placeholder="Name"
+                                       name="name"
                                        validator={isNull}
                                        message="please enter the name"
                                        isValidateByForce={this.state.isValidateByForce}
@@ -91,23 +94,29 @@ class ConnectionModal extends React.Component {
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">graphName</label>
-                                <Input className="col-sm-10" placeholder="graphName" name="graphName"
+                                <Input className="col-sm-10"
+                                       placeholder="graphName" name="graphName"
                                        validator={isNull}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.graphName}
                                        onChange={this.handleChange}/>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">Host</label>
-                                <Input className="col-sm-10" placeholder="ConnectionHost" name="connectionHost"
+                                <label
+                                    className="col-sm-2 control-label">Host</label>
+                                <Input className="col-sm-10"
+                                       placeholder="ConnectionHost"
+                                       name="connectionHost"
                                        validator={isNull}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.connectionHost}
                                        onChange={this.handleChange}/>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">Port</label>
-                                <Input className="col-sm-10" placeholder="Port" name="port"
+                                <label
+                                    className="col-sm-2 control-label">Port</label>
+                                <Input className="col-sm-10" placeholder="Port"
+                                       name="port"
                                        validator={isNumber}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.port}
@@ -117,7 +126,8 @@ class ConnectionModal extends React.Component {
                     </ModalBody>
 
                     <ModalFooter className="modal-footer">
-                        <button type="button" className="btn btn-default" onClick={() => this.closeEditModal()}>
+                        <button type="button" className="btn btn-default"
+                                onClick={() => this.closeEditModal()}>
                             Close
                         </button>
                         <button type="button" className="btn btn-primary"

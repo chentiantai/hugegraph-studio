@@ -29,7 +29,8 @@ class NotebookBoard extends React.Component {
                         <div key={i}>
                             <NotebookItem itemKey={i}
                                           display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}/>
-                            <NoteBookItemAdd itemKey={i} display={addDisplay} onClick={this.addItem}/>
+                            <NoteBookItemAdd itemKey={i} display={addDisplay}
+                                             onClick={this.addItem}/>
                         </div>)
                 }
             </div>
@@ -66,9 +67,13 @@ class NoteBookItemAdd extends React.Component {
                     <div className="col-md-12 col-box card-add">
                         <div className="card-add-line"></div>
                         <div className="card-add-btn">
-                            <div className="btn-group btn-group-sm" role="group">
-                                <button type="button" className="btn btn-default" onClick={this.onClick}>
-                                    <i className="fa fa-plus" aria-hidden="true"></i>
+                            <div className="btn-group btn-group-sm"
+                                 role="group">
+                                <button type="button"
+                                        className="btn btn-default"
+                                        onClick={this.onClick}>
+                                    <i className="fa fa-plus"
+                                       aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
