@@ -4,7 +4,6 @@ body {
     background: #ecf0f1;
 }
 
-
 .navbar {
     min-height: 28px;
     border-radius: 0;
@@ -282,6 +281,10 @@ td > button.btn {
 .card-footer {
     font-size: 12px;
     color: #ccc;
+}
+
+.card-add:hover .card-add-line {
+    border-bottom: 1px solid #ddd;
 }
 
 .card-add-btn {
