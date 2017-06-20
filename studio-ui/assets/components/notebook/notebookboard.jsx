@@ -11,7 +11,7 @@ import {itemScreenMode} from './actions';
 class NotebookBoard extends React.Component {
     constructor() {
         super();
-        this.itemKey = [0, 1,3];
+        this.itemKey = [0,1,2];
     }
 
 
@@ -20,12 +20,14 @@ class NotebookBoard extends React.Component {
         let fullScreen = this.props.screenMode.fullScreen;
         let display = fullScreen ? 'none' : 'block';
         let content = this.itemKey.map(i =>
-            <div key={i}>
+            <div key={i} >
                 <NotebookItem itemKey={i}
                               display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}/>
                 <NoteBookItemAdd itemKey={i + '_add'} display={display}/>
             </div>
         );
+
+
 
         return (
             <div>

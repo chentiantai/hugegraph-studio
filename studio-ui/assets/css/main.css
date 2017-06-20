@@ -4,6 +4,7 @@ body {
     background: #ecf0f1;
 }
 
+
 .navbar {
     min-height: 28px;
     border-radius: 0;
@@ -237,6 +238,7 @@ td > button.btn {
 
 .card .panel .panel-body {
     padding: 5px 10px;
+    height: 100%;
 }
 
 .card .btn-link {
@@ -272,6 +274,9 @@ td > button.btn {
 
 .card-content {
     margin-bottom: 8px;
+    min-height: 100px;
+    height: auto;
+
 }
 
 .card-footer {
@@ -301,7 +306,7 @@ td > button.btn {
 
 .graph {
     width: 100%;
-    height: 350px;
+    /*min-height: 250px;*/
 }
 
 .bootstrap-select .dropdown-toggle:focus {
@@ -369,4 +374,5 @@ form {
 .full-screen-col-md-12 {
     padding: 0 0;
 }
+
 

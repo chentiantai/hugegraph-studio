@@ -11,10 +11,13 @@ import DropDownMenu from '../commoncomponents/dropdownmenu';
 
 
 class NotebookItem extends React.Component {
+
     constructor() {
         super();
+        this.intialPanelHeight=250;
         this.state = {
-            fullScreen: false
+            fullScreen: false,
+            itemPanelHeight: this.intialPanelHeight
         }
     }
 
@@ -26,7 +29,7 @@ class NotebookItem extends React.Component {
         editor.session.setMode('ace/mode/gremlin');
         editor.setShowPrintMargin(false);
         editor.setAutoScrollEditorIntoView(true);
-        editor.setOption('maxLines', 30);
+        editor.setOption('maxLines', 10);
         editor.setOption('minLines', 10);
         this.geditor.style.fontSize = '16px';
         editor.resize();
@@ -44,12 +47,23 @@ class NotebookItem extends React.Component {
     }
 
 
+    computeHeight = () => {
+        let screenHeight = window.innerHeight||document.documentElement.clientHeight;
+        let height = 32;
+        let itemPanelHeight = screenHeight - height;
+        return itemPanelHeight;
+    }
+
     screenMode = cssFlag => {
+        let itemPanelHeight = cssFlag?this.computeHeight():this.intialPanelHeight;
         this.setState({
-            fullScreen: cssFlag
+            fullScreen: cssFlag,
+            itemPanelHeight:itemPanelHeight
         });
         this.props.itemScreenMode(cssFlag, this.props.itemKey);
     }
+
+
 
 
     render() {
@@ -62,7 +76,7 @@ class NotebookItem extends React.Component {
             <div className={screenMode} style={{display: this.props.display}}>
                 <div className="row card">
                     <div className={screenCol}>
-                        <div className="panel panel-default">
+                        <div className="panel panel-default" style={{minHeight: this.state.itemPanelHeight}}>
                             <div className="panel-body">
                                 <div className="card-header">
                                     <div className="pull-left">
@@ -87,12 +101,10 @@ class NotebookItem extends React.Component {
 
                                 <div style={{clear: 'both'}}></div>
 
-
                                 <div className="card-editor">
                                     <pre id="editor" ref={el => this.geditor = el}></pre>
                                     <pre id="editorM" style={{display: 'none'}}></pre>
                                 </div>
-
 
                                 <div className="card-para">
                                     <form>
