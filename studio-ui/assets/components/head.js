@@ -11,10 +11,12 @@ import React from 'react';
 export default class Head extends React.Component {
 
     render() {
+        let containerCss = this.props.containerCss === undefined ? 'container' : this.props.containerCss;
+
         return (
             <div>
                 <nav className="navbar navbar-inverse">
-                    <div className="container">
+                    <div className={containerCss}>
                         <div className="navbar-header">
                             <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
                                     data-target="#studio-navbar-collapse" aria-expanded="false">
