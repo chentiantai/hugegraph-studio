@@ -21,7 +21,6 @@ class NotebookBoard extends React.Component {
         console.log(this.state.itemKeys);
         let fullScreenItem = this.props.screenMode.itemKey;
         let fullScreen = this.props.screenMode.fullScreen;
-        let itemDisplay = fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'
         let addDisplay = fullScreen ? 'none' : 'block';
         return (
             <div>
@@ -29,7 +28,7 @@ class NotebookBoard extends React.Component {
                     this.state.itemKeys.map(i =>
                         <div key={i}>
                             <NotebookItem itemKey={i}
-                                          display={itemDisplay}/>
+                                          display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}/>
                             <NoteBookItemAdd itemKey={i} display={addDisplay} onClick={this.addItem}/>
                         </div>)
                 }
