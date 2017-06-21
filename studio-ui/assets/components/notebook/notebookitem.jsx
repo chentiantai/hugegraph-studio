@@ -29,6 +29,7 @@ class NotebookItem extends React.Component {
         editor.setTheme('ace/theme/chrome');
         editor.session.setMode('ace/mode/gremlin');
         editor.setShowPrintMargin(false);
+        editor.renderer.setShowGutter(false);
         editor.setAutoScrollEditorIntoView(true);
         editor.setOption('maxLines', 10);
         editor.setOption('minLines', 3);
@@ -39,12 +40,11 @@ class NotebookItem extends React.Component {
             enableSnippets: true,
             enableLiveAutocompletion: true
         });
-        console.log('componentDidMount');
     }
 
 
     changeMenu = item => {
-        let mode = item === 'gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
+        let mode = item === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
         var editor = ace.edit(this.geditor);
         editor.session.setMode(mode);
     }
@@ -116,7 +116,7 @@ class NotebookItem extends React.Component {
                                                       changeCss="fa fa-eye-slash"
                                                       onClick={this.viewMode}/>
                                         <button type="button"
-                                                className="btn btn-link "
+                                                className={this.props.deleteCss}
                                                 onClick={this.deleteItem}>
                                             <i className="fa fa-times"
                                                aria-hidden="true"></i>
@@ -143,35 +143,33 @@ class NotebookItem extends React.Component {
                                         </div>
                                     </form>
                                 </div>
-
-
                                 <div
-                                    className="card-content-toolbox btn-toolbar">
-                                    <div className="btn-group btn-group-sm"
-                                         role="group">
-                                        <button type="button"
-                                                className="btn btn-default">
-                                            <i className="fa fa-table"
-                                               aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button"
-                                                className="btn btn-default">
-                                            <i className="fa fa fa-code"
-                                               aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button"
-                                                className="btn btn-default">
-                                            <i className="fa fa-joomla"
-                                               aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                    <div className="card-content">
-                                        <div id="graph" className="graph"></div>
-                                    </div>
-                                    <div className="card-footer">
-                                        Real-time Success. 1 element returned.
-                                        Duration: 0.186 s.
-                                    </div>
+                                className="card-content-toolbox btn-toolbar">
+                                <div className="btn-group btn-group-sm"
+                                role="group">
+                                <button type="button"
+                                className="btn btn-default">
+                                <i className="fa fa-table"
+                                aria-hidden="true"></i>
+                                </button>
+                                <button type="button"
+                                className="btn btn-default">
+                                <i className="fa fa fa-code"
+                                aria-hidden="true"></i>
+                                </button>
+                                <button type="button"
+                                className="btn btn-default">
+                                <i className="fa fa-joomla"
+                                aria-hidden="true"></i>
+                                </button>
+                                </div>
+                                <div className="card-content">
+                                <div id="graph" className="graph"></div>
+                                </div>
+                                <div className="card-footer">
+                                Real-time Success. 1 element returned.
+                                Duration: 0.186 s.
+                                </div>
                                 </div>
                             </div>
                         </div>

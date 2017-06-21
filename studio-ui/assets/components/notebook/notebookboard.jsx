@@ -15,6 +15,7 @@ class NotebookBoard extends React.Component {
             itemKeys: [0],
             key: []
         }
+        this.maxKey = Math.max(this.state.itemKeys) + 1;
     }
 
 
@@ -23,16 +24,17 @@ class NotebookBoard extends React.Component {
         let fullScreenItem = this.props.screenMode.itemKey;
         let fullScreen = this.props.screenMode.fullScreen;
         let addDisplay = fullScreen ? 'none' : 'block';
+        let deleteCss = this.state.itemKeys.length === 1 ? 'btn btn-link' +
+            ' disabled' : 'btn btn-link';
         return (
             <div>
-                <NoteBookItemAdd itemKey={-1} display={addDisplay}
-                                 onClick={this.addItem}/>
                 {
                     this.state.itemKeys.map(i =>
                         <div key={i}>
                             <NotebookItem itemKey={i}
                                           display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}
-                                          onDelete={this.deleteItem}/>
+                                          onDelete={this.deleteItem}
+                                          deleteCss={deleteCss}/>
                             <NoteBookItemAdd itemKey={i} display={addDisplay}
                                              onClick={this.addItem}/>
                         </div>)
@@ -50,18 +52,22 @@ class NotebookBoard extends React.Component {
         this.state.itemKeys.forEach(i => {
                 if (i === itemKey) {
                     newItemKeys.push(i);
-                    newItemKeys.push(this.state.itemKeys.length);
+                    newItemKeys.push(this.maxKey);
                 } else {
                     newItemKeys.push(i);
                 }
             }
         );
+        this.maxKey = this.maxKey + 1;
         this.setState({
-            itemKeys: newItemKeys
+            itemKeys: newItemKeys,
+
         });
+
     }
 
     deleteItem = key => {
+        if (this.state.itemKeys.length === 1) return;
 
         let newItemKeys = [];
         this.state.itemKeys.forEach(i => {
