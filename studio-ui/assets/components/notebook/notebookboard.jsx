@@ -12,7 +12,8 @@ class NotebookBoard extends React.Component {
     constructor() {
         super();
         this.state = {
-            itemKeys: [0]
+            itemKeys: [0],
+            key: []
         }
     }
 
@@ -24,11 +25,14 @@ class NotebookBoard extends React.Component {
         let addDisplay = fullScreen ? 'none' : 'block';
         return (
             <div>
+                <NoteBookItemAdd itemKey={-1} display={addDisplay}
+                                 onClick={this.addItem}/>
                 {
                     this.state.itemKeys.map(i =>
                         <div key={i}>
                             <NotebookItem itemKey={i}
-                                          display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}/>
+                                          display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}
+                                          onDelete={this.deleteItem}/>
                             <NoteBookItemAdd itemKey={i} display={addDisplay}
                                              onClick={this.addItem}/>
                         </div>)
@@ -37,13 +41,31 @@ class NotebookBoard extends React.Component {
         );
     }
 
+
     addItem = (itemKey) => {
         let newItemKeys = [];
+        if (this.state.itemKeys.length === 0) {
+            newItemKeys.push(this.state.itemKeys.length);
+        }
         this.state.itemKeys.forEach(i => {
                 if (i === itemKey) {
                     newItemKeys.push(i);
                     newItemKeys.push(this.state.itemKeys.length);
                 } else {
+                    newItemKeys.push(i);
+                }
+            }
+        );
+        this.setState({
+            itemKeys: newItemKeys
+        });
+    }
+
+    deleteItem = key => {
+
+        let newItemKeys = [];
+        this.state.itemKeys.forEach(i => {
+                if (i !== key) {
                     newItemKeys.push(i);
                 }
             }

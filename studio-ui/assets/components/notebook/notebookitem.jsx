@@ -76,6 +76,10 @@ class NotebookItem extends React.Component {
         this.setState({})
     }
 
+    deleteItem = () => {
+        this.props.onDelete(this.props.itemKey);
+    }
+
 
     render() {
         let screenMode = this.state.fullScreen ? 'container-fluid full-screen' : 'container';
@@ -112,8 +116,9 @@ class NotebookItem extends React.Component {
                                                       changeCss="fa fa-eye-slash"
                                                       onClick={this.viewMode}/>
                                         <button type="button"
-                                                className="btn btn-link ">
-                                            <i className="fa fa-cog"
+                                                className="btn btn-link "
+                                                onClick={this.deleteItem}>
+                                            <i className="fa fa-times"
                                                aria-hidden="true"></i>
                                         </button>
                                     </div>
@@ -159,31 +164,6 @@ class NotebookItem extends React.Component {
                                             <i className="fa fa-joomla"
                                                aria-hidden="true"></i>
                                         </button>
-                                        {/*<button type="button"*/}
-                                        {/*className="btn btn-default">*/}
-                                        {/*<i className="fa fa-line-chart"*/}
-                                        {/*aria-hidden="true"></i>*/}
-                                        {/*</button>*/}
-                                        {/*<button type="button"*/}
-                                        {/*className="btn btn-default">*/}
-                                        {/*<i className="fa fa-pie-chart"*/}
-                                        {/*aria-hidden="true"></i>*/}
-                                        {/*</button>*/}
-                                        {/*<button type="button"*/}
-                                        {/*className="btn btn-default">*/}
-                                        {/*<i className="fa fa-area-chart"*/}
-                                        {/*aria-hidden="true"></i>*/}
-                                        {/*</button>*/}
-                                        {/*<button type="button"*/}
-                                        {/*className="btn btn-default">*/}
-                                        {/*<i className="fa fa-bar-chart"*/}
-                                        {/*aria-hidden="true"></i>*/}
-                                        {/*</button>*/}
-                                        {/*<button type="button"*/}
-                                        {/*className="btn btn-default">*/}
-                                        {/*<i className="fa fa-picture-o"*/}
-                                        {/*aria-hidden="true"></i>*/}
-                                        {/*</button>*/}
                                     </div>
                                     <div className="card-content">
                                         <div id="graph" className="graph"></div>
