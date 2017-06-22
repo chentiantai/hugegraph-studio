@@ -12,6 +12,8 @@ export default class StudioHead extends React.Component {
 
     render() {
         let display = this.props.display === undefined ? 'block' : this.props.display;
+        let name = this.props.name === undefined ? 'HugeGraph Notebook Quick'
+            + ' Start' : this.props.name;
 
         return (
             <div style={{display: display}}>
@@ -20,8 +22,7 @@ export default class StudioHead extends React.Component {
                         <div className="row">
                             <div className="header-title">
                                 <h1><i className="fa fa-book"
-                                       aria-hidden="true"></i>HugeGraph Notebook
-                                    Quick Start</h1>
+                                       aria-hidden="true"></i>{name}</h1>
                             </div>
                         </div>
                     </div>

@@ -14,13 +14,34 @@ import {connect} from 'react-redux';
 import {itemScreenMode} from './notebook/actions';
 
 class NotebookApp extends React.Component {
+    constructor() {
+        super();
+
+        this.studioHeadName = this.getNoteCardName().name;
+
+    }
+
+    getNoteCardName = () => {
+        var url = location.search;
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            var strs = str.split("&");
+            for (var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = decodeURI(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
+    }
+
     render() {
         return (
             <div>
                 <Head
                     containerCss={this.props.screenMode.fullScreen ? 'container-fluid' : 'container'}/>
                 <StudioHead
-                    display={this.props.screenMode.fullScreen ? 'none' : 'block'}/>
+                    display={this.props.screenMode.fullScreen ? 'none' : 'block'}
+                    name={this.studioHeadName}/>
                 <NotebookBoard/>
             </div>
         );

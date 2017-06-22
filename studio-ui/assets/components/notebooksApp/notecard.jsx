@@ -1,4 +1,4 @@
-import React from 'react'
+import  React from 'react'
 import {deleteNoteCard} from './actions';
 import {connect} from 'react-redux';
 import TimeFormat from '../commoncomponents/time';
@@ -16,10 +16,11 @@ class NoteCard extends React.Component {
 
     render() {
         const noteCard = this.props.value;
+        let noteCardName = noteCard.name;
+        let notebookUrl = 'notebook.html?id=' + noteCard.id + '&name=' + noteCardName;
         return (
             <div className="notebook-card">
                 <div className="notebook-card-info">
-
                     <div>
                         <div className="notebook-card-close">
                             <button type="button" className="btn btn-link"
@@ -29,9 +30,11 @@ class NoteCard extends React.Component {
                             </button>
                         </div>
                         <div className="notebook-card-title">
-                            {
-                                noteCard.name
-                            }
+                            <a href={notebookUrl}>
+                                {
+                                    noteCardName
+                                }
+                            </a>
                         </div>
                     </div>
                     <div className="notebook-card-description">
@@ -40,7 +43,6 @@ class NoteCard extends React.Component {
                         }
                     </div>
                 </div>
-
                 <div className="notebook-card-control">
 
                     <div className="notebook-card-createtime">
@@ -60,6 +62,7 @@ class NoteCard extends React.Component {
                     </div>
                 </div>
             </div>
+
         )
     }
 }
