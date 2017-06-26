@@ -4,8 +4,6 @@
  * Created on 17/6/5
  */
 import {
-    OPEN_CONNECTION_MODAL,
-    CLOSE_CONNECTION_MODAL,
     ALERT_SHOW,
     ALERT_HIDE,
     SHOW,
@@ -17,19 +15,6 @@ import {
 
 const initialState = {
     connections: [],
-    modalInfo: {
-        validation: true,
-        title: '',
-        operation: '',
-        isOpen: false,
-        connection: {
-            id: '',
-            name: '',
-            graphName: '',
-            connectionHost: '',
-            port: ''
-        }
-    },
     alerts: {
         items: [],
         lastKey: -1
@@ -40,32 +25,11 @@ const initialState = {
 export function connectionsOperation(state = initialState, action) {
     return {
         connections: connections(state.connections, action),
-        modalInfo: modalInfo(state.modalInfo, action),
         alerts: alerts(state.alerts, action)
     };
 }
 
 
-function modalInfo(state = {}, action) {
-    switch (action.type) {
-        case OPEN_CONNECTION_MODAL:
-            return {
-                ...state,
-                isOpen: true,
-                operation: action.operation,
-                title: action.title,
-                connection: action.connection
-            };
-        case CLOSE_CONNECTION_MODAL:
-            return {
-                ...state,
-                isOpen: false
-            };
-        default:
-            return state;
-    }
-
-}
 
 function alerts(state = {items: [], lastKey: -1}, action) {
     switch (action.type) {
@@ -93,8 +57,8 @@ function connections(state = [], action) {
         }
         case ADD_SUCCESS: {
             return [
-                ...state,
-                action.newConnection
+                action.newConnection,
+                ...state
             ];
         }
         case DELETE_SUCCESS: {

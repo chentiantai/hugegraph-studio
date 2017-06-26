@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {closeEditModal, refreshModal, saveConnection} from './actions';
+import {saveConnection} from './actions';
 import {
     Modal,
     ModalHeader,
@@ -14,7 +14,7 @@ import {
     ModalFooter
 } from 'react-modal-bootstrap';
 import Input from '../commoncomponents/input';
-import {isNull, isIp, isNumber} from '../commoncomponents/validator';
+import {isNull,isNumber} from '../commoncomponents/validator';
 
 
 class ConnectionModal extends React.Component {
@@ -22,7 +22,17 @@ class ConnectionModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isValidateByForce: false
+            isValidateByForce: false,
+            isOpen:false,
+            connection: {
+                id: '',
+                name: '',
+                graphName: '',
+                connectionHost: '',
+                port: ''
+            },
+            title:'',
+            operation:''
         };
         this.validation = {
             name: true,
@@ -30,16 +40,13 @@ class ConnectionModal extends React.Component {
             connectionHost: true,
             port: true
         };
-        this.modalInfo = {};
-        this.isValidateByForce = false;
     }
 
     handleChange = (name, value, ...needles) => {
         if (needles.length > 0) {
             this.validation[name] = needles[0];
         }
-        this.modalInfo.connection = Object.assign({}, this.props.modalInfo.connection, {[name]: value});
-
+        this.state.connection[name]=value;
     }
 
     saveConnection() {
@@ -52,32 +59,60 @@ class ConnectionModal extends React.Component {
             }
         }
         if (validationStatus) {
-            this.props.saveConnection(this.modalInfo);
+
+            let modalInfo = {}
+            if (this.props.operation == 'add') {
+                modalInfo = {
+                    operation: this.props.operation,
+                    connection: {
+                        name: this.state.connection.name,
+                        graphName: this.state.connection.graphName,
+                        connectionHost: this.state.connection.connectionHost,
+                        port: this.state.connection.port
+                    }
+                }
+            } else {
+                modalInfo = {
+                    operation: this.props.operation,
+                    connection: {...this.state.connection}
+                }
+            }
+
+            this.props.saveConnection(modalInfo);
+            this.closeModal();
         }
-
     }
 
-
-    closeEditModal() {
-        this.props.closeEditModal();
-    }
 
 
     componentDidUpdate() {
         this.state.isValidateByForce = false;
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps.connection.name+":"+nextProps.connection.graphName);
+        this.setState({
+            isOpen: nextProps.isOpen,
+            connection: nextProps.connection,
+            operation: nextProps.operation,
+            title:nextProps.title
+        });
+    }
+
+    closeModal=()=>{
+        this.setState({isOpen: false});
+    }
+
     render() {
-        this.modalInfo = this.props.modalInfo;
-        let isOpen = this.props.modalInfo.isOpen;
-        let connection = this.props.modalInfo.connection;
+        let isOpen = this.state.isOpen;
+        let connection = this.state.connection;
         return (
             <div>
                 <Modal isOpen={isOpen}>
                     <ModalHeader className="modal-header">
                         <ModalClose
-                            onClick={() => this.props.closeEditModal()}/>
-                        <h4 className="modal-title">{this.modalInfo.title} </h4>
+                            onClick={this.closeModal}/>
+                        <h4 className="modal-title">{this.state.title} </h4>
                     </ModalHeader>
                     <ModalBody>
                         <form className="form-horizontal">
@@ -127,7 +162,7 @@ class ConnectionModal extends React.Component {
 
                     <ModalFooter className="modal-footer">
                         <button type="button" className="btn btn-default"
-                                onClick={() => this.closeEditModal()}>
+                                onClick={this.closeModal}>
                             Close
                         </button>
                         <button type="button" className="btn btn-primary"
@@ -144,20 +179,19 @@ class ConnectionModal extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        modalInfo: state.modalInfo
+        connectionModalInfo: state.connectionModalInfo
     };
 }
 
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        closeEditModal: () => dispatch(closeEditModal()),
-        saveConnection: modalInfo => dispatch(saveConnection(modalInfo))
+        saveConnection: info => dispatch(saveConnection(info))
     };
 }
 
 // Connected Component
-export const ConnectionModalApp = connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(ConnectionModal);

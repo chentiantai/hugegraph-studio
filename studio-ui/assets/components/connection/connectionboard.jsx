@@ -7,8 +7,8 @@
 import React from 'react';
 import Connection from './connection';
 import {connect} from 'react-redux';
-import {deleteConnection, loadConnections, openEditModal} from './actions';
-import {ConnectionModalApp} from './connectionmodal';
+import {deleteConnection, loadConnections} from './actions';
+import ConnectionModal from './connectionmodal';
 import AlertModal from '../commoncomponents/alertmodal';
 import AlertList from './alertlist';
 
@@ -17,8 +17,19 @@ class ConnectionsBoard extends React.Component {
     constructor() {
         super();
         this.state = {
-            alert: null
-        };
+            alert: null,
+            title: 'add a new connection',
+            isOpen: false,
+            connection: {
+                id: '',
+                name: '',
+                graphName: '',
+                connectionHost: '',
+                port: ''
+            },
+            operation: 'add',
+            operationTime:0
+        }
     }
 
     componentDidMount() {
@@ -26,18 +37,29 @@ class ConnectionsBoard extends React.Component {
     }
 
     openAddModal() {
-        let connection = {
-            id: '',
-            name: '',
-            graphName: '',
-            connectionHost: '',
-            port: ''
-        };
-        this.props.openEditModal(connection, 'add', 'Add Connection Information');
+        this.setState({
+            title: 'add a new connection',
+            isOpen: true,
+            connection: {
+                id: '',
+                name: '',
+                graphName: '',
+                connectionHost: '',
+                port: ''
+            },
+            operation: 'add',
+            operationTime:this.state.operationTime+1
+        });
     }
 
     openUpdateModal(connection) {
-        this.props.openEditModal(connection, 'update', 'Update Connection Information');
+        this.setState({
+            title: 'Update Connection Information',
+            isOpen: true,
+            connection:{...connection},
+            operation: 'update',
+            operationTime:this.state.operationTime+1
+        });
     }
 
     deleteConnection(id) {
@@ -50,20 +72,24 @@ class ConnectionsBoard extends React.Component {
 
         );
         this.setState({
-            alert: alert
+            alert: alert,
+            isOpen:false
+
         });
     }
 
     confirmDelete(id) {
         this.props.deleteConnection(id);
         this.setState({
-            alert: null
+            alert: null,
+            isOpen:false
         });
     }
 
     cancelDelete() {
         this.setState({
-            alert: null
+            alert: null,
+            isOpen:false
         });
     }
 
@@ -87,7 +113,11 @@ class ConnectionsBoard extends React.Component {
                                         <i className="fa fa-plus"
                                            aria-hidden="true"><span>add</span></i>
                                     </button>
-                                    <ConnectionModalApp/>
+                                    <ConnectionModal connection={this.state.connection}
+                                                     isOpen={this.state.isOpen}
+                                                     operation={this.state.operation}
+                                                     title={this.state.title}
+                                                     operationTime={this.state.operationTime}/>
                                 </div>
                             </div>
                             <table className="table table-striped">
@@ -131,8 +161,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         deleteConnection: id => dispatch(deleteConnection(id)),
-        loadConnections: () => dispatch(loadConnections()),
-        openEditModal: (connection, operation, title) => dispatch(openEditModal(connection, operation, title))
+        loadConnections: () => dispatch(loadConnections())
     };
 }
 

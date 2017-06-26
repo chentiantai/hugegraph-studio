@@ -6,8 +6,6 @@
 
 
 
-export const OPEN_CONNECTION_MODAL = 'open_connection_modal';
-export const CLOSE_CONNECTION_MODAL = 'close_connection_modal';
 export const SHOW = 'show';
 export const UPDATE_SUCCESS = 'update_success';
 export const ADD_REQUEST = 'add_request';
@@ -18,20 +16,7 @@ export const ALERT_SHOW = 'alert_show';
 export const ALERT_HIDE = 'alert_hide';
 
 
-export function openEditModal(connection, operation, title) {
-    return {
-        type: OPEN_CONNECTION_MODAL,
-        connection,
-        operation,
-        title
-    };
-}
 
-export function closeEditModal() {
-    return {
-        type: CLOSE_CONNECTION_MODAL
-    };
-}
 
 
 export function loadConnections() {
@@ -83,7 +68,6 @@ export function updateConnection(connection) {
             })
             .then(response => {
                 if (response.ok) {
-                    dispatch(closeEditModal());
                     dispatch(updateConnectionSuccess(connection));
                     dispatch(alertMessage('Update Connection Success', 'success'));
                 } else {
@@ -123,7 +107,6 @@ export function addConnection(newConnection) {
                 }
             })
             .then(data => {
-                dispatch(closeEditModal());
                 dispatch(addConnectionSuccess(data));
                 dispatch(alertMessage('Add Connection Success', 'success'));
             })
@@ -162,7 +145,6 @@ export function deleteConnection(id) {
             })
             .then(response => {
                 if (response.ok) {
-                    dispatch(closeEditModal());
                     dispatch(deleteConnectionSuccess(id));
                     dispatch(alertMessage('Delete Connection Success', 'success'));
                 } else {

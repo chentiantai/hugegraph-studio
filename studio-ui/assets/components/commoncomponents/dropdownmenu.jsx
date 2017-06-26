@@ -37,7 +37,7 @@ export default class DropDownMenu extends React.Component {
 
         return (
             <Nav bsStyle="pills" onSelect={this.handleSelect}>
-                <NavDropdown title={this.state.selectMenu} id={this.props.id}>
+                <NavDropdown title={this.state.selectMenu} id={'dropdown_menu_'+this.props.id}>
                     {menuItems}
                 </NavDropdown>
             </Nav>
