@@ -38,7 +38,7 @@ class NotebookApp extends React.Component {
         return (
             <div>
                 <Head
-                    containerCss={this.props.screenMode.fullScreen ? 'container-fluid' : 'container'}/>
+                    fluid={this.props.screenMode.fullScreen}/>
                 <StudioHead
                     display={this.props.screenMode.fullScreen ? 'none' : 'block'}
                     name={this.studioHeadName}/>

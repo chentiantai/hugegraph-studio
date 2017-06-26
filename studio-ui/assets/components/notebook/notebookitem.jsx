@@ -99,7 +99,7 @@ class NotebookItem extends React.Component {
                                     <div className="pull-left"
                                          style={{display: display}}>
                                         <DropDownMenu menuItems={items}
-                                                      onChange={this.changeMenu}/>
+                                                      onChange={this.changeMenu} id={this.props.itemKey}/>
                                     </div>
                                     <div
                                         className="btn-group btn-group-sm pull-right"
@@ -144,32 +144,32 @@ class NotebookItem extends React.Component {
                                     </form>
                                 </div>
                                 <div
-                                className="card-content-toolbox btn-toolbar">
-                                <div className="btn-group btn-group-sm"
-                                role="group">
-                                <button type="button"
-                                className="btn btn-default">
-                                <i className="fa fa-table"
-                                aria-hidden="true"></i>
-                                </button>
-                                <button type="button"
-                                className="btn btn-default">
-                                <i className="fa fa fa-code"
-                                aria-hidden="true"></i>
-                                </button>
-                                <button type="button"
-                                className="btn btn-default">
-                                <i className="fa fa-joomla"
-                                aria-hidden="true"></i>
-                                </button>
-                                </div>
-                                <div className="card-content">
-                                <div id="graph" className="graph"></div>
-                                </div>
-                                <div className="card-footer">
-                                Real-time Success. 1 element returned.
-                                Duration: 0.186 s.
-                                </div>
+                                    className="card-content-toolbox btn-toolbar">
+                                    <div className="btn-group btn-group-sm"
+                                         role="group">
+                                        <button type="button"
+                                                className="btn btn-default">
+                                            <i className="fa fa-table"
+                                               aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button"
+                                                className="btn btn-default">
+                                            <i className="fa fa fa-code"
+                                               aria-hidden="true"></i>
+                                        </button>
+                                        <button type="button"
+                                                className="btn btn-default">
+                                            <i className="fa fa-joomla"
+                                               aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                    <div className="card-content">
+                                        <div id="graph" className="graph"></div>
+                                    </div>
+                                    <div className="card-footer">
+                                        Real-time Success. 1 element returned.
+                                        Duration: 0.186 s.
+                                    </div>
                                 </div>
                             </div>
                         </div>

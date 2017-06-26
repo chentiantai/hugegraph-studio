@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import {Nav, NavDropdown, MenuItem} from 'react-bootstrap';
 
 export default class DropDownMenu extends React.Component {
     constructor() {
@@ -14,10 +15,6 @@ export default class DropDownMenu extends React.Component {
         };
     }
 
-    handleClick(item) {
-        this.setState({selectMenu: item});
-        this.props.onChange(item);
-    }
 
     componentDidMount() {
         if (this.props.menuItems !== undefined && this.props.menuItems.length > 0) {
@@ -27,26 +24,23 @@ export default class DropDownMenu extends React.Component {
         }
     }
 
+    handleSelect = (eventKey) => {
+        this.setState({selectMenu: `${eventKey}`});
+        this.props.onChange(`${eventKey}`);
+    }
+
     render() {
+        let menuItems = this.props.menuItems.map((item, index) =>
+            <MenuItem key={index} eventKey={item}>{item}</MenuItem>
+        );
+
+
         return (
-            <ul className="nav nav-pills drop-down-menu">
-                <li role="presentation" className="dropdown">
-                    <a className="dropdown-toggle" data-toggle="dropdown"
-                       href="#" role="button" aria-haspopup="true"
-                       aria-expanded="false">
-                        {this.state.selectMenu}
-                        <span className="caret"></span>
-                    </a>
-                    <ul className="dropdown-menu">
-                        {
-                            this.props.menuItems.map((item, index) =>
-                                <li key={index}
-                                    onClick={() => this.handleClick(item)}>
-                                    <a>{item}</a></li>)
-                        }
-                    </ul>
-                </li>
-            </ul>
+            <Nav bsStyle="pills" onSelect={this.handleSelect}>
+                <NavDropdown title={this.state.selectMenu} id={this.props.id}>
+                    {menuItems}
+                </NavDropdown>
+            </Nav>
         );
     }
 }

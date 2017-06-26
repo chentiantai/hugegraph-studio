@@ -34,6 +34,10 @@ body {
     color: #fff;
 }
 
+.dropdown-menu .divider {
+    margin: 2px 0;
+}
+
 .studio-header {
     padding-top: 3px;
     padding-bottom: 3px;
@@ -365,12 +369,8 @@ form {
     text-align: center;
 }
 
-.drop-down-menu a {
+.dropdown > a {
     color: #333;
-}
-
-.drop-down-menu a:hover {
-    color: #3071a9;
 }
 
 .full-screen {
