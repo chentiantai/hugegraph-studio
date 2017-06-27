@@ -50,8 +50,8 @@ public class Executor {
             switch (cell.getLanguage()) {
                 case "gremlin":
                     result = this.gremlinExecutor.execute(notebookId,
-                                        cell.getCode(),
-                                        cell.getGremlinExecutionEngine());
+                                        cell.getCode());
+//                                        cell.getGremlinExecutionEngine());
                     break;
                 case "markdown":
                     result = this.markdownExecutor.execute(cell.getCode());

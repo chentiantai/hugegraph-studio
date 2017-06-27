@@ -12,8 +12,8 @@ public class GremlinExecutor {
     private static final int RESULT_SIZE_LIMIT = 1000;
 
     public Result execute(String notebookId,
-                          String code,
-                          NotebookCell.GremlinExecutionEngine executionEngine)
+                          String code)
+//                          NotebookCell.GremlinExecutionEngine executionEngine)
             throws Exception {
         return null;
     }

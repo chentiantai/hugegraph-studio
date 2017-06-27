@@ -99,6 +99,18 @@ public class NoteBookService {
         return response;
     }
 
+    @GET
+    @Path("{notebookId}/cells/{cellId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getNotebookCell(@PathParam("notebookId") String notebookId,
+                                    @PathParam("cellId") String cellId) {
+        Preconditions.checkArgument(notebookId != null && cellId != null);
+        Response response = Response.status(201)
+                .entity(notebookRepository.getNotebookCell(notebookId, cellId))
+                .build();
+        return response;
+    }
 
     @POST
     @Path("{notebookId}/cells")

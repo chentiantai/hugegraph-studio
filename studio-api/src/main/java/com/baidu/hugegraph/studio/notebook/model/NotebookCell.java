@@ -17,16 +17,16 @@ public class NotebookCell {
         SUCCESS, CANCELLED, ERROR;
     }
 
-    public class GremlinExecutionEngine {
-
-    }
+//    public class GremlinExecutionEngine {
+//
+//    }
 
     private String id;
     private NotebookCell.Status status;
     private Optional<StudioError> errorDetails = Optional.empty();
     private String code;
     private String language;
-    private NotebookCell.GremlinExecutionEngine gremlinExecutionEngine;
+//    private NotebookCell.GremlinExecutionEngine gremlinExecutionEngine;
     private Result result;
     private String msg;
     private NotebookCell.DataViewType dataViewType;
@@ -39,8 +39,8 @@ public class NotebookCell {
                         @JsonProperty("errorDetails") Optional<StudioError> errorDetails,
                         @JsonProperty("code") String code,
                         @JsonProperty("language") String language,
-                        @JsonProperty("gremlinExecutionEngine")
-                                NotebookCell.GremlinExecutionEngine gremlinExecutionEngine,
+//                        @JsonProperty("gremlinExecutionEngine")
+//                                NotebookCell.GremlinExecutionEngine gremlinExecutionEngine,
                         @JsonProperty("result") Result result,
                         @JsonProperty("msg") String msg,
                         @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType,
@@ -50,7 +50,7 @@ public class NotebookCell {
         this.errorDetails = errorDetails;
         this.code = code;
         this.language = (language != null ? language.toLowerCase() : null);
-        this.gremlinExecutionEngine = gremlinExecutionEngine;
+//        this.gremlinExecutionEngine = gremlinExecutionEngine;
         this.result = result;
         this.msg = msg;
         this.dataViewType = dataViewType;
@@ -69,9 +69,9 @@ public class NotebookCell {
         return this.language;
     }
 
-    public NotebookCell.GremlinExecutionEngine getGremlinExecutionEngine() {
-        return this.gremlinExecutionEngine;
-    }
+//    public NotebookCell.GremlinExecutionEngine getGremlinExecutionEngine() {
+//        return this.gremlinExecutionEngine;
+//    }
 
     public String getCode() {
         return this.code;
