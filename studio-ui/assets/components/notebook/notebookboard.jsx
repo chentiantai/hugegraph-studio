@@ -6,7 +6,7 @@
 import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
-import {itemScreenMode} from './actions';
+import {itemScreenMode, addItem, loadCells} from './actions';
 
 class NotebookBoard extends React.Component {
     constructor() {
@@ -18,9 +18,12 @@ class NotebookBoard extends React.Component {
         this.maxKey = Math.max(this.state.itemKeys) + 1;
     }
 
+    componentDidMount() {
+        this.props.loadCells(this.props.notebookId);
+    }
+
 
     render() {
-        console.log(this.state.itemKeys);
         let fullScreenItem = this.props.screenMode.itemKey;
         let fullScreen = this.props.screenMode.fullScreen;
         let addDisplay = fullScreen ? 'none' : 'block';
@@ -29,41 +32,38 @@ class NotebookBoard extends React.Component {
         return (
             <div>
                 {
-                    this.state.itemKeys.map(i =>
-                        <div key={i}>
-                            <NotebookItem itemKey={i}
-                                          display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}
-                                          onDelete={this.deleteItem}
-                                          deleteCss={deleteCss}/>
-                            <NoteBookItemAdd itemKey={i} display={addDisplay}
+                    this.props.cells.map(cell =>
+                        <div key={cell.id}>
+                            <NotebookItem
+                                display={fullScreen ? fullScreenItem === i ? 'block' : 'none' : 'block'}
+                                onDelete={this.deleteItem}
+                                deleteCss={deleteCss}
+                                itemId={cell.id}
+                                itemContent={cell.code}
+                                language={cell.language}/>
+                            <NoteBookItemAdd itemKey={cell.id}
+                                             display={addDisplay}
                                              onClick={this.addItem}/>
-                        </div>)
+                        </div>
+                    )
                 }
             </div>
         );
     }
 
 
-    addItem = (itemKey) => {
-        let newItemKeys = [];
-        if (this.state.itemKeys.length === 0) {
-            newItemKeys.push(this.state.itemKeys.length);
-        }
-        this.state.itemKeys.forEach(i => {
-                if (i === itemKey) {
-                    newItemKeys.push(i);
-                    newItemKeys.push(this.maxKey);
-                } else {
-                    newItemKeys.push(i);
-                }
+    addItem = preItemId => {
+        let cells = this.props.cells;
+        let len = cells.length;
+        let position = len - 1;
+        for (let i = 0; i < len; i++) {
+            if (cells[i].id === preItemId) {
+                position = i;
+                break;
             }
-        );
-        this.maxKey = this.maxKey + 1;
-        this.setState({
-            itemKeys: newItemKeys,
-
-        });
-
+        }
+        console.log(position + 1);
+        this.props.addItem(this.props.notebookId, position + 1);
     }
 
     deleteItem = key => {
@@ -117,14 +117,17 @@ class NoteBookItemAdd extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        screenMode: state.screenMode
+        screenMode: state.screenMode,
+        cells: state.cells
     };
 }
 
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        itemScreenMode: (flag, itemKey) => dispatch(itemScreenMode(flag, itemKey))
+        itemScreenMode: (flag, itemKey) => dispatch(itemScreenMode(flag, itemKey)),
+        addItem: (notebookId, position) => dispatch(addItem(notebookId, position)),
+        loadCells: notebookId => dispatch(loadCells(notebookId))
     };
 }
 

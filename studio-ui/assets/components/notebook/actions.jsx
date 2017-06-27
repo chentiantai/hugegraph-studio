@@ -8,7 +8,103 @@
 export const ALERT_SHOW = 'alert_show';
 export const ALERT_HIDE = 'alert_hide';
 export const FULL_SCREEN = 'full_screen';
+export const ADD_ITEM = 'add_item';
+export const REMOVE_ITEM = 'remove_item';
+export const SHOW_NOTEBOOK = 'show_notebook';
+export const SAVE_ITEMS = 'save_items';
+export const UPDATE_ITEMS = 'update_items';
 
+export function loadCells(notebookId) {
+    return dispatch => {
+        return fetch('/api/v1/notebooks/' + notebookId)
+            .then(response => {
+                if (response.ok) {
+
+                    return response.json();
+                } else {
+                    dispatch(alertMessage('Load Cells: Server Side' +
+                        ' Error；\r\nCode:' + response.status, 'danger'));
+                }
+            })
+            .then(data => {
+                dispatch(showCells(data));
+            })
+            .catch(err => {
+                dispatch(alertMessage('Load Cells Fetch Exception:' + err, 'danger'));
+            });
+    };
+}
+
+export function showCells(data) {
+    return {
+        type: SHOW_NOTEBOOK,
+        cells: data.cells
+    };
+}
+
+export function addItemSuccess(data, position) {
+    return {
+        type: ADD_ITEM,
+        data,
+        position
+    };
+}
+export function addItem(notebookId, position) {
+    let myHeaders = new Headers();
+    let initItem = {"code": "g.V()", "language": "gremlin"};
+    myHeaders.append('Content-Type', 'application/json');
+    return dispatch => {
+        return fetch('/api/v1/notebooks/' + notebookId + '/cells?position=' + position,
+            {
+                method: 'POST',
+                body: JSON.stringify(initItem),
+                headers: myHeaders
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    dispatch(alertMessage('Add NotebookID: Server Side' +
+                        ' Error；\r\nCode:' + response.status, 'danger'));
+                }
+            })
+            .then(data => {
+                dispatch(addItemSuccess(data, position));
+                // dispatch(alertMessage('Add NoteCard Success', 'success'));
+            })
+            .catch(err => {
+                dispatch(alertMessage('Add NotebookID Fetch Exception:' + err, 'danger'));
+            });
+    };
+}
+
+// export function removeItem(cell) {
+//     return {
+//         type: REMOVE_ITEM,
+//         cell
+//     };
+// }
+//
+// export function showItems(cell) {
+//     return {
+//         type: SHOW_ITEMS,
+//         cell
+//     };
+// }
+//
+// export function saveItems(cell) {
+//     return {
+//         type: SAVE_ITEMS,
+//         cell
+//     };
+// }
+//
+// export function updateItems(cell) {
+//     return {
+//         type: UPDATE_ITEMS,
+//         cell
+//     };
+// }
 
 export function itemScreenMode(flag, itemKey) {
     return {

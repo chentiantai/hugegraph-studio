@@ -18,6 +18,8 @@ class NotebookApp extends React.Component {
         super();
 
         this.studioHeadName = this.getNoteCardName().name;
+        this.notebookId = this.getNoteCardName().id;
+
 
     }
 
@@ -42,7 +44,7 @@ class NotebookApp extends React.Component {
                 <StudioHead
                     display={this.props.screenMode.fullScreen ? 'none' : 'block'}
                     name={this.studioHeadName}/>
-                <NotebookBoard/>
+                <NotebookBoard notebookId={this.notebookId}/>
             </div>
         );
     }

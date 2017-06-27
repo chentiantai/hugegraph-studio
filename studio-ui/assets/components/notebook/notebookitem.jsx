@@ -63,7 +63,7 @@ class NotebookItem extends React.Component {
             fullScreen: cssFlag,
             itemPanelHeight: itemPanelHeight
         });
-        this.props.itemScreenMode(cssFlag, this.props.itemKey);
+        this.props.itemScreenMode(cssFlag, this.props.itemId);
     }
 
     viewMode = cssFlag => {
@@ -77,7 +77,7 @@ class NotebookItem extends React.Component {
     }
 
     deleteItem = () => {
-        this.props.onDelete(this.props.itemKey);
+        this.props.onDelete(this.props.itemId);
     }
 
 
@@ -99,7 +99,7 @@ class NotebookItem extends React.Component {
                                     <div className="pull-left"
                                          style={{display: display}}>
                                         <DropDownMenu menuItems={items}
-                                                      onChange={this.changeMenu} id={this.props.itemKey}/>
+                                                      onChange={this.changeMenu} id={this.props.itemId}/>
                                     </div>
                                     <div
                                         className="btn-group btn-group-sm pull-right"
@@ -191,7 +191,7 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        itemScreenMode: (flag, itemKey) => dispatch(itemScreenMode(flag, itemKey))
+        itemScreenMode: (flag, itemId) => dispatch(itemScreenMode(flag, itemId))
     };
 }
 

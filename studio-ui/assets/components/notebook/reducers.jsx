@@ -6,7 +6,12 @@
 import {
     ALERT_SHOW,
     ALERT_HIDE,
-    FULL_SCREEN
+    FULL_SCREEN,
+    ADD_ITEM,
+    SHOW_NOTEBOOK,
+    REMOVE_ITEM,
+    SAVE_ITEMS,
+    UPDATE_ITEMS
 } from './actions';
 
 
@@ -18,13 +23,56 @@ const initialState = {
     alerts: {
         items: [],
         lastKey: -1
-    }
+    },
+    cells: []
+
 };
 
+export function cells(state = [], action) {
+
+    switch (action.type) {
+        case ADD_ITEM:
+            var newCell = {
+                id: action.data.id,
+                language: action.data.language,
+                code: action.data.code
+            };
+            state.splice(action.position, 0, newCell);
+            return [
+                ...state
+            ];
+        case SHOW_NOTEBOOK:
+            return [...action.cells];
+        // case REMOVE_ITEM:
+        //     return [
+        //         ...state,
+        //         {
+        //             itemID: action.itemID,
+        //             language: action.language
+        //         }
+        //     ];
+        // case SAVE_ITEMS:
+        // case UPDATE_ITEMS: {
+        //     const cellsArr = [];
+        //     state.map(cell => {
+        //         if (cell.id !== action.cell.id) {
+        //             cellsArr.push(cell);
+        //         } else {
+        //             cellsArr.push(action.cell);
+        //         }
+        //     });
+        //     return cellsArr;
+        // }
+        default:
+            return state;
+    }
+
+}
 
 export function notebookOperation(state = initialState, action) {
     return {
         screenMode: screenMode(state.screenMode, action),
+        cells: cells(state.cells, action),
         alerts: alerts(state.alerts, action)
     };
 }
