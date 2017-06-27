@@ -54,15 +54,15 @@ public class BootstrapConfiguration
                 Map<String, Object> loggingConfig = (Map)map.get("logging");
                 Map<String, Object> securityConfig = (Map)map.get("security");
                 Map<String, Object> dataConfig = (Map)map.get("userData");
-                if (serverConfig != null && serverConfig.get("httpPort") != nul) {
+                if (serverConfig != null && serverConfig.get("httpPort") != null) {
                     this.httpPort = ((Integer)serverConfig.get("httpPort"));
                 } else {
                     this.httpPort = Integer.valueOf(8080);
                 }
-                String configuredHttpBindAddress =
+                String httpBindAddress =
                         (String)serverConfig.get("httpBindAddress");
-                if (configuredHttpBindAddress != null
-                    && !configuredHttpBindAddress.isEmpty()) {
+                if (httpBindAddress != null
+                    && !httpBindAddress.isEmpty()) {
                     this.httpBindAddress = httpBindAddress;
                 } else {
                     this.httpBindAddress = "localhost";
@@ -94,8 +94,8 @@ public class BootstrapConfiguration
                 } else {
                     this.logDir = "./logs";
                 }
-                if (configuredLogFileName != null) {
-                    this.logFileName = configuredLogFileName;
+                if (configuredLogFile != null) {
+                    this.logFileName = configuredLogFile;
                 } else {
                     this.logFileName = "studio.log";
                 }

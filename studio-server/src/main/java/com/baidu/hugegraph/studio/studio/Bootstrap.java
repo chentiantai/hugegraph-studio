@@ -145,9 +145,9 @@ public class Bootstrap {
         String passwordEncryptionFile = replaceHomeDirReferences(
                             configuration.getSecurityEncryptionPasswordFile());
 
-        validateConfiguration(configuration.getHttpPort().intValue(),
-                              configuration.getHttpBindAddress(), logDir,
-                              userDataDir, passwordEncryptionFile);
+        validateConfiguration(configuration.getHttpBindAddress(),
+                            configuration.getHttpPort().intValue(), logDir,
+                            userDataDir, passwordEncryptionFile);
 
         configureLogging(configuration, logDir, confDir);
 
@@ -163,7 +163,7 @@ public class Bootstrap {
         tomcat.setHostname(configuration.getHttpBindAddress());
 
         StandardContext ui = configureUi(tomcat, uiDir);
-        StandardContext api = configureWar(apiWar, "/api", tomcat);
+        StandardContext api = configureWar(apiWarFile, "/api", tomcat);
 
         tomcat.start();
 
