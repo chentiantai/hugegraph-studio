@@ -19,7 +19,6 @@ public class NotebookCell {
 
     private String id;
     private NotebookCell.Status status;
-    private Optional<StudioError> errorDetails = Optional.empty();
     private String code;
     private String language;
     private Result result;
@@ -31,7 +30,6 @@ public class NotebookCell {
     @JsonCreator
     public NotebookCell(@JsonProperty("id") String id,
                         @JsonProperty("status") NotebookCell.Status status,
-                        @JsonProperty("errorDetails") Optional<StudioError> errorDetails,
                         @JsonProperty("code") String code,
                         @JsonProperty("language") String language,
                         @JsonProperty("result") Result result,
@@ -40,7 +38,6 @@ public class NotebookCell {
                         @JsonProperty("viewSettings") ViewSettings viewSettings) {
         this.id = id;
         this.status = status;
-        this.errorDetails = errorDetails;
         this.code = code;
         this.language = (language != null ? language.toLowerCase() : null);
         this.result = result;
@@ -71,11 +68,6 @@ public class NotebookCell {
     public NotebookCell.Status getStatus() {
         return this.status;
     }
-
-    public Optional<StudioError> getErrorDetails() {
-        return this.errorDetails;
-    }
-
 
     public String getMsg() {
         return this.msg;
