@@ -79,7 +79,11 @@ public class FileNotebookRepository implements NotebookRepository {
             notebook.setCreated(Instant.now().getEpochSecond());
             notebook.setLastUsed(Instant.now().getEpochSecond());
             notebook.setFavorite(false);
-            notebook.setCells(new ArrayList<>());
+
+            NotebookCell notebookCell = new NotebookCell();
+            notebookCell.setId(UUID.randomUUID().toString());
+            notebookCell.setLanguage("gremlin");
+            notebook.addCell(notebookCell);
         }
         writeNotebook(notebook);
         return notebook;
