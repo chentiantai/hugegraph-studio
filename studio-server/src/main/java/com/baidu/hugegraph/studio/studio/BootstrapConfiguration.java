@@ -1,5 +1,22 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.baidu.hugegraph.studio.studio;
-
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,20 +54,22 @@ public class BootstrapConfiguration
                 Map<String, Object> loggingConfig = (Map)map.get("logging");
                 Map<String, Object> securityConfig = (Map)map.get("security");
                 Map<String, Object> dataConfig = (Map)map.get("userData");
-                if ((serverConfig != null) && (serverConfig.get("httpPort") != null)) {
+                if (serverConfig != null && serverConfig.get("httpPort") != nul) {
                     this.httpPort = ((Integer)serverConfig.get("httpPort"));
                 } else {
                     this.httpPort = Integer.valueOf(8080);
                 }
-                String configuredHttpBindAddress = (String)serverConfig.get("httpBindAddress");
-                if ((configuredHttpBindAddress != null) && (!configuredHttpBindAddress.isEmpty())) {
-                    this.httpBindAddress = configuredHttpBindAddress;
+                String configuredHttpBindAddress =
+                        (String)serverConfig.get("httpBindAddress");
+                if (configuredHttpBindAddress != null
+                    && !configuredHttpBindAddress.isEmpty()) {
+                    this.httpBindAddress = httpBindAddress;
                 } else {
                     this.httpBindAddress = "localhost";
                 }
 
                 String configuredLogDir = null;
-                String configuredLogFileName = null;
+                String configuredLogFile = null;
                 String configuredMaxLogFileSize = null;
                 Integer configuredMaxLogArchives = null;
                 if (securityConfig != null) {
@@ -66,7 +85,7 @@ public class BootstrapConfiguration
                 if (loggingConfig != null)
                 {
                     configuredLogDir = (String)loggingConfig.get("directory");
-                    configuredLogFileName = (String)loggingConfig.get("fileName");
+                    configuredLogFile = (String)loggingConfig.get("fileName");
                     configuredMaxLogFileSize = (String)loggingConfig.get("maxLogFileSize");
                     configuredMaxLogArchives = (Integer)loggingConfig.get("maxFiles");
                 }
@@ -105,8 +124,9 @@ public class BootstrapConfiguration
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Caught exception loading properties from %s: ",
-                                                      new Object[] { configurationFile }), e);
+            throw new RuntimeException(String.format(
+                      "Caught exception loading properties from %s: ",
+                      new Object[] { configurationFile }), e);
         }
     }
 

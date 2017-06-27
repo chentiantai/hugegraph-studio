@@ -1,5 +1,22 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.baidu.hugegraph.studio.studio;
-
 
 import com.google.common.base.Preconditions;
 import org.apache.catalina.Host;
@@ -29,10 +46,8 @@ import java.nio.file.Paths;
 public class Bootstrap {
     public static final String DEFAULT_HTML_DIR = "/html";
     public static final String DEFAULT_CONF_DIR = "/conf";
-
     public static final String DEFAULT_WAR_API_FILE = "/war/studio-api.war";
-    public static final String UI_BASE = "";
-    public static final String API_BASE = "/api";
+
     static Server server;
 
     public static void shutdown()
@@ -58,7 +73,7 @@ public class Bootstrap {
     public static void printHelp() {
         Options options = buildOptions();
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("Bootstrap -html  /html - api /war/studio-api.war", options);
+        formatter.printHelp("Bootstrap -html /html -api /war/studio-api.war", options);
     }
 
     public static String getAbsolutePath(String path) {
@@ -69,7 +84,7 @@ public class Bootstrap {
         if (!dir.exists()) {
             dir = new File(System.getProperty("user.dir") + path);
         }
-//        Preconditions.checkArgument(dir != null && dir.exists() && dir.isDirectory(), "dir: " + path + " is invalid.");
+
         return dir.getAbsolutePath();
     }
 
@@ -77,66 +92,62 @@ public class Bootstrap {
         String baseDir = System.getProperty("user.dir");
         String htmlDir = baseDir + DEFAULT_HTML_DIR;
         String confDir = baseDir + DEFAULT_CONF_DIR;
-        String apiWar = baseDir + DEFAULT_WAR_API_FILE;
-
-
+        String apiWarFile = baseDir + DEFAULT_WAR_API_FILE;
 
         CommandLineParser parser = new DefaultParser();
-
         try {
             CommandLine cmdLine = parser.parse(buildOptions(), args);
             if (cmdLine.hasOption("help")) {
                 printHelp();
                 System.exit(0);
-            } else {
-
-                if (cmdLine.hasOption("html")) {
-                    htmlDir = cmdLine.getOptionValue("html", DEFAULT_HTML_DIR);
-                }
-                if (cmdLine.hasOption("conf")) {
-                    confDir = cmdLine.getOptionValue("html", DEFAULT_CONF_DIR);
-                }
-                if (cmdLine.hasOption("api")) {
-                    apiWar = cmdLine.getOptionValue("html", DEFAULT_WAR_API_FILE);
-                }
-
             }
-
+            if (cmdLine.hasOption("html")) {
+                htmlDir = cmdLine.getOptionValue("html", DEFAULT_HTML_DIR);
+            }
+            if (cmdLine.hasOption("conf")) {
+                confDir = cmdLine.getOptionValue("html", DEFAULT_CONF_DIR);
+            }
+            if (cmdLine.hasOption("api")) {
+                apiWarFile = cmdLine.getOptionValue("html", DEFAULT_WAR_API_FILE);
+            }
         } catch (ParseException e) {
-            System.out.println("Fail to parse command line.");
+            System.out.println("Failed to parse command line.");
             printHelp();
             System.exit(0);
         }
 
         htmlDir = System.getProperty("user.dir") + "/studio-ui/html";
-        apiWar = System.getProperty("user.dir") + "/studio-api/target/studio-api.war";
+        apiWarFile = System.getProperty("user.dir")
+                            + "/studio-api/target/studio-api.war";
 
-        run(confDir, htmlDir, apiWar);
-
+        run(confDir, htmlDir, apiWarFile);
         server.await();
     }
 
-    public static void run(String confDir, String uiDirectory, String apiWar)
+    public static void run(String confDir, String uiDir, String apiWarFile)
             throws Exception {
-        if ((confDir == null) || (confDir.isEmpty())) {
+        if (confDir == null || confDir.isEmpty()) {
             confDir = "conf";
         } else {
             confDir = replaceHomeDirReferences(confDir);
         }
 
-        uiDirectory = getAbsolutePath(uiDirectory);
+        uiDir = getAbsolutePath(uiDir);
         confDir = getAbsolutePath(confDir);
-        apiWar = getAbsolutePath(apiWar);
+        apiWarFile = getAbsolutePath(apiWarFile);
 
-        BootstrapConfiguration configuration = new BootstrapConfiguration(String.format("%s/configuration.yaml", new Object[]{confDir}));
+        BootstrapConfiguration configuration = new BootstrapConfiguration(
+                String.format("%s/configuration.yaml", new Object[]{confDir}));
 
         String logDir = replaceHomeDirReferences(configuration.getLogDir());
-        String userDataDir = replaceHomeDirReferences(configuration.getUserDataBaseDir());
-        String passwordEncryptionFile = replaceHomeDirReferences(configuration.getSecurityEncryptionPasswordFile());
+        String userDataDir = replaceHomeDirReferences(
+                            configuration.getUserDataBaseDir());
+        String passwordEncryptionFile = replaceHomeDirReferences(
+                            configuration.getSecurityEncryptionPasswordFile());
 
-        validateConfiguration(configuration
-                .getHttpPort().intValue(), configuration
-                .getHttpBindAddress(), logDir, userDataDir, passwordEncryptionFile);
+        validateConfiguration(configuration.getHttpPort().intValue(),
+                              configuration.getHttpBindAddress(), logDir,
+                              userDataDir, passwordEncryptionFile);
 
         configureLogging(configuration, logDir, confDir);
 
@@ -145,12 +156,13 @@ public class Bootstrap {
         tomcat.setPort(configuration.getHttpPort().intValue());
 
         ProtocolHandler ph = tomcat.getConnector().getProtocolHandler();
-        if ((ph instanceof AbstractProtocol)) {
-            ((AbstractProtocol) ph).setAddress(InetAddress.getByName(configuration.getHttpBindAddress()));
+        if (ph instanceof AbstractProtocol) {
+            ((AbstractProtocol) ph).setAddress(InetAddress.getByName
+                                    (configuration.getHttpBindAddress()));
         }
         tomcat.setHostname(configuration.getHttpBindAddress());
 
-        StandardContext ui = configureUi(tomcat, uiDirectory);
+        StandardContext ui = configureUi(tomcat, uiDir);
         StandardContext api = configureWar(apiWar, "/api", tomcat);
 
         tomcat.start();
@@ -160,52 +172,56 @@ public class Bootstrap {
             Thread.sleep(100L);
         }
 
-        if ((!ui.getState().equals(LifecycleState.STARTED)) ) {
-            System.out.println("\nStudio-ui failed to start.  Please see the logs for more details");
+        if (!ui.getState().equals(LifecycleState.STARTED)) {
+            System.out.println(
+                "\nStudio-ui failed to start. Please check logs for details");
             System.exit(1);
         }
-        if ((!api.getState().equals(LifecycleState.STARTED)) ) {
-            System.out.println("\nStudio-api failed to start.  Please see the logs for more details");
+        if (!api.getState().equals(LifecycleState.STARTED)) {
+            System.out.println(
+                "\nStudio-api failed to start. Please check logs for details");
             System.exit(1);
         }
 
-//        if ((!ui.getState().equals(LifecycleState.STARTED)) ||
-//                (!api.getState().equals(LifecycleState.STARTED)) ||
-//                (!ide.getState().equals(LifecycleState.STARTED))) {
-//            System.out.println("\nStudio failed to start.  Please see the logs for more details");
-//            System.exit(1);
-//        }
-        String upMessage = String.format("Studio is now running at: http://%s:%s\n", new Object[]{configuration
-
-                .getHttpBindAddress(), configuration
-                .getHttpPort()});
+        String upMessage = String.format(
+                "Studio is now running on: http://%s:%s\n",
+                new Object[]{configuration.getHttpBindAddress(),
+                             configuration.getHttpPort()});
 
         System.out.println("\n" + upMessage);
         LoggerFactory.getLogger(Bootstrap.class).info(upMessage);
     }
 
     private static String replaceHomeDirReferences(String confDir) {
-        if ((confDir != null) && (System.getProperty("user.home") != null)) {
-                return confDir.replaceFirst("^~", System.getProperty("user.home"));
+        if (confDir != null && System.getProperty("user.home") != null) {
+                return confDir.replaceFirst(
+                        "^~", System.getProperty("user.home"));
         }
         return confDir;
     }
 
-    private static void validateConfiguration(int httpPort, String httpBindAddress, String logDir, String userDataDir, String passwordEncryptionFile) {
+    private static void validateConfiguration(String httpBindAddress,
+                                              int httpPort, String logDir,
+                                              String userDataDir,
+                                              String passwordEncryptionFile) {
         validateHttpPort(httpBindAddress, httpPort);
         validateWriteablePath(logDir, "log directory", true);
-        if ((userDataDir != null) && (!userDataDir.isEmpty())) {
+        if (userDataDir != null && !userDataDir.isEmpty()) {
             validateWriteablePath(userDataDir, "user data directory", true);
         }
         validateReadablePath(passwordEncryptionFile, "security encryption file");
     }
 
-    private static void validateWriteablePath(String path, String subject, boolean createdIfDoesNotExist) {
-        validateWriteablePath(Paths.get(path, new String[0]).toAbsolutePath(), subject, createdIfDoesNotExist);
+    private static void validateWriteablePath(String path, String subject,
+                                              boolean createdIfDoesNotExist) {
+        validateWriteablePath(Paths.get(path, new String[0]).toAbsolutePath(),
+                                        subject, createdIfDoesNotExist);
     }
 
-    private static void validateWriteablePath(Path path, String subject, boolean createdIfDoesNotExist) {
-        if ((!Files.exists(path, new LinkOption[0])) && (createdIfDoesNotExist) && (path.getParent() != null)) {
+    private static void validateWriteablePath(Path path, String subject,
+                                              boolean createdIfDoesNotExist) {
+        if (!Files.exists(path, new LinkOption[0]) && createdIfDoesNotExist
+            && path.getParent() != null) {
             validateWriteablePath(path.getParent(), subject, true);
         } else {
             validateWriteablePath(path, subject);
@@ -215,7 +231,9 @@ public class Bootstrap {
     private static void validateWriteablePath(Path path, String subject) {
         validatePathExists(path, subject);
         if (!Files.isWritable(path)) {
-            System.out.println(String.format("Cannot start Studio, cannot write to configured %s %s", new Object[]{subject, path}));
+            System.out.println(String.format(
+                    "Can't start Studio, cannot write to configured %s %s",
+                    new Object[]{subject, path}));
             System.exit(1);
         }
     }
@@ -227,46 +245,57 @@ public class Bootstrap {
     private static void validateReadablePath(Path path, String subject) {
         validatePathExists(path, subject);
         if (!Files.isReadable(path)) {
-            System.out.println(String.format("Cannot start Studio, cannot read from configured %s %s", new Object[]{subject, path}));
+            System.out.println(String.format(
+                    "Can't start Studio, cannot read from configured %s %s",
+                    new Object[]{subject, path}));
             System.exit(1);
         }
     }
 
     private static void validatePathExists(Path path, String subject) {
         if (!Files.exists(path, new LinkOption[0])) {
-            System.out.println(String.format("Cannot start Studio, configured %s %s does not exist", new Object[]{subject, path}));
+            System.out.println(String.format(
+                    "Can't start Studio, configured %s %s does not exist",
+                    new Object[]{subject, path}));
             System.exit(1);
         }
     }
 
     private static void validateHttpPort(String httpBindAddress, int httpPort) {
         try {
-            ServerSocket socket = new ServerSocket(httpPort, 1, InetAddress.getByName(httpBindAddress));
+            ServerSocket socket = new ServerSocket(httpPort, 1,
+                                      InetAddress.getByName(httpBindAddress));
             Object localObject = null;
             if (socket != null) {
                 if (localObject != null) {
                     try {
                         socket.close();
-                    } catch (Throwable localThrowable) {
-                        ((Throwable) localObject).addSuppressed(localThrowable);
+                    } catch (Throwable t) {
+                        ((Throwable) localObject).addSuppressed(t);
                     }
                 } else {
                     socket.close();
                 }
             }
         } catch (IOException e) {
-            System.err.println(String.format("Cannot start Studio on port %d: %s", new Object[]{Integer.valueOf(httpPort), e}));
+            System.err.println(String.format(
+                    "Can't start Studio on port %d: %s",
+                    new Object[]{Integer.valueOf(httpPort), e}));
             System.exit(1);
         }
     }
 
-    private static void configureLogging(BootstrapConfiguration configuration, String logDir, String confDir) {
+    private static void configureLogging(BootstrapConfiguration configuration,
+                                         String logDir, String confDir) {
         System.setProperty("studio.log.file", configuration.getLogFileName());
         System.setProperty("studio.log.dir", logDir);
-        System.setProperty("studio.max.log.file.size", configuration.getMaxLogFileSize());
-        System.setProperty("studio.max.log.archives", configuration.getMaxLogArchives().toString());
+        System.setProperty("studio.max.log.file.size",
+                            configuration.getMaxLogFileSize());
+        System.setProperty("studio.max.log.archives",
+                            configuration.getMaxLogArchives().toString());
 
-        String log4jConfLocation = String.format("%s/log4j2.xml", new Object[]{confDir});
+        String log4jConfLocation = String.format("%s/log4j2.xml",
+                                                 new Object[]{confDir});
         System.setProperty("log4j.configurationFile", log4jConfLocation);
         LoggerContext context = Configurator.initialize(null, log4jConfLocation);
 
@@ -279,16 +308,20 @@ public class Bootstrap {
         errorPage.setErrorCode(404);
         errorPage.setLocation("/index.html");
 
-        StandardContext context = (StandardContext) tomcat.addWebapp("", new File(uiLocation).getAbsolutePath());
+        StandardContext context = (StandardContext) tomcat.addWebapp(
+                "", new File(uiLocation).getAbsolutePath());
         context.addWelcomeFile("/index.html");
         context.addErrorPage(errorPage);
+
         return context;
     }
 
-    private static StandardContext configureWar(String warFile, String appBase, Tomcat tomcat)
+    private static StandardContext configureWar(String warFile, String appBase,
+                                                Tomcat tomcat)
             throws ServletException, IOException {
-        if ((warFile != null) && (warFile.length() > 0)) {
-            StandardContext context = (StandardContext) tomcat.addWebapp(appBase, new File(warFile).getAbsolutePath());
+        if (warFile != null && warFile.length() > 0) {
+            StandardContext context = (StandardContext) tomcat.addWebapp(
+                    appBase, new File(warFile).getAbsolutePath());
             Host host = (Host) context.getParent();
             File appBaseDirectory = host.getAppBaseFile();
             if (!appBaseDirectory.exists()) {
@@ -296,10 +329,12 @@ public class Bootstrap {
             }
             context.setUnpackWAR(true);
             if ((context.getJarScanner() instanceof StandardJarScanner)) {
-                ((StandardJarScanner) context.getJarScanner()).setScanAllDirectories(true);
+                ((StandardJarScanner) context.getJarScanner())
+                        .setScanAllDirectories(true);
             }
             return context;
         }
+
         return null;
     }
 }
