@@ -9,7 +9,7 @@ import {
     FULL_SCREEN,
     ADD_ITEM,
     SHOW_NOTEBOOK,
-    REMOVE_ITEM,
+    DELETE_ITEM,
     SAVE_ITEMS,
     UPDATE_ITEMS
 } from './actions';
@@ -43,14 +43,8 @@ export function cells(state = [], action) {
             ];
         case SHOW_NOTEBOOK:
             return [...action.cells];
-        // case REMOVE_ITEM:
-        //     return [
-        //         ...state,
-        //         {
-        //             itemID: action.itemID,
-        //             language: action.language
-        //         }
-        //     ];
+        case DELETE_ITEM:
+            return state.filter(cell => cell.id !== action.cellId);
         // case SAVE_ITEMS:
         // case UPDATE_ITEMS: {
         //     const cellsArr = [];

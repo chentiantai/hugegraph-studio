@@ -6,7 +6,7 @@
 import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
-import {itemScreenMode, addItem, loadCells} from './actions';
+import {itemScreenMode, addItem, loadCells, deleteItem} from './actions';
 
 class NotebookBoard extends React.Component {
     constructor() {
@@ -27,7 +27,7 @@ class NotebookBoard extends React.Component {
         let fullScreenItem = this.props.screenMode.itemKey;
         let fullScreen = this.props.screenMode.fullScreen;
         let addDisplay = fullScreen ? 'none' : 'block';
-        let deleteCss = this.state.itemKeys.length === 1 ? 'btn btn-link' +
+        let deleteCss = this.props.cells.length === 1 ? 'btn btn-link' +
             ' disabled' : 'btn btn-link';
         return (
             <div>
@@ -66,19 +66,9 @@ class NotebookBoard extends React.Component {
         this.props.addItem(this.props.notebookId, position + 1);
     }
 
-    deleteItem = key => {
-        if (this.state.itemKeys.length === 1) return;
-
-        let newItemKeys = [];
-        this.state.itemKeys.forEach(i => {
-                if (i !== key) {
-                    newItemKeys.push(i);
-                }
-            }
-        );
-        this.setState({
-            itemKeys: newItemKeys
-        });
+    deleteItem = cellId => {
+        if (this.props.cells.length === 1) return;
+        this.props.deleteItem(this.props.notebookId, cellId);
     }
 }
 
@@ -127,7 +117,9 @@ function mapDispatchToProps(dispatch) {
     return {
         itemScreenMode: (flag, itemKey) => dispatch(itemScreenMode(flag, itemKey)),
         addItem: (notebookId, position) => dispatch(addItem(notebookId, position)),
-        loadCells: notebookId => dispatch(loadCells(notebookId))
+        loadCells: notebookId => dispatch(loadCells(notebookId)),
+        deleteItem: (notebookId, cellId) => dispatch(deleteItem(notebookId, cellId))
+
     };
 }
 
