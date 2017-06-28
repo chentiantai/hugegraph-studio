@@ -33,6 +33,7 @@
     "less-loader": "^4.0.4",
     "moment": "^2.18.1",
     "react-hot-loader": "^3.0.0-beta.7",
+    "react-router-dom": "^4.1.1",
     "react-time": "^4.3.0",
     "redux-devtools": "^3.4.0",
     "style-loader": "^0.18.1",

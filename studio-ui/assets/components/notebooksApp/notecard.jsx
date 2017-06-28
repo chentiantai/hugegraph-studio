@@ -2,6 +2,8 @@ import  React from 'react'
 import {deleteNoteCard} from './actions';
 import {connect} from 'react-redux';
 import TimeFormat from '../commoncomponents/time';
+import {withRouter,Link,Route} from 'react-router-dom';
+
 
 class NoteCard extends React.Component {
 
@@ -18,6 +20,7 @@ class NoteCard extends React.Component {
         const noteCard = this.props.value;
         let noteCardName = noteCard.name;
         let notebookUrl = 'notebook.html?id=' + noteCard.id + '&name=' + noteCardName;
+
         return (
             <div className="notebook-card">
                 <div className="notebook-card-close">
@@ -27,7 +30,7 @@ class NoteCard extends React.Component {
                            aria-hidden="true"></i>
                     </button>
                 </div>
-                <a href={notebookUrl}>
+                <Link to={'/notebook/'+noteCard.id}>
                 <div className="notebook-card-info">
                     <div className="notebook-card-title">
                             {
@@ -41,7 +44,7 @@ class NoteCard extends React.Component {
                         }
                     </div>
                 </div>
-                </a>
+                </Link>
                 <div className="notebook-card-control">
 
                     <div className="notebook-card-createtime">
@@ -82,8 +85,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Connected Component
-export default  connect(
+export default  withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(NoteCard);
+)(NoteCard));
 

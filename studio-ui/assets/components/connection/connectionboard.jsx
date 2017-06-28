@@ -11,6 +11,7 @@ import {deleteConnection, loadConnections} from './actions';
 import ConnectionModal from './connectionmodal';
 import AlertModal from '../commoncomponents/alertmodal';
 import AlertList from './alertlist';
+import {withRouter} from 'react-router-dom';
 
 
 class ConnectionsBoard extends React.Component {
@@ -28,7 +29,7 @@ class ConnectionsBoard extends React.Component {
                 port: ''
             },
             operation: 'add',
-            operationTime:0
+            operationTime: 0
         }
     }
 
@@ -48,7 +49,7 @@ class ConnectionsBoard extends React.Component {
                 port: ''
             },
             operation: 'add',
-            operationTime:this.state.operationTime+1
+            operationTime: this.state.operationTime + 1
         });
     }
 
@@ -56,9 +57,9 @@ class ConnectionsBoard extends React.Component {
         this.setState({
             title: 'Update Connection Information',
             isOpen: true,
-            connection:{...connection},
+            connection: {...connection},
             operation: 'update',
-            operationTime:this.state.operationTime+1
+            operationTime: this.state.operationTime + 1
         });
     }
 
@@ -73,7 +74,7 @@ class ConnectionsBoard extends React.Component {
         );
         this.setState({
             alert: alert,
-            isOpen:false
+            isOpen: false
 
         });
     }
@@ -82,14 +83,14 @@ class ConnectionsBoard extends React.Component {
         this.props.deleteConnection(id);
         this.setState({
             alert: null,
-            isOpen:false
+            isOpen: false
         });
     }
 
     cancelDelete() {
         this.setState({
             alert: null,
-            isOpen:false
+            isOpen: false
         });
     }
 
@@ -166,7 +167,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Connected Component
-export const ConnectionsBoardApp = connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(ConnectionsBoard);
+)(ConnectionsBoard));

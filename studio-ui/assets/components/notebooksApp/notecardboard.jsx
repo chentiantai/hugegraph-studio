@@ -6,11 +6,12 @@
 
 import React from 'react';
 import NoteCardAdd from './notecardadd';
-import AlertList from './alertlist';
 import NoteCard from './notecard';
 import {connect} from 'react-redux';
 import {loadNoteCards} from './actions';
 import NoteCardModal from './notecardmodal';
+import {withRouter} from 'react-router-dom';
+
 
 class NoteCardBoard extends React.Component {
     constructor(props) {
@@ -62,9 +63,6 @@ class NoteCardBoard extends React.Component {
             <div className="container">
 
                 <div className="row">
-                    <AlertList/>
-                </div>
-                <div className="row">
                     <div className="notebook-cards">
                         <NoteCardAdd onClick={() => this.addNoteCard()}/>
                         {
@@ -107,10 +105,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Connected Component
-export default  connect(
+export default  withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(NoteCardBoard);
+)(NoteCardBoard));
 
 
 

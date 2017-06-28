@@ -13,25 +13,24 @@ import {
 } from './actions';
 
 
-const initialState = {
-    connections: [],
-    alerts: {
-        items: [],
-        lastKey: -1
-    }
-};
+// const initialState = {
+//     connections: [],
+//     alerts: {
+//         items: [],
+//         lastKey: -1
+//     }
+// };
+//
+//
+// export function connectionsOperation(state = initialState, action) {
+//     return {
+//         connections: connections(state.connections, action),
+//         alerts: alerts(state.alerts, action)
+//     };
+// }
 
 
-export function connectionsOperation(state = initialState, action) {
-    return {
-        connections: connections(state.connections, action),
-        alerts: alerts(state.alerts, action)
-    };
-}
-
-
-
-function alerts(state = {items: [], lastKey: -1}, action) {
+export function alerts(state = {items: [], lastKey: -1}, action) {
     switch (action.type) {
         case ALERT_SHOW:
             return {
@@ -50,7 +49,7 @@ function alerts(state = {items: [], lastKey: -1}, action) {
 }
 
 
-function connections(state = [], action) {
+export function connections(state = [], action) {
     switch (action.type) {
         case SHOW: {
             return JSON.parse(JSON.stringify(action.connections));

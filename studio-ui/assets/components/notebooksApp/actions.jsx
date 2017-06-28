@@ -4,8 +4,8 @@
  * Created on 17/6/6
  */
 
-export const ALERT_SHOW = 'alert_show';
-export const ALERT_HIDE = 'alert_hide';
+import {alertMessage} from '../connection/actions';
+
 export const ADD_NOTE_CARD_SUCCESS = 'add_note_card_success';
 export const SHOW_NOTE_CARDS = 'show_note_cards';
 export const DELETE_NOTE_CARD_SUCCESS = 'delete_note_card_success';
@@ -135,7 +135,6 @@ export function addNoteCard(noteCard) {
             })
             .then(data => {
                 dispatch(addNoteCardSuccess(data));
-                // dispatch(alertMessage('Add NoteCard Success', 'success'));
             })
             .catch(err => {
                 dispatch(alertMessage('Add noteCard Fetch Exception:' + err, 'danger'));
@@ -151,43 +150,44 @@ export function addNoteCardSuccess(noteCard) {
     };
 }
 
-
-export function alertShow(messageText, messageType, key) {
-    return {
-        type: ALERT_SHOW,
-        payload: {
-            messageText, messageType, key
-        }
-    };
-}
-
-export function alertHide(key) {
-    return {
-        type: ALERT_HIDE,
-        payload: {key}
-    };
-}
-
-export function alertMessage(messageText, messageType, delay = 1500) {
-    return (dispatch, getState) => {
-        if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
-            const key = getState().alerts.lastKey + 1;
-            dispatch(alertShow(messageText, messageType, key));
-            if (messageType !== 'danger') {
-                setTimeout(() => dispatch(alertHide(key)), delay);
-            }
-        } else {
-            console.error('messageText must be string and messageType must be success, warning, danger, info');
-        }
-    };
-}
-
-export function hideAllAlert(delay = 1500) {
-    return (dispatch, getState) => {
-        getState().alerts.items.forEach(item => {
-            setTimeout(() => {
-                dispatch(alertHide(item.key));
-            }, delay);
-        });
-    };
-}
+//
+//
+// export function alertShow(messageText, messageType, key) {
+//     return {
+//         type: ALERT_SHOW,
+//         payload: {
+//             messageText, messageType, key
+//         }
+//     };
+// }
+//
+// export function alertHide(key) {
+//     return {
+//         type: ALERT_HIDE,
+//         payload: {key}
+//     };
+// }
+//
+// export function alertMessage(messageText, messageType, delay = 1500) {
+//     return (dispatch, getState) => {
+//         if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
+//             const key = getState().alerts.lastKey + 1;
+//             dispatch(alertShow(messageText, messageType, key));
+//             if (messageType !== 'danger') {
+//                 setTimeout(() => dispatch(alertHide(key)), delay);
+//             }
+//         } else {
+//             console.error('messageText must be string and messageType must be success, warning, danger, info');
+//         }
+//     };
+// }
+//
+// export function hideAllAlert(delay = 1500) {
+//     return (dispatch, getState) => {
+//         getState().alerts.items.forEach(item => {
+//             setTimeout(() => {
+//                 dispatch(alertHide(item.key));
+//             }, delay);
+//         });
+//     };
+// }

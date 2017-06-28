@@ -7,6 +7,8 @@ import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
 import {itemScreenMode, addItem, loadCells, deleteItem} from './actions';
+import {itemScreenMode} from './actions';
+import {withRouter} from 'react-router-dom';
 
 class NotebookBoard extends React.Component {
     constructor() {
@@ -24,6 +26,10 @@ class NotebookBoard extends React.Component {
 
 
     render() {
+
+        console.log('id:' + this.props.match.params.id);
+        console.log(this.state.itemKeys);
+
         let fullScreenItem = this.props.screenMode.itemKey;
         let fullScreen = this.props.screenMode.fullScreen;
         let addDisplay = fullScreen ? 'none' : 'block';
@@ -124,7 +130,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Connected Component
-export default  connect(
+export default  withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(NotebookBoard);
+)(NotebookBoard));

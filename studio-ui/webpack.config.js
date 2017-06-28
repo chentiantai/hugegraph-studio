@@ -21,9 +21,9 @@ module.exports = {
 
         // the entry point of our app
         index: './assets/index.js',
-        connections: './assets/connections.js',
-        notebook: './assets/notebook.jsx',
-        vendors: ['react', 'react-dom']
+        // connections: './assets/connections.js',
+        // notebook: './assets/notebook.jsx',
+        vendors: ['react', 'react-dom', 'react-router-dom']
 
     },
     output: {
@@ -45,13 +45,10 @@ module.exports = {
 
         // match the output path
         contentBase: resolve(__dirname, 'dist'),
-
+        // historyApiFallback: true,
         // match the output `publicPath`
         publicPath: '/',
         port: 8082,
-        // proxy: {
-        //     '/': 'http://localhost:8080/'
-        // }
         proxy: {
             '/api': {
                 target: 'http://localhost:8080/',
@@ -100,30 +97,30 @@ module.exports = {
                 collapseWhitespace: false
             }
         }),
-        new HtmlWebpackPlugin({
-            filename: 'connections.html',
-            template: 'assets/connections.html',
-            inject: 'body',
-            hash: true,
-            chunks: ['vendors', 'connections'],
-            // min html
-            minify: {
-                removeComments: true,
-                collapseWhitespace: false
-            }
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'notebook.html',
-            template: 'assets/notebook.html',
-            inject: 'body',
-            hash: true,
-            chunks: ['vendors', 'notebook'],
-            // min html
-            minify: {
-                removeComments: true,
-                collapseWhitespace: false
-            }
-        }),
+        // new HtmlWebpackPlugin({
+        //     filename: 'connections.html',
+        //     template: 'assets/connections.html',
+        //     inject: 'body',
+        //     hash: true,
+        //     chunks: ['vendors', 'connections'],
+        //     // min html
+        //     minify: {
+        //         removeComments: true,
+        //         collapseWhitespace: false
+        //     }
+        // }),
+        // new HtmlWebpackPlugin({
+        //     filename: 'notebook.html',
+        //     template: 'assets/notebook.html',
+        //     inject: 'body',
+        //     hash: true,
+        //     chunks: ['vendors', 'notebook'],
+        //     // min html
+        //     minify: {
+        //         removeComments: true,
+        //         collapseWhitespace: false
+        //     }
+        // }),
         // enable HMR globally
         new webpack.HotModuleReplacementPlugin(),
 
@@ -135,7 +132,8 @@ module.exports = {
         }),
         new webpack.optimize.CommonsChunkPlugin({
             // Specify the common bundle's name.
-            name: 'vendors'
+            name: 'vendors',
+            filename: 'vendors.bundle.js'
         })
     ],
 };

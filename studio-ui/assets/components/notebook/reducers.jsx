@@ -72,7 +72,7 @@ export function notebookOperation(state = initialState, action) {
 }
 
 
-function screenMode(state = {fullScreen: false, itemKey: 0}, action) {
+export function screenMode(state = {fullScreen: false, itemKey: 0}, action) {
     switch (action.type) {
         case FULL_SCREEN:
             return {
@@ -87,7 +87,7 @@ function screenMode(state = {fullScreen: false, itemKey: 0}, action) {
 }
 
 
-function alerts(state = {items: [], lastKey: -1}, action) {
+export function alerts(state = {items: [], lastKey: -1}, action) {
     switch (action.type) {
         case ALERT_SHOW:
             return {
