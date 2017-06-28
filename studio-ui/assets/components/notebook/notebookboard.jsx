@@ -7,7 +7,6 @@ import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
 import {itemScreenMode, addItem, loadCells, deleteItem} from './actions';
-import {itemScreenMode} from './actions';
 import {withRouter} from 'react-router-dom';
 
 class NotebookBoard extends React.Component {
