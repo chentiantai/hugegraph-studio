@@ -16,9 +16,6 @@ export const ALERT_SHOW = 'alert_show';
 export const ALERT_HIDE = 'alert_hide';
 
 
-
-
-
 export function loadConnections() {
     return dispatch => {
         return fetch('/api/v1/connections')

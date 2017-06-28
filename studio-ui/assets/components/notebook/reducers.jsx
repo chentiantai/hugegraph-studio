@@ -4,29 +4,12 @@
  * Created on 17/6/5
  */
 import {
-    ALERT_SHOW,
-    ALERT_HIDE,
     FULL_SCREEN,
     ADD_ITEM,
     SHOW_NOTEBOOK,
     DELETE_ITEM,
-    SAVE_ITEMS,
     UPDATE_ITEMS
 } from './actions';
-
-
-const initialState = {
-    screenMode: {
-        fullScreen: false,
-        itemKey: 0
-    },
-    alerts: {
-        items: [],
-        lastKey: -1
-    },
-    cells: []
-
-};
 
 export function cells(state = [], action) {
 
@@ -45,7 +28,6 @@ export function cells(state = [], action) {
             return [...action.cells];
         case DELETE_ITEM:
             return state.filter(cell => cell.id !== action.cellId);
-        // case SAVE_ITEMS:
         // case UPDATE_ITEMS: {
         //     const cellsArr = [];
         //     state.map(cell => {
@@ -63,43 +45,16 @@ export function cells(state = [], action) {
 
 }
 
-export function notebookOperation(state = initialState, action) {
-    return {
-        screenMode: screenMode(state.screenMode, action),
-        cells: cells(state.cells, action),
-        alerts: alerts(state.alerts, action)
-    };
-}
 
-
-export function screenMode(state = {fullScreen: false, itemKey: 0}, action) {
+export function screenMode(state = {fullScreen: false, cellId: ''}, action) {
     switch (action.type) {
         case FULL_SCREEN:
             return {
                 ...state,
                 fullScreen: action.flag,
-                itemKey: action.itemKey
+                cellId: action.cellId
             };
 
-        default:
-            return state;
-    }
-}
-
-
-export function alerts(state = {items: [], lastKey: -1}, action) {
-    switch (action.type) {
-        case ALERT_SHOW:
-            return {
-                ...state,
-                items: [...state.items, action.payload],
-                lastKey: state.lastKey + 1
-            };
-        case ALERT_HIDE:
-            return {
-                ...state,
-                items: state.items.filter(item => (item.key !== action.payload.key))
-            };
         default:
             return state;
     }

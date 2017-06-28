@@ -4,14 +4,10 @@
  * Created on 17/6/5
  */
 
-
-export const ALERT_SHOW = 'alert_show';
-export const ALERT_HIDE = 'alert_hide';
 export const FULL_SCREEN = 'full_screen';
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
 export const SHOW_NOTEBOOK = 'show_notebook';
-export const SAVE_ITEMS = 'save_items';
 export const UPDATE_ITEMS = 'update_items';
 
 
@@ -110,13 +106,6 @@ export function deleteItem(notebookId, cellId) {
 }
 
 //
-// export function saveItems(cell) {
-//     return {
-//         type: SAVE_ITEMS,
-//         cell
-//     };
-// }
-//
 // export function updateItems(cell) {
 //     return {
 //         type: UPDATE_ITEMS,
@@ -124,54 +113,13 @@ export function deleteItem(notebookId, cellId) {
 //     };
 // }
 
-export function itemScreenMode(flag, itemKey) {
+export function itemScreenMode(flag, cellId) {
     return {
         type: FULL_SCREEN,
         flag: flag,
-        itemKey: itemKey
+        cellId: cellId
     }
 }
 
 
-export function alertShow(messageText, messageType, key) {
-    return {
-        type: ALERT_SHOW,
-        payload: {
-            messageText, messageType, key
-        }
-    };
-}
-
-export function alertHide(key) {
-    return {
-        type: ALERT_HIDE,
-        payload: {key}
-    };
-}
-
-export function alertMessage(messageText, messageType, delay = 1500) {
-    return (dispatch, getState) => {
-        if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
-            const key = getState().alerts.lastKey + 1;
-            dispatch(alertShow(messageText, messageType, key));
-            if (messageType === 'danger') {
-                // setTimeout(() => dispatch(alertHide(key)), 20000);
-            } else {
-                setTimeout(() => dispatch(alertHide(key)), delay);
-            }
-        } else {
-            console.error('messageText must be string and messageType must be success, warning, danger, info');
-        }
-    };
-}
-
-export function hideAllAlert(delay = 1500) {
-    return (dispatch, getState) => {
-        getState().alerts.items.forEach(item => {
-            setTimeout(() => {
-                dispatch(alertHide(item.key));
-            }, delay);
-        });
-    };
-}
 

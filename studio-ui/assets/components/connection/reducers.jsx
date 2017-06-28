@@ -12,24 +12,6 @@ import {
     UPDATE_SUCCESS
 } from './actions';
 
-
-// const initialState = {
-//     connections: [],
-//     alerts: {
-//         items: [],
-//         lastKey: -1
-//     }
-// };
-//
-//
-// export function connectionsOperation(state = initialState, action) {
-//     return {
-//         connections: connections(state.connections, action),
-//         alerts: alerts(state.alerts, action)
-//     };
-// }
-
-
 export function alerts(state = {items: [], lastKey: -1}, action) {
     switch (action.type) {
         case ALERT_SHOW:
