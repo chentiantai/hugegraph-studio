@@ -106,8 +106,9 @@ public class Notebook {
         this.cells.removeIf(c -> c.getId().equals(cell.getId()));
         if (index != null) {
             this.cells.add(index.intValue(), cell);
+        }else {
+            this.cells.add(cell);
         }
-        this.cells.add(cell);
     }
 
     public void addCell(NotebookCell cell) {
