@@ -3,7 +3,7 @@
  * @author huanghaiping(huanghaiping02@baidu.com)
  * Created on 17/6/5
  */
-
+import {alertMessage} from '../connection/actions';
 export const FULL_SCREEN = 'full_screen';
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
