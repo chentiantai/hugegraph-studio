@@ -6,7 +6,7 @@
 import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
-import {itemScreenMode, addItem, loadCells, deleteItem} from './actions';
+import {addItem, loadCells, deleteItem} from './actions';
 import {withRouter} from 'react-router-dom';
 
 class NotebookBoard extends React.Component {
@@ -15,7 +15,6 @@ class NotebookBoard extends React.Component {
     }
 
     componentDidMount() {
-        this.props.itemScreenMode(false, '');
         this.props.loadCells(this.props.match.params.id);
 
     }
@@ -23,8 +22,8 @@ class NotebookBoard extends React.Component {
 
     render() {
         console.log(JSON.stringify(this.props.notebook));
-        let fullScreenItem = this.props.screenMode.cellId;
-        let fullScreen = this.props.screenMode.fullScreen;
+        let fullScreenItem = this.props.headMode.cellId;
+        let fullScreen = this.props.headMode.fullScreen;
         let addDisplay = fullScreen ? 'none' : 'block';
         let deleteCss = this.props.cells.length === 1 ? 'btn btn-link' +
             ' disabled' : 'btn btn-link';
@@ -105,7 +104,7 @@ class NoteBookItemAdd extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        screenMode: state.screenMode,
+        headMode: state.headMode,
         cells: state.notebook.cells
     };
 }
@@ -113,7 +112,6 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        itemScreenMode: (flag, cellId) => dispatch(itemScreenMode(flag, cellId)),
         addItem: (notebookId, position) => dispatch(addItem(notebookId, position)),
         loadCells: notebookId => dispatch(loadCells(notebookId)),
         deleteItem: (notebookId, cellId) => dispatch(deleteItem(notebookId, cellId))

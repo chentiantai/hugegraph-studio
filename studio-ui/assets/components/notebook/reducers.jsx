@@ -4,7 +4,6 @@
  * Created on 17/6/5
  */
 import {
-    FULL_SCREEN,
     ADD_ITEM,
     SHOW_NOTEBOOK,
     DELETE_ITEM,
@@ -49,18 +48,6 @@ export function notebook(state = [], action) {
 }
 
 
-export function screenMode(state = {fullScreen: false, cellId: ''}, action) {
-    switch (action.type) {
-        case FULL_SCREEN:
-            return {
-                ...state,
-                fullScreen: action.flag,
-                cellId: action.cellId
-            };
 
-        default:
-            return state;
-    }
-}
 
 

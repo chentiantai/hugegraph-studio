@@ -4,7 +4,7 @@
  * Created on 17/6/5
  */
 import {alertMessage} from '../connection/actions';
-export const FULL_SCREEN = 'full_screen';
+import {changeHeadMode} from '../actions';
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
 export const SHOW_NOTEBOOK = 'show_notebook';
@@ -46,8 +46,8 @@ export function loadCells(notebookId) {
                 }
             })
             .then(data => {
-                // alert(JSON.stringify(data));
                 dispatch(showCells(data));
+                dispatch(changeHeadMode({studioHeadName: data.name, fullScreen: false}));
             })
             .catch(err => {
                 dispatch(alertMessage('Load Cells Fetch Exception:' + err, 'danger'));
@@ -104,22 +104,6 @@ export function deleteItem(notebookId, cellId) {
                 dispatch(alertMessage('Delete NotebookItem Fetch Exception:' + err, 'danger'));
             });
     };
-}
-
-//
-// export function updateItems(cell) {
-//     return {
-//         type: UPDATE_ITEMS,
-//         cell
-//     };
-// }
-
-export function itemScreenMode(flag, cellId) {
-    return {
-        type: FULL_SCREEN,
-        flag: flag,
-        cellId: cellId
-    }
 }
 
 

@@ -6,7 +6,8 @@
 
 import {connections, alerts} from './connection/reducers';
 import {noteCards} from  './notebooksApp/reducers';
-import {screenMode, notebook} from './notebook/reducers';
+import {notebook} from './notebook/reducers';
+import {CHANGE_HEAD_MODE} from './actions';
 
 const initialState = {
     noteCards: [],
@@ -15,7 +16,8 @@ const initialState = {
         items: [],
         lastKey: -1
     },
-    screenMode: {
+    headMode: {
+        studioHeadName: 'HugeGraph NoteBook Quick Start',
         fullScreen: false,
         cellId: ''
     },
@@ -30,7 +32,20 @@ export function operation(state = initialState, action) {
         connections: connections(state.connections, action),
         alerts: alerts(state.alerts, action),
         noteCards: noteCards(state.noteCards, action),
-        screenMode: screenMode(state.screenMode, action),
+        headMode: headMode(state.headMode, action),
         notebook: notebook(state.notebook, action)
     };
+}
+
+
+function headMode(state = '', action) {
+    switch (action.type) {
+        case CHANGE_HEAD_MODE:
+            return {
+                ...state,
+                ...action.mode
+            };
+        default:
+            return state;
+    }
 }

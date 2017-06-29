@@ -13,7 +13,7 @@ import NoteCardBoard from './notebooksApp/notecardboard';
 import ConnectionsBoard from './connection/connectionboard';
 import NoteBookBoard from './notebook/notebookboard';
 import {connect} from 'react-redux';
-import {itemScreenMode} from './notebook/actions';
+import {changeHeadMode} from './actions';
 import 'whatwg-fetch';
 import {HashRouter as Router, Route, Switch} from 'react-router-dom';
 require('react-hot-loader/patch');
@@ -25,16 +25,14 @@ class NotebooksApp extends React.Component {
     }
 
     render() {
-        let headName = this.props.notebook.name === undefined ? 'HugeGraph '
-            + 'Notebook Quick Start' : this.props.notebook.name;
         return (
             <Router >
                 <div>
 
-                    <Head fluid={this.props.screenMode.fullScreen}/>
+                    <Head fluid={this.props.headMode.fullScreen}/>
                     <StudioHead
-                        display={this.props.screenMode.fullScreen ? 'none' : 'block'}
-                        name={headName}/>
+                        display={this.props.headMode.fullScreen ? 'none' : 'block'}
+                        name={this.props.headMode.studioHeadName}/>
                     <Switch>
                         <Route exact path="/" component={NoteCardBoard}/>
                         <Route path="/index" component={NoteCardBoard}/>
@@ -53,15 +51,14 @@ class NotebooksApp extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        screenMode: state.screenMode,
-        notebook: state.notebook
+        headMode: state.headMode
     };
 }
 
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        itemScreenMode: (flag, itemKey) => dispatch(itemScreenMode(flag, itemKey))
+        changeHeadMode: mode => dispatch(changeHeadMode(mode))
     };
 }
 

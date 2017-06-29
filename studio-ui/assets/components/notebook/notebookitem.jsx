@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {itemScreenMode} from './actions';
+import {changeHeadMode} from '../actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 
@@ -63,7 +63,7 @@ class NotebookItem extends React.Component {
             fullScreen: cssFlag,
             itemPanelHeight: itemPanelHeight
         });
-        this.props.itemScreenMode(cssFlag, this.props.itemId);
+        this.props.changeHeadMode({fullScreen:cssFlag, cellId:this.props.itemId});
     }
 
     viewMode = cssFlag => {
@@ -184,14 +184,14 @@ class NotebookItem extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        fullScreen: state.fullScreen
+        fullScreen: state.headMode.fullScreen
     };
 }
 
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        itemScreenMode: (flag, itemId) => dispatch(itemScreenMode(flag, itemId))
+        changeHeadMode: mode => dispatch(changeHeadMode(mode))
     };
 }
 

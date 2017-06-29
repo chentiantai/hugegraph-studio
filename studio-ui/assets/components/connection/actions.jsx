@@ -5,7 +5,7 @@
  */
 
 
-
+import {changeHeadMode} from '../actions';
 export const SHOW = 'show';
 export const UPDATE_SUCCESS = 'update_success';
 export const ADD_REQUEST = 'add_request';
@@ -28,6 +28,7 @@ export function loadConnections() {
             })
             .then(data => {
                 dispatch(showConnections(data));
+                dispatch(changeHeadMode({fullScreen:false,studioHeadName:'HugeGraph NoteBook Quick Start'}));
             })
             .catch(err => {
                 dispatch(alertMessage('Load Connections Fetch Exception:' + err, 'danger'));

@@ -5,7 +5,7 @@
  */
 
 import {alertMessage} from '../connection/actions';
-
+import {changeHeadMode} from '../actions';
 export const ADD_NOTE_CARD_SUCCESS = 'add_note_card_success';
 export const SHOW_NOTE_CARDS = 'show_note_cards';
 export const DELETE_NOTE_CARD_SUCCESS = 'delete_note_card_success';
@@ -53,6 +53,7 @@ export function loadNoteCards() {
             })
             .then(data => {
                 dispatch(showNoteCards(data));
+                dispatch(changeHeadMode({fullScreen:false,studioHeadName:'HugeGraph NoteBook Quick Start'}));
             })
             .catch(err => {
                 dispatch(alertMessage('Load Notebooks Fetch Exception:' + err, 'danger'));
