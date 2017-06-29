@@ -21,7 +21,6 @@ class NotebookBoard extends React.Component {
 
 
     render() {
-        console.log(JSON.stringify(this.props.notebook));
         let fullScreenItem = this.props.headMode.cellId;
         let fullScreen = this.props.headMode.fullScreen;
         let addDisplay = fullScreen ? 'none' : 'block';
@@ -60,6 +59,7 @@ class NotebookBoard extends React.Component {
                 break;
             }
         }
+
         this.props.addItem(this.props.match.params.id, position + 1);
     }
 

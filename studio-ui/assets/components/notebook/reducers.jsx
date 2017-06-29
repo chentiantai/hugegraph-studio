@@ -19,10 +19,19 @@ export function notebook(state = [], action) {
                 language: action.data.language,
                 code: action.data.code
             };
-            state.cells.splice(action.position, 0, newCell);
-            return [
-                ...state
-            ];
+            let arr = [];
+            for (let i = 0; i < state.cells.length; i++) {
+                if (action.position == i) {
+                    arr.push(newCell);
+                    arr.push(state.cells[i]);
+                } else {
+                    arr.push(state.cells[i]);
+                }
+            }
+            return {
+                ...state,
+                cells: arr
+            };
         case SHOW_NOTEBOOK:
             return action.notebook;
         case DELETE_ITEM:
