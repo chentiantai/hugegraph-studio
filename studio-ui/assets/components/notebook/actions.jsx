@@ -14,7 +14,7 @@ export const UPDATE_ITEMS = 'update_items';
 export function showCells(data) {
     return {
         type: SHOW_NOTEBOOK,
-        cells: data.cells
+        notebook: data
     };
 }
 
@@ -46,6 +46,7 @@ export function loadCells(notebookId) {
                 }
             })
             .then(data => {
+                // alert(JSON.stringify(data));
                 dispatch(showCells(data));
             })
             .catch(err => {

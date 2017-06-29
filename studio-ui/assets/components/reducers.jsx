@@ -6,7 +6,7 @@
 
 import {connections, alerts} from './connection/reducers';
 import {noteCards} from  './notebooksApp/reducers';
-import {screenMode, cells} from './notebook/reducers';
+import {screenMode, notebook} from './notebook/reducers';
 
 const initialState = {
     noteCards: [],
@@ -19,7 +19,9 @@ const initialState = {
         fullScreen: false,
         cellId: ''
     },
-    cells: []
+    notebook: {
+        cells: []
+    }
 };
 
 
@@ -29,6 +31,6 @@ export function operation(state = initialState, action) {
         alerts: alerts(state.alerts, action),
         noteCards: noteCards(state.noteCards, action),
         screenMode: screenMode(state.screenMode, action),
-        cells: cells(state.cells, action)
+        notebook: notebook(state.notebook, action)
     };
 }

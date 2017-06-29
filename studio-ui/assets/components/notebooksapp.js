@@ -25,16 +25,21 @@ class NotebooksApp extends React.Component {
     }
 
     render() {
+        let headName = this.props.notebook.name === undefined ? 'HugeGraph '
+            + 'Notebook Quick Start' : this.props.notebook.name;
         return (
             <Router >
                 <div>
 
                     <Head fluid={this.props.screenMode.fullScreen}/>
-                    <StudioHead display={this.props.screenMode.fullScreen ? 'none' : 'block'}/>
+                    <StudioHead
+                        display={this.props.screenMode.fullScreen ? 'none' : 'block'}
+                        name={headName}/>
                     <Switch>
                         <Route exact path="/" component={NoteCardBoard}/>
                         <Route path="/index" component={NoteCardBoard}/>
-                        <Route path="/connections" component={ConnectionsBoard}/>
+                        <Route path="/connections"
+                               component={ConnectionsBoard}/>
                         <Route path="/notebook/:id" component={NoteBookBoard}/>
                         <Route component={NoteCardBoard}/>
                     </Switch>
@@ -48,7 +53,8 @@ class NotebooksApp extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        screenMode: state.screenMode
+        screenMode: state.screenMode,
+        notebook: state.notebook
     };
 }
 

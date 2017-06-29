@@ -15,14 +15,14 @@ class NotebookBoard extends React.Component {
     }
 
     componentDidMount() {
-        this.props.itemScreenMode(false,'');
+        this.props.itemScreenMode(false, '');
         this.props.loadCells(this.props.match.params.id);
 
     }
 
 
     render() {
-
+        console.log(JSON.stringify(this.props.notebook));
         let fullScreenItem = this.props.screenMode.cellId;
         let fullScreen = this.props.screenMode.fullScreen;
         let addDisplay = fullScreen ? 'none' : 'block';
@@ -34,7 +34,7 @@ class NotebookBoard extends React.Component {
                     this.props.cells.map(cell =>
                         <div key={cell.id}>
                             <NotebookItem
-                                display={fullScreen ? (fullScreenItem===''||fullScreenItem === cell.id ? 'block' : 'none') : 'block'}
+                                display={fullScreen ? (fullScreenItem === '' || fullScreenItem === cell.id ? 'block' : 'none') : 'block'}
                                 onDelete={this.deleteItem}
                                 deleteCss={deleteCss}
                                 itemId={cell.id}
@@ -106,7 +106,7 @@ class NoteBookItemAdd extends React.Component {
 function mapStateToProps(state) {
     return {
         screenMode: state.screenMode,
-        cells: state.cells
+        cells: state.notebook.cells
     };
 }
 

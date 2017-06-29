@@ -11,7 +11,7 @@ import {
     UPDATE_ITEMS
 } from './actions';
 
-export function cells(state = [], action) {
+export function notebook(state = [], action) {
 
     switch (action.type) {
         case ADD_ITEM:
@@ -20,14 +20,17 @@ export function cells(state = [], action) {
                 language: action.data.language,
                 code: action.data.code
             };
-            state.splice(action.position, 0, newCell);
+            state.cells.splice(action.position, 0, newCell);
             return [
                 ...state
             ];
         case SHOW_NOTEBOOK:
-            return [...action.cells];
+            return action.notebook;
         case DELETE_ITEM:
-            return state.filter(cell => cell.id !== action.cellId);
+            return {
+                ...state,
+                cells: state.cells.filter(cell => cell.id !== action.cellId)
+            };
         // case UPDATE_ITEMS: {
         //     const cellsArr = [];
         //     state.map(cell => {

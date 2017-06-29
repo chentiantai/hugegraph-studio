@@ -84,6 +84,7 @@ class NoteCardBoard extends React.Component {
 
     componentDidMount() {
         this.props.loadNoteCards();
+
     }
 
 
