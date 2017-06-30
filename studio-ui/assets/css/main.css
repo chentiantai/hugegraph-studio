@@ -280,9 +280,8 @@ td > button.btn {
 
 .card-content {
     margin-bottom: 8px;
-    min-height: 100px;
+    min-height: 50px;
     height: auto;
-
 }
 
 .card-footer {
@@ -316,7 +315,6 @@ td > button.btn {
 
 .graph {
     width: 100%;
-    /*min-height: 250px;*/
 }
 
 .bootstrap-select .dropdown-toggle:focus {
@@ -379,6 +377,10 @@ form {
 
 .full-screen-col-md-12 {
     padding: 0 0;
+}
+
+.tab-content {
+    padding: 5px;
 }
 
 

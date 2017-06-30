@@ -20,14 +20,17 @@ export function notebook(state = [], action) {
                 code: action.data.code
             };
             let arr = [];
+            let isAdd = false;
             for (let i = 0; i < state.cells.length; i++) {
                 if (action.position == i) {
                     arr.push(newCell);
                     arr.push(state.cells[i]);
+                    isAdd = true;
                 } else {
                     arr.push(state.cells[i]);
                 }
             }
+            if (!isAdd) arr.push(newCell);
             return {
                 ...state,
                 cells: arr

@@ -8,13 +8,23 @@ import {connect} from 'react-redux';
 import {changeHeadMode} from '../actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
+import {
+    TabsPage,
+    Tabs,
+    Tab,
+    TabContents,
+    TabContent
+} from "../commoncomponents/tabspage";
+import Graph from './graph';
+import Code from './code';
+import TableResult from './table';
 
 
 class NotebookItem extends React.Component {
 
     constructor() {
         super();
-        this.intialPanelHeight = 250;
+        this.intialPanelHeight = 1;
         this.state = {
             fullScreen: false,
             itemPanelHeight: this.intialPanelHeight,
@@ -63,7 +73,10 @@ class NotebookItem extends React.Component {
             fullScreen: cssFlag,
             itemPanelHeight: itemPanelHeight
         });
-        this.props.changeHeadMode({fullScreen:cssFlag, cellId:this.props.itemId});
+        this.props.changeHeadMode({
+            fullScreen: cssFlag,
+            cellId: this.props.itemId
+        });
     }
 
     viewMode = cssFlag => {
@@ -99,7 +112,8 @@ class NotebookItem extends React.Component {
                                     <div className="pull-left"
                                          style={{display: display}}>
                                         <DropDownMenu menuItems={items}
-                                                      onChange={this.changeMenu} id={this.props.itemId}/>
+                                                      onChange={this.changeMenu}
+                                                      id={this.props.itemId}/>
                                     </div>
                                     <div
                                         className="btn-group btn-group-sm pull-right"
@@ -124,7 +138,10 @@ class NotebookItem extends React.Component {
                                     </div>
                                 </div>
 
-                                <div style={{clear: 'both'}}></div>
+                                <div style={{
+                                    clear: 'both',
+                                    display: display
+                                }}></div>
 
                                 <div className="card-editor"
                                      style={{display: display}}>
@@ -143,33 +160,37 @@ class NotebookItem extends React.Component {
                                         </div>
                                     </form>
                                 </div>
-                                <div
-                                    className="card-content-toolbox btn-toolbar">
-                                    <div className="btn-group btn-group-sm"
-                                         role="group">
-                                        <button type="button"
-                                                className="btn btn-default">
-                                            <i className="fa fa-table"
-                                               aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button"
-                                                className="btn btn-default">
-                                            <i className="fa fa fa-code"
-                                               aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button"
-                                                className="btn btn-default">
-                                            <i className="fa fa-joomla"
-                                               aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                    <div className="card-content">
-                                        <div id="graph" className="graph"></div>
-                                    </div>
-                                    <div className="card-footer">
-                                        Real-time Success. 1 element returned.
-                                        Duration: 0.186 s.
-                                    </div>
+                                <div className="card-content">
+                                    <TabsPage defaultTabkey={1}>
+                                        <Tabs>
+                                            <Tab btClassName="btn btn-default"
+                                                 iClassName="fa fa-table"
+                                                 tabKey={1}/>
+                                            <Tab btClassName="btn btn-default"
+                                                 iClassName="fa fa-code"
+                                                 tabKey={2}/>
+                                            <Tab btClassName="btn btn-default"
+                                                 iClassName="fa fa-joomla"
+                                                 tabKey={3}/>
+                                        </Tabs>
+                                        <TabContents>
+                                            <TabContent tabKey={1}>
+                                                <TableResult/>
+                                            </TabContent>
+                                            <TabContent tabKey={2}>
+                                                <Code/>
+                                            </TabContent>
+                                            <TabContent tabKey={3}>
+                                                <Graph
+                                                    id={this.props.itemId + '_graph'}/>
+                                            </TabContent>
+                                        </TabContents>
+                                    </TabsPage>
+                                </div>
+
+                                <div className="card-footer">
+                                    Real-time Success. 1 element returned.
+                                    Duration: 0.186 s.
                                 </div>
                             </div>
                         </div>
