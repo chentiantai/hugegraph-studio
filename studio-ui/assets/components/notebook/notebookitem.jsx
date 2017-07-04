@@ -56,6 +56,11 @@ class NotebookItem extends React.Component {
             enableLiveAutocompletion: true
         });
         this.language = this.props.language;
+        window.onbeforeunload = this.onbeforeunload;
+    }
+
+    onbeforeunload=()=>{
+        this.updateItem();
     }
 
     componentWillUnmount() {
