@@ -1,22 +1,30 @@
 package com.baidu.hugegraph.studio.notebook.service;
 
+import com.baidu.hugegraph.driver.GremlinManager;
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.structure.GraphElement;
+import com.baidu.hugegraph.structure.graph.*;
+import com.baidu.hugegraph.structure.gremlin.Result;
+import com.baidu.hugegraph.structure.gremlin.ResultSet;
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
-import com.baidu.hugegraph.studio.notebook.CellExecutionManager;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
-import com.google.common.eventbus.EventBus;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.*;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -144,6 +152,72 @@ public class NoteBookService {
                                      @PathParam("cellId") String cellId,
                                      NotebookCell cell) {
         Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
+        Response response = Response.status(200)
+                .entity(notebookRepository.editNotebookCell(notebookId, cell))
+                .build();
+        return response;
+    }
+
+    @GET
+    @Path("{notebookId}/cells/{cellId}/execute")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeNotebookCell(@PathParam("notebookId") String notebookId,
+                                     @PathParam("cellId") String cellId) {
+        Preconditions.checkArgument( notebookId != null && cellId != null);
+        NotebookCell cell = notebookRepository.getNotebookCell(notebookId, cellId);
+        Preconditions.checkArgument(cellId.equals(cell.getId()));
+
+        Notebook notebook = notebookRepository.getNotebook(notebookId);
+        HugeClient hugeClient = HugeClient.open(
+                notebook.getConnection().getConnectionUri(),
+                notebook.getConnection().getGraphName());
+        GremlinManager gremlinManager = hugeClient.gremlin();
+
+        Long startTime = System.currentTimeMillis();
+
+        System.out.println(cell.getCode());
+
+        ResultSet resultSet = gremlinManager.gremlin(cell.getCode()).execute();
+        Long endTime = System.currentTimeMillis();
+        Long duration = endTime - startTime;
+
+        com.baidu.hugegraph.studio.notebook.model.Result result = new com.baidu.hugegraph.studio.notebook.model.Result();
+        result.setDuration(duration);
+        result.setData(resultSet.data());
+
+
+        Iterator<Result> results = resultSet.iterator();
+        Object object = results.next().getObject();
+
+        if (object instanceof Vertex) {
+            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.VERTEX);
+        } else if (object instanceof Edge) {
+            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EDGE);
+        } else if (object instanceof com.baidu.hugegraph.structure.graph.Path) {
+            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.PATH);
+        } else if(object instanceof Integer){
+            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.NUMBER);
+        }else {
+            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EMPTY);
+        }
+
+        Response response = Response.status(200)
+                .entity(result)
+                .build();
+        return response;
+    }
+
+    @POST
+    @Path("{notebookId}/cells/{cellId}/save")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveNotebookCell(@PathParam("notebookId") String notebookId,
+                                        @PathParam("cellId") String cellId,
+                                        NotebookCell cell) {
+        /**
+         * need to do
+         */
         Response response = Response.status(200)
                 .entity(notebookRepository.editNotebookCell(notebookId, cell))
                 .build();

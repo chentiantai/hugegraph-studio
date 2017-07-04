@@ -89,6 +89,30 @@ public class NotebookCell {
         this.language = language;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public void setDataViewType(DataViewType dataViewType) {
+        this.dataViewType = dataViewType;
+    }
+
+    public void setViewSettings(ViewSettings viewSettings) {
+        this.viewSettings = viewSettings;
+    }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -13,87 +14,68 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
-    // g.V().count() -> type=Number , value = Array(i,n) : i is index, n is count number
-    // g.V() -> type=vertex , value = Array<Vertex>
-    // g.E() -> type=edge , value = Array<Edge>
-    @JsonProperty("value")
-    private final Object value;
-    @JsonProperty("type")
-    private final Result.Type type;
-    @JsonProperty("truncated")
-    private final boolean truncated;
-    @JsonProperty("duration")
-    private Long duration = null;
-
-    // graph.put("edges",new HashSet<Edge>);
-    // graph.put("vertices",new HashSet<Vertex>);
-    @JsonProperty("graph")
-    private Map<String, Set> graph;
     @JsonProperty("id")
     private String id;
 
+    @JsonProperty("data")
+    private List<Object> data;
+
+    @JsonProperty("type")
+    private Result.Type type;
+
+    @JsonProperty("duration")
+    private Long duration = null;
+
     @JsonCreator
     public Result(
-            @JsonProperty("value") Object value,
+            @JsonProperty("data") List<Object> data,
             @JsonProperty("type") Result.Type type,
-            @JsonProperty("truncated") boolean truncated,
             @JsonProperty("duration") Long duration,
-            @JsonProperty("graph") Map<String, Set> graph,
             @JsonProperty("id") String id) {
-        this.graph = graph;
-        this.value = value;
+        this.data = data;
         this.type = type;
-        this.truncated = truncated;
         this.duration = duration;
         this.id = id;
     }
 
-    public Result(Object value, Result.Type type, boolean truncated) {
-        this.value = value;
-        this.type = type;
-        this.truncated = truncated;
+    public Result() {
         this.id = UUID.randomUUID().toString();
-    }
-
-    public Result setGraph(Map<String, Set> graph) {
-        this.graph = graph;
-        return this;
-    }
-
-    public Result setDuration(long duration) {
-        this.duration = Long.valueOf(duration);
-        return this;
     }
 
     public String getId() {
         return this.id;
     }
 
-    public Object getValue() {
-        return this.value;
-    }
-
     public Result.Type getType() {
         return this.type;
-    }
-
-    public boolean isTruncated() {
-        return this.truncated;
-    }
-
-    public Map<String, Set> getGraph() {
-        return this.graph;
     }
 
     public Long getDuration() {
         return this.duration;
     }
 
-    // markdown -> HTML
+    public List<Object> getData() {
+        return data;
+    }
+
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
+
+
     // g.V() -> VERTEX
     // g.E() -> EDGE
     // g.V().count() -> NUMBER
+    // g.V().outE().path() -> PATH
     public enum Type {
-        HTML, VERTEX, EDGE, EMPTY, NUMBER;
+        VERTEX, EDGE, PATH, EMPTY, NUMBER;
     }
 }
