@@ -7,7 +7,8 @@ import {
     ADD_ITEM,
     SHOW_NOTEBOOK,
     DELETE_ITEM,
-    UPDATE_ITEMS
+    UPDATE_ITEM,
+    CLEAR_NOTEBOOK_STATE
 } from './actions';
 
 export function notebook(state = [], action) {
@@ -42,17 +43,23 @@ export function notebook(state = [], action) {
                 ...state,
                 cells: state.cells.filter(cell => cell.id !== action.cellId)
             };
-        // case UPDATE_ITEMS: {
-        //     const cellsArr = [];
-        //     state.map(cell => {
-        //         if (cell.id !== action.cell.id) {
-        //             cellsArr.push(cell);
-        //         } else {
-        //             cellsArr.push(action.cell);
-        //         }
-        //     });
-        //     return cellsArr;
-        // }
+        case UPDATE_ITEM: {
+            return {
+                ...state,
+                cells: state.cells.map(
+                    cell => cell.id === action.data.id ? {
+                        ...cell,
+                        code: action.data.code,
+                        language: action.data.language
+                    } : cell
+                )
+            };
+        }
+        case CLEAR_NOTEBOOK_STATE: {
+            return {
+                cells: []
+            };
+        }
         default:
             return state;
     }

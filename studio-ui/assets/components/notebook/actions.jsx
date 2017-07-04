@@ -8,8 +8,16 @@ import {changeHeadMode} from '../actions';
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
 export const SHOW_NOTEBOOK = 'show_notebook';
-export const UPDATE_ITEMS = 'update_items';
+export const UPDATE_ITEM = 'update_item';
+export const CLEAR_NOTEBOOK_STATE = 'clear_notebook_state';
 
+
+export function clearNotebookState() {
+    return {
+        type: CLEAR_NOTEBOOK_STATE
+    }
+
+}
 
 export function showCells(data) {
     return {
@@ -25,6 +33,15 @@ export function addItemSuccess(data, position) {
         position
     };
 }
+
+export function updateItemSuccess(data) {
+    return {
+        type: UPDATE_ITEM,
+        data
+    };
+}
+
+
 //map to reducer
 export function deleteItemSuccess(cellId) {
     return {
@@ -47,7 +64,10 @@ export function loadCells(notebookId) {
             })
             .then(data => {
                 dispatch(showCells(data));
-                dispatch(changeHeadMode({studioHeadName: data.name, fullScreen: false}));
+                dispatch(changeHeadMode({
+                    studioHeadName: data.name,
+                    fullScreen: false
+                }));
             })
             .catch(err => {
                 dispatch(alertMessage('Load Cells Fetch Exception:' + err, 'danger'));
@@ -76,7 +96,6 @@ export function addItem(notebookId, position) {
             })
             .then(data => {
                 dispatch(addItemSuccess(data, position));
-                // dispatch(alertMessage('Add NoteCard Success', 'success'));
             })
             .catch(err => {
                 dispatch(alertMessage('Add NotebookID Fetch Exception:' + err, 'danger'));
@@ -102,6 +121,34 @@ export function deleteItem(notebookId, cellId) {
             })
             .catch(err => {
                 dispatch(alertMessage('Delete NotebookItem Fetch Exception:' + err, 'danger'));
+            });
+    };
+}
+
+export function updateItem(itemContent, notebookId, itemId) {
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    return dispatch => {
+        return fetch('/api/v1/notebooks/' + notebookId + '/cells/' + itemId,
+            {
+                method: 'PUT',
+                body: JSON.stringify(itemContent),
+                headers: myHeaders
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    dispatch(alertMessage('Update NotebookItem: Server Side' +
+                        ' Error；\r\nCode:' + response.status, 'danger'));
+                }
+            })
+            .then(data => {
+                console.log(JSON.stringify(data));
+                dispatch(updateItemSuccess(data));
+            })
+            .catch(err => {
+                dispatch(alertMessage('Update NotebookItem Fetch Exception:' + err, 'danger'));
             });
     };
 }

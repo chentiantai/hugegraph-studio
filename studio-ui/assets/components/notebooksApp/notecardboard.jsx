@@ -85,10 +85,7 @@ class NoteCardBoard extends React.Component {
     componentDidMount() {
         this.props.loadNoteCards();
     }
-
-
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {

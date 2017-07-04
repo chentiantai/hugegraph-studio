@@ -17,10 +17,15 @@ export default class DropDownMenu extends React.Component {
 
 
     componentDidMount() {
-        if (this.props.menuItems !== undefined && this.props.menuItems.length > 0) {
-            this.setState({selectMenu: this.props.menuItems[0]});
+
+        if (this.props.initLanguage !== undefined) {
+            this.setState({selectMenu: this.props.initLanguage});
         } else {
-            this.setState({selectMenu: ''});
+            if (this.props.menuItems !== undefined && this.props.menuItems.length > 0) {
+                this.setState({selectMenu: this.props.menuItems[0]});
+            } else {
+                this.setState({selectMenu: ''});
+            }
         }
     }
 
@@ -33,11 +38,13 @@ export default class DropDownMenu extends React.Component {
         let menuItems = this.props.menuItems.map((item, index) =>
             <MenuItem key={index} eventKey={item}>{item}</MenuItem>
         );
-
+        let title = this.state.selectMenu;
+        let finTitle = title.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
 
         return (
             <Nav bsStyle="pills" onSelect={this.handleSelect}>
-                <NavDropdown title={this.state.selectMenu} id={'dropdown_menu_'+this.props.id}>
+                <NavDropdown title={finTitle}
+                             id={'dropdown_menu_' + this.props.id}>
                     {menuItems}
                 </NavDropdown>
             </Nav>

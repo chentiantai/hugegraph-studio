@@ -6,7 +6,7 @@
 import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
-import {addItem, loadCells, deleteItem} from './actions';
+import {addItem, loadCells, deleteItem, clearNotebookState} from './actions';
 import {withRouter} from 'react-router-dom';
 
 class NotebookBoard extends React.Component {
@@ -16,7 +16,10 @@ class NotebookBoard extends React.Component {
 
     componentDidMount() {
         this.props.loadCells(this.props.match.params.id);
+    }
 
+    componentWillUnmount() {
+        this.props.clearNotebookState();
     }
 
 
@@ -36,7 +39,8 @@ class NotebookBoard extends React.Component {
                                 onDelete={this.deleteItem}
                                 deleteCss={deleteCss}
                                 itemId={cell.id}
-                                itemContent={cell.code}
+                                notebookId={this.props.match.params.id}
+                                aceContent={cell.code}
                                 language={cell.language}/>
                             <NoteBookItemAdd cellId={cell.id}
                                              display={addDisplay}
@@ -114,8 +118,8 @@ function mapDispatchToProps(dispatch) {
     return {
         addItem: (notebookId, position) => dispatch(addItem(notebookId, position)),
         loadCells: notebookId => dispatch(loadCells(notebookId)),
-        deleteItem: (notebookId, cellId) => dispatch(deleteItem(notebookId, cellId))
-
+        deleteItem: (notebookId, cellId) => dispatch(deleteItem(notebookId, cellId)),
+        clearNotebookState: () => dispatch(clearNotebookState())
     };
 }
 

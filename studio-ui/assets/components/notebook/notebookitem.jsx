@@ -6,6 +6,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {changeHeadMode} from '../actions';
+import {updateItem} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 import {
@@ -28,8 +29,10 @@ class NotebookItem extends React.Component {
         this.state = {
             fullScreen: false,
             itemPanelHeight: this.intialPanelHeight,
-            view: false
+            view: false,
+            isDelete: false
         }
+        this.language = 'Gremlin';
     }
 
     componentDidMount() {
@@ -37,26 +40,50 @@ class NotebookItem extends React.Component {
         ace.require('ace/ext/old_ie');
         ace.require('ace/ext/language_tools');
         editor.setTheme('ace/theme/chrome');
-        editor.session.setMode('ace/mode/gremlin');
+        editor.session.setMode('ace/mode/' + this.props.language);
         editor.setShowPrintMargin(false);
         editor.renderer.setShowGutter(false);
+        editor.$blockScrolling = Infinity;
         editor.setAutoScrollEditorIntoView(true);
         editor.setOption('maxLines', 10);
         editor.setOption('minLines', 3);
         this.geditor.style.fontSize = '12px';
+        editor.setValue(this.props.aceContent);
         editor.resize();
         editor.setOptions({
             enableBasicAutocompletion: true,
             enableSnippets: true,
             enableLiveAutocompletion: true
         });
+        this.language = this.props.language;
+    }
+
+    componentWillUnmount() {
+        if (!this.state.isDelete) {
+            this.updateItem();
+        }
+    }
+
+    updateItem = () => {
+        let editorContent = ace.edit(this.geditor).getValue();
+        let notebookId = this.props.notebookId;
+        let cellId = this.props.itemId;
+        let itemContent = {
+            'id': cellId,
+            'code': editorContent,
+            'language': this.language
+        }
+        this.props.updateItem(itemContent, notebookId, cellId);
     }
 
 
     changeMenu = item => {
         let mode = item === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
+        // this.setState({'language':item});
+        this.language = item;
         var editor = ace.edit(this.geditor);
         editor.session.setMode(mode);
+        this.updateItem();
     }
 
 
@@ -90,7 +117,9 @@ class NotebookItem extends React.Component {
     }
 
     deleteItem = () => {
+        this.setState({isDelete: true});
         this.props.onDelete(this.props.itemId);
+
     }
 
 
@@ -99,7 +128,6 @@ class NotebookItem extends React.Component {
         let screenCol = this.state.fullScreen ? 'col-md-12 full-screen-col-md-12' : 'col-md-12';
         let items = ['Gremlin', 'Markdown'];
         let display = this.state.view ? 'none' : 'block';
-
 
         return (
             <div className={screenMode} style={{display: this.props.display}}>
@@ -111,9 +139,11 @@ class NotebookItem extends React.Component {
                                 <div className="card-header">
                                     <div className="pull-left"
                                          style={{display: display}}>
-                                        <DropDownMenu menuItems={items}
-                                                      onChange={this.changeMenu}
-                                                      id={this.props.itemId}/>
+                                        <DropDownMenu
+                                            initLanguage={this.props.language}
+                                            menuItems={items}
+                                            onChange={this.changeMenu}
+                                            id={this.props.itemId}/>
                                     </div>
                                     <div
                                         className="btn-group btn-group-sm pull-right"
@@ -212,7 +242,8 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        changeHeadMode: mode => dispatch(changeHeadMode(mode))
+        changeHeadMode: mode => dispatch(changeHeadMode(mode)),
+        updateItem: (editorContent, notebookId, itemId) => dispatch(updateItem(editorContent, notebookId, itemId))
     };
 }
 
