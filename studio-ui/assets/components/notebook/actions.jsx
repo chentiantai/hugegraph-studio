@@ -12,9 +12,16 @@ export const UPDATE_ITEM = 'update_item';
 export const CLEAR_NOTEBOOK_STATE = 'clear_notebook_state';
 
 
+export function updateNoteBook(notebook) {
+    //TODO
+}
+
+
+
 export function clearNotebookState() {
     return {
         type: CLEAR_NOTEBOOK_STATE
+
     }
 
 }

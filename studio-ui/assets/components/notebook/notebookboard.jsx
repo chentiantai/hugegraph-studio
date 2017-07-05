@@ -6,7 +6,7 @@
 import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
-import {addItem, loadCells, deleteItem, clearNotebookState} from './actions';
+import {addItem, loadCells, deleteItem, clearNotebookState,updateNoteBook} from './actions';
 import {withRouter} from 'react-router-dom';
 
 class NotebookBoard extends React.Component {
@@ -16,12 +16,12 @@ class NotebookBoard extends React.Component {
 
     componentDidMount() {
         this.props.loadCells(this.props.match.params.id);
+        window.onbeforeunload = this.onbeforeunload;
     }
 
     componentWillUnmount() {
         this.props.clearNotebookState();
     }
-
 
     render() {
         let fullScreenItem = this.props.headMode.cellId;
@@ -50,6 +50,12 @@ class NotebookBoard extends React.Component {
                 }
             </div>
         );
+    }
+
+
+    onbeforeunload = () => {
+        //TODO
+         // this.props.updateNoteBook(this.props.notebook);
     }
 
 
@@ -109,7 +115,8 @@ class NoteBookItemAdd extends React.Component {
 function mapStateToProps(state) {
     return {
         headMode: state.headMode,
-        cells: state.notebook.cells
+        cells: state.notebook.cells,
+        notebook: state.notebook
     };
 }
 
@@ -119,7 +126,8 @@ function mapDispatchToProps(dispatch) {
         addItem: (notebookId, position) => dispatch(addItem(notebookId, position)),
         loadCells: notebookId => dispatch(loadCells(notebookId)),
         deleteItem: (notebookId, cellId) => dispatch(deleteItem(notebookId, cellId)),
-        clearNotebookState: () => dispatch(clearNotebookState())
+        clearNotebookState: () => dispatch(clearNotebookState()),
+        updateNoteBook: notebook => dispatch(updateNoteBook(notebook))
     };
 }
 
