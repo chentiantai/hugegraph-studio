@@ -6,7 +6,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {changeHeadMode} from '../actions';
-import {updateItem} from './actions';
+import {updateItem,updateItemSuccess} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 import {
@@ -55,19 +55,31 @@ class NotebookItem extends React.Component {
             enableSnippets: true,
             enableLiveAutocompletion: true
         });
+        editor.getSession().on('change',this.sycnItemState);
         this.language = this.props.language;
-        window.onbeforeunload = this.onbeforeunload;
+
     }
 
-    onbeforeunload=()=>{
-        this.updateItem();
-    }
 
     componentWillUnmount() {
         if (!this.state.isDelete) {
             this.updateItem();
         }
     }
+
+
+
+    sycnItemState=()=>{
+        let editorContent = ace.edit(this.geditor).getValue();
+        let cellId = this.props.itemId;
+        let itemContent = {
+            'id': cellId,
+            'code': editorContent,
+            'language': this.language
+        }
+        this.props.sycnItemState(itemContent);
+    }
+
 
     updateItem = () => {
         let editorContent = ace.edit(this.geditor).getValue();
@@ -248,7 +260,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
-        updateItem: (editorContent, notebookId, itemId) => dispatch(updateItem(editorContent, notebookId, itemId))
+        updateItem: (editorContent, notebookId, itemId) => dispatch(updateItem(editorContent, notebookId, itemId)),
+        sycnItemState:(itemContent) => dispatch(updateItemSuccess(itemContent))
     };
 }
 
