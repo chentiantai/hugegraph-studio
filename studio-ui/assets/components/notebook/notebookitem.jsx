@@ -6,7 +6,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {changeHeadMode} from '../actions';
-import {updateItem,updateItemSuccess} from './actions';
+import {updateItem, updateItemSuccess, runMode} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 import {
@@ -55,7 +55,7 @@ class NotebookItem extends React.Component {
             enableSnippets: true,
             enableLiveAutocompletion: true
         });
-        editor.getSession().on('change',this.sycnItemState);
+        editor.getSession().on('change', this.sycnItemState);
         this.language = this.props.language;
 
     }
@@ -68,8 +68,7 @@ class NotebookItem extends React.Component {
     }
 
 
-
-    sycnItemState=()=>{
+    sycnItemState = () => {
         let editorContent = ace.edit(this.geditor).getValue();
         let cellId = this.props.itemId;
         let itemContent = {
@@ -80,6 +79,21 @@ class NotebookItem extends React.Component {
         this.props.sycnItemState(itemContent);
     }
 
+    runMode = () => {
+        // let editorContent = ace.edit(this.geditor).getValue();
+        // let notebookId = this.props.notebookId;
+        // let cellId = this.props.itemId;
+        // let itemContent = {
+        //     'id': cellId,
+        //     'code': editorContent,
+        //     'language': this.language
+        // }
+        this.updateItem();
+        let notebookId = this.props.notebookId;
+        let cellId = this.props.itemId;
+        this.props.runMode(notebookId, cellId);
+
+    }
 
     updateItem = () => {
         let editorContent = ace.edit(this.geditor).getValue();
@@ -129,10 +143,6 @@ class NotebookItem extends React.Component {
         })
     }
 
-    runMode = () => {
-        this.setState({})
-    }
-
     deleteItem = () => {
         this.setState({isDelete: true});
         this.props.onDelete(this.props.itemId);
@@ -166,7 +176,8 @@ class NotebookItem extends React.Component {
                                         className="btn-group btn-group-sm pull-right"
                                         role="group">
                                         <button type="button"
-                                                className="btn btn-link ">
+                                                className="btn btn-link "
+                                                onClick={this.runMode}>
                                             <i className="fa fa-play"
                                                aria-hidden="true"></i>
                                         </button>
@@ -222,10 +233,13 @@ class NotebookItem extends React.Component {
                                         </Tabs>
                                         <TabContents>
                                             <TabContent tabKey={1}>
-                                                <TableResult/>
+                                                <TableResult
+                                                    content={this.props.result}/>
                                             </TabContent>
                                             <TabContent tabKey={2}>
-                                                <Code/>
+                                                <Code
+                                                    id={this.props.itemId + '_code'}
+                                                    content={this.props.result}/>
                                             </TabContent>
                                             <TabContent tabKey={3}>
                                                 <Graph
@@ -261,7 +275,8 @@ function mapDispatchToProps(dispatch) {
     return {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
         updateItem: (editorContent, notebookId, itemId) => dispatch(updateItem(editorContent, notebookId, itemId)),
-        sycnItemState:(itemContent) => dispatch(updateItemSuccess(itemContent))
+        sycnItemState: (itemContent) => dispatch(updateItemSuccess(itemContent)),
+        runMode: (notebookId, cellId) => dispatch(runMode(notebookId, cellId))
     };
 }
 

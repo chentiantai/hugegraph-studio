@@ -10,19 +10,27 @@ export const DELETE_ITEM = 'delete_item';
 export const SHOW_NOTEBOOK = 'show_notebook';
 export const UPDATE_ITEM = 'update_item';
 export const CLEAR_NOTEBOOK_STATE = 'clear_notebook_state';
+export const RUN_MODE = 'run_mode';
 
+
+export function runModeSuccess(data, cellId) {
+    return {
+        type: RUN_MODE,
+        cellId,
+        data
+    }
+}
 
 export function updateNoteBook(notebook) {
     //TODO
 }
 
 
-
 export function clearNotebookState() {
     return {
         type: CLEAR_NOTEBOOK_STATE
 
-    }
+    };
 
 }
 
@@ -151,11 +159,35 @@ export function updateItem(itemContent, notebookId, itemId) {
                 }
             })
             .then(data => {
-                console.log(JSON.stringify(data));
                 dispatch(updateItemSuccess(data));
             })
             .catch(err => {
                 dispatch(alertMessage('Update NotebookItem Fetch Exception:' + err, 'danger'));
+            });
+    };
+}
+
+export function runMode(notebookId, itemId) {
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId + '/execute';
+    console.log(url);
+    return dispatch => {
+        return fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    dispatch(alertMessage('Run Cells: Server Side' +
+                        ' Error；\r\nCode:' + response.status, 'danger'));
+                }
+            })
+            .then(data => {
+                dispatch(runModeSuccess(data, itemId));
+
+            })
+            .catch(err => {
+                dispatch(alertMessage('Run Cells Fetch Exception:' + err, 'danger'));
             });
     };
 }

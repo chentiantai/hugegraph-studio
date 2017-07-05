@@ -6,6 +6,7 @@
 
 
 import React from 'react';
+
 export default class Code extends React.Component {
     constructor() {
         super();
@@ -13,9 +14,15 @@ export default class Code extends React.Component {
 
     render() {
         return (
-            <div>
-                code
+            <div id={this.props.id}>
+
             </div>
         );
+    }
+
+    componentDidMount() {
+        let paneJson = '#' + this.props.id;
+        let json = JSON.stringify(this.props.content);
+        $(paneJson).JSONView(json);
     }
 }

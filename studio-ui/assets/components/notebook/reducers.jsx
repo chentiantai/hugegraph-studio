@@ -8,7 +8,8 @@ import {
     SHOW_NOTEBOOK,
     DELETE_ITEM,
     UPDATE_ITEM,
-    CLEAR_NOTEBOOK_STATE
+    CLEAR_NOTEBOOK_STATE,
+    RUN_MODE
 } from './actions';
 
 export function notebook(state = [], action) {
@@ -58,6 +59,17 @@ export function notebook(state = [], action) {
         case CLEAR_NOTEBOOK_STATE: {
             return {
                 cells: []
+            };
+        }
+        case RUN_MODE: {
+            return {
+                ...state,
+                cells: state.cells.map(
+                    cell => cell.id === action.cellId ? {
+                        ...cell,
+                        result: action.data
+                    } : cell
+                )
             };
         }
         default:

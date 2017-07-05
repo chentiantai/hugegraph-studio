@@ -6,7 +6,13 @@
 import React from 'react';
 import NotebookItem from './notebookitem';
 import {connect} from 'react-redux';
-import {addItem, loadCells, deleteItem, clearNotebookState,updateNoteBook} from './actions';
+import {
+    addItem,
+    loadCells,
+    deleteItem,
+    clearNotebookState,
+    updateNoteBook
+} from './actions';
 import {withRouter} from 'react-router-dom';
 
 class NotebookBoard extends React.Component {
@@ -41,7 +47,8 @@ class NotebookBoard extends React.Component {
                                 itemId={cell.id}
                                 notebookId={this.props.match.params.id}
                                 aceContent={cell.code}
-                                language={cell.language}/>
+                                language={cell.language}
+                                result={cell.result}/>
                             <NoteBookItemAdd cellId={cell.id}
                                              display={addDisplay}
                                              onClick={this.addItem}/>
@@ -52,10 +59,9 @@ class NotebookBoard extends React.Component {
         );
     }
 
-
     onbeforeunload = () => {
         //TODO
-         // this.props.updateNoteBook(this.props.notebook);
+        // this.props.updateNoteBook(this.props.notebook);
     }
 
 
