@@ -176,8 +176,6 @@ public class NoteBookService {
 
         Long startTime = System.currentTimeMillis();
 
-        System.out.println(cell.getCode());
-
         ResultSet resultSet = gremlinManager.gremlin(cell.getCode()).execute();
         Long endTime = System.currentTimeMillis();
         Long duration = endTime - startTime;
@@ -202,24 +200,11 @@ public class NoteBookService {
             result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EMPTY);
         }
 
+        cell.setResult(result);
+        notebookRepository.editNotebookCell(notebookId, cell);
+
         Response response = Response.status(200)
                 .entity(result)
-                .build();
-        return response;
-    }
-
-    @POST
-    @Path("{notebookId}/cells/{cellId}/save")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response saveNotebookCell(@PathParam("notebookId") String notebookId,
-                                        @PathParam("cellId") String cellId,
-                                        NotebookCell cell) {
-        /**
-         * need to do
-         */
-        Response response = Response.status(200)
-                .entity(notebookRepository.editNotebookCell(notebookId, cell))
                 .build();
         return response;
     }

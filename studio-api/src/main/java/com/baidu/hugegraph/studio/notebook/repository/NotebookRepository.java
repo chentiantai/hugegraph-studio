@@ -21,7 +21,7 @@ public interface NotebookRepository {
 
     NotebookCell addCellToNotebook(String notebookId, NotebookCell cell, Integer index);
 
-    NotebookCell editNotebookCell(String paramString, NotebookCell cell);
+    NotebookCell editNotebookCell(String notebookId, NotebookCell cell);
 
     void deleteNotebookCell(String notebookId, String cellId);
 
