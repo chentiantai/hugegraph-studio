@@ -20,17 +20,28 @@ import Graph from './graph';
 import Code from './code';
 import TableResult from './table';
 
+const headHeight = 32;
+const pannelbodyPadding = 10;
+const pannelbodyBottomMargin = 10;
+const footer = 17;
+const cardContentToolbox = 30;
+const cardContentPadding = 10;
+const cardContentBottomMargin = 8;
+const cardHeadHeight = 40;
 
 class NotebookItem extends React.Component {
 
     constructor() {
         super();
-        this.intialPanelHeight = 1;
+        this.initPanelHeight = 1;
+        this.initCardContentHeight = 250;
         this.state = {
             fullScreen: false,
-            itemPanelHeight: this.intialPanelHeight,
+            itemPanelHeight: this.initPanelHeight,
             view: false,
-            isDelete: false
+            isDelete: false,
+            cardContentHeight: this.initCardContentHeight,
+            cardEditHeight: 1
         }
         this.language = 'Gremlin';
     }
@@ -80,14 +91,6 @@ class NotebookItem extends React.Component {
     }
 
     runMode = () => {
-        // let editorContent = ace.edit(this.geditor).getValue();
-        // let notebookId = this.props.notebookId;
-        // let cellId = this.props.itemId;
-        // let itemContent = {
-        //     'id': cellId,
-        //     'code': editorContent,
-        //     'language': this.language
-        // }
         this.updateItem();
         let notebookId = this.props.notebookId;
         let cellId = this.props.itemId;
@@ -110,7 +113,6 @@ class NotebookItem extends React.Component {
 
     changeMenu = item => {
         let mode = item === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
-        // this.setState({'language':item});
         this.language = item;
         var editor = ace.edit(this.geditor);
         editor.session.setMode(mode);
@@ -120,16 +122,17 @@ class NotebookItem extends React.Component {
 
     computeHeight = () => {
         let screenHeight = window.innerHeight || document.documentElement.clientHeight;
-        let height = 32;
-        let itemPanelHeight = screenHeight - height;
+        let itemPanelHeight = screenHeight - headHeight;
         return itemPanelHeight;
     }
 
     screenMode = cssFlag => {
-        let itemPanelHeight = cssFlag ? this.computeHeight() : this.intialPanelHeight;
+        let itemPanelHeight = cssFlag ? this.computeHeight() : this.initPanelHeight;
+        let cardContentHeight = this.cardContentHeight(cssFlag, this.state.view);
         this.setState({
             fullScreen: cssFlag,
-            itemPanelHeight: itemPanelHeight
+            itemPanelHeight: itemPanelHeight,
+            cardContentHeight: cardContentHeight
         });
         this.props.changeHeadMode({
             fullScreen: cssFlag,
@@ -137,9 +140,33 @@ class NotebookItem extends React.Component {
         });
     }
 
+    cardContentHeight = (fullScreenMode, viewMode) => {
+        let itemPanelHeight = fullScreenMode ? this.computeHeight() : this.initPanelHeight;
+        if (fullScreenMode) {
+            if (viewMode) {
+                let placeHeight = pannelbodyPadding + pannelbodyBottomMargin + footer + cardContentPadding + cardContentBottomMargin + cardContentToolbox;
+                return itemPanelHeight - placeHeight;
+            } else {
+                let placeHeight = pannelbodyPadding + pannelbodyBottomMargin + footer + cardContentPadding + cardContentBottomMargin + cardContentToolbox;
+                return itemPanelHeight - cardHeadHeight - this.state.cardEditHeight - placeHeight;
+            }
+        } else {
+            return this.initCardContentHeight;
+        }
+
+    }
+
+
     viewMode = cssFlag => {
+        let cardContentHeight = this.cardContentHeight(this.state.fullScreen, cssFlag);
+        if (cssFlag) {
+            this.setState({
+                cardEditHeight: this.cardEditor.clientHeight
+            });
+        }
         this.setState({
-            view: cssFlag
+            view: cssFlag,
+            cardContentHeight: cardContentHeight
         })
     }
 
@@ -202,11 +229,10 @@ class NotebookItem extends React.Component {
                                 }}></div>
 
                                 <div className="card-editor"
+                                     ref={el => this.cardEditor = el}
                                      style={{display: display}}>
                                     <pre id="editor"
                                          ref={el => this.geditor = el}></pre>
-                                    <pre id="editorM"
-                                         style={{display: 'none'}}></pre>
                                 </div>
 
                                 <div className="card-para">
@@ -218,7 +244,9 @@ class NotebookItem extends React.Component {
                                         </div>
                                     </form>
                                 </div>
-                                <div className="card-content">
+
+                                <div className="card-content"
+                                     ref={el => this.cardContent = el}>
                                     <TabsPage defaultTabkey={1}>
                                         <Tabs>
                                             <Tab btClassName="btn btn-default"
@@ -239,11 +267,14 @@ class NotebookItem extends React.Component {
                                             <TabContent tabKey={2}>
                                                 <Code
                                                     id={this.props.itemId + '_code'}
-                                                    content={this.props.result}/>
+                                                    content={this.props.result}
+                                                    height={this.state.cardContentHeight}/>
                                             </TabContent>
                                             <TabContent tabKey={3}>
                                                 <Graph
-                                                    id={this.props.itemId + '_graph'}/>
+                                                    id={this.props.itemId + '_graph'}
+                                                    height={this.state.cardContentHeight}
+                                                    content={this.props.result}/>
                                             </TabContent>
                                         </TabContents>
                                     </TabsPage>
