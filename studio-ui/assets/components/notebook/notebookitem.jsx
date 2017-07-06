@@ -43,11 +43,13 @@ class NotebookItem extends React.Component {
             cardContentHeight: this.initCardContentHeight,
             cardEditHeight: 1
         }
-        this.language = 'Gremlin';
+
+
+        this.language = '';//the variable of NotebookItem
     }
 
     componentDidMount() {
-        var editor = ace.edit(this.geditor);
+        let editor = ace.edit(this.geditor);
         ace.require('ace/ext/old_ie');
         ace.require('ace/ext/language_tools');
         editor.setTheme('ace/theme/chrome');
@@ -67,8 +69,6 @@ class NotebookItem extends React.Component {
             enableLiveAutocompletion: true
         });
         editor.getSession().on('change', this.sycnItemState);
-        this.language = this.props.language;
-
     }
 
 
@@ -111,10 +111,11 @@ class NotebookItem extends React.Component {
     }
 
 
-    changeMenu = item => {
-        let mode = item === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
-        this.language = item;
-        var editor = ace.edit(this.geditor);
+    changeMenu = language => {
+        let mode = language === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
+        this.language = language;
+
+        let editor = ace.edit(this.geditor);
         editor.session.setMode(mode);
         this.updateItem();
     }
@@ -176,12 +177,61 @@ class NotebookItem extends React.Component {
 
     }
 
+    showResult = (language) => {
+        switch (language) {
+            case 'Markdown':
+                return (
+                    <div>
+                        Markdown
+                    </div>);
+            case 'Gremlin':
+                return (
+                    <TabsPage defaultTabkey={1}>
+                        <Tabs>
+                            <Tab btClassName="btn btn-default"
+                                 iClassName="fa fa-table"
+                                 tabKey={1}/>
+                            <Tab btClassName="btn btn-default"
+                                 iClassName="fa fa-code"
+                                 tabKey={2}/>
+                            <Tab btClassName="btn btn-default"
+                                 iClassName="fa fa-joomla"
+                                 tabKey={3}/>
+                        </Tabs>
+                        <TabContents>
+                            <TabContent tabKey={1}>
+                                <TableResult
+                                    content={this.props.result}/>
+                            </TabContent>
+                            <TabContent tabKey={2}>
+                                <Code
+                                    id={this.props.itemId + '_code'}
+                                    content={this.props.result}
+                                    height={this.state.cardContentHeight}/>
+                            </TabContent>
+                            <TabContent tabKey={3}>
+                                <Graph
+                                    id={this.props.itemId + '_graph'}
+                                    height={this.state.cardContentHeight}
+                                    content={this.props.result}/>
+                            </TabContent>
+                        </TabContents>
+                    </TabsPage>);
+            default :
+                return (
+                    <div>
+                    </div>);
+        }
+    }
+
 
     render() {
         let screenMode = this.state.fullScreen ? 'container-fluid full-screen' : 'container';
         let screenCol = this.state.fullScreen ? 'col-md-12 full-screen-col-md-12' : 'col-md-12';
         let items = ['Gremlin', 'Markdown'];
         let display = this.state.view ? 'none' : 'block';
+        let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
+        let cardContentResult = this.showResult(language);
 
         return (
             <div className={screenMode} style={{display: this.props.display}}>
@@ -194,7 +244,7 @@ class NotebookItem extends React.Component {
                                     <div className="pull-left"
                                          style={{display: display}}>
                                         <DropDownMenu
-                                            initLanguage={this.props.language}
+                                            initLanguage={language}
                                             menuItems={items}
                                             onChange={this.changeMenu}
                                             id={this.props.itemId}/>
@@ -245,40 +295,10 @@ class NotebookItem extends React.Component {
                                     </form>
                                 </div>
 
-                                <div className="card-content"
-                                     ref={el => this.cardContent = el}>
-                                    <TabsPage defaultTabkey={1}>
-                                        <Tabs>
-                                            <Tab btClassName="btn btn-default"
-                                                 iClassName="fa fa-table"
-                                                 tabKey={1}/>
-                                            <Tab btClassName="btn btn-default"
-                                                 iClassName="fa fa-code"
-                                                 tabKey={2}/>
-                                            <Tab btClassName="btn btn-default"
-                                                 iClassName="fa fa-joomla"
-                                                 tabKey={3}/>
-                                        </Tabs>
-                                        <TabContents>
-                                            <TabContent tabKey={1}>
-                                                <TableResult
-                                                    content={this.props.result}/>
-                                            </TabContent>
-                                            <TabContent tabKey={2}>
-                                                <Code
-                                                    id={this.props.itemId + '_code'}
-                                                    content={this.props.result}
-                                                    height={this.state.cardContentHeight}/>
-                                            </TabContent>
-                                            <TabContent tabKey={3}>
-                                                <Graph
-                                                    id={this.props.itemId + '_graph'}
-                                                    height={this.state.cardContentHeight}
-                                                    content={this.props.result}/>
-                                            </TabContent>
-                                        </TabContents>
-                                    </TabsPage>
+                                <div className="card-content">
+                                    {cardContentResult}
                                 </div>
+
 
                                 <div className="card-footer">
                                     Real-time Success. 1 element returned.
