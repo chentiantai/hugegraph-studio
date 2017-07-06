@@ -175,86 +175,89 @@ public class NoteBookService {
         Preconditions.checkArgument(notebookId != null && cellId != null);
         NotebookCell cell = notebookRepository.getNotebookCell(notebookId, cellId);
         Preconditions.checkArgument(cellId.equals(cell.getId()));
-
-        Notebook notebook = notebookRepository.getNotebook(notebookId);
-        HugeClient hugeClient = HugeClient.open(
-                notebook.getConnection().getConnectionUri(),
-                notebook.getConnection().getGraphName());
-        GremlinManager gremlinManager = hugeClient.gremlin();
-
         Long startTime = System.currentTimeMillis();
 
-        ResultSet resultSet = gremlinManager.gremlin(cell.getCode()).execute();
-        Long endTime = System.currentTimeMillis();
-        Long duration = endTime - startTime;
-
         com.baidu.hugegraph.studio.notebook.model.Result result = new com.baidu.hugegraph.studio.notebook.model.Result();
-        result.setDuration(duration);
-        result.setData(resultSet.data());
+        if( "markdown".equals(cell.getLanguage()) ){
+            result.setData(new ArrayList<Object>(){
+                {
+                    add(cell.getCode());
+                }
+            });
+        }
 
-        List<Vertex> vertices = new ArrayList<>();
-        List<Edge> edges = new ArrayList<>();
+        if("gremlin".equals(cell.getLanguage())) {
+            Notebook notebook = notebookRepository.getNotebook(notebookId);
+            HugeClient hugeClient = HugeClient.open(
+                    notebook.getConnection().getConnectionUri(),
+                    notebook.getConnection().getGraphName());
+            GremlinManager gremlinManager = hugeClient.gremlin();
+            ResultSet resultSet = gremlinManager.gremlin(cell.getCode()).execute();
+            result.setData(resultSet.data());
 
-
-        Iterator<Result> results = resultSet.iterator();
-        Object object = results.next().getObject();
-
-        if (object instanceof Vertex) {
-            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.VERTEX);
-            // Convert Object to Vertex ;
-            List<Vertex> finalVertices = vertices;
-            //add first object
-            vertices.add((Vertex) object);
-            results.forEachRemaining(vertex -> finalVertices.add((Vertex) vertex.getObject()));
-
-            // Extract vertices from edges ;
-            edges = getEdgefromVertex(hugeClient, vertices);
-
-            result.setGraphVertices(vertices);
-            result.setGraphEdges(edges);
-
-        } else if (object instanceof Edge) {
-            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EDGE);
-            // Convert Object to Edge ;
-            List<Edge> finalEdges = edges;
-            edges.add((Edge) object);
-            results.forEachRemaining(edge -> finalEdges.add((Edge) edge.getObject()));
-
-            // Extract vertices from edges ;
-            vertices = getVertexfromEdge(hugeClient, edges);
-
-            result.setGraphVertices(vertices);
-            result.setGraphEdges(edges);
-
-        } else if (object instanceof com.baidu.hugegraph.structure.graph.Path) {
-            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.PATH);
-
-            List<com.baidu.hugegraph.structure.graph.Path> paths = resultSet.data()
-                    .stream()
-                    .map(o -> (com.baidu.hugegraph.structure.graph.Path) o)
-                    .collect(Collectors.toList());
-
-            edges.add((Edge) object);
-            vertices.add((Vertex) object);
-
-            // Extract vertices from paths ;
-            vertices = getVertexfromPath(hugeClient, paths);
-            // Extract edges from vertices ;
-            edges = getEdgefromVertex(hugeClient, vertices);
-
-            result.setGraphVertices(vertices);
-            result.setGraphEdges(edges);
+            List<Vertex> vertices = new ArrayList<>();
+            List<Edge> edges = new ArrayList<>();
 
 
-        } else if (object instanceof Integer) {
-            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.NUMBER);
-        } else {
-            result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EMPTY);
+            Iterator<Result> results = resultSet.iterator();
+            Object object = results.next().getObject();
+
+            if (object instanceof Vertex) {
+                result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.VERTEX);
+                // Convert Object to Vertex ;
+                List<Vertex> finalVertices = vertices;
+                //add first object
+                vertices.add((Vertex) object);
+                results.forEachRemaining(vertex -> finalVertices.add((Vertex) vertex.getObject()));
+
+                // Extract vertices from edges ;
+                edges = getEdgefromVertex(hugeClient, vertices);
+
+                result.setGraphVertices(vertices);
+                result.setGraphEdges(edges);
+
+            } else if (object instanceof Edge) {
+                result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EDGE);
+                // Convert Object to Edge ;
+                List<Edge> finalEdges = edges;
+                edges.add((Edge) object);
+                results.forEachRemaining(edge -> finalEdges.add((Edge) edge.getObject()));
+
+                // Extract vertices from edges ;
+                vertices = getVertexfromEdge(hugeClient, edges);
+
+                result.setGraphVertices(vertices);
+                result.setGraphEdges(edges);
+
+            } else if (object instanceof com.baidu.hugegraph.structure.graph.Path) {
+                result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.PATH);
+
+                List<com.baidu.hugegraph.structure.graph.Path> paths = new ArrayList<com.baidu.hugegraph.structure.graph.Path>();
+                paths.add((com.baidu.hugegraph.structure.graph.Path) object);
+                results.forEachRemaining(path -> paths.add((com.baidu.hugegraph.structure.graph.Path) path.getObject()));
+
+                // Extract vertices from paths ;
+                vertices = getVertexfromPath(hugeClient, paths);
+                // Extract edges from vertices ;
+                edges = getEdgefromVertex(hugeClient, vertices);
+
+                result.setGraphVertices(vertices);
+                result.setGraphEdges(edges);
+
+
+            } else if (object instanceof Integer) {
+                result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.NUMBER);
+            } else {
+                result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EMPTY);
+            }
         }
 
         cell.setResult(result);
-        notebookRepository.editNotebookCell(notebookId, cell);
+        Long endTime = System.currentTimeMillis();
+        Long duration = endTime - startTime;
+        result.setDuration(duration);
 
+        notebookRepository.editNotebookCell(notebookId, cell);
         Response response = Response.status(200)
                 .entity(result)
                 .build();
@@ -270,7 +273,6 @@ public class NoteBookService {
             vertexIds.add(e.source());
             vertexIds.add(e.target());
         });
-
         return getVertices(hugeClient, vertexIds.stream().collect(Collectors.toList()));
 
 
@@ -291,7 +293,7 @@ public class NoteBookService {
 
         // de-duplication by edgeId,
         // Reserve the edges when it's srcVertexId and tgtVertexId is a member of vertices;
-        String gremlin = String.format("g.V(%s).both().otherV().within(%s).dedup()", ids);
+        String gremlin = String.format("g.V(%s).bothE().otherV().has('id',within(%s)).dedup()", ids, ids);
 
         ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
         Iterator<Result> results = resultSet.iterator();
@@ -307,7 +309,6 @@ public class NoteBookService {
         if (vertexIds == null) {
             return null;
         }
-
         List<Vertex> vertices = new ArrayList<Vertex>();
 
         String ids = StringUtils.join(
@@ -324,7 +325,6 @@ public class NoteBookService {
 
         List<Vertex> finalVertices = vertices;
         results.forEachRemaining(vertex -> finalVertices.add((Vertex) vertex.getObject()));
-
         return vertices;
     }
 
