@@ -69,161 +69,15 @@ class NotebookItem extends React.Component {
             enableLiveAutocompletion: true
         });
         editor.getSession().on('change', this.sycnItemState);
+        this.language = this.props.language;
     }
 
 
     componentWillUnmount() {
         if (!this.state.isDelete) {
-            this.updateItem();
+            this.updateItem(false);
         }
     }
-
-
-    sycnItemState = () => {
-        let editorContent = ace.edit(this.geditor).getValue();
-        let cellId = this.props.itemId;
-        let itemContent = {
-            'id': cellId,
-            'code': editorContent,
-            'language': this.language
-        }
-        this.props.sycnItemState(itemContent);
-    }
-
-    runMode = () => {
-        this.updateItem();
-        let notebookId = this.props.notebookId;
-        let cellId = this.props.itemId;
-        this.props.runMode(notebookId, cellId);
-
-    }
-
-    updateItem = () => {
-        let editorContent = ace.edit(this.geditor).getValue();
-        let notebookId = this.props.notebookId;
-        let cellId = this.props.itemId;
-        let itemContent = {
-            'id': cellId,
-            'code': editorContent,
-            'language': this.language
-        }
-        this.props.updateItem(itemContent, notebookId, cellId);
-    }
-
-
-    changeMenu = language => {
-        let mode = language === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
-        this.language = language;
-
-        let editor = ace.edit(this.geditor);
-        editor.session.setMode(mode);
-        this.updateItem();
-    }
-
-
-    computeHeight = () => {
-        let screenHeight = window.innerHeight || document.documentElement.clientHeight;
-        let itemPanelHeight = screenHeight - headHeight;
-        return itemPanelHeight;
-    }
-
-    screenMode = cssFlag => {
-        let itemPanelHeight = cssFlag ? this.computeHeight() : this.initPanelHeight;
-        let cardContentHeight = this.cardContentHeight(cssFlag, this.state.view);
-        this.setState({
-            fullScreen: cssFlag,
-            itemPanelHeight: itemPanelHeight,
-            cardContentHeight: cardContentHeight
-        });
-        this.props.changeHeadMode({
-            fullScreen: cssFlag,
-            cellId: this.props.itemId
-        });
-    }
-
-    cardContentHeight = (fullScreenMode, viewMode) => {
-        let itemPanelHeight = fullScreenMode ? this.computeHeight() : this.initPanelHeight;
-        if (fullScreenMode) {
-            if (viewMode) {
-                let placeHeight = pannelbodyPadding + pannelbodyBottomMargin + footer + cardContentPadding + cardContentBottomMargin + cardContentToolbox;
-                return itemPanelHeight - placeHeight;
-            } else {
-                let placeHeight = pannelbodyPadding + pannelbodyBottomMargin + footer + cardContentPadding + cardContentBottomMargin + cardContentToolbox;
-                return itemPanelHeight - cardHeadHeight - this.state.cardEditHeight - placeHeight;
-            }
-        } else {
-            return this.initCardContentHeight;
-        }
-
-    }
-
-
-    viewMode = cssFlag => {
-        let cardContentHeight = this.cardContentHeight(this.state.fullScreen, cssFlag);
-        if (cssFlag) {
-            this.setState({
-                cardEditHeight: this.cardEditor.clientHeight
-            });
-        }
-        this.setState({
-            view: cssFlag,
-            cardContentHeight: cardContentHeight
-        })
-    }
-
-    deleteItem = () => {
-        this.setState({isDelete: true});
-        this.props.onDelete(this.props.itemId);
-
-    }
-
-    showResult = (language) => {
-        switch (language) {
-            case 'Markdown':
-                return (
-                    <div>
-                        Markdown
-                    </div>);
-            case 'Gremlin':
-                return (
-                    <TabsPage defaultTabkey={1}>
-                        <Tabs>
-                            <Tab btClassName="btn btn-default"
-                                 iClassName="fa fa-table"
-                                 tabKey={1}/>
-                            <Tab btClassName="btn btn-default"
-                                 iClassName="fa fa-code"
-                                 tabKey={2}/>
-                            <Tab btClassName="btn btn-default"
-                                 iClassName="fa fa-joomla"
-                                 tabKey={3}/>
-                        </Tabs>
-                        <TabContents>
-                            <TabContent tabKey={1}>
-                                <TableResult
-                                    content={this.props.result}/>
-                            </TabContent>
-                            <TabContent tabKey={2}>
-                                <Code
-                                    id={this.props.itemId + '_code'}
-                                    content={this.props.result}
-                                    height={this.state.cardContentHeight}/>
-                            </TabContent>
-                            <TabContent tabKey={3}>
-                                <Graph
-                                    id={this.props.itemId + '_graph'}
-                                    height={this.state.cardContentHeight}
-                                    content={this.props.result}/>
-                            </TabContent>
-                        </TabContents>
-                    </TabsPage>);
-            default :
-                return (
-                    <div>
-                    </div>);
-        }
-    }
-
 
     render() {
         let screenMode = this.state.fullScreen ? 'container-fluid full-screen' : 'container';
@@ -311,6 +165,148 @@ class NotebookItem extends React.Component {
             </div>
         );
     }
+
+    sycnItemState = () => {
+        let editorContent = ace.edit(this.geditor).getValue();
+        let cellId = this.props.itemId;
+        let itemContent = {
+            'id': cellId,
+            'code': editorContent,
+            'language': this.language
+        }
+        this.props.sycnItemState(itemContent);
+    }
+
+    runMode = () => {
+        this.updateItem(true);
+    }
+
+    updateItem = (runFlag) => {
+        let editorContent = ace.edit(this.geditor).getValue();
+        let notebookId = this.props.notebookId;
+        let cellId = this.props.itemId;
+        let itemContent = {
+            'id': cellId,
+            'code': editorContent,
+            'language': this.language
+        }
+        this.props.updateItem(itemContent, notebookId, cellId, runFlag);
+    }
+
+
+    changeMenu = language => {
+        let mode = language === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
+        this.language = language;
+
+        let editor = ace.edit(this.geditor);
+        editor.session.setMode(mode);
+        this.updateItem(false);
+    }
+
+
+    computeHeight = () => {
+        let screenHeight = window.innerHeight || document.documentElement.clientHeight;
+        let itemPanelHeight = screenHeight - headHeight;
+        return itemPanelHeight;
+    }
+
+    screenMode = cssFlag => {
+        let itemPanelHeight = cssFlag ? this.computeHeight() : this.initPanelHeight;
+        let cardContentHeight = this.cardContentHeight(cssFlag, this.state.view);
+        this.setState({
+            fullScreen: cssFlag,
+            itemPanelHeight: itemPanelHeight,
+            cardContentHeight: cardContentHeight
+        });
+        this.props.changeHeadMode({
+            fullScreen: cssFlag,
+            cellId: this.props.itemId
+        });
+    }
+
+    cardContentHeight = (fullScreenMode, viewMode) => {
+        let itemPanelHeight = fullScreenMode ? this.computeHeight() : this.initPanelHeight;
+        if (fullScreenMode) {
+            if (viewMode) {
+                let placeHeight = pannelbodyPadding + pannelbodyBottomMargin + footer + cardContentPadding + cardContentBottomMargin + cardContentToolbox;
+                return itemPanelHeight - placeHeight;
+            } else {
+                let placeHeight = pannelbodyPadding + pannelbodyBottomMargin + footer + cardContentPadding + cardContentBottomMargin + cardContentToolbox;
+                return itemPanelHeight - cardHeadHeight - this.state.cardEditHeight - placeHeight;
+            }
+        } else {
+            return this.initCardContentHeight;
+        }
+
+    }
+
+
+    viewMode = cssFlag => {
+        let cardContentHeight = this.cardContentHeight(this.state.fullScreen, cssFlag);
+        if (cssFlag) {
+            this.setState({
+                cardEditHeight: this.cardEditor.clientHeight
+            });
+        }
+        this.setState({
+            view: cssFlag,
+            cardContentHeight: cardContentHeight
+        })
+    }
+
+    deleteItem = () => {
+        this.setState({isDelete: true});
+        this.props.onDelete(this.props.itemId);
+
+    }
+
+    showResult = (language) => {
+        switch (language) {
+            case 'Markdown':
+                return (
+                    <div>
+                        {JSON.stringify(this.props.result)}
+                    </div>);
+            case 'Gremlin':
+                return (
+                    <TabsPage defaultTabkey={1}>
+                        <Tabs>
+                            <Tab btClassName="btn btn-default"
+                                 iClassName="fa fa-table"
+                                 tabKey={1}/>
+                            <Tab btClassName="btn btn-default"
+                                 iClassName="fa fa-code"
+                                 tabKey={2}/>
+                            <Tab btClassName="btn btn-default"
+                                 iClassName="fa fa-joomla"
+                                 tabKey={3}/>
+                        </Tabs>
+                        <TabContents>
+                            <TabContent tabKey={1}>
+                                <TableResult
+                                    content={this.props.result}/>
+                            </TabContent>
+                            <TabContent tabKey={2}>
+                                <Code
+                                    id={this.props.itemId + '_code'}
+                                    content={this.props.result}
+                                    height={this.state.cardContentHeight}/>
+                            </TabContent>
+                            <TabContent tabKey={3}>
+                                <Graph
+                                    id={this.props.itemId + '_graph'}
+                                    height={this.state.cardContentHeight}
+                                    content={this.props.result}/>
+                            </TabContent>
+                        </TabContents>
+                    </TabsPage>);
+            default :
+                return (
+                    <div>
+                    </div>);
+        }
+    }
+
 }
 
 
@@ -325,7 +321,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
-        updateItem: (editorContent, notebookId, itemId) => dispatch(updateItem(editorContent, notebookId, itemId)),
+        updateItem: (editorContent, notebookId, itemId, runFlag) => dispatch(updateItem(editorContent, notebookId, itemId, runFlag)),
         sycnItemState: (itemContent) => dispatch(updateItemSuccess(itemContent)),
         runMode: (notebookId, cellId) => dispatch(runMode(notebookId, cellId))
     };

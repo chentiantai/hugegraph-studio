@@ -140,7 +140,7 @@ export function deleteItem(notebookId, cellId) {
     };
 }
 
-export function updateItem(itemContent, notebookId, itemId) {
+export function updateItem(itemContent, notebookId, itemId, runFlag) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     return dispatch => {
@@ -159,6 +159,9 @@ export function updateItem(itemContent, notebookId, itemId) {
                 }
             })
             .then(data => {
+                if (runFlag) {
+                    runMode(notebookId, itemId);
+                }
                 dispatch(updateItemSuccess(data));
             })
             .catch(err => {
