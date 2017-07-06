@@ -48,12 +48,12 @@ public class Result {
         this.type = type;
         this.duration = duration;
         this.id = id;
-
         this.graph = new HashedMap();
     }
 
     public Result() {
         this.id = UUID.randomUUID().toString();
+        this.graph = new HashedMap();
     }
 
     public String getId() {

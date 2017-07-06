@@ -201,10 +201,11 @@ public class NoteBookService {
 
         if (object instanceof Vertex) {
             result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.VERTEX);
-            List<Vertex> finalVertices = vertices;
-
             // Convert Object to Vertex ;
-            resultSet.data().forEach(o -> finalVertices.add((Vertex) o));
+            List<Vertex> finalVertices = vertices;
+            //add first object
+            vertices.add((Vertex) object);
+            results.forEachRemaining(vertex -> finalVertices.add((Vertex) vertex.getObject()));
 
             // Extract vertices from edges ;
             edges = getEdgefromVertex(hugeClient, vertices);
@@ -214,10 +215,11 @@ public class NoteBookService {
 
         } else if (object instanceof Edge) {
             result.setType(com.baidu.hugegraph.studio.notebook.model.Result.Type.EDGE);
-
             // Convert Object to Edge ;
             List<Edge> finalEdges = edges;
-            resultSet.data().forEach(o -> finalEdges.add((Edge) o));
+            edges.add((Edge) object);
+            results.forEachRemaining(edge -> finalEdges.add((Edge) edge.getObject()));
+
             // Extract vertices from edges ;
             vertices = getVertexfromEdge(hugeClient, edges);
 
@@ -231,6 +233,9 @@ public class NoteBookService {
                     .stream()
                     .map(o -> (com.baidu.hugegraph.structure.graph.Path) o)
                     .collect(Collectors.toList());
+
+            edges.add((Edge) object);
+            vertices.add((Vertex) object);
 
             // Extract vertices from paths ;
             vertices = getVertexfromPath(hugeClient, paths);
@@ -276,7 +281,7 @@ public class NoteBookService {
         if (vertices == null) {
             return null;
         }
-        List<Edge> edges ;
+        List<Edge> edges = new ArrayList<>();
 
         String ids = StringUtils.join(
                 vertices.stream()
@@ -289,10 +294,10 @@ public class NoteBookService {
         String gremlin = String.format("g.V(%s).both().otherV().within(%s).dedup()", ids);
 
         ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
-        edges = resultSet.data()
-                .stream()
-                .map(data -> (Edge) data)
-                .collect(Collectors.toList());
+        Iterator<Result> results = resultSet.iterator();
+
+        List<Edge> finalEdges = edges;
+        results.forEachRemaining(edge -> finalEdges.add((Edge) edge.getObject()));
 
         return edges;
 
@@ -303,7 +308,7 @@ public class NoteBookService {
             return null;
         }
 
-        List<Vertex> vertices;
+        List<Vertex> vertices = new ArrayList<Vertex>();
 
         String ids = StringUtils.join(
                 vertexIds.stream()
@@ -314,10 +319,12 @@ public class NoteBookService {
         String gremlin = String.format("g.V(%s)", ids);
 
         ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
-        vertices = resultSet.data()
-                .stream()
-                .map(data -> (Vertex) data)
-                .collect(Collectors.toList());
+
+        Iterator<Result> results = resultSet.iterator();
+
+        List<Vertex> finalVertices = vertices;
+        results.forEachRemaining(vertex -> finalVertices.add((Vertex) vertex.getObject()));
+
         return vertices;
     }
 
