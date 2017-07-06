@@ -14,17 +14,18 @@ export default class Graph extends React.Component {
 
     render() {
         return (
-            <div style={{height:this.props.height}} id={this.props.id} ref={el => this.graph = el}>
+            <div style={{height: this.props.height}} id={this.props.id}
+                 ref={el => this.graph = el}>
             </div>
         );
     }
 
     componentDidMount() {
-        this.drawGraph(vertexdata,edgedata);
+        this.drawGraph(vertexdata, edgedata);
     }
 
 
-    drawGraph = (vertexs,edges) => {
+    drawGraph = (vertexs, edges) => {
         let graphNodes = new vis.DataSet();
 
         graphNodes.on('*', function () {
@@ -51,6 +52,7 @@ export default class Graph extends React.Component {
                     from: edge.inV,
                     to: edge.outV,
                     label: edge.label
+
                 }
             ]);
 
@@ -68,7 +70,6 @@ export default class Graph extends React.Component {
             // });
 
         });
-
 
 
         var container = document.getElementById(this.props.id);
@@ -3247,7 +3248,7 @@ const vertexdata = {
     "id": "c2e2ded4-e535-485e-b891-2954a209a310"
 };
 
-const edgedata={
+const edgedata = {
     "data": [
         {
             "id": "person\u0002Tom Hanks\u0001ACTED_IN\u0001Sam Baldwin\u0001movie\u0002Sleepless in Seattle",
