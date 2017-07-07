@@ -19,6 +19,7 @@ import {
 import Graph from './graph';
 import Code from './code';
 import TableResult from './table';
+import MarkdownBrowser from './markdownbrowser';
 
 const headHeight = 32;
 const pannelbodyPadding = 10;
@@ -86,6 +87,7 @@ class NotebookItem extends React.Component {
         let display = this.state.view ? 'none' : 'block';
         let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
         let cardContentResult = this.showResult(language);
+        let cardFooterResult = this.showFooter(language);
 
         return (
             <div className={screenMode} style={{display: this.props.display}}>
@@ -155,8 +157,7 @@ class NotebookItem extends React.Component {
 
 
                                 <div className="card-footer">
-                                    Real-time Success. 1 element returned.
-                                    Duration: 0.186 s.
+                                    {cardFooterResult}
                                 </div>
                             </div>
                         </div>
@@ -262,11 +263,17 @@ class NotebookItem extends React.Component {
 
     showResult = (language) => {
         switch (language) {
-            case 'Markdown':
+            case 'Markdown': {
+                let mdContent = "";
+                if (this.props.result !== null) {
+                    mdContent = this.props.aceContent;
+                }
                 return (
-                    <div>
-                        {JSON.stringify(this.props.result)}
-                    </div>);
+                    <MarkdownBrowser
+                        id={this.props.itemId + '_markdown_browser'}
+                        mdContent={mdContent}/>
+                );
+            }
             case 'Gremlin':
                 return (
                     <TabsPage defaultTabkey={1}>
@@ -304,6 +311,32 @@ class NotebookItem extends React.Component {
                 return (
                     <div>
                     </div>);
+        }
+    }
+
+    showFooter = language => {
+        switch (language) {
+            case 'Markdown': {
+                if(this.props.result==null){
+                    return <div/>;
+                }else{
+                    return (
+
+                        <div>
+                            Real-time Success. 1 element returned. Duration {this.props.result.duration%1000} s
+                        </div>
+                    );
+                }
+
+            }
+            case 'Gremlin':
+                return (
+                    <div>
+                        Real-time Success. 1 element returned.
+                        Duration: 0.186 s.
+                    </div>);
+            default :
+                return <div/>
         }
     }
 

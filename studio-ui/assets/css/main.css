@@ -279,8 +279,8 @@ td > button.btn {
 }
 
 .card-content {
-    margin-bottom: 8px;
-    min-height: 50px;
+    /*margin-bottom: 8px;*/
+    /*min-height: 50px;*/
     height: auto;
 }
 
@@ -389,3 +389,6 @@ form {
     height: 250px;
 }
 
+.html-content {
+    padding: 0 5px 0 5px;
+}

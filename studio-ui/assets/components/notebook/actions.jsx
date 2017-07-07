@@ -160,7 +160,7 @@ export function updateItem(itemContent, notebookId, itemId, runFlag) {
             })
             .then(data => {
                 if (runFlag) {
-                    runMode(notebookId, itemId);
+                    dispatch(runMode(notebookId, itemId));
                 }
                 dispatch(updateItemSuccess(data));
             })
@@ -181,13 +181,13 @@ export function runMode(notebookId, itemId) {
                 if (response.ok) {
                     return response.json();
                 } else {
+                    console.log("err");
                     dispatch(alertMessage('Run Cells: Server Side' +
                         ' Error；\r\nCode:' + response.status, 'danger'));
                 }
             })
             .then(data => {
                 dispatch(runModeSuccess(data, itemId));
-
             })
             .catch(err => {
                 dispatch(alertMessage('Run Cells Fetch Exception:' + err, 'danger'));
