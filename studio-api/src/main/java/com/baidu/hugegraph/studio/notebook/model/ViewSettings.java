@@ -5,61 +5,68 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class ViewSettings {
-    @JsonProperty("CHART")
-    public final ViewSettings.ChartSettings chart;
-    @JsonProperty("GRAPH")
-    public final ViewSettings.GraphSettings graph;
-    @JsonProperty("CODE")
-    public final ViewSettings.CodeSettings code;
-    @JsonProperty("VALIDATIONS")
-    public final ViewSettings.ValidationSettings validations;
-    @JsonProperty("CELL_HEIGHT")
-    public final Integer cellHeight;
-    @JsonProperty("EDITOR_HEIGHT")
-    public final Integer editorHeight;
 
-    @JsonCreator
-    public ViewSettings(
-            @JsonProperty("CHART") ViewSettings.ChartSettings chartSettings,
-            @JsonProperty("GRAPH") ViewSettings.GraphSettings graphSettings,
-            @JsonProperty("CODE") ViewSettings.CodeSettings codeSettings,
-            @JsonProperty("VALIDATIONS") ViewSettings.ValidationSettings validationSettings,
-            @JsonProperty("CELL_HEIGHT") Integer cellHeight,
-            @JsonProperty("EDITOR_HEIGHT") Integer editorHeight) {
-        this.chart = chartSettings;
-        this.graph = graphSettings;
-        this.code = (codeSettings != null ? codeSettings : new ViewSettings.CodeSettings());
-        this.validations = (validationSettings != null ? validationSettings : new ViewSettings.ValidationSettings());
-        this.cellHeight = cellHeight;
-        this.editorHeight = editorHeight;
+    public enum ViewType {
+        TABLE, CODE, GRAPH;
     }
 
-    public String toString() {
-        return "ViewSettings{chart=" + this.chart
-                + ", graph=" + this.graph
-                + ", code=" + this.code
-                + ", validations=" + this.validations
-                + ", cellHeight=" + this.cellHeight
-                + ", editorHeight=" + this.editorHeight
-                + '}';
-    }
+    @JsonProperty("viewType")
+    public ViewSettings.ViewType viewType;
 
-    public class ChartSettings {
-        //TODO : implement.
-    }
+    @JsonProperty("cellHeight")
+    public Integer cellHeight;
 
-    public class GraphSettings {
-        //TODO : implement.
-    }
+    @JsonProperty("cellWidth")
+    public Integer cellWidth;
 
-    public class CodeSettings {
-        @JsonProperty("hidden")
-        private boolean hidden;
-        //TODO : implement.
-    }
+    @JsonProperty("fullScreen")
+    public boolean fullScreen;
+
+    @JsonProperty("view")
+    public boolean view;
 
     public class ValidationSettings {
         @JsonProperty("enabled")
         private boolean enabled;
+    }
+
+    public ViewType getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
+    }
+
+    public Integer getCellHeight() {
+        return cellHeight;
+    }
+
+    public void setCellHeight(Integer cellHeight) {
+        this.cellHeight = cellHeight;
+    }
+
+    public Integer getCellWidth() {
+        return cellWidth;
+    }
+
+    public void setCellWidth(Integer cellWidth) {
+        this.cellWidth = cellWidth;
+    }
+
+    public boolean isFullScreen() {
+        return fullScreen;
+    }
+
+    public void setFullScreen(boolean fullScreen) {
+        this.fullScreen = fullScreen;
+    }
+
+    public boolean isView() {
+        return view;
+    }
+
+    public void setView(boolean view) {
+        this.view = view;
     }
 }

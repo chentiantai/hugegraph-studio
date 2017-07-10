@@ -287,7 +287,7 @@ public class NoteBookService {
 
         String ids = StringUtils.join(
                 vertices.stream()
-                        .map(vertex -> String.format("'%s'", vertex.id()))
+                        .map(vertex -> String.format("\"%s\"", vertex.id()))
                         .collect(Collectors.toList()),
                 ",");
 
@@ -313,7 +313,7 @@ public class NoteBookService {
 
         String ids = StringUtils.join(
                 vertexIds.stream()
-                        .map(id -> String.format("'%s'", id))
+                        .map(id -> String.format("\"%s\"", id))
                         .collect(Collectors.toList()),
                 ",");
 
