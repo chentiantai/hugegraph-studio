@@ -28,7 +28,6 @@ class NotebooksApp extends React.Component {
         return (
             <Router >
                 <div>
-
                     <Head fluid={this.props.headMode.fullScreen}/>
                     <StudioHead
                         display={this.props.headMode.fullScreen ? 'none' : 'block'}

@@ -20,15 +20,6 @@ class NotebookBoard extends React.Component {
         super();
     }
 
-    componentDidMount() {
-        this.props.loadCells(this.props.match.params.id);
-        window.onbeforeunload = this.onbeforeunload;
-    }
-
-    componentWillUnmount() {
-        this.props.clearNotebookState();
-    }
-
     render() {
         let fullScreenItem = this.props.headMode.cellId;
         let fullScreen = this.props.headMode.fullScreen;
@@ -48,7 +39,9 @@ class NotebookBoard extends React.Component {
                                 notebookId={this.props.match.params.id}
                                 aceContent={cell.code}
                                 language={cell.language}
-                                result={cell.result}/>
+                                result={cell.result}
+                                status={cell.status}
+                                msg={cell.msg}/>
                             <NoteBookItemAdd cellId={cell.id}
                                              display={addDisplay}
                                              onClick={this.addItem}/>
@@ -57,6 +50,15 @@ class NotebookBoard extends React.Component {
                 }
             </div>
         );
+    }
+
+    componentDidMount() {
+        this.props.loadCells(this.props.match.params.id);
+        window.onbeforeunload = this.onbeforeunload;
+    }
+
+    componentWillUnmount() {
+        this.props.clearNotebookState();
     }
 
     onbeforeunload = () => {

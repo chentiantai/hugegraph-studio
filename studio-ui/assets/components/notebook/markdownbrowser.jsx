@@ -13,13 +13,14 @@ export default class MarkdownBrowser extends React.Component {
     }
 
     render() {
+
+        console.log("MarkdownBrowser render");
         let mdContent = this.props.mdContent.replace(/\n+/g, function (ns) {
             if (ns.length == 1)
                 return '  ' + ns
-            return ns
+            return ns;
         });
         let htmlContent = markdown.toHTML(mdContent);
-
 
         return (
             <div className="html-content" id={this.props.id}

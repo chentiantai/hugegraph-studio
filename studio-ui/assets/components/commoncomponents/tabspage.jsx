@@ -10,7 +10,7 @@ export class TabsPage extends React.Component {
     constructor() {
         super();
         this.state = {
-            selectedTabKey: 1
+            selectedTabKey: 2
         }
     }
 
@@ -20,8 +20,8 @@ export class TabsPage extends React.Component {
         });
     }
 
-    componentWillMount(){
-        this.state.selectedTabKey=this.props.defaultTabkey;
+    componentWillMount() {
+        this.state.selectedTabKey = this.props.defaultTabkey;
     }
 
     render() {
@@ -87,12 +87,18 @@ export class TabContents extends React.Component {
 
 export class TabContent extends React.Component {
     render() {
+        console.log("TabContent render");
         return (
             <div>
                 {this.props.children}
             </div>
         );
     }
+
+    componentDidUpdate() {
+        console.log("TabContent componentDidUpdate");
+    }
+
 }
 
 

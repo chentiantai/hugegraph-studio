@@ -5,10 +5,12 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {changeHeadMode} from '../actions';
+import {changeHeadMode, changeLoadingMode} from '../actions';
 import {updateItem, updateItemSuccess, runMode} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
+import LoadPanel from "./loading";
+import NotebookResult from "./notebookresult";
 import {
     TabsPage,
     Tabs,
@@ -44,9 +46,8 @@ class NotebookItem extends React.Component {
             cardContentHeight: this.initCardContentHeight,
             cardEditHeight: 1
         }
-
-
         this.language = '';//the variable of NotebookItem
+        this.tabKey = 1;
     }
 
     componentDidMount() {
@@ -86,8 +87,11 @@ class NotebookItem extends React.Component {
         let items = ['Gremlin', 'Markdown'];
         let display = this.state.view ? 'none' : 'block';
         let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
-        let cardContentResult = this.showResult(language);
+        let result = this.showResult(language);
         let cardFooterResult = this.showFooter(language);
+        let loading = this.props.loadingMode.cellId === this.props.itemId ? this.props.loadingMode.loading : false;
+        let loadingDisplay = loading ? 'block' : 'none';
+
 
         return (
             <div className={screenMode} style={{display: this.props.display}}>
@@ -134,6 +138,7 @@ class NotebookItem extends React.Component {
                                     display: display
                                 }}></div>
 
+
                                 <div className="card-editor"
                                      ref={el => this.cardEditor = el}
                                      style={{display: display}}>
@@ -151,8 +156,25 @@ class NotebookItem extends React.Component {
                                     </form>
                                 </div>
 
+
                                 <div className="card-content">
-                                    {cardContentResult}
+                                    {console.log("loadingDisplay:" + loadingDisplay)}
+                                    <div ref={el => this.progressWrapper = el}
+                                         className="progress-wrapper"
+                                         style={{display: loadingDisplay}}>
+                                        <img style={{
+                                            width: "80px",
+                                            height: "80px"
+                                        }}
+                                             src='/images/spinner.gif'/>
+                                    </div>
+                                    {result}
+                                    {/*<NotebookResult language={language}*/}
+                                    {/*itemId={this.props.itemId}*/}
+                                    {/*result={this.props.result}*/}
+                                    {/*msg={this.props.msg}*/}
+                                    {/*status={this.props.status}*/}
+                                    {/*cardContentHeight={this.state.cardContentHeight}/>*/}
                                 </div>
 
 
@@ -167,6 +189,13 @@ class NotebookItem extends React.Component {
         );
     }
 
+
+    componentDidUpdate() {
+        console.log('NotebookItem componentDidUpdate');
+        // this.progressWrapper.style.display='none';
+    }
+
+
     sycnItemState = () => {
         let editorContent = ace.edit(this.geditor).getValue();
         let cellId = this.props.itemId;
@@ -179,6 +208,12 @@ class NotebookItem extends React.Component {
     }
 
     runMode = () => {
+        console.log("runMode");
+        this.progressWrapper.style.display = 'block';
+        this.props.changeLoadingMode({
+            loading: true,
+            cellId: this.props.itemId
+        });
         this.updateItem(true);
     }
 
@@ -189,7 +224,8 @@ class NotebookItem extends React.Component {
         let itemContent = {
             'id': cellId,
             'code': editorContent,
-            'language': this.language
+            'language': this.language,
+            'result': this.props.result
         }
         this.props.updateItem(itemContent, notebookId, cellId, runFlag);
     }
@@ -261,22 +297,27 @@ class NotebookItem extends React.Component {
 
     }
 
+
     showResult = (language) => {
-        switch (language) {
-            case 'Markdown': {
-                let mdContent = "";
-                if (this.props.result !== null) {
-                    mdContent = this.props.aceContent;
-                }
-                return (
-                    <MarkdownBrowser
-                        id={this.props.itemId + '_markdown_browser'}
-                        mdContent={mdContent}/>
-                );
-            }
-            case 'Gremlin':
-                if (this.props.result !== null) {
-                    return (
+
+
+        let result = <div/>;
+        if (this.props.result !== null) {
+            switch (language) {
+                case 'Markdown':
+                    let mdContent = "";
+                    if (this.props.result !== null) {
+                        mdContent = this.props.aceContent;
+                        // mdContent = this.props.result.data[0];
+
+                    }
+                    result =
+                        <MarkdownBrowser
+                            id={this.props.itemId + '_markdown_browser'}
+                            mdContent={mdContent}/>
+                    break;
+                case 'Gremlin':
+                    result =
                         <TabsPage defaultTabkey={1}>
                             <Tabs>
                                 <Tab btClassName="btn btn-default"
@@ -308,17 +349,21 @@ class NotebookItem extends React.Component {
                                         content={this.props.result}/>
                                 </TabContent>
                             </TabContents>
-                        </TabsPage>);
-                } else {
-                    return (
-                        <div></div>
-                    );
-                }
-            default :
-                return (
-                    <div></div>);
+                        </TabsPage>;
+                    break;
+                default :
+                    result = <div/>;
+            }
+        } else {
+            if (this.props.status !== null) {
+                result =
+                    <div>{this.props.status + ' : ' + this.props.msg}</div>;
+            }
         }
+        return result;
+
     }
+
 
     showFooter = language => {
         switch (language) {
@@ -353,7 +398,8 @@ class NotebookItem extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        fullScreen: state.headMode.fullScreen
+        fullScreen: state.headMode.fullScreen,
+        loadingMode: state.loadingMode
     };
 }
 
@@ -361,6 +407,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
+        changeLoadingMode: mode => dispatch(changeLoadingMode(mode)),
         updateItem: (editorContent, notebookId, itemId, runFlag) => dispatch(updateItem(editorContent, notebookId, itemId, runFlag)),
         sycnItemState: (itemContent) => dispatch(updateItemSuccess(itemContent)),
         runMode: (notebookId, cellId) => dispatch(runMode(notebookId, cellId))

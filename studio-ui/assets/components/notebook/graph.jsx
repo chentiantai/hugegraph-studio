@@ -5,23 +5,42 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
+import {changeLoadingMode} from '../actions';
 
 
-export default class Graph extends React.Component {
+export class Graph extends React.Component {
     constructor() {
         super();
     }
 
     render() {
+        console.log("graph render");
         return (
-            <div style={{height: this.props.height}} id={this.props.id}
+            <div style={{height: this.props.height}}
+                 id={this.props.id + '_graph'}
                  ref={el => this.graph = el}>
             </div>
         );
     }
 
+    componentDidUpdate() {
+        console.log("graph componentDidUpdate");
+
+        // this.loadDone();
+    }
+
     componentDidMount() {
-        this.drawGraph(vertexdata, edgedata);
+        this.props.changeLoadingMode({
+            loading: true,
+            cellId: this.props.id
+        });
+        console.log("graph componentDidMount");
+        if (this.props.content.graph !== null) {
+            let vertexdata = this.props.content.graph.vertices;
+            let edgedata = this.props.content.graph.edges;
+            this.drawGraph(vertexdata, edgedata);
+        }
     }
 
 
@@ -32,47 +51,34 @@ export default class Graph extends React.Component {
             //  do something
         });
 
-        vertexs.data.forEach(vertex => {
+        vertexs.forEach(vertex => {
             graphNodes.add([
                 {id: vertex.id, label: vertex.id, title: vertex.id}
             ]);
         });
 
         let graphEdges = new vis.DataSet();
+
+
         graphEdges.on('*', function () {
             // do something
         });
 
 
-        edges.data.forEach(edge => {
+        edges.forEach(edge => {
 
             graphEdges.add([
                 {
                     id: edge.id,
-                    from: edge.inV,
-                    to: edge.outV,
+                    from: edge.source,
+                    to: edge.target,
                     label: edge.label
-
                 }
             ]);
-
-
-            // edge.map(function (conn) {
-            //     ++i;
-            //     edges.add([
-            //         {
-            //             id: i,
-            //             from: conn.srcVertex,
-            //             to: conn.tgtVertex,
-            //             label: item.name
-            //         },
-            //     ]);
-            // });
-
         });
 
 
-        var container = document.getElementById(this.props.id);
+        var container = document.getElementById(this.props.id + '_graph');
         var data = {
             nodes: graphNodes,
             edges: graphEdges,
@@ -83,7 +89,6 @@ export default class Graph extends React.Component {
             autoResize: true,
             width: '100%',
             interaction: {hover: true},
-            physics: true,
             nodes: {
                 shape: 'circle',
                 size: 20,
@@ -113,16 +118,79 @@ export default class Graph extends React.Component {
                 arrows: 'to',
                 color: {highlight: '#0fa2f6', hover: '#06e4f8'},
                 // length: 150
+            },
+            layout: {
+                randomSeed: 34
+            },
+            physics: {
+                forceAtlas2Based: {
+                    gravitationalConstant: -26,
+                    centralGravity: 0.005,
+                    springLength: 230,
+                    springConstant: 0.18
+                },
+                maxVelocity: 146,
+                solver: 'forceAtlas2Based',
+                timestep: 0.35,
+                stabilization: {
+                    enabled: true,
+                    iterations: 2000,
+                    updateInterval: 25
+                }
             }
         };
         var network = new vis.Network(container, data, options);
-        network.on('showPopup', function (params) {
-            //document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
-            // document.getElementById('eventSpan').firstChild.nodeValue = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
-        });
+
+
+        let maxWidth = this.graph.clientWidth;
+        let minWidth = 20;
+        // network.on("stabilizationProgress", function (params) {
+        //     var widthFactor = params.iterations / params.total;
+        //
+        //     var width = Math.max(minWidth, maxWidth * widthFactor);
+        //     console.log(widthFactor);
+        //     //
+        //     // document.getElementById('progress-bar').style.width = Math.round(width) + 'px';
+        //     // document.getElementById('progress-bar').innerHTML = Math.round(widthFactor * 100) + '%';
+        // });
+
+        network.once("stabilizationIterationsDone", this.loadDone);
+
+        // network.on('showPopup', function (params) {
+        //     //document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
+        //     // document.getElementById('eventSpan').firstChild.nodeValue = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
+        // });
+    }
+
+    loadDone = () => {
+        // this.props.changeLoadingMode({
+        //     loading: false,
+        //     cellId: this.props.id
+        // });
+        console.log("graph done");
     }
 }
 
+
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {
+        loading: state.loadingMode.loading
+    };
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        changeLoadingMode: mode => dispatch(changeLoadingMode(mode))
+    };
+}
+
+// Connected Component
+export default  connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Graph);
 
 const vertexdata = {
     "data": [
@@ -3275,6 +3343,32 @@ const edgedata = {
             }
         },
         {
+            "id": "11person\u0002Mike" +
+            " Nichols\u0001DIRECTED\u0001\u0001movie\u0002Charlie Wilson's War",
+            "label": "DIRECTED1",
+            "type": "edge",
+            "inVLabel": "movie",
+            "outVLabel": "person",
+            "inV": "movie\u0002Charlie Wilson's War",
+            "outV": "person\u0002Mike Nichols",
+            "properties": {
+                "score": 10
+            }
+        },
+        {
+            "id": "12111person\u0002Mike" +
+            " Nichols\u0001DIRECTED\u0001\u0001movie\u0002Charlie Wilson's War",
+            "label": "DIRECTED12",
+            "type": "edge",
+            "inVLabel": "movie",
+            "outVLabel": "person",
+            "inV": "movie\u0002Charlie Wilson's War",
+            "outV": "person\u0002Mike Nichols",
+            "properties": {
+                "score": 10
+            }
+        },
+        {
             "id": "person\u0002Lana Wachowski\u0001DIRECTED\u0001\u0001movie\u0002Cloud atlas",
             "label": "DIRECTED",
             "type": "edge",
@@ -3306,6 +3400,18 @@ const edgedata = {
             "outVLabel": "person",
             "inV": "movie\u0002Speed Racer",
             "outV": "person\u0002addVertex",
+            "properties": {
+                "roles": "Raizo"
+            }
+        },
+        {
+            "id": "11person\u0002addVertex\u0001ACTED_IN\u0001Raizo\u0001movie\u0002Speed Racer",
+            "label": "Self",
+            "type": "edge",
+            "inVLabel": "movie",
+            "outVLabel": "person",
+            "inV": "movie\u0002Speed Racer",
+            "outV": "movie\u0002Speed Racer",
             "properties": {
                 "roles": "Raizo"
             }
@@ -3408,6 +3514,19 @@ const edgedata = {
         },
         {
             "id": "person\u0002Emile Hirsch\u0001ACTED_IN\u0001Speed Racer\u0001movie\u0002Speed Racer",
+            "label": "ACTED_IN",
+            "type": "edge",
+            "inVLabel": "movie",
+            "outVLabel": "person",
+            "inV": "movie\u0002Speed Racer",
+            "outV": "person\u0002Emile Hirsch",
+            "properties": {
+                "roles": "Speed Racer"
+            }
+        },
+        {
+            "id": "11person\u0002Emile Hirsch\u0001ACTED_IN\u0001Speed" +
+            " Racer\u0001movie\u0002Speed Racer",
             "label": "ACTED_IN",
             "type": "edge",
             "inVLabel": "movie",
@@ -6123,3 +6242,5 @@ const edgedata = {
     "duration": 1736,
     "id": "a105cdd9-58a7-4748-b276-fdb7c09bdeaf"
 };
+
+

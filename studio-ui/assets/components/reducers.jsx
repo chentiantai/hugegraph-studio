@@ -7,7 +7,7 @@
 import {connections, alerts} from './connection/reducers';
 import {noteCards} from  './notebooksApp/reducers';
 import {notebook} from './notebook/reducers';
-import {CHANGE_HEAD_MODE} from './actions';
+import {CHANGE_HEAD_MODE,CHANGE_LOADING_MODE} from './actions';
 
 const initialState = {
     noteCards: [],
@@ -23,6 +23,10 @@ const initialState = {
     },
     notebook: {
         cells: []
+    },
+    loadingMode:{
+        loading:false,
+        cellId: ''
     }
 };
 
@@ -33,7 +37,8 @@ export function operation(state = initialState, action) {
         alerts: alerts(state.alerts, action),
         noteCards: noteCards(state.noteCards, action),
         headMode: headMode(state.headMode, action),
-        notebook: notebook(state.notebook, action)
+        notebook: notebook(state.notebook, action),
+        loadingMode:loadingMode(state.loadingMode,action)
     };
 }
 
@@ -41,6 +46,18 @@ export function operation(state = initialState, action) {
 function headMode(state = '', action) {
     switch (action.type) {
         case CHANGE_HEAD_MODE:
+            return {
+                ...state,
+                ...action.mode
+            };
+        default:
+            return state;
+    }
+}
+
+function loadingMode(state = '', action) {
+    switch (action.type) {
+        case CHANGE_LOADING_MODE:
             return {
                 ...state,
                 ...action.mode

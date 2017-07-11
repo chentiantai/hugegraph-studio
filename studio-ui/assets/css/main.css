@@ -392,3 +392,14 @@ form {
 .html-content {
     padding: 0 5px 0 5px;
 }
+
+.progress-wrapper {
+    height: 80px;
+    width: 80px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

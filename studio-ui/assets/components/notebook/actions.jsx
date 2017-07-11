@@ -4,7 +4,7 @@
  * Created on 17/6/5
  */
 import {alertMessage} from '../connection/actions';
-import {changeHeadMode} from '../actions';
+import {changeHeadMode, changeLoadingMode} from '../actions';
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
 export const SHOW_NOTEBOOK = 'show_notebook';
@@ -13,11 +13,10 @@ export const CLEAR_NOTEBOOK_STATE = 'clear_notebook_state';
 export const RUN_MODE = 'run_mode';
 
 
-export function runModeSuccess(data, cellId) {
+export function runModeSuccess(cell) {
     return {
         type: RUN_MODE,
-        cellId,
-        data
+        cell
     }
 }
 
@@ -153,9 +152,6 @@ export function updateItem(itemContent, notebookId, itemId, runFlag) {
             .then(response => {
                 if (response.ok) {
                     return response.json();
-                } else {
-                    dispatch(alertMessage('Update NotebookItem: Server Side' +
-                        ' Error；\r\nCode:' + response.status, 'danger'));
                 }
             })
             .then(data => {
@@ -163,6 +159,7 @@ export function updateItem(itemContent, notebookId, itemId, runFlag) {
                     dispatch(runMode(notebookId, itemId));
                 }
                 dispatch(updateItemSuccess(data));
+
             })
             .catch(err => {
                 dispatch(alertMessage('Update NotebookItem Fetch Exception:' + err, 'danger'));
@@ -177,22 +174,51 @@ export function runMode(notebookId, itemId) {
     console.log(url);
     return dispatch => {
         return fetch(url)
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    console.log("err");
-                    dispatch(alertMessage('Run Cells: Server Side' +
-                        ' Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
-                dispatch(runModeSuccess(data, itemId));
+                let cell = {
+                    id:itemId,
+                    status:200,
+                    msg:'success',
+                    result:data
+                }
+                dispatch(runModeSuccess(cell));
+                dispatch(changeLoadingMode({
+                    loading: false,
+                    cellId: cell.id
+                }));
             })
             .catch(err => {
-                dispatch(alertMessage('Run Cells Fetch Exception:' + err, 'danger'));
+
+                let cell = {
+                    id:itemId,
+                    status:err.status,
+                    msg:err.message,
+                    result:null
+                }
+                dispatch(runModeSuccess(cell));
+                dispatch(changeLoadingMode({
+                    loading: false,
+                    cellId: cell.id
+                }));
             });
     };
+}
+
+
+function checkStatus(response) {
+    if (response.status >= 200 && response.status < 300) {
+        return response
+    } else {
+        let error = new Error(response.statusText);
+        error.status = response.status;
+        throw error
+    }
+}
+
+function parseJSON(response) {
+    return response.json()
 }
 
 
