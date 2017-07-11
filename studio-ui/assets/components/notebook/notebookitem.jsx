@@ -275,55 +275,62 @@ class NotebookItem extends React.Component {
                 );
             }
             case 'Gremlin':
-                return (
-                    <TabsPage defaultTabkey={1}>
-                        <Tabs>
-                            <Tab btClassName="btn btn-default"
-                                 iClassName="fa fa-table"
-                                 tabKey={1}/>
-                            <Tab btClassName="btn btn-default"
-                                 iClassName="fa fa-code"
-                                 tabKey={2}/>
-                            <Tab btClassName="btn btn-default"
-                                 iClassName="fa fa-joomla"
-                                 tabKey={3}/>
-                        </Tabs>
-                        <TabContents>
-                            <TabContent tabKey={1}>
-                                <TableResult
-                                    content={this.props.result}/>
-                            </TabContent>
-                            <TabContent tabKey={2}>
-                                <Code
-                                    id={this.props.itemId + '_code'}
-                                    content={this.props.result}
-                                    height={this.state.cardContentHeight}/>
-                            </TabContent>
-                            <TabContent tabKey={3}>
-                                <Graph
-                                    id={this.props.itemId + '_graph'}
-                                    height={this.state.cardContentHeight}
-                                    content={this.props.result}/>
-                            </TabContent>
-                        </TabContents>
-                    </TabsPage>);
+                if (this.props.result !== null) {
+                    return (
+                        <TabsPage defaultTabkey={1}>
+                            <Tabs>
+                                <Tab btClassName="btn btn-default"
+                                     iClassName="fa fa-table"
+                                     tabKey={1}/>
+                                <Tab btClassName="btn btn-default"
+                                     iClassName="fa fa-code"
+                                     tabKey={2}/>
+                                <Tab btClassName="btn btn-default"
+                                     iClassName="fa fa-joomla"
+                                     tabKey={3}/>
+                            </Tabs>
+                            <TabContents>
+                                <TabContent tabKey={1}>
+                                    <TableResult
+                                        content={this.props.result}
+                                        height={this.state.cardContentHeight}/>
+                                </TabContent>
+                                <TabContent tabKey={2}>
+                                    <Code
+                                        id={this.props.itemId + '_code'}
+                                        content={this.props.result}
+                                        height={this.state.cardContentHeight}/>
+                                </TabContent>
+                                <TabContent tabKey={3}>
+                                    <Graph
+                                        id={this.props.itemId + '_graph'}
+                                        height={this.state.cardContentHeight}
+                                        content={this.props.result}/>
+                                </TabContent>
+                            </TabContents>
+                        </TabsPage>);
+                } else {
+                    return (
+                        <div></div>
+                    );
+                }
             default :
                 return (
-                    <div>
-                    </div>);
+                    <div></div>);
         }
     }
 
     showFooter = language => {
         switch (language) {
             case 'Markdown': {
-                if(this.props.result==null){
+                if (this.props.result == null) {
                     return <div/>;
-                }else{
+                } else {
                     return (
 
                         <div>
-                            Real-time Success. 1 element returned. Duration {this.props.result.duration%1000} s
+                            Real-time Success. 1 element returned.
+                            Duration {this.props.result.duration % 1000} s
                         </div>
                     );
                 }
