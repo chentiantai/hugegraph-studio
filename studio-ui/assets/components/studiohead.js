@@ -24,12 +24,15 @@ export default class StudioHead extends React.Component {
         let headRight = this.props.notebook === undefined || this.props.notebook.cells.length === 0 ? null
             : <div className="header-control-right">
                 <div className="graphName">
-                    {this.props.notebook.connection.graphName}
+                    <i className="fa fa-database" aria-hidden="true"> </i>
+                    &nbsp;{this.props.notebook.connection.graphName}
                 </div>
                 <div className="schema-bt">
                     <ul className="nav nav-pills">
-                        <li role="presentation"><a
-                            onClick={this.showSchemaView}>Schema</a>
+                        <li role="presentation">
+                            <a onClick={this.showSchemaView}>
+                                <i className="fa fa-share-alt"
+                                   aria-hidden="true"></i> Schema</a>
                         </li>
                     </ul>
                 </div>
@@ -40,7 +43,8 @@ export default class StudioHead extends React.Component {
                               style={{display: this.state.showSchema ? 'block' : 'none'}}>
                 <Schema notebook={this.props.notebook}/>
             </div>;
-        };
+        }
+        ;
 
 
         return (
