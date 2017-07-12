@@ -10,7 +10,7 @@ export class TabsPage extends React.Component {
     constructor() {
         super();
         this.state = {
-            selectedTabKey: 2
+            selectedTabKey: 1
         }
     }
 
@@ -79,6 +79,12 @@ export class TabContents extends React.Component {
             <div className="tab-content">
                 {
                     this.props.children.filter(child => child.props.tabKey === this.props.selectedTabKey)
+
+                    // this.props.children.map(child =>
+                    //     child.props.tabKey === this.props.selectedTabKey ?
+                    //         React.cloneElement(child, {display: 'block'}) :
+                    //         React.cloneElement(child, {display: 'none'}))
+
                 }
             </div>
         );

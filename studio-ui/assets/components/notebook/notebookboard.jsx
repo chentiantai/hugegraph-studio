@@ -5,6 +5,7 @@
  */
 import React from 'react';
 import NotebookItem from './notebookitem';
+import StudioHead from '../studiohead';
 import {connect} from 'react-redux';
 import {
     addItem,
@@ -27,7 +28,14 @@ class NotebookBoard extends React.Component {
         let deleteCss = this.props.cells.length === 1 ? 'btn btn-link' +
             ' disabled' : 'btn btn-link';
         return (
+
             <div>
+                <StudioHead
+                    display={this.props.headMode.fullScreen ? 'none' : 'block'}
+                    name={this.props.headMode.studioHeadName}
+                    notebook={this.props.notebook}/>
+                {/*{console.log(this.props.notebook.connection.graphName)}*/}
+
                 {
                     this.props.cells.map(cell =>
                         <div key={cell.id}>

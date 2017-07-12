@@ -39,18 +39,21 @@ body {
 }
 
 .studio-header {
-    padding-top: 3px;
-    padding-bottom: 3px;
+    /*padding-top: 3px;*/
+    /*padding-bottom: 3px;*/
     margin: 0 0 20px;
     border-bottom: 1px solid #ddd;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    height: 28px;
 }
 
 .studio-header .header-title {
     float: left;
     width: auto;
     max-width: 60%;
+    margin-left: 15px;
+
 }
 
 .studio-header .header-control-middle {
@@ -62,15 +65,33 @@ body {
 .studio-header .header-control-right {
     width: auto;
     float: right;
+    margin-right: 15px;
+}
+
+.studio-header .header-control-right .nav > li > a {
+    padding: 4px 15px;
+    border-radius: 0;
+    font-size: 14px;
+    color: #333;
 }
 
 .studio-header .header-title h1 {
     font-size: 14px;
-    margin: 5px 0;
+    margin: 6px 0;
 }
 
 .studio-header .header-title h1 i {
-    margin-right: 5px;
+    margin-right: 6px;
+}
+
+.graphName {
+    font-size: 14px;
+    padding: 4px 5px;
+    float: left;
+}
+
+.schema-bt {
+    float: right;
 }
 
 .studio-header .btn-group-sm > .btn,
@@ -306,11 +327,10 @@ td > button.btn {
 
 .schema-view {
     background-color: #fff;
-    margin-top: -20px;
+    margin-top: -19px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     margin-bottom: 20px;
-    min-height: 300px;
-    display: none;
+    min-height: 100px;
 }
 
 .graph {

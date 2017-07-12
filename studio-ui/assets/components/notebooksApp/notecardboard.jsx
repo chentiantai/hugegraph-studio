@@ -7,6 +7,7 @@
 import React from 'react';
 import NoteCardAdd from './notecardadd';
 import NoteCard from './notecard';
+import StudioHead from '../studiohead';
 import {connect} from 'react-redux';
 import {loadNoteCards} from './actions';
 import NoteCardModal from './notecardmodal';
@@ -60,24 +61,30 @@ class NoteCardBoard extends React.Component {
     render() {
         const noteCards = this.props.noteCards;
         return (
-            <div className="container">
+            <div>
+                <StudioHead
+                    display={this.props.headMode.fullScreen ? 'none' : 'block'}
+                    name={this.props.headMode.studioHeadName}/>
 
-                <div className="row">
-                    <div className="notebook-cards">
-                        <NoteCardAdd onClick={() => this.addNoteCard()}/>
-                        {
-                            noteCards.map(noteCard =>
-                                <NoteCard key={noteCard.id}
-                                          value={noteCard}
-                                          onUpdate={this.updateNoteCard}/>)
-                        }
+                <div className="container">
+
+                    <div className="row">
+                        <div className="notebook-cards">
+                            <NoteCardAdd onClick={() => this.addNoteCard()}/>
+                            {
+                                noteCards.map(noteCard =>
+                                    <NoteCard key={noteCard.id}
+                                              value={noteCard}
+                                              onUpdate={this.updateNoteCard}/>)
+                            }
+                        </div>
                     </div>
+                    <NoteCardModal noteCard={this.state.noteCard}
+                                   addTime={this.state.addTimes}
+                                   isOpen={this.state.isOpen}
+                                   operation={this.state.operation}
+                                   title={this.state.title}/>
                 </div>
-                <NoteCardModal noteCard={this.state.noteCard}
-                               addTime={this.state.addTimes}
-                               isOpen={this.state.isOpen}
-                               operation={this.state.operation}
-                               title={this.state.title}/>
             </div>
         );
     }
@@ -90,7 +97,8 @@ class NoteCardBoard extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        noteCards: state.noteCards
+        noteCards: state.noteCards,
+        headMode: state.headMode
     };
 }
 

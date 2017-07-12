@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import StudioHead from '../studiohead';
 import Connection from './connection';
 import {connect} from 'react-redux';
 import {deleteConnection, loadConnections} from './actions';
@@ -97,52 +98,59 @@ class ConnectionsBoard extends React.Component {
     render() {
         const connections = this.props.connections;
         return (
-            <div className="container">
-                <div className="row">
-                    <AlertList/>
-                </div>
+            <div>
 
-                <div className="row">
-                    <div className="panel panel-default">
-                        <div className="panel-body">
-                            <div className="page-title">
-                                Connections information
-                                <div className="connection-header">
-                                    <button type="button"
-                                            className="btn btn-default"
-                                            onClick={() => this.openAddModal()}>
-                                        <i className="fa fa-plus"
-                                           aria-hidden="true"><span>add</span></i>
-                                    </button>
-                                    <ConnectionModal connection={this.state.connection}
-                                                     isOpen={this.state.isOpen}
-                                                     operation={this.state.operation}
-                                                     title={this.state.title}
-                                                     operationTime={this.state.operationTime}/>
+                <StudioHead
+                    display={this.props.headMode.fullScreen ? 'none' : 'block'}
+                    name={this.props.headMode.studioHeadName}/>
+                <div className="container">
+                    <div className="row">
+                        <AlertList/>
+                    </div>
+
+                    <div className="row">
+                        <div className="panel panel-default">
+                            <div className="panel-body">
+                                <div className="page-title">
+                                    Connections information
+                                    <div className="connection-header">
+                                        <button type="button"
+                                                className="btn btn-default"
+                                                onClick={() => this.openAddModal()}>
+                                            <i className="fa fa-plus"
+                                               aria-hidden="true"><span>add</span></i>
+                                        </button>
+                                        <ConnectionModal
+                                            connection={this.state.connection}
+                                            isOpen={this.state.isOpen}
+                                            operation={this.state.operation}
+                                            title={this.state.title}
+                                            operationTime={this.state.operationTime}/>
+                                    </div>
                                 </div>
+                                <table className="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th>name</th>
+                                        <th>graphName</th>
+                                        <th>connectionHost</th>
+                                        <th>port</th>
+                                        <th>operation</th>
+                                    </tr>
+                                    {
+                                        connections.map(connection =>
+                                            <Connection key={connection.id}
+                                                        connection={connection}
+                                                        deleteConnection={() => this.deleteConnection(connection.id)}
+                                                        editConnection={() => this.openUpdateModal(connection)}/>)
+                                    }
+                                    </tbody>
+                                </table>
                             </div>
-                            <table className="table table-striped">
-                                <tbody>
-                                <tr>
-                                    <th>name</th>
-                                    <th>graphName</th>
-                                    <th>connectionHost</th>
-                                    <th>port</th>
-                                    <th>operation</th>
-                                </tr>
-                                {
-                                    connections.map(connection =>
-                                        <Connection key={connection.id}
-                                                    connection={connection}
-                                                    deleteConnection={() => this.deleteConnection(connection.id)}
-                                                    editConnection={() => this.openUpdateModal(connection)}/>)
-                                }
-                                </tbody>
-                            </table>
                         </div>
                     </div>
+                    {this.state.alert}
                 </div>
-                {this.state.alert}
             </div>
         );
     }
@@ -154,7 +162,8 @@ class ConnectionsBoard extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        connections: state.connections
+        connections: state.connections,
+        headMode: state.headMode
     };
 }
 

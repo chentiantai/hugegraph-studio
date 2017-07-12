@@ -8,7 +8,6 @@ import '../vendors/bootstrap/css/bootstrap.min.css';
 import '../css/main.css';
 import React from 'react';
 import Head from './head';
-import StudioHead from './studiohead';
 import NoteCardBoard from './notebooksApp/notecardboard';
 import ConnectionsBoard from './connection/connectionboard';
 import NoteBookBoard from './notebook/notebookboard';
@@ -29,9 +28,6 @@ class NotebooksApp extends React.Component {
             <Router >
                 <div>
                     <Head fluid={this.props.headMode.fullScreen}/>
-                    <StudioHead
-                        display={this.props.headMode.fullScreen ? 'none' : 'block'}
-                        name={this.props.headMode.studioHeadName}/>
                     <Switch>
                         <Route exact path="/" component={NoteCardBoard}/>
                         <Route path="/index" component={NoteCardBoard}/>

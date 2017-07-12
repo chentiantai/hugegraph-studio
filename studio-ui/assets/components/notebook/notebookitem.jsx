@@ -169,12 +169,6 @@ class NotebookItem extends React.Component {
                                              src='/images/spinner.gif'/>
                                     </div>
                                     {result}
-                                    {/*<NotebookResult language={language}*/}
-                                    {/*itemId={this.props.itemId}*/}
-                                    {/*result={this.props.result}*/}
-                                    {/*msg={this.props.msg}*/}
-                                    {/*status={this.props.status}*/}
-                                    {/*cardContentHeight={this.state.cardContentHeight}/>*/}
                                 </div>
 
 
@@ -299,8 +293,6 @@ class NotebookItem extends React.Component {
 
 
     showResult = (language) => {
-
-
         let result = <div/>;
         if (this.props.result !== null) {
             switch (language) {
@@ -309,7 +301,6 @@ class NotebookItem extends React.Component {
                     if (this.props.result !== null) {
                         mdContent = this.props.aceContent;
                         // mdContent = this.props.result.data[0];
-
                     }
                     result =
                         <MarkdownBrowser
