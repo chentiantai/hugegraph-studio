@@ -76,17 +76,11 @@ export function deleteItemSuccess(cellId) {
 }
 
 export function loadCells(notebookId) {
+    let url = '/api/v1/notebooks/' + notebookId;
     return dispatch => {
-        return fetch('/api/v1/notebooks/' + notebookId)
-            .then(response => {
-                if (response.ok) {
-
-                    return response.json();
-                } else {
-                    dispatch(alertMessage('Load Cells: Server Side' +
-                        ' Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+        return fetch(url)
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 dispatch(showCells(data));
                 dispatch(changeHeadMode({
@@ -104,21 +98,16 @@ export function addItem(notebookId, position) {
     let myHeaders = new Headers();
     let initItem = {'code': '', 'language': 'gremlin'};
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks/' + notebookId + '/cells?position=' + position;
     return dispatch => {
-        return fetch('/api/v1/notebooks/' + notebookId + '/cells?position=' + position,
+        return fetch(url,
             {
                 method: 'POST',
                 body: JSON.stringify(initItem),
                 headers: myHeaders
             })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    dispatch(alertMessage('Add NotebookID: Server Side' +
-                        ' Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 dispatch(addItemSuccess(data, position));
             })
@@ -131,17 +120,19 @@ export function addItem(notebookId, position) {
 export function deleteItem(notebookId, cellId) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + cellId;
     return dispatch => {
-        return fetch('/api/v1/notebooks/' + notebookId + '/cells/' + cellId,
+        return fetch(url,
             {
                 method: 'DELETE'
             })
             .then(response => {
-                if (response.ok) {
+                if (response.status >= 200 && response.status < 300) {
                     dispatch(deleteItemSuccess(cellId));
                 } else {
-                    dispatch(alertMessage('Delete NotebookItem:Server Side' +
-                        ' Error；\r\nCode:' + response.status, 'danger'));
+                    let error = new Error(response.statusText);
+                    error.status = response.status;
+                    throw error
                 }
             })
             .catch(err => {
@@ -153,24 +144,21 @@ export function deleteItem(notebookId, cellId) {
 export function updateItem(itemContent, notebookId, itemId, runFlag) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId;
     return dispatch => {
-        return fetch('/api/v1/notebooks/' + notebookId + '/cells/' + itemId,
+        return fetch(url,
             {
                 method: 'PUT',
                 body: JSON.stringify(itemContent),
                 headers: myHeaders
             })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-            })
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 if (runFlag) {
                     dispatch(runMode(notebookId, itemId));
                 }
                 dispatch(updateItemSuccess(data));
-
             })
             .catch(err => {
                 dispatch(alertMessage('Update NotebookItem Fetch Exception:' + err, 'danger'));
@@ -200,7 +188,6 @@ export function runMode(notebookId, itemId) {
                 }));
             })
             .catch(err => {
-                console.log("catch err")
                 let cell = {
                     id: itemId,
                     status: err.status,
@@ -228,7 +215,7 @@ export function showSchema(connectionId) {
                 dispatch(showSchemaSuccess(data));
             })
             .catch(err => {
-                console.log("error");
+                dispatch(alertMessage('Show Schema Fetch Exception:' + err, 'danger'));
             });
     };
 }

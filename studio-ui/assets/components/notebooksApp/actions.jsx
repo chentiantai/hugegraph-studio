@@ -15,18 +15,16 @@ export const UPDATE_NOTE_CARD_SUCCESS = 'update_note_card_success';
 export function deleteNoteCard(id) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks/' + id;
     return dispatch => {
-        return fetch('/api/v1/notebooks/' + id,
+        return fetch(url,
             {
                 method: 'DELETE'
             })
-            .then(response => {
-                if (response.ok) {
-                    dispatch(deleteNoteCardSuccess(id));
-                    // dispatch(alertMessage('Delete NoteCard Success', 'success'));
-                } else {
-                    dispatch(alertMessage('Delete NoteCard:Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
+            .then(checkStatus)
+            .then(() => {
+                dispatch(deleteNoteCardSuccess(id));
+                dispatch(alertMessage('Delete NoteCard Success', 'success'));
             })
             .catch(err => {
                 dispatch(alertMessage('Delete NoteCard Fetch Exception:' + err, 'danger'));
@@ -42,18 +40,17 @@ export function deleteNoteCardSuccess(id) {
 }
 
 export function loadNoteCards() {
+    let url = '/api/v1/notebooks';
     return dispatch => {
-        return fetch('/api/v1/notebooks')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    dispatch(alertMessage('Load Notebooks: Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+        return fetch(url)
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 dispatch(showNoteCards(data));
-                dispatch(changeHeadMode({fullScreen:false,studioHeadName:'HugeGraph NoteBook Quick Start'}));
+                dispatch(changeHeadMode({
+                    fullScreen: false,
+                    studioHeadName: 'HugeGraph NoteBook Quick Start'
+                }));
             })
             .catch(err => {
                 dispatch(alertMessage('Load Notebooks Fetch Exception:' + err, 'danger'));
@@ -84,27 +81,22 @@ export function saveNoteCard(modalInfo) {
 export function updateNoteCard(noteCard) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks/' + noteCard.id;
     return dispatch => {
-        return fetch('/api/v1/notebooks/' + noteCard.id,
+        return fetch(url,
             {
                 method: 'PUT',
                 body: JSON.stringify(noteCard),
                 headers: myHeaders
             })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    dispatch(alertMessage('Update NoteCard:Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 dispatch(updateNoteCardSuccess(data));
-                // dispatch(alertMessage('Update NoteCard Success', 'success'));
+                dispatch(alertMessage('Update NoteCard Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Test114 :Update NoteCard Fetch Exception:' + err, 'danger'));
-
+                dispatch(alertMessage('Update NoteCard Fetch Exception:' + err, 'danger'));
             });
     };
 }
@@ -120,22 +112,19 @@ export function updateNoteCardSuccess(noteCard) {
 export function addNoteCard(noteCard) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks';
     return dispatch => {
-        return fetch('/api/v1/notebooks',
+        return fetch(url,
             {
                 method: 'POST',
                 body: JSON.stringify(noteCard),
                 headers: myHeaders
             })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    dispatch(alertMessage('Add NoteCard: Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 dispatch(addNoteCardSuccess(data));
+                dispatch(alertMessage('Add NoteCard Success', 'success'));
             })
             .catch(err => {
                 dispatch(alertMessage('Add noteCard Fetch Exception:' + err, 'danger'));
@@ -149,5 +138,18 @@ export function addNoteCardSuccess(noteCard) {
         type: ADD_NOTE_CARD_SUCCESS,
         noteCard
     };
+}
+function checkStatus(response) {
+    if (response.status >= 200 && response.status < 300) {
+        return response
+    } else {
+        let error = new Error(response.statusText);
+        error.status = response.status;
+        throw error
+    }
+}
+
+function parseJSON(response) {
+    return response.json()
 }
 

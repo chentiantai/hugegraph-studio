@@ -10,25 +10,24 @@ export const SHOW = 'show';
 export const UPDATE_SUCCESS = 'update_success';
 export const ADD_REQUEST = 'add_request';
 export const ADD_SUCCESS = 'add_success';
-export const ADD_FAILURE = 'add_failure';
+// export const ADD_FAILURE = 'add_failure';
 export const DELETE_SUCCESS = 'delete_success';
 export const ALERT_SHOW = 'alert_show';
 export const ALERT_HIDE = 'alert_hide';
 
 
 export function loadConnections() {
+    let url = '/api/v1/connections';
     return dispatch => {
-        return fetch('/api/v1/connections')
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    dispatch(alertMessage('Load Connection: Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+        return fetch(url)
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 dispatch(showConnections(data));
-                dispatch(changeHeadMode({fullScreen:false,studioHeadName:'HugeGraph NoteBook Quick Start'}));
+                dispatch(changeHeadMode({
+                    fullScreen: false,
+                    studioHeadName: 'HugeGraph NoteBook Quick Start'
+                }));
             })
             .catch(err => {
                 dispatch(alertMessage('Load Connections Fetch Exception:' + err, 'danger'));
@@ -57,20 +56,18 @@ export function saveConnection(modalInfo) {
 export function updateConnection(connection) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/connections/' + connection.id;
     return dispatch => {
-        return fetch('/api/v1/connections/' + connection.id,
+        return fetch(url,
             {
                 method: 'PUT',
                 body: JSON.stringify(connection),
                 headers: myHeaders
             })
-            .then(response => {
-                if (response.ok) {
-                    dispatch(updateConnectionSuccess(connection));
-                    dispatch(alertMessage('Update Connection Success', 'success'));
-                } else {
-                    dispatch(alertMessage('Update Connection:Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
+            .then(checkStatus)
+            .then(() => {
+                dispatch(updateConnectionSuccess(connection));
+                dispatch(alertMessage('Update Connection Success', 'success'));
             })
             .catch(err => {
                 dispatch(alertMessage('Update Connection Fetch Exception:' + err, 'danger'));
@@ -89,21 +86,17 @@ export function updateConnectionSuccess(connection) {
 export function addConnection(newConnection) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/connections';
     return dispatch => {
         dispatch(addConnectionRequest(newConnection));
-        return fetch('/api/v1/connections',
+        return fetch(url,
             {
                 method: 'POST',
                 body: JSON.stringify(newConnection),
                 headers: myHeaders
             })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    dispatch(alertMessage('Add Connection: Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
-            })
+            .then(checkStatus)
+            .then(parseJSON)
             .then(data => {
                 dispatch(addConnectionSuccess(data));
                 dispatch(alertMessage('Add Connection Success', 'success'));
@@ -120,34 +113,34 @@ export function addConnectionRequest(newConnection) {
         newConnection
     };
 }
+
 export function addConnectionSuccess(newConnection) {
     return {
         type: ADD_SUCCESS,
         newConnection
     };
 }
-export function addConnectionFailure(newConnection) {
-    return {
-        type: ADD_FAILURE,
-        newConnection
-    };
-}
+
+// export function addConnectionFailure(newConnection) {
+//     return {
+//         type: ADD_FAILURE,
+//         newConnection
+//     };
+// }
 
 export function deleteConnection(id) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/connections/' + id;
     return dispatch => {
-        return fetch('/api/v1/connections/' + id,
+        return fetch(url,
             {
                 method: 'DELETE'
             })
-            .then(response => {
-                if (response.ok) {
-                    dispatch(deleteConnectionSuccess(id));
-                    dispatch(alertMessage('Delete Connection Success', 'success'));
-                } else {
-                    dispatch(alertMessage('Delete Connection:Server Side Error；\r\nCode:' + response.status, 'danger'));
-                }
+            .then(checkStatus)
+            .then(() => {
+                dispatch(deleteConnectionSuccess(id));
+                dispatch(alertMessage('Delete Connection Success', 'success'));
             })
             .catch(err => {
                 dispatch(alertMessage('Delete Connection Fetch Exception:' + err, 'danger'));
@@ -205,4 +198,19 @@ export function hideAllAlert(delay = 1500) {
         });
     };
 }
+
+function checkStatus(response) {
+    if (response.status >= 200 && response.status < 300) {
+        return response
+    } else {
+        let error = new Error(response.statusText);
+        error.status = response.status;
+        throw error
+    }
+}
+
+function parseJSON(response) {
+    return response.json()
+}
+
 
