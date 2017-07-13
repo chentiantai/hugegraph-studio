@@ -104,9 +104,7 @@ class ConnectionsBoard extends React.Component {
                     display={this.props.headMode.fullScreen ? 'none' : 'block'}
                     name={this.props.headMode.studioHeadName}/>
                 <div className="container">
-                    <div className="row">
-                        <AlertList/>
-                    </div>
+
 
                     <div className="row">
                         <div className="panel panel-default">

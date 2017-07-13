@@ -32,7 +32,7 @@ class NotebookBoard extends React.Component {
             <div>
                 <StudioHead
                     display={this.props.headMode.fullScreen ? 'none' : 'block'}
-                    name={this.props.headMode.studioHeadName}
+                    name={this.props.notebook.name}
                     notebook={this.props.notebook}/>
 
 
@@ -54,7 +54,6 @@ class NotebookBoard extends React.Component {
                             <NoteBookItemAdd cellId={cell.id}
                                              display={addDisplay}
                                              onClick={this.addItem}/>
-                            {/*{console.log("NotebookBoard:"+this.props.loadingMode.cellId+':'+this.props.loadingMode.loading)}*/}
                         </div>
                     )
                 }
@@ -63,6 +62,7 @@ class NotebookBoard extends React.Component {
     }
 
     componentDidMount() {
+        console.log("NotebookBoard componentDidMount");
         this.props.loadCells(this.props.match.params.id);
         window.onbeforeunload = this.onbeforeunload;
     }
