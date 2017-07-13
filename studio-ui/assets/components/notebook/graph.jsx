@@ -27,7 +27,12 @@ export class Graph extends React.Component {
     componentDidUpdate() {
         console.log("graph componentDidUpdate");
 
-        // this.loadDone();
+        // let graph = this.props.content.graph;
+        // if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
+        //     let vertexdata = graph.vertices;
+        //     let edgedata = graph.edges;
+        //     this.drawGraph(vertexdata, edgedata);
+        // }
     }
 
     componentDidMount() {
@@ -52,9 +57,17 @@ export class Graph extends React.Component {
             //  do something
         });
 
+
+
         vertexs.forEach(vertex => {
+            let title='<div>'+'label : '+vertex.label+'</div>';
+            for(let key in vertex.properties){
+                title=title+'<div>'+key+' : '+vertex.properties[key][0].value+'</div>';
+            }
+
+            let label=vertex.id.split('\u0002')[1];
             graphNodes.add([
-                {id: vertex.id, label: vertex.id, title: vertex.id}
+                {id: vertex.id, label: label, title: title}
             ]);
         });
 
@@ -91,11 +104,9 @@ export class Graph extends React.Component {
             width: '100%',
             interaction: {hover: true},
             nodes: {
-                shape: 'circle',
-                size: 10,
-                font: {
-                    size: 8
-                },
+                font:{size:12},
+                size:20,
+                shape: 'dot',
                 widthConstraint: {
                     maximum: 80
                 },
@@ -118,7 +129,6 @@ export class Graph extends React.Component {
                 },
                 arrows: 'to',
                 color: {highlight: '#0fa2f6', hover: '#06e4f8'},
-                // length: 150
             },
             layout: {
                 randomSeed: 34
@@ -143,17 +153,8 @@ export class Graph extends React.Component {
         var network = new vis.Network(container, data, options);
 
 
-        let maxWidth = this.graph.clientWidth;
-        let minWidth = 20;
-        // network.on("stabilizationProgress", function (params) {
-        //     var widthFactor = params.iterations / params.total;
-        //
-        //     var width = Math.max(minWidth, maxWidth * widthFactor);
-        //     console.log(widthFactor);
-        //     //
-        //     // document.getElementById('progress-bar').style.width = Math.round(width) + 'px';
-        //     // document.getElementById('progress-bar').innerHTML = Math.round(widthFactor * 100) + '%';
-        // });
+
+
 
         network.once("stabilizationIterationsDone", this.loadDone);
 
