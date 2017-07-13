@@ -66,7 +66,7 @@ class NoteCardModal extends React.Component {
         }
         if (validationStatus) {
             let modalInfo = {}
-            if (this.props.operation == 'add') {
+            if (this.props.operation === 'add') {
                 modalInfo = {
                     operation: this.props.operation,
                     noteCard: {

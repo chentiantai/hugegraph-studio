@@ -12,6 +12,7 @@ export const UPDATE_ITEM = 'update_item';
 export const CLEAR_NOTEBOOK_STATE = 'clear_notebook_state';
 export const RUN_MODE = 'run_mode';
 export const SHOW_SCHEMA = 'show_schema';
+export const SYCN_ITEM = 'sycn_item';
 
 
 export function runModeSuccess(cell) {
@@ -44,7 +45,7 @@ export function showCells(data) {
 export function addItemSuccess(data, position) {
     return {
         type: ADD_ITEM,
-        data,
+        newCell: data,
         position
     };
 }
@@ -55,6 +56,16 @@ export function updateItemSuccess(data) {
         data
     };
 }
+
+
+export function sycnItemState(data) {
+    return {
+        type: SYCN_ITEM,
+        data
+    };
+
+}
+
 
 //map to reducer
 export function deleteItemSuccess(cellId) {
@@ -91,7 +102,7 @@ export function loadCells(notebookId) {
 
 export function addItem(notebookId, position) {
     let myHeaders = new Headers();
-    let initItem = {"code": "g.V()", "language": "gremlin"};
+    let initItem = {'code': '', 'language': 'gremlin'};
     myHeaders.append('Content-Type', 'application/json');
     return dispatch => {
         return fetch('/api/v1/notebooks/' + notebookId + '/cells?position=' + position,
@@ -189,7 +200,7 @@ export function runMode(notebookId, itemId) {
                 }));
             })
             .catch(err => {
-
+                console.log("catch err")
                 let cell = {
                     id: itemId,
                     status: err.status,

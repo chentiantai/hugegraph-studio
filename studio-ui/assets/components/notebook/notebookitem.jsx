@@ -6,7 +6,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {changeHeadMode, changeLoadingMode} from '../actions';
-import {updateItem, updateItemSuccess, runMode} from './actions';
+import {updateItem, sycnItemState, runMode} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 import LoadPanel from "./loading";
@@ -17,7 +17,7 @@ import {
     Tab,
     TabContents,
     TabContent
-} from "../commoncomponents/tabspage";
+} from '../commoncomponents/tabspage';
 import Graph from './graph';
 import Code from './code';
 import TableResult from './table';
@@ -46,7 +46,6 @@ class NotebookItem extends React.Component {
             cardContentHeight: this.initCardContentHeight,
             cardEditHeight: 1
         }
-        this.language = '';//the variable of NotebookItem
         this.tabKey = 1;
     }
 
@@ -71,7 +70,6 @@ class NotebookItem extends React.Component {
             enableLiveAutocompletion: true
         });
         editor.getSession().on('change', this.sycnItemState);
-        this.language = this.props.language;
     }
 
 
@@ -89,8 +87,10 @@ class NotebookItem extends React.Component {
         let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
         let result = this.showResult(language);
         let cardFooterResult = this.showFooter(language);
-        let loading = this.props.loadingMode.cellId === this.props.itemId ? this.props.loadingMode.loading : false;
-        let loadingDisplay = loading ? 'block' : 'none';
+        // console.log("redux:"+this.props.loadingMode.loading);
+        // let loading = this.props.loadingMode.cellId === this.props.itemId ? this.props.loadingMode.loading : false;
+        // console.log(loading);
+        let loadingDisplay = this.props.loading ? 'block' : 'none';
 
 
         return (
@@ -184,19 +184,12 @@ class NotebookItem extends React.Component {
     }
 
 
-    componentDidUpdate() {
-        console.log('NotebookItem componentDidUpdate');
-        // this.progressWrapper.style.display='none';
-    }
-
-
     sycnItemState = () => {
         let editorContent = ace.edit(this.geditor).getValue();
         let cellId = this.props.itemId;
         let itemContent = {
             'id': cellId,
-            'code': editorContent,
-            'language': this.language
+            'code': editorContent
         }
         this.props.sycnItemState(itemContent);
     }
@@ -218,8 +211,7 @@ class NotebookItem extends React.Component {
         let itemContent = {
             'id': cellId,
             'code': editorContent,
-            'language': this.language,
-            'result': this.props.result
+            'language': this.props.language
         }
         this.props.updateItem(itemContent, notebookId, cellId, runFlag);
     }
@@ -227,11 +219,18 @@ class NotebookItem extends React.Component {
 
     changeMenu = language => {
         let mode = language === 'Gremlin' ? 'ace/mode/gremlin' : 'ace/mode/markdown';
-        this.language = language;
-
         let editor = ace.edit(this.geditor);
         editor.session.setMode(mode);
-        this.updateItem(false);
+        let editorContent = ace.edit(this.geditor).getValue();
+        let notebookId = this.props.notebookId;
+        let cellId = this.props.itemId;
+
+        let itemContent = {
+            'id': cellId,
+            'code': editorContent,
+            'language': language
+        }
+        this.props.updateItem(itemContent, notebookId, cellId, false);
     }
 
 
@@ -348,7 +347,8 @@ class NotebookItem extends React.Component {
         } else {
             if (this.props.status !== null) {
                 result =
-                    <div>{this.props.status + ' : ' + this.props.msg}</div>;
+                    <div
+                        className="alert alert-danger">{this.props.status + ' : ' + this.props.msg}</div>;
             }
         }
         return result;
@@ -389,8 +389,7 @@ class NotebookItem extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        fullScreen: state.headMode.fullScreen,
-        loadingMode: state.loadingMode
+        fullScreen: state.headMode.fullScreen
     };
 }
 
@@ -400,7 +399,7 @@ function mapDispatchToProps(dispatch) {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
         changeLoadingMode: mode => dispatch(changeLoadingMode(mode)),
         updateItem: (editorContent, notebookId, itemId, runFlag) => dispatch(updateItem(editorContent, notebookId, itemId, runFlag)),
-        sycnItemState: (itemContent) => dispatch(updateItemSuccess(itemContent)),
+        sycnItemState: (itemContent) => dispatch(sycnItemState(itemContent)),
         runMode: (notebookId, cellId) => dispatch(runMode(notebookId, cellId))
     };
 }

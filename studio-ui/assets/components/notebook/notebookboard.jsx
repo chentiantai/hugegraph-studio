@@ -34,7 +34,7 @@ class NotebookBoard extends React.Component {
                     display={this.props.headMode.fullScreen ? 'none' : 'block'}
                     name={this.props.headMode.studioHeadName}
                     notebook={this.props.notebook}/>
-                {/*{console.log(this.props.notebook.connection.graphName)}*/}
+
 
                 {
                     this.props.cells.map(cell =>
@@ -49,10 +49,12 @@ class NotebookBoard extends React.Component {
                                 language={cell.language}
                                 result={cell.result}
                                 status={cell.status}
-                                msg={cell.msg}/>
+                                msg={cell.msg}
+                                loading={this.props.loadingMode.cellId === cell.id ? this.props.loadingMode.loading : false}/>
                             <NoteBookItemAdd cellId={cell.id}
                                              display={addDisplay}
                                              onClick={this.addItem}/>
+                            {/*{console.log("NotebookBoard:"+this.props.loadingMode.cellId+':'+this.props.loadingMode.loading)}*/}
                         </div>
                     )
                 }
@@ -132,7 +134,8 @@ function mapStateToProps(state) {
     return {
         headMode: state.headMode,
         cells: state.notebook.cells,
-        notebook: state.notebook
+        notebook: state.notebook,
+        loadingMode: state.loadingMode
     };
 }
 

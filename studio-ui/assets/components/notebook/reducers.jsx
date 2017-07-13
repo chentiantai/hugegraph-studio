@@ -10,30 +10,26 @@ import {
     UPDATE_ITEM,
     CLEAR_NOTEBOOK_STATE,
     RUN_MODE,
-    SHOW_SCHEMA
+    SHOW_SCHEMA,
+    SYCN_ITEM
 } from './actions';
 
 export function notebook(state = [], action) {
 
     switch (action.type) {
         case ADD_ITEM:
-            var newCell = {
-                id: action.data.id,
-                language: action.data.language,
-                code: action.data.code
-            };
             let arr = [];
             let isAdd = false;
             for (let i = 0; i < state.cells.length; i++) {
                 if (action.position == i) {
-                    arr.push(newCell);
+                    arr.push(action.newCell);
                     arr.push(state.cells[i]);
                     isAdd = true;
                 } else {
                     arr.push(state.cells[i]);
                 }
             }
-            if (!isAdd) arr.push(newCell);
+            if (!isAdd) arr.push(action.newCell);
             return {
                 ...state,
                 cells: arr
@@ -54,6 +50,18 @@ export function notebook(state = [], action) {
                         ...cell,
                         code: action.data.code,
                         language: action.data.language
+                    } : cell
+                )
+            };
+        }
+        case SYCN_ITEM: {
+            console.log("updateItemSuccess");
+            return {
+                ...state,
+                cells: state.cells.map(
+                    cell => cell.id === action.data.id ? {
+                        ...cell,
+                        code: action.data.code
                     } : cell
                 )
             };

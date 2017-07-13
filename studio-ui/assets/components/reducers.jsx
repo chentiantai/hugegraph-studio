@@ -6,6 +6,7 @@
 
 import {connections, alerts} from './connection/reducers';
 import {noteCards} from  './notebooksApp/reducers';
+
 import {notebook, schema} from './notebook/reducers';
 import {CHANGE_HEAD_MODE, CHANGE_LOADING_MODE} from './actions';
 
@@ -46,7 +47,7 @@ export function operation(state = initialState, action) {
 }
 
 
-function headMode(state = '', action) {
+function headMode(state = {}, action) {
     switch (action.type) {
         case CHANGE_HEAD_MODE:
             return {
@@ -58,13 +59,10 @@ function headMode(state = '', action) {
     }
 }
 
-function loadingMode(state = '', action) {
+function loadingMode(state = {}, action) {
     switch (action.type) {
         case CHANGE_LOADING_MODE:
-            return {
-                ...state,
-                ...action.mode
-            };
+            return action.mode;
         default:
             return state;
     }

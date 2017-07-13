@@ -415,6 +415,11 @@ form {
     height: 250px;
 }
 
+.card-content .alert {
+    /*padding: 0!important;*/
+    margin-bottom: 0 !important;
+}
+
 .html-content {
     padding: 0 5px 0 5px;
 }
