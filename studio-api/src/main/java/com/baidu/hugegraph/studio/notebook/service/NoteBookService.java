@@ -194,28 +194,27 @@ public class NoteBookService {
 
         /*It only update the value of field from Front End. There are some
         operation to do it. It can avoid  transmitting big data. */
-        if(cell.getCode()!=null){
+        if (cell.getCode() != null) {
             cellLocal.setCode(cell.getCode());
         }
-        if(cell.getLanguage()!=null){
+        if (cell.getLanguage() != null) {
             cellLocal.setLanguage(cell.getLanguage());
         }
-        if(cell.getResult()!=null){
+        if (cell.getResult() != null) {
             cellLocal.setResult(cell.getResult());
         }
-        if(cell.getMsg()!=null){
+        if (cell.getMsg() != null) {
             cellLocal.setMsg(cell.getMsg());
         }
-        if(cell.getStatus()!=null){
+        if (cell.getStatus() != null) {
             cellLocal.setStatus(cell.getStatus());
         }
-        if(cell.getViewSettings()!=null){
+        if (cell.getViewSettings() != null) {
             cellLocal.setViewSettings(cell.getViewSettings());
         }
-        if(cell.getDataViewType()!=null){
+        if (cell.getDataViewType() != null) {
             cellLocal.setDataViewType(cell.getDataViewType());
         }
-
 
 
         Response response = Response.status(200)
@@ -365,6 +364,10 @@ public class NoteBookService {
         }
         List<Edge> edges = new ArrayList<>();
 
+
+        Set<String> vertexIds = new HashSet<>();
+        vertices.stream().forEach(v -> vertexIds.add(v.id()));
+
         String ids = StringUtils.join(
                 vertices.stream()
                         .map(vertex -> String.format("\"%s\"", vertex.id()))
@@ -372,18 +375,28 @@ public class NoteBookService {
                 ",");
 
         // de-duplication by edgeId,
-        // Reserve the edges when it's srcVertexId and tgtVertexId is a
+        // Reserve the edges only if both it's srcVertexId and tgtVertexId is a
         // member of vertices;
         String gremlin = String.format(
-                "g.V(%s).bothE().otherV().has('id',within(%s)).dedup()", ids,
-                ids);
+                "g.V(%s).bothE().dedup()", ids);
 
-        ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
+        ResultSet resultSet = hugeClient
+                .gremlin()
+                .gremlin(gremlin)
+                .execute();
+
         Iterator<Result> results = resultSet.iterator();
 
-        List<Edge> finalEdges = edges;
         results.forEachRemaining(
-                edge -> finalEdges.add((Edge) edge.getObject()));
+                r -> {
+                    Edge edge = (Edge) r.getObject();
+                    // As the results is queried by 'g.V(id).bothE()',
+                    // the source vertex of edge from results is in the set of vertexIds,
+                    // so just reserve the edge that it's target in the set of vertexIds .
+                    if (vertexIds.contains(edge.target())) {
+                        edges.add(edge);
+                    }
+                });
 
         return edges;
 
