@@ -433,9 +433,16 @@ public class NoteBookService {
             return null;
         }
         Set<String> vertexIds = new HashSet<>();
+        // the path node can be a Vertex, or it can be a Edge
         paths.stream().forEach(path -> path.objects().forEach(obj -> {
             if (obj instanceof Vertex) {
-                vertexIds.add(obj.id());
+                Vertex vertex = (Vertex) obj;
+                vertexIds.add(vertex.id());
+            }else if(obj instanceof Edge){
+                Edge edge = (Edge)obj;
+                vertexIds.add(edge.source());
+                vertexIds.add(edge.target());
+
             }
         }));
         return getVertices(hugeClient,
