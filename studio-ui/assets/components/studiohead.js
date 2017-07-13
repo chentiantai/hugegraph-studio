@@ -7,6 +7,7 @@ import '../vendors/bootstrap/css/bootstrap.min.css';
 import '../css/main.css';
 import React from 'react';
 import Schema from './notebook/schema';
+import AlertList from './connection/alertlist';
 
 
 export default class StudioHead extends React.Component {
@@ -43,8 +44,7 @@ export default class StudioHead extends React.Component {
                               style={{display: this.state.showSchema ? 'block' : 'none'}}>
                 <Schema notebook={this.props.notebook}/>
             </div>;
-        }
-        ;
+        };
 
 
         return (
@@ -62,6 +62,12 @@ export default class StudioHead extends React.Component {
                     </div>
                 </div>
                 {schemaView}
+
+                {/*<div className="container">*/}
+                {/*<div className="row">*/}
+                {/*<AlertList/>*/}
+                {/*</div>*/}
+                {/*</div>*/}
             </div>
         );
     }
