@@ -92,7 +92,7 @@ export class Graph extends React.Component {
             interaction: {hover: true},
             nodes: {
                 shape: 'circle',
-                size: 20,
+                size: 10,
                 font: {
                     size: 8
                 },

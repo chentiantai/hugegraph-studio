@@ -6,7 +6,7 @@
 import '../vendors/bootstrap/css/bootstrap.min.css';
 import '../css/main.css';
 import React from 'react';
-import Schema from './schema';
+import Schema from './notebook/schema';
 
 
 export default class StudioHead extends React.Component {

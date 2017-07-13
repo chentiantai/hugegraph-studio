@@ -9,7 +9,8 @@ import {
     DELETE_ITEM,
     UPDATE_ITEM,
     CLEAR_NOTEBOOK_STATE,
-    RUN_MODE
+    RUN_MODE,
+    SHOW_SCHEMA
 } from './actions';
 
 export function notebook(state = [], action) {
@@ -69,8 +70,8 @@ export function notebook(state = [], action) {
                     cell => cell.id === action.cell.id ? {
                         ...cell,
                         result: action.cell.result,
-                        msg:action.cell.msg,
-                        status:action.cell.status
+                        msg: action.cell.msg,
+                        status: action.cell.status
                     } : cell
                 )
             };
@@ -82,6 +83,13 @@ export function notebook(state = [], action) {
 }
 
 
-
+export function schema(state = null, action) {
+    switch (action.type) {
+        case SHOW_SCHEMA:
+            return action.data;
+        default:
+            return state;
+    }
+}
 
 

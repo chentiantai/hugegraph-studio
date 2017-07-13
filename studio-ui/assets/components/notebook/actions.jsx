@@ -11,6 +11,7 @@ export const SHOW_NOTEBOOK = 'show_notebook';
 export const UPDATE_ITEM = 'update_item';
 export const CLEAR_NOTEBOOK_STATE = 'clear_notebook_state';
 export const RUN_MODE = 'run_mode';
+export const SHOW_SCHEMA = 'show_schema';
 
 
 export function runModeSuccess(cell) {
@@ -54,7 +55,6 @@ export function updateItemSuccess(data) {
         data
     };
 }
-
 
 //map to reducer
 export function deleteItemSuccess(cellId) {
@@ -171,17 +171,16 @@ export function runMode(notebookId, itemId) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId + '/execute';
-    console.log(url);
     return dispatch => {
         return fetch(url)
             .then(checkStatus)
             .then(parseJSON)
             .then(data => {
                 let cell = {
-                    id:itemId,
-                    status:200,
-                    msg:'success',
-                    result:data
+                    id: itemId,
+                    status: 200,
+                    msg: 'success',
+                    result: data
                 }
                 dispatch(runModeSuccess(cell));
                 dispatch(changeLoadingMode({
@@ -192,10 +191,10 @@ export function runMode(notebookId, itemId) {
             .catch(err => {
 
                 let cell = {
-                    id:itemId,
-                    status:err.status,
-                    msg:err.message,
-                    result:null
+                    id: itemId,
+                    status: err.status,
+                    msg: err.message,
+                    result: null
                 }
                 dispatch(runModeSuccess(cell));
                 dispatch(changeLoadingMode({
@@ -203,6 +202,30 @@ export function runMode(notebookId, itemId) {
                     cellId: cell.id
                 }));
             });
+    };
+}
+
+export function showSchema(connectionId) {
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/connections/' + connectionId + '/schema';
+    return dispatch => {
+        return fetch(url)
+            .then(checkStatus)
+            .then(parseJSON)
+            .then(data => {
+                dispatch(showSchemaSuccess(data));
+            })
+            .catch(err => {
+                console.log("error");
+            });
+    };
+}
+
+export function showSchemaSuccess(data) {
+    return {
+        type: SHOW_SCHEMA,
+        data
     };
 }
 
@@ -220,6 +243,10 @@ function checkStatus(response) {
 function parseJSON(response) {
     return response.json()
 }
+
+
+
+
 
 
 
