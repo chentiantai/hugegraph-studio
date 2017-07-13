@@ -26,11 +26,11 @@ export default class TableResult extends React.Component {
                                 <th>properties</th>
                             </tr>
                             {
-                                tableContent.map((tableContent, index) =>
+                                tableContent.map((vertex, index) =>
                                     <tr key={index}>
-                                        <td>{tableContent.id}</td>
-                                        <td>{tableContent.label}</td>
-                                        <td>{JSON.stringify(tableContent.properties)}</td>
+                                        <td>{vertex.id}</td>
+                                        <td>{vertex.label}</td>
+                                        <td>{JSON.stringify(vertex.properties)}</td>
                                     </tr>
                                 )
                             }
@@ -52,13 +52,13 @@ export default class TableResult extends React.Component {
                                 <th>properties</th>
                             </tr>
                             {
-                                tableContent.map((tableContent, index) =>
+                                tableContent.map((edge, index) =>
                                     <tr key={index}>
-                                        <td>{tableContent.id}</td>
-                                        <td>{tableContent.label}</td>
-                                        <td>{tableContent.outV}</td>
-                                        <td>{tableContent.inV}</td>
-                                        <td>{JSON.stringify(tableContent.properties)}</td>
+                                        <td>{edge.id}</td>
+                                        <td>{edge.label}</td>
+                                        <td>{edge.outV}</td>
+                                        <td>{edge.inV}</td>
+                                        <td>{JSON.stringify(edge.properties)}</td>
                                     </tr>
                                 )
                             }
@@ -82,6 +82,32 @@ export default class TableResult extends React.Component {
                         </table>
                     </div>
                 );
+            case 'PATH':
+                return (
+                    <div style={{height: this.props.height + 'px'}}
+                         className="code-content">
+                        <table className="table table-bordered table-striped">
+                            <tbody>
+                            <tr className="info">
+                                <th>path</th>
+                            </tr>
+
+                            {
+                                tableContent.map((obj, index) => {
+                                    let vertexName = obj.objects[0].id.split('\u0002')[1];
+                                    let edgeLabel = obj.objects[1].label;
+                                    let pathResult = vertexName + '--' + edgeLabel + '-->';
+                                    return <tr key={index}>
+                                        <td>{pathResult}</td>
+                                    </tr>;
+                                })
+
+                            }
+
+                            </tbody>
+                        </table>
+                    </div>
+                )
             default :
                 return (<div></div>);
         }

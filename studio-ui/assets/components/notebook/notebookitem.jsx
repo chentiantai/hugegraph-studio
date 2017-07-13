@@ -107,7 +107,8 @@ class NotebookItem extends React.Component {
                                             initLanguage={language}
                                             menuItems={items}
                                             onChange={this.changeMenu}
-                                            id={this.props.itemId}/>
+                                            id={this.props.itemId}>
+                                        </DropDownMenu>
                                     </div>
                                     <div
                                         className="btn-group btn-group-sm pull-right"
