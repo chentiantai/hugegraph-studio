@@ -463,4 +463,27 @@ form {
     padding-bottom: 20px;
 }
 
+.vis-tooltip {
+    padding: 10px 10px !important;
+    white-space: nowrap;
+    font-family: Sans-serif !important;
+    font-size: 14px;
+    /*font-variant: normal;*/
+    /*font-weight: normal;*/
+    /*font-stretch: normal;*/
+    opacity: .5;
+    color: #fff !important;
+    background-color: #000 !important;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px !important;
+    border: 1px solid #808074 !important;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, .2) !important;
+    pointer-events: none !important;
+    z-index: 99999 !important;
+    transition: left .4s cubic-bezier(.23, 1, .32, 1), top .4s cubic-bezier(.23, 1, .32, 1) !important;
+}
 
+.graph-title-info {
+
+}
