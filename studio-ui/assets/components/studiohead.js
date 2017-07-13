@@ -63,11 +63,11 @@ export default class StudioHead extends React.Component {
                 </div>
                 {schemaView}
 
-                {/*<div className="container">*/}
-                {/*<div className="row">*/}
-                {/*<AlertList/>*/}
-                {/*</div>*/}
-                {/*</div>*/}
+                <div className="container">
+                    <div className="row" style={{padding:'0 15px'}}>
+                        <AlertList/>
+                    </div>
+                </div>
             </div>
         );
     }
