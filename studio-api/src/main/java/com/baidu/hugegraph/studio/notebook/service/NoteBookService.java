@@ -47,9 +47,6 @@ public class NoteBookService {
     private static final Logger logger =
             LoggerFactory.getLogger(NoteBookService.class);
 
-    private static final String VERTICES = "vertices";
-    private static final String EDGES = "edges";
-
     @Autowired
     private NotebookRepository notebookRepository;
     @Autowired
@@ -253,7 +250,7 @@ public class NoteBookService {
     public Response executeNotebookCellGremlin(
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId,
-            @PathParam("vertexId") String vertexId) {
+            @QueryParam("vertexId") String vertexId) {
         Preconditions.checkArgument(notebookId != null
                 && cellId != null && vertexId != null);
         NotebookCell cell =
@@ -292,10 +289,8 @@ public class NoteBookService {
         Set<String> vertexIds = new HashSet<>();
         Set<String> edgeIds = new HashSet<>();
 
-        List<Vertex> vertices = (List<Vertex>) result.getGraph()
-                .get(com.baidu.hugegraph.studio.notebook.model.Result.VERTICES);
-        List<Edge> edges = (List<Edge>) result.getGraph()
-                .get(com.baidu.hugegraph.studio.notebook.model.Result.EDGES);
+        List<Vertex> vertices = result.getGraph().getVertices();
+        List<Edge> edges = result.getGraph().getEdges();
 
         vertices.stream().forEach(v -> vertexIds.add(v.id()));
         edges.stream().forEach(e -> edgeIds.add(e.id()));
@@ -305,41 +300,40 @@ public class NoteBookService {
 
         Iterator<Result> results = resultSet.iterator();
 
-        com.baidu.hugegraph.studio.notebook.model.Result resultCurrent =
+        com.baidu.hugegraph.studio.notebook.model.Result resultNew =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
-        resultCurrent.setType(
+
+        resultNew.setType(
                 com.baidu.hugegraph.studio.notebook.model.Result.Type
                         .EDGE);
 
 
-        List<Edge> edgesCurrent =new ArrayList<>();
-        List<Vertex> verticesCurrent =new ArrayList<>();
+        List<Edge> edgesNew = new ArrayList<>();
+        List<Vertex> verticesNew = new ArrayList<>();
 
         results.forEachRemaining(
                 r -> {
                     Edge e = (Edge) r.getObject();
                     if (!edgeIds.contains(e.id())) {
                         edgeIds.add(e.id());
-
-                        edgesCurrent.add(e);
+                        edgesNew.add(e);
                     }
                 });
 
         List<Vertex> verticesCurrentFromEdge = getVertexfromEdge(hugeClient, edges);
-        verticesCurrentFromEdge.stream().forEach(v->{
-            if(!vertexIds.contains(v.id())){
+        verticesCurrentFromEdge.stream().forEach(v -> {
+            if (!vertexIds.contains(v.id())) {
                 vertexIds.add(v.id());
-
-                verticesCurrent.add(v);
+                verticesNew.add(v);
             }
         });
 
-        resultCurrent.setGraphVertices(vertices);
-        resultCurrent.setGraphEdges(edges);
+        resultNew.setGraphVertices(verticesNew);
+        resultNew.setGraphEdges(edgesNew);
 
         // save the current query result to cell
-        vertices.addAll(verticesCurrent);
-        edges.addAll(edgesCurrent);
+        vertices.addAll(verticesNew);
+        edges.addAll(edgesNew);
         result.setGraphVertices(vertices);
         result.setGraphEdges(edges);
         cell.setResult(result);
@@ -347,11 +341,11 @@ public class NoteBookService {
 
         Long endTime = System.currentTimeMillis();
         Long duration = endTime - startTime;
-        resultCurrent.setDuration(duration);
+        resultNew.setDuration(duration);
 
 
         Response response = Response.status(200)
-                .entity(resultCurrent)
+                .entity(resultNew)
                 .build();
         return response;
     }
