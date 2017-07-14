@@ -34,8 +34,6 @@ class NotebookBoard extends React.Component {
                     display={this.props.headMode.fullScreen ? 'none' : 'block'}
                     name={this.props.notebook.name}
                     notebook={this.props.notebook}/>
-
-
                 {
                     this.props.cells.map(cell =>
                         <div key={cell.id}>
@@ -51,6 +49,7 @@ class NotebookBoard extends React.Component {
                                 status={cell.status}
                                 msg={cell.msg}
                                 loading={this.props.loadingMode.cellId === cell.id ? this.props.loadingMode.loading : false}/>
+
                             <NoteBookItemAdd cellId={cell.id}
                                              display={addDisplay}
                                              onClick={this.addItem}/>

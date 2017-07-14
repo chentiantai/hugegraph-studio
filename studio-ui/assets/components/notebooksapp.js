@@ -29,7 +29,7 @@ class NotebooksApp extends React.Component {
                 <div>
                     <Head fluid={this.props.headMode.fullScreen}/>
                     <Switch>
-                        <Route exact path="/" component={NoteCardBoard}/>
+                        {/*<Route exact path="/" component={NoteCardBoard}/>*/}
                         <Route path="/index" component={NoteCardBoard}/>
                         <Route path="/connections"
                                component={ConnectionsBoard}/>

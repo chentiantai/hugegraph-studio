@@ -62,7 +62,13 @@ class NotebookItem extends React.Component {
         editor.setOption('maxLines', 10);
         editor.setOption('minLines', 3);
         this.geditor.style.fontSize = '12px';
-        editor.setValue(this.props.aceContent);
+        if (this.props.aceContent !== null) {
+            editor.setValue(this.props.aceContent);
+        }
+        else {
+            editor.setValue('');
+        }
+
         editor.resize();
         editor.setOptions({
             enableBasicAutocompletion: true,
@@ -87,11 +93,7 @@ class NotebookItem extends React.Component {
         let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
         let result = this.showResult(language);
         let cardFooterResult = this.showFooter(language);
-        // console.log("redux:"+this.props.loadingMode.loading);
-        // let loading = this.props.loadingMode.cellId === this.props.itemId ? this.props.loadingMode.loading : false;
-        // console.log(loading);
         let loadingDisplay = this.props.loading ? 'block' : 'none';
-
 
         return (
             <div className={screenMode} style={{display: this.props.display}}>
