@@ -114,6 +114,9 @@ class NotebookItem extends React.Component {
                                         className="btn-group btn-group-sm pull-right"
                                         role="group">
                                         <button type="button"
+                                                style={{
+                                                    display: display
+                                                }}
                                                 className="btn btn-link "
                                                 onClick={this.runMode}>
                                             <i className="fa fa-play"
@@ -126,6 +129,9 @@ class NotebookItem extends React.Component {
                                                       changeCss="fa fa-eye-slash"
                                                       onClick={this.viewMode}/>
                                         <button type="button"
+                                                style={{
+                                                    display: display
+                                                }}
                                                 className={this.props.deleteCss}
                                                 onClick={this.deleteItem}>
                                             <i className="fa fa-times"
@@ -291,7 +297,7 @@ class NotebookItem extends React.Component {
 
     }
 
-    selectTabContent=()=>{
+    selectTabContent = () => {
         this.props.changeLoadingMode({
             loading: true,
             cellId: this.props.itemId
@@ -316,7 +322,8 @@ class NotebookItem extends React.Component {
                     break;
                 case 'Gremlin':
                     result =
-                        <TabsPage defaultTabkey={1} onSelect={this.selectTabContent}>
+                        <TabsPage defaultTabkey={1}
+                                  onSelect={this.selectTabContent}>
                             <Tabs>
                                 <Tab btClassName="btn btn-default"
                                      iClassName="fa fa-table"
@@ -337,14 +344,14 @@ class NotebookItem extends React.Component {
                                 </TabContent>
                                 <TabContent tabKey={2}>
                                     <Code
-                                        id={this.props.itemId+'_code'}
+                                        id={this.props.itemId + '_code'}
                                         cellId={this.props.itemId}
                                         content={this.props.result}
                                         height={this.state.cardContentHeight}/>
                                 </TabContent>
                                 <TabContent tabKey={3}>
                                     <Graph
-                                        id={this.props.itemId+'_graph'}
+                                        id={this.props.itemId + '_graph'}
                                         cellId={this.props.itemId}
                                         height={this.state.cardContentHeight}
                                         content={this.props.result}/>
@@ -368,32 +375,39 @@ class NotebookItem extends React.Component {
 
 
     showFooter = language => {
-        switch (language) {
-            case 'Markdown': {
-                if (this.props.result == null) {
-                    return <div/>;
-                } else {
-                    return (
-
-                        <div>
-                            Real-time Success. 1 element returned.
-                            Duration {this.props.result.duration % 1000} s
-                        </div>
-                    );
+        if (this.props.result !== null) {
+            switch (language) {
+                case 'Markdown': {
+                    if (this.props.result.duration == null) {
+                        return <div/>;
+                    } else {
+                        return (
+                            <div>
+                                Real-time Success. 1 element returned.
+                                Duration {this.props.result.duration / 1000} s
+                            </div>
+                        );
+                    }
                 }
-
+                case 'Gremlin': {
+                    if (this.props.result.duration == null) {
+                        return <div/>;
+                    } else {
+                        return (
+                            <div>
+                                Real-time Success. 1 element returned.
+                                Duration {this.props.result.duration / 1000} s
+                            </div>
+                        );
+                    }
+                }
+                default :
+                    return <div/>
             }
-            case 'Gremlin':
-                return (
-                    <div>
-                        Real-time Success. 1 element returned.
-                        Duration: 0.186 s.
-                    </div>);
-            default :
-                return <div/>
+        } else {
+            return <div/>
         }
     }
-
 }
 
 

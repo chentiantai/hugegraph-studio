@@ -72,8 +72,12 @@ class NotebookBoard extends React.Component {
     }
 
     onbeforeunload = () => {
-        //TODO
-        // this.props.updateNoteBook(this.props.notebook);
+        // TODO
+        // console.log(JSON.stringify(this.props.notebook));
+        // return this.props.updateNoteBook(this.props.notebook);
+        //
+        // let warning="确认退出?";
+        // return warning;
     }
 
 
