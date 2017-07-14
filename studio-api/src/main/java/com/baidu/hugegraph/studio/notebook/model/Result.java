@@ -20,8 +20,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
-    private static final String VERTICES = "vertices";
-    private static final String EDGES = "edges";
+    public static final String VERTICES = "vertices";
+    public static final String EDGES = "edges";
 
     @JsonProperty("id")
     private String id;

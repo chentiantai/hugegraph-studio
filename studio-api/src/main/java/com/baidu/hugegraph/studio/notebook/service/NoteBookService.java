@@ -31,9 +31,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,9 @@ import java.util.stream.Collectors;
 public class NoteBookService {
     private static final Logger logger =
             LoggerFactory.getLogger(NoteBookService.class);
+
+    private static final String VERTICES = "vertices";
+    private static final String EDGES = "edges";
 
     @Autowired
     private NotebookRepository notebookRepository;
@@ -224,6 +229,133 @@ public class NoteBookService {
         return response;
     }
 
+    /*
+     * The method is used for get a vertex's adjacency nodes
+     * When a graph shows, the user can select any vertex that he is interested in
+     * as a starting point, add it's adjacency vertices & edges to current graph
+     * by executing  the gremlin statement of 'g.V(id).bothE()'.
+     *
+     * After the success of the gremlin need to merge the current local query results
+     * to the notebook cell's result.
+     *
+     * Note: this method should be executed after @see executeNotebookCell(String,String) has been executed.
+     *
+     * @param notebookId : the notebookId of current notebook.
+     * @param cellId : the cellId of the current notebook.
+     * @param vertexId : The id of vertex as a starting point.
+     * @return : just return the offset graph( vertices & edges )
+     */
+
+    @GET
+    @Path("{notebookId}/cells/{cellId}/gremlin")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeNotebookCellGremlin(
+            @PathParam("notebookId") String notebookId,
+            @PathParam("cellId") String cellId,
+            @PathParam("vertexId") String vertexId) {
+        Preconditions.checkArgument(notebookId != null
+                && cellId != null && vertexId != null);
+        NotebookCell cell =
+                notebookRepository.getNotebookCell(notebookId, cellId);
+
+        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
+
+        // only be executed with 'gremlin' mode
+        Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
+
+        Long startTime = System.currentTimeMillis();
+
+        com.baidu.hugegraph.studio.notebook.model.Result result = cell.getResult();
+
+        // this method should be executed after the method of @see executeNotebookCell(String,String),
+        // it's must have a starting point and the result must have vertices or edges
+        Preconditions.checkArgument(result != null && result.getGraph() != null);
+
+
+        Notebook notebook = notebookRepository.getNotebook(notebookId);
+        Preconditions.checkArgument(notebook != null);
+        HugeClient hugeClient = HugeClient.open(
+                notebook.getConnection().getConnectionUri(),
+                notebook.getConnection().getGraphName());
+
+
+        String gremlin = String.format("g.V('%s').bothE()", vertexId);
+        logger.debug("gremlin: " + gremlin);
+
+
+        GremlinManager gremlinManager = hugeClient.gremlin();
+        ResultSet resultSet =
+                gremlinManager.gremlin(gremlin).execute();
+        result.setData(resultSet.data());
+
+        Set<String> vertexIds = new HashSet<>();
+        Set<String> edgeIds = new HashSet<>();
+
+        List<Vertex> vertices = (List<Vertex>) result.getGraph()
+                .get(com.baidu.hugegraph.studio.notebook.model.Result.VERTICES);
+        List<Edge> edges = (List<Edge>) result.getGraph()
+                .get(com.baidu.hugegraph.studio.notebook.model.Result.EDGES);
+
+        vertices.stream().forEach(v -> vertexIds.add(v.id()));
+        edges.stream().forEach(e -> edgeIds.add(e.id()));
+
+        Preconditions.checkArgument(vertexIds.contains(vertexId));
+
+
+        Iterator<Result> results = resultSet.iterator();
+
+        com.baidu.hugegraph.studio.notebook.model.Result resultCurrent =
+                new com.baidu.hugegraph.studio.notebook.model.Result();
+        resultCurrent.setType(
+                com.baidu.hugegraph.studio.notebook.model.Result.Type
+                        .EDGE);
+
+
+        List<Edge> edgesCurrent =new ArrayList<>();
+        List<Vertex> verticesCurrent =new ArrayList<>();
+
+        results.forEachRemaining(
+                r -> {
+                    Edge e = (Edge) r.getObject();
+                    if (!edgeIds.contains(e.id())) {
+                        edgeIds.add(e.id());
+
+                        edgesCurrent.add(e);
+                    }
+                });
+
+        List<Vertex> verticesCurrentFromEdge = getVertexfromEdge(hugeClient, edges);
+        verticesCurrentFromEdge.stream().forEach(v->{
+            if(!vertexIds.contains(v.id())){
+                vertexIds.add(v.id());
+
+                verticesCurrent.add(v);
+            }
+        });
+
+        resultCurrent.setGraphVertices(vertices);
+        resultCurrent.setGraphEdges(edges);
+
+        // save the current query result to cell
+        vertices.addAll(verticesCurrent);
+        edges.addAll(edgesCurrent);
+        result.setGraphVertices(vertices);
+        result.setGraphEdges(edges);
+        cell.setResult(result);
+        notebookRepository.editNotebookCell(notebookId, cell);
+
+        Long endTime = System.currentTimeMillis();
+        Long duration = endTime - startTime;
+        resultCurrent.setDuration(duration);
+
+
+        Response response = Response.status(200)
+                .entity(resultCurrent)
+                .build();
+        return response;
+    }
+
     @GET
     @Path("{notebookId}/cells/{cellId}/execute")
     @Produces(MediaType.APPLICATION_JSON)
@@ -249,6 +381,8 @@ public class NoteBookService {
 
         if ("gremlin".equals(cell.getLanguage())) {
             Notebook notebook = notebookRepository.getNotebook(notebookId);
+            Preconditions.checkArgument(notebook != null);
+
             HugeClient hugeClient = HugeClient.open(
                     notebook.getConnection().getConnectionUri(),
                     notebook.getConnection().getGraphName());
@@ -438,8 +572,8 @@ public class NoteBookService {
             if (obj instanceof Vertex) {
                 Vertex vertex = (Vertex) obj;
                 vertexIds.add(vertex.id());
-            }else if(obj instanceof Edge){
-                Edge edge = (Edge)obj;
+            } else if (obj instanceof Edge) {
+                Edge edge = (Edge) obj;
                 vertexIds.add(edge.source());
                 vertexIds.add(edge.target());
 
