@@ -15,6 +15,7 @@ export class TabsPage extends React.Component {
     }
 
     selectTab = tabKey => {
+        this.props.onSelect();
         this.setState({
             selectedTabKey: tabKey
         });

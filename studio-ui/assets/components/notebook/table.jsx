@@ -5,7 +5,10 @@
  */
 
 import React from 'react';
-export default class TableResult extends React.Component {
+import {connect} from 'react-redux';
+import {changeLoadingMode} from '../actions';
+
+export  class TableResult extends React.Component {
     constructor() {
         super();
     }
@@ -112,4 +115,41 @@ export default class TableResult extends React.Component {
                 return (<div></div>);
         }
     }
+
+    componentDidUpdate(){
+        this.loadDone();
+    }
+
+    componentDidMount() {
+        this.loadDone();
+    }
+
+
+    loadDone = () => {
+        this.props.changeLoadingMode({
+            loading: false,
+            cellId: this.props.cellId
+        });
+    }
 }
+
+
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {
+        loading: state.loadingMode.loading
+    };
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        changeLoadingMode: mode => dispatch(changeLoadingMode(mode))
+    };
+}
+
+// Connected Component
+export default  connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TableResult);

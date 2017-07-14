@@ -468,9 +468,9 @@ form {
     white-space: nowrap;
     font-family: Sans-serif !important;
     font-size: 14px;
-    /*font-variant: normal;*/
-    /*font-weight: normal;*/
-    /*font-stretch: normal;*/
+    font-variant: normal !important;
+    font-weight: 200 !important;
+    font-stretch: normal !important;
     opacity: .5;
     color: #fff !important;
     background-color: #000 !important;
@@ -484,6 +484,28 @@ form {
     transition: left .4s cubic-bezier(.23, 1, .32, 1), top .4s cubic-bezier(.23, 1, .32, 1) !important;
 }
 
-.graph-title-info {
+.tooltips-label {
+    font-weight: 800 !important;
+}
 
+.round-red {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    font-size: 10px;
+    line-heigth: 10px;
+    text-align: center;
+    color: #f00;
+    text-decoration: none;
+}
+
+.round-gray {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    font-size: 10px;
+    line-heigth: 10px;
+    text-align: center;
+    color: #aaa;
+    text-decoration: none;
 }

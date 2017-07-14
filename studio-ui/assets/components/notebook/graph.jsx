@@ -18,7 +18,7 @@ export class Graph extends React.Component {
         console.log("graph render");
         return (
             <div style={{height: this.props.height}}
-                 id={this.props.id + '_graph'}
+                 id={this.props.id}
                  ref={el => this.graph = el}>
             </div>
         );
@@ -58,14 +58,14 @@ export class Graph extends React.Component {
         });
 
 
-
         vertexs.forEach(vertex => {
-            let title='<div>'+'label : '+vertex.label+'</div>';
-            for(let key in vertex.properties){
-                title=title+'<div>'+key+' : '+vertex.properties[key][0].value+'</div>';
+            let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' + 'label : ' + vertex.label + '</div>';
+            for (let key in vertex.properties) {
+                title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
+                    ' ' + vertex.properties[key][0].value + '</div>';
             }
 
-            let label=vertex.id.split('\u0002')[1];
+            let label = vertex.id.split('\u0002')[1];
             graphNodes.add([
                 {id: vertex.id, label: label, title: title}
             ]);
@@ -92,7 +92,7 @@ export class Graph extends React.Component {
         });
 
 
-        var container = document.getElementById(this.props.id + '_graph');
+        var container = document.getElementById(this.props.id);
         var data = {
             nodes: graphNodes,
             edges: graphEdges,
@@ -104,23 +104,23 @@ export class Graph extends React.Component {
             width: '100%',
             interaction: {hover: true},
             nodes: {
-                font:{size:12},
-                size:20,
+                font: {size: 12},
+                size: 20,
                 shape: 'dot',
                 widthConstraint: {
                     maximum: 80
                 },
                 heightConstraint: {valign: 'middle'},
-                shadow: true,
+                shadow: false,
                 color: {
-                    background: '#b9baba', border: '#b9baba',
+                    background: '#00ccff', border: '#00ccff',
                     highlight: {background: '#0fa2f6', border: '#0fa2f6'},
                     hover: {background: '#06e4f8', border: '#06e4f8'}
                 },
             },
             edges: {
                 physics: true,
-                shadow: true,
+                shadow: false,
                 smooth: {
                     type: 'dynamic'
                 },
@@ -153,9 +153,6 @@ export class Graph extends React.Component {
         var network = new vis.Network(container, data, options);
 
 
-
-
-
         network.once("stabilizationIterationsDone", this.loadDone);
 
         // network.on('showPopup', function (params) {
@@ -165,11 +162,10 @@ export class Graph extends React.Component {
     }
 
     loadDone = () => {
-        // this.props.changeLoadingMode({
-        //     loading: false,
-        //     cellId: this.props.id
-        // });
-        console.log("graph done");
+        this.props.changeLoadingMode({
+            loading: false,
+            cellId: this.props.cellId
+        });
     }
 }
 

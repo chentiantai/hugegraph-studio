@@ -291,6 +291,13 @@ class NotebookItem extends React.Component {
 
     }
 
+    selectTabContent=()=>{
+        this.props.changeLoadingMode({
+            loading: true,
+            cellId: this.props.itemId
+        });
+    }
+
 
     showResult = (language) => {
         let result = <div/>;
@@ -309,7 +316,7 @@ class NotebookItem extends React.Component {
                     break;
                 case 'Gremlin':
                     result =
-                        <TabsPage defaultTabkey={1}>
+                        <TabsPage defaultTabkey={1} onSelect={this.selectTabContent}>
                             <Tabs>
                                 <Tab btClassName="btn btn-default"
                                      iClassName="fa fa-table"
@@ -325,17 +332,20 @@ class NotebookItem extends React.Component {
                                 <TabContent tabKey={1}>
                                     <TableResult
                                         content={this.props.result}
-                                        height={this.state.cardContentHeight}/>
+                                        height={this.state.cardContentHeight}
+                                        cellId={this.props.itemId}/>
                                 </TabContent>
                                 <TabContent tabKey={2}>
                                     <Code
-                                        id={this.props.itemId + '_code'}
+                                        id={this.props.itemId+'_code'}
+                                        cellId={this.props.itemId}
                                         content={this.props.result}
                                         height={this.state.cardContentHeight}/>
                                 </TabContent>
                                 <TabContent tabKey={3}>
                                     <Graph
-                                        id={this.props.itemId + '_graph'}
+                                        id={this.props.itemId+'_graph'}
+                                        cellId={this.props.itemId}
                                         height={this.state.cardContentHeight}
                                         content={this.props.result}/>
                                 </TabContent>
