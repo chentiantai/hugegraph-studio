@@ -20,6 +20,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
+    private static final String VERTICES = "vertices";
+    private static final String EDGES = "edges";
 
     @JsonProperty("id")
     private String id;
@@ -34,7 +36,7 @@ public class Result {
     private Long duration = null;
 
     @JsonProperty("graph")
-    private Graph graph;
+    private Map<String , Object> graph;
 
     @JsonCreator
     public Result(
@@ -46,12 +48,12 @@ public class Result {
         this.type = type;
         this.duration = duration;
         this.id = id;
-        this.graph = new Graph();
+        this.graph = new HashedMap();
     }
 
     public Result() {
         this.id = UUID.randomUUID().toString();
-        this.graph = new Graph();
+        this.graph = new HashedMap();
     }
 
     public String getId() {
@@ -92,18 +94,18 @@ public class Result {
      *
      * @return the graph
      */
-    public Graph getGraph() {
+    public Map<String, Object> getGraph() {
         return graph;
     }
 
     public void setGraphVertices(List<Vertex> vertices) {
 
-        this.graph.setVertices(vertices);
+        this.graph.put(VERTICES , vertices);
     }
 
     public void setGraphEdges(List<Edge> edges) {
 
-        this.graph.setEdges(edges);
+        this.graph.put(EDGES , edges);
     }
 
     // g.V() -> VERTEX
@@ -112,26 +114,5 @@ public class Result {
     // g.V().outE().path() -> PATH
     public enum Type {
         VERTEX, EDGE, PATH, EMPTY, NUMBER;
-    }
-
-    public class Graph {
-        private List<Vertex> vertices;
-        private List<Edge> edges;
-
-        public List<Vertex> getVertices() {
-            return vertices;
-        }
-
-        public void setVertices(List<Vertex> vertices) {
-            this.vertices = vertices;
-        }
-
-        public List<Edge> getEdges() {
-            return edges;
-        }
-
-        public void setEdges(List<Edge> edges) {
-            this.edges = edges;
-        }
     }
 }
