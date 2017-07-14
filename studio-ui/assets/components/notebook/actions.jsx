@@ -5,6 +5,8 @@
  */
 import {alertMessage} from '../connection/actions';
 import {changeHeadMode, changeLoadingMode} from '../actions';
+import {updateNoteCard} from '../notebooksApp/actions';
+
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
 export const SHOW_NOTEBOOK = 'show_notebook';
@@ -23,7 +25,7 @@ export function runModeSuccess(cell) {
 }
 
 export function updateNoteBook(notebook) {
-    //TODO
+    // TODO updateNoteCard(notebook);
 }
 
 
