@@ -23,7 +23,7 @@ traversalSources:
 
 # This refers to the datastax-studio server
 server:
- httpPort: 9091
+ httpPort: 8080
  httpBindAddress: localhost
 
 logging:
