@@ -18,19 +18,24 @@
  */
 package com.baidu.hugegraph.studio.studio;
 
-import com.google.common.base.Preconditions;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.Server;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.coyote.AbstractProtocol;
 import org.apache.coyote.ProtocolHandler;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
@@ -44,6 +49,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Bootstrap {
+
+    private static final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
+
     public static final String DEFAULT_HTML_DIR = "/html";
     public static final String DEFAULT_CONF_DIR = "/conf";
     public static final String DEFAULT_WAR_API_FILE = "/war/studio-api.war";
@@ -94,6 +102,8 @@ public class Bootstrap {
         String confDir = baseDir + DEFAULT_CONF_DIR;
         String apiWarFile = baseDir + DEFAULT_WAR_API_FILE;
 
+        logger.debug("baseDir="+baseDir);
+
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine cmdLine = parser.parse(buildOptions(), args);
@@ -116,9 +126,10 @@ public class Bootstrap {
             System.exit(0);
         }
 
-        htmlDir = System.getProperty("user.dir") + "/studio-ui/html";
-        apiWarFile = System.getProperty("user.dir")
-                            + "/studio-api/target/studio-api.war";
+          // just used to debug
+//        htmlDir = System.getProperty("user.dir") + "/studio-ui/html";
+//        apiWarFile = System.getProperty("user.dir")
+//                            + "/studio-api/target/studio-api.war";
 
         run(confDir, htmlDir, apiWarFile);
         server.await();
@@ -142,12 +153,10 @@ public class Bootstrap {
         String logDir = replaceHomeDirReferences(configuration.getLogDir());
         String userDataDir = replaceHomeDirReferences(
                             configuration.getUserDataBaseDir());
-        String passwordEncryptionFile = replaceHomeDirReferences(
-                            configuration.getSecurityEncryptionPasswordFile());
 
         validateConfiguration(configuration.getHttpBindAddress(),
                             configuration.getHttpPort().intValue(), logDir,
-                            userDataDir, passwordEncryptionFile);
+                            userDataDir);
 
         configureLogging(configuration, logDir, confDir);
 
@@ -202,14 +211,12 @@ public class Bootstrap {
 
     private static void validateConfiguration(String httpBindAddress,
                                               int httpPort, String logDir,
-                                              String userDataDir,
-                                              String passwordEncryptionFile) {
+                                              String userDataDir) {
         validateHttpPort(httpBindAddress, httpPort);
         validateWriteablePath(logDir, "log directory", true);
         if (userDataDir != null && !userDataDir.isEmpty()) {
             validateWriteablePath(userDataDir, "user data directory", true);
         }
-        validateReadablePath(passwordEncryptionFile, "security encryption file");
     }
 
     private static void validateWriteablePath(String path, String subject,
