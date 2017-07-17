@@ -163,7 +163,8 @@ export function updateItem(itemContent, notebookId, itemId, runFlag) {
                 dispatch(updateItemSuccess(data));
             })
             .catch(err => {
-                dispatch(alertMessage('Update NotebookItem Fetch Exception:' + err, 'danger'));
+                console.log('Update NotebookItem Fetch Exception');
+                // dispatch(alertMessage('Update NotebookItem Fetch Exception:' + err, 'danger'));
             });
     };
 }
