@@ -137,13 +137,28 @@ export function deleteConnection(id) {
             {
                 method: 'DELETE'
             })
-            .then(checkStatus)
+            .then(response => {
+                // avoid the case : when the response is null
+                if(response.status>400)
+                    return response.json();
+                else
+                    return response;
+            })
+            .then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    return response
+                } else {
+                    let error = new Error(response.message);
+                    error.status = response.status;
+                    throw error
+                }
+            })
             .then(() => {
                 dispatch(deleteConnectionSuccess(id));
                 dispatch(alertMessage('Delete Connection Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Delete Connection Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Danger: '+err.message, 'danger'));
             });
     };
 }
@@ -173,13 +188,15 @@ export function alertHide(key) {
     };
 }
 
-export function alertMessage(messageText, messageType, delay = 1500) {
+export function alertMessage(messageText, messageType, delay = 1000) {
     return (dispatch, getState) => {
         if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
             const key = getState().alerts.lastKey + 1;
             dispatch(alertShow(messageText, messageType, key));
             if (messageType === 'danger') {
                 // setTimeout(() => dispatch(alertHide(key)), 20000);
+            }else if(messageType === 'warning'){
+                setTimeout(() => dispatch(alertHide(key)), 5000);
             } else {
                 setTimeout(() => dispatch(alertHide(key)), delay);
             }

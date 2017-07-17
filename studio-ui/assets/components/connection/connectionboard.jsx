@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 import {deleteConnection, loadConnections} from './actions';
 import ConnectionModal from './connectionmodal';
 import AlertModal from '../commoncomponents/alertmodal';
-import AlertList from './alertlist';
 import {withRouter} from 'react-router-dom';
 
 

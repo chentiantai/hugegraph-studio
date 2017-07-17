@@ -463,6 +463,10 @@ form {
     padding-bottom: 20px;
 }
 
+.schema-container .label {
+    padding: .3em .6em .3em !important;
+}
+
 .vis-tooltip {
     padding: 10px 10px !important;
     white-space: nowrap;
@@ -509,3 +513,4 @@ form {
     color: #aaa;
     text-decoration: none;
 }
+
