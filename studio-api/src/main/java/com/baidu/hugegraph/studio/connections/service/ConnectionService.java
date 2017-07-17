@@ -8,7 +8,11 @@ import com.baidu.hugegraph.structure.schema.VertexLabel;
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.model.ConnectionState;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
+import com.baidu.hugegraph.studio.notebook.model.Notebook;
+import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +52,13 @@ import java.util.HashMap;
  */
 @Path("connections")
 public class ConnectionService {
-    private static final Logger logger = LoggerFactory.getLogger(ConnectionService.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(ConnectionService.class);
 
     @Autowired
     private ConnectionRepository connectionRepository;
+    @Autowired
+    private NotebookRepository notebookRepository;
 
     /**
      * Gets connections.
@@ -71,12 +78,14 @@ public class ConnectionService {
      * Gets connection.
      *
      * @param connectionId the connection id
+     *
      * @return the connection
      */
     @GET
     @Path("{connectionId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConnection(@PathParam("connectionId") String connectionId) {
+    public Response getConnection(
+            @PathParam("connectionId") String connectionId) {
         Response response = Response.status(200)
                 .entity(connectionRepository.get(connectionId))
                 .build();
@@ -87,6 +96,7 @@ public class ConnectionService {
      * Create connection response.
      *
      * @param connection the connection
+     *
      * @return the response
      */
     @POST
@@ -104,15 +114,21 @@ public class ConnectionService {
      * Delete connection response.
      *
      * @param connectionId the connection id
+     *
      * @return the response
      */
     @DELETE
     @Path("{connectionId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteConnection(@PathParam("connectionId") String connectionId) {
+    public Response deleteConnection(
+            @PathParam("connectionId") String connectionId) {
+        Preconditions.checkArgument(!notebookRepository.getNotebooks().stream()
+                        .anyMatch(n -> n.getConnectionId().equals(connectionId)),
+                "The connection can not been deleted if it has been used by "
+                        + "any notebook");
+
         connectionRepository.deleteConnection(connectionId);
-        Response response = Response.status(204)
-                .build();
+        Response response = Response.status(204).build();
         return response;
     }
 
@@ -121,14 +137,16 @@ public class ConnectionService {
      *
      * @param connectionId the connection id
      * @param connection   the connection
+     *
      * @return the response
      */
     @PUT
     @Path("{connectionId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response editConnection(@PathParam("connectionId") String connectionId,
-                                   Connection connection) {
+    public Response editConnection(
+            @PathParam("connectionId") String connectionId,
+            Connection connection) {
         Preconditions.checkArgument(connectionId != null
                 && connectionId.equals(connection.getId()));
         connection.setLastModified(System.currentTimeMillis());
@@ -144,6 +162,7 @@ public class ConnectionService {
      * Gets connection status.
      *
      * @param connection the connection
+     *
      * @return the connection status
      */
     @GET
@@ -166,17 +185,18 @@ public class ConnectionService {
         return response;
     }
 
-
     /**
      * Gets connection schema.
      *
      * @param connectionId the connection id
+     *
      * @return the connection schema
      */
     @GET
     @Path("{connectionId}/schema")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConnectionSchema(@PathParam("connectionId") String connectionId) {
+    public Response getConnectionSchema(
+            @PathParam("connectionId") String connectionId) {
         Preconditions.checkNotNull(connectionId);
         Connection connection = connectionRepository.get(connectionId);
         Preconditions.checkNotNull(connection);
@@ -187,8 +207,10 @@ public class ConnectionService {
             hugeClient = HugeClient.open(connection.getConnectionUri(),
                     connection.getGraphName());
             Map<String, List> schemas = new HashMap<>();
-            List<PropertyKey> propertyKeys = hugeClient.schema().getPropertyKeys();
-            List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
+            List<PropertyKey> propertyKeys =
+                    hugeClient.schema().getPropertyKeys();
+            List<VertexLabel> vertexLabels =
+                    hugeClient.schema().getVertexLabels();
             List<EdgeLabel> edgeLabels = hugeClient.schema().getEdgeLabels();
             schemas.put("propertyKeys", propertyKeys);
             schemas.put("vertexLabels", vertexLabels);
