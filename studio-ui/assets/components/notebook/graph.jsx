@@ -84,8 +84,8 @@ export class Graph extends React.Component {
             graphEdges.add([
                 {
                     id: edge.id,
-                    from: edge.source,
-                    to: edge.target,
+                    from: edge.outV,
+                    to: edge.inV,
                     label: edge.label
                 }
             ]);
