@@ -11,7 +11,6 @@ import org.apache.commons.collections.map.HashedMap;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -20,8 +19,6 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
-    private static final String VERTICES = "vertices";
-    private static final String EDGES = "edges";
 
     @JsonProperty("id")
     private String id;
@@ -36,7 +33,7 @@ public class Result {
     private Long duration = null;
 
     @JsonProperty("graph")
-    private Map<String , Object> graph;
+    private Graph graph;
 
     @JsonCreator
     public Result(
@@ -48,12 +45,12 @@ public class Result {
         this.type = type;
         this.duration = duration;
         this.id = id;
-        this.graph = new HashedMap();
+        this.graph = new Graph();
     }
 
     public Result() {
         this.id = UUID.randomUUID().toString();
-        this.graph = new HashedMap();
+        this.graph = new Graph();
     }
 
     public String getId() {
@@ -88,24 +85,21 @@ public class Result {
      * Gets graph. when result type is VERTEX / EDGE / PATH ，
      * web page can draw network graphic with javascript.
      * To return vertices and edges list to meet the needs of network graphic drawing
-     * <p>
-     * graph.add('vertices',List<Vertex>)
-     * graph.add('edges',List<Edge>)
      *
      * @return the graph
      */
-    public Map<String, Object> getGraph() {
+    public Graph getGraph() {
         return graph;
     }
 
     public void setGraphVertices(List<Vertex> vertices) {
 
-        this.graph.put(VERTICES , vertices);
+        this.graph.setVertices(vertices);
     }
 
     public void setGraphEdges(List<Edge> edges) {
 
-        this.graph.put(EDGES , edges);
+        this.graph.setEdges(edges);
     }
 
     // g.V() -> VERTEX
@@ -114,5 +108,28 @@ public class Result {
     // g.V().outE().path() -> PATH
     public enum Type {
         VERTEX, EDGE, PATH, EMPTY, NUMBER;
+    }
+
+
+    // The Graph class is used for contain Vertices & edges
+    public class Graph {
+        private List<Vertex> vertices;
+        private List<Edge> edges;
+
+        public List<Vertex> getVertices() {
+            return vertices;
+        }
+
+        public void setVertices(List<Vertex> vertices) {
+            this.vertices = vertices;
+        }
+
+        public List<Edge> getEdges() {
+            return edges;
+        }
+
+        public void setEdges(List<Edge> edges) {
+            this.edges = edges;
+        }
     }
 }
