@@ -141,7 +141,8 @@ class NoteCardModal extends React.Component {
                                        message="please enter the notebook name"
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={this.state.noteCard.name}
-                                       onChange={this.handleChange}/>
+                                       onChange={this.handleChange}
+                                       onKeyPress={() => this.saveNoteCard()}/>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">Connection*</label>

@@ -10,10 +10,9 @@ export class NoteCardAdd extends React.Component {
 
     render() {
         return (
-            <div className="notebook-card">
+            <div className="notebook-card" onClick={() => this.addNoteCard()}>
                 <div className="notebook-card-add">
-                    <button type="button" className="btn btn-link"
-                            onClick={() => this.addNoteCard()}>
+                    <button type="button" className="btn btn-link">
                         <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
                     </button>
                 </div>

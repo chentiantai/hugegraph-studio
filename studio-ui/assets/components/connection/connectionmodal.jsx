@@ -90,7 +90,6 @@ class ConnectionModal extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps.connection.name+":"+nextProps.connection.graphName);
         this.setState({
             isOpen: nextProps.isOpen,
             connection: nextProps.connection,
@@ -125,7 +124,8 @@ class ConnectionModal extends React.Component {
                                        message="please enter the name"
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.name}
-                                       onChange={this.handleChange}/>
+                                       onChange={this.handleChange}
+                                       onKeyPress={() => this.saveConnection()}/>
                             </div>
                             <div className="form-group">
                                 <label className="col-sm-2 control-label">graphName</label>
@@ -134,7 +134,8 @@ class ConnectionModal extends React.Component {
                                        validator={isNull}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.graphName}
-                                       onChange={this.handleChange}/>
+                                       onChange={this.handleChange}
+                                       onKeyPress={() => this.saveConnection()}/>
                             </div>
                             <div className="form-group">
                                 <label
@@ -145,7 +146,8 @@ class ConnectionModal extends React.Component {
                                        validator={isNull}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.connectionHost}
-                                       onChange={this.handleChange}/>
+                                       onChange={this.handleChange}
+                                       onKeyPress={() => this.saveConnection()}/>
                             </div>
                             <div className="form-group">
                                 <label
@@ -155,7 +157,8 @@ class ConnectionModal extends React.Component {
                                        validator={isNumber}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.port}
-                                       onChange={this.handleChange}/>
+                                       onChange={this.handleChange}
+                                       onKeyPress={() => this.saveConnection()}/>
                             </div>
                         </form>
                     </ModalBody>

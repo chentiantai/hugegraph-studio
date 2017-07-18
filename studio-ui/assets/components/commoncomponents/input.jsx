@@ -24,7 +24,7 @@ export  default class Input extends React.Component {
         }
         this.handleChange = this.handleChange.bind(this);
         this.validateData = this.validateData.bind(this);
-
+        this.keyPress = this.keyPress.bind(this);
     }
 
 
@@ -53,7 +53,9 @@ export  default class Input extends React.Component {
                     <input type="text" className="form-control"
                            placeholder={this.props.placeholder}
                            name={this.props.name}
-                           value={value} onChange={this.handleChange}/>
+                           value={value}
+                           onChange={this.handleChange}
+                           onKeyPress={this.keyPress} />
                 </div>
             );
         else
@@ -62,12 +64,22 @@ export  default class Input extends React.Component {
                     <input type="text" className="form-control has-error"
                            placeholder={this.props.placeholder}
                            name={this.props.name}
-                           value={value} onChange={this.handleChange}/>
+                           value={value}
+                           onChange={this.handleChange}
+                           onKeyPress={this.keyPress} />
                     <div className="form-err-message">{this.state.message}</div>
                 </div>
             );
     }
 
+
+    keyPress(event){
+        if(event.key ==='Enter'){
+            if(this.props.onKeyPress!==undefined){
+                this.props.onKeyPress();
+            }
+        }
+    }
 
     handleChange(event) {
         this.state.isChange = true;
@@ -76,6 +88,8 @@ export  default class Input extends React.Component {
         const validationResult = this.validateData(value);
         this.props.onChange(name, value, validationResult.flag);
     }
+
+
 
     validateData(value) {
         const validator = this.props.validator;
