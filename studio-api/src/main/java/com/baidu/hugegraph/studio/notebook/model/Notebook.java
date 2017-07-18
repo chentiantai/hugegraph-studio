@@ -1,19 +1,16 @@
 package com.baidu.hugegraph.studio.notebook.model;
 
 import com.baidu.hugegraph.studio.connections.model.Connection;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by jishilei on 2017/5/13.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Notebook {
     @JsonProperty("id")
     private String id;

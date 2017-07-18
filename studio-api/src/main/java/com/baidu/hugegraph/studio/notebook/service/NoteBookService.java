@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -348,6 +349,19 @@ public class NoteBookService {
         return response;
     }
 
+    /*
+     * To execute the code (gremlin or markdown) in a cell of notebook.
+     *
+     * If the language of cell is markdown, just return the original code user input.
+     * If the language of cell is gremlin, execute gremlin code by HugeClient.
+     * Gremlin result will be served 2 places: original data is saved as List<Object>,
+     * Another data is translated into a graph or a table object if it's possible.
+     *
+     * @param notebookId : the notebookId of current notebook.
+     * @param cellId : the cellId of the current notebook.
+     * @return if code snippet is gremlin ,return the whole graph with json( vertices & edges )
+     *         if code snippet is markdown , just return the original code user input.
+     */
     @GET
     @Path("{notebookId}/cells/{cellId}/execute")
     @Produces(MediaType.APPLICATION_JSON)
@@ -361,8 +375,14 @@ public class NoteBookService {
         Preconditions.checkArgument(cellId.equals(cell.getId()));
         Long startTime = System.currentTimeMillis();
 
+        logger.debug("executeNotebookCell: notebookId={},cellId={} ,language={} \n code={}",
+                notebookId, cellId, cell.getLanguage(), cell.getCode());
+
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
+
+        // if code snippet language is markdown, just return the original code user input.
+        // The markdown code will be rendered in HTML by react
         if ("markdown".equals(cell.getLanguage())) {
             result.setData(new ArrayList<Object>() {
                 {
@@ -373,20 +393,47 @@ public class NoteBookService {
 
         if ("gremlin".equals(cell.getLanguage())) {
             Notebook notebook = notebookRepository.getNotebook(notebookId);
+
+            // build HugeClient from the connection info from the notebook.
             HugeClient hugeClient = HugeClient.open(
                     notebook.getConnection().getConnectionUri(),
                     notebook.getConnection().getGraphName());
+
             GremlinManager gremlinManager = hugeClient.gremlin();
+
+            // execute gremlin by HugeClient.
             ResultSet resultSet =
                     gremlinManager.gremlin(cell.getCode()).execute();
+
+            // gremlin result will be served 2 places,
+            // original data is saved as List<Object>,
+            // Another data is translated into a graph or a table object if it's possible.
             result.setData(resultSet.data());
 
             List<Vertex> vertices = new ArrayList<>();
             List<Edge> edges = new ArrayList<>();
 
             Iterator<Result> results = resultSet.iterator();
+
+            // return empty
+            if( resultSet.data().size()==0){
+
+                Long endTime = System.currentTimeMillis();
+                Long duration = endTime - startTime;
+                result.setDuration(duration);
+
+                return Response.status(200)
+                        .entity(result)
+                        .build();
+
+            }
+
+            // To get first object to determine the data type .
             Object object = results.next().getObject();
 
+
+
+            // Try to translate gremlin result into a graph when it's type is Vertex/Edge/Path
             if (object instanceof Vertex) {
                 result.setType(
                         com.baidu.hugegraph.studio.notebook.model.Result.Type
@@ -562,8 +609,8 @@ public class NoteBookService {
             if (obj instanceof Vertex) {
                 Vertex vertex = (Vertex) obj;
                 vertexIds.add(vertex.id());
-            }else if(obj instanceof Edge){
-                Edge edge = (Edge)obj;
+            } else if (obj instanceof Edge) {
+                Edge edge = (Edge) obj;
                 vertexIds.add(edge.source());
                 vertexIds.add(edge.target());
 

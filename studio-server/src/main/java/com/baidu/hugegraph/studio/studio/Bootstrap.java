@@ -102,7 +102,15 @@ public class Bootstrap {
         String confDir = baseDir + DEFAULT_CONF_DIR;
         String apiWarFile = baseDir + DEFAULT_WAR_API_FILE;
 
-        logger.debug("baseDir="+baseDir);
+
+//        logger.debug("baseDir=" + baseDir);
+//
+//        just used to debug
+//        htmlDir = System.getProperty("user.dir") + "/studio-ui/dist";
+//        apiWarFile = System.getProperty("user.dir")
+//                + "/studio-api/target/studio-api.war";
+//        confDir = System.getProperty("user.dir") + "/studio-server/conf";
+//        args = new String[]{"-html", htmlDir, "-api", apiWarFile, "-conf", confDir};
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -115,10 +123,10 @@ public class Bootstrap {
                 htmlDir = cmdLine.getOptionValue("html", DEFAULT_HTML_DIR);
             }
             if (cmdLine.hasOption("conf")) {
-                confDir = cmdLine.getOptionValue("html", DEFAULT_CONF_DIR);
+                confDir = cmdLine.getOptionValue("conf", DEFAULT_CONF_DIR);
             }
             if (cmdLine.hasOption("api")) {
-                apiWarFile = cmdLine.getOptionValue("html", DEFAULT_WAR_API_FILE);
+                apiWarFile = cmdLine.getOptionValue("api", DEFAULT_WAR_API_FILE);
             }
         } catch (ParseException e) {
             System.out.println("Failed to parse command line.");
@@ -126,10 +134,6 @@ public class Bootstrap {
             System.exit(0);
         }
 
-          // just used to debug
-//        htmlDir = System.getProperty("user.dir") + "/studio-ui/html";
-//        apiWarFile = System.getProperty("user.dir")
-//                            + "/studio-api/target/studio-api.war";
 
         run(confDir, htmlDir, apiWarFile);
         server.await();
@@ -152,11 +156,11 @@ public class Bootstrap {
 
         String logDir = replaceHomeDirReferences(configuration.getLogDir());
         String userDataDir = replaceHomeDirReferences(
-                            configuration.getUserDataBaseDir());
+                configuration.getUserDataBaseDir());
 
         validateConfiguration(configuration.getHttpBindAddress(),
-                            configuration.getHttpPort().intValue(), logDir,
-                            userDataDir);
+                configuration.getHttpPort().intValue(), logDir,
+                userDataDir);
 
         configureLogging(configuration, logDir, confDir);
 
@@ -167,7 +171,7 @@ public class Bootstrap {
         ProtocolHandler ph = tomcat.getConnector().getProtocolHandler();
         if (ph instanceof AbstractProtocol) {
             ((AbstractProtocol) ph).setAddress(InetAddress.getByName
-                                    (configuration.getHttpBindAddress()));
+                    (configuration.getHttpBindAddress()));
         }
         tomcat.setHostname(configuration.getHttpBindAddress());
 
@@ -183,19 +187,19 @@ public class Bootstrap {
 
         if (!ui.getState().equals(LifecycleState.STARTED)) {
             System.out.println(
-                "\nStudio-ui failed to start. Please check logs for details");
+                    "\nStudio-ui failed to start. Please check logs for details");
             System.exit(1);
         }
         if (!api.getState().equals(LifecycleState.STARTED)) {
             System.out.println(
-                "\nStudio-api failed to start. Please check logs for details");
+                    "\nStudio-api failed to start. Please check logs for details");
             System.exit(1);
         }
 
         String upMessage = String.format(
                 "Studio is now running on: http://%s:%s\n",
                 new Object[]{configuration.getHttpBindAddress(),
-                             configuration.getHttpPort()});
+                        configuration.getHttpPort()});
 
         System.out.println("\n" + upMessage);
         LoggerFactory.getLogger(Bootstrap.class).info(upMessage);
@@ -203,8 +207,8 @@ public class Bootstrap {
 
     private static String replaceHomeDirReferences(String confDir) {
         if (confDir != null && System.getProperty("user.home") != null) {
-                return confDir.replaceFirst(
-                        "^~", System.getProperty("user.home"));
+            return confDir.replaceFirst(
+                    "^~", System.getProperty("user.home"));
         }
         return confDir;
     }
@@ -222,13 +226,13 @@ public class Bootstrap {
     private static void validateWriteablePath(String path, String subject,
                                               boolean createdIfDoesNotExist) {
         validateWriteablePath(Paths.get(path, new String[0]).toAbsolutePath(),
-                                        subject, createdIfDoesNotExist);
+                subject, createdIfDoesNotExist);
     }
 
     private static void validateWriteablePath(Path path, String subject,
                                               boolean createdIfDoesNotExist) {
         if (!Files.exists(path, new LinkOption[0]) && createdIfDoesNotExist
-            && path.getParent() != null) {
+                && path.getParent() != null) {
             validateWriteablePath(path.getParent(), subject, true);
         } else {
             validateWriteablePath(path, subject);
@@ -271,7 +275,7 @@ public class Bootstrap {
     private static void validateHttpPort(String httpBindAddress, int httpPort) {
         try {
             ServerSocket socket = new ServerSocket(httpPort, 1,
-                                      InetAddress.getByName(httpBindAddress));
+                    InetAddress.getByName(httpBindAddress));
             Object localObject = null;
             if (socket != null) {
                 if (localObject != null) {
@@ -297,12 +301,12 @@ public class Bootstrap {
         System.setProperty("studio.log.file", configuration.getLogFileName());
         System.setProperty("studio.log.dir", logDir);
         System.setProperty("studio.max.log.file.size",
-                            configuration.getMaxLogFileSize());
+                configuration.getMaxLogFileSize());
         System.setProperty("studio.max.log.archives",
-                            configuration.getMaxLogArchives().toString());
+                configuration.getMaxLogArchives().toString());
 
         String log4jConfLocation = String.format("%s/log4j2.xml",
-                                                 new Object[]{confDir});
+                new Object[]{confDir});
         System.setProperty("log4j.configurationFile", log4jConfLocation);
         LoggerContext context = Configurator.initialize(null, log4jConfLocation);
 

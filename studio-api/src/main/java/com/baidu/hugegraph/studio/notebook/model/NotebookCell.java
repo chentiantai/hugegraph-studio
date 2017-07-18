@@ -1,11 +1,8 @@
 package com.baidu.hugegraph.studio.notebook.model;
 
-import com.baidu.hugegraph.studio.common.errors.StudioError;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Optional;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NotebookCell {

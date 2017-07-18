@@ -23,20 +23,8 @@ traversalSources:
 
 # This refers to the datastax-studio server
 server:
- httpPort: 8080
+ httpPort: 8088
  httpBindAddress: localhost
-
-logging:
- fileName: studio.log
- maxLogFileSize: 250 MB
- maxFiles: 10
- directory: ./logs
-
-security:
-#To make encryption of passwords more unique for your installation, you can change
-#the password in this file.  But you should ensure it is a reasonably strong generated
-#password, and not just a word or phrase
-  encryptionPasswordFile: conf/security/security.properties
 
 # User data being, where we store data specific to a user
 # in the application.  For the short-term this is the file system, which
@@ -53,20 +41,3 @@ connectionManagement:
   #Defaulting to 1 hour
   idleTimeoutInSeconds: 3600
 
-# IDE(integrated development environment) services are deployed
-# as a service alongside datastax-studio.  Some configuration parameters
-# here need to reflect what http port datastax-studio is listening on
-# to provide connection configuration and editor contents to the IDE services.
-# E.g. If server.httpPort = 10000, then connectionServicePort and fileServicePort should also be 10000
-ide:
-  #connection related config
-  connectionServicePort: 9091
-  connectionCacheIdleTimeInSeconds: 3600
-  connectionConfigMonitorFrequencyInSeconds: 120
-  #file/editor content loading related config
-  fileServicePort: 9091
-  fileContentsJsonField: code
-  #How long content assist will cache known schema
-  #IMPORTANT:  Refreshing the known schema incurs a transaction in DSE Graph, and
-  #should never be set to 0 other than pure developer environments
-  graphSchemaCacheIdleTimeInSeconds: 600

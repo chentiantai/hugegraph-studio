@@ -1,22 +1,17 @@
 package com.baidu.hugegraph.studio.notebook.model;
 
-
 import com.baidu.hugegraph.structure.graph.Edge;
 import com.baidu.hugegraph.structure.graph.Vertex;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.collections.map.HashedMap;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
  * The type Result.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
 
@@ -112,8 +107,13 @@ public class Result {
 
 
     // The Graph class is used for contain Vertices & edges
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public class Graph {
+
+        @JsonProperty
         private List<Vertex> vertices;
+
+        @JsonProperty
         private List<Edge> edges;
 
         public List<Vertex> getVertices() {
