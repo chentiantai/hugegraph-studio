@@ -45,7 +45,7 @@ export JVM_OPTS="$JVM_OPTS -Xmx10g"
 
 export MAIN_CLASS="com.baidu.hugegraph.studio.studio.Bootstrap"
 # Uncomment to enable debugging
-#JVM_OPTS="$JVM_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=1414"
+#JVM_OPTS="$JVM_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8414"
 
 echo "$JAVA" $JVM_OPTS $MAIN_CLASS -Dapp.name="hugegraph-studio" $VARS
 
