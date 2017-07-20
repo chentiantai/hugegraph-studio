@@ -162,7 +162,7 @@ fi
 #JVM_OPTS="$JVM_OPTS -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8414"
 
 if [ "x$STUDIO_APP_NAME" = "x" ]; then
-    STUDIO_APP_NAME="HugeStudio"
+    STUDIO_APP_NAME="HugeStudioServer"
 fi
 
 # echo "$JAVA" $JVM_OPTS -Dapp.name="$STUDIO_APP_NAME" $MAIN_CLASS "$@"

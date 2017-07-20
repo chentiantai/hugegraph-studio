@@ -17,6 +17,7 @@
  * the License.
  */
 package com.baidu.hugegraph.studio;
+
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleState;
@@ -29,10 +30,17 @@ import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * The Bootstrap of HugeStudio.
  */
@@ -41,6 +49,7 @@ public class HugeStudio {
     private static final String DEFAULT_CONFIGURATION_FILE = "hugestudio.properties";
     // The embed tomcat server
     private static Server server;
+
     /**
      * The entry point of application.
      *
@@ -55,7 +64,7 @@ public class HugeStudio {
 
 
     /**
-     * Run.
+     * Run tomcat with configuration
      *
      * @param configuration the studio configuration
      * @throws Exception the exception
@@ -66,8 +75,9 @@ public class HugeStudio {
         String uiDir = String.format("%s/%s", baseDir, configuration.getServerUIDir());
         String apiWarFile = String.format("%s/%s", baseDir, configuration.getServerWarDir());
 
-        logger.debug("uiDir={}", uiDir);
-        logger.debug("apiWarFile={}", apiWarFile);
+        validateHttpPort(configuration.getHttpBindAddress(), configuration.getHttpPort());
+        validatePathExists(uiDir);
+        validateFileExists(apiWarFile);
 
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(configuration.getHttpPort());
@@ -144,4 +154,50 @@ public class HugeStudio {
 
         return null;
     }
+
+    /**
+     * To validate that the http port is available.
+     * System.exit() when the port is not available.
+     */
+    private static void validateHttpPort(String httpBindAddress, int httpPort) {
+        try {
+            ServerSocket socket = new ServerSocket(httpPort, 1,
+                    InetAddress.getByName(httpBindAddress));
+            Object localObject = null;
+            if (socket != null) {
+                if (localObject != null) {
+                    try {
+                        socket.close();
+                    } catch (Throwable t) {
+                        ((Throwable) localObject).addSuppressed(t);
+                    }
+                } else {
+                    socket.close();
+                }
+            }
+        } catch (IOException e) {
+            logger.error(String.format(
+                    "Can't start Studio on port %d: %s",
+                    httpPort, e));
+            System.exit(1);
+        }
+    }
+
+    private static void validatePathExists(String pathName) {
+        File file = new File(pathName);
+        if (!(file.exists() && file.isDirectory())) {
+            logger.error("Can't start Studio, directory:{} does not exist", pathName);
+            System.exit(1);
+        }
+    }
+
+    private static void validateFileExists(String fileName) {
+        File file = new File(fileName);
+        if (! (file.exists() && !file.isDirectory())) {
+            logger.error("Can't start Studio, file:{} does not exist", fileName);
+            System.exit(1);
+        }
+    }
+
+
 }
