@@ -23,7 +23,6 @@ public class StudioConfigurationTest {
     @Test
     public void testConfiguration() {
 
-        Assert.assertTrue(StringUtils.isEmpty(configuration.getBaseUserDataDirectoryOriginal()));
         Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio",
                 configuration.getBaseUserDataDirectory());
         Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/connections",

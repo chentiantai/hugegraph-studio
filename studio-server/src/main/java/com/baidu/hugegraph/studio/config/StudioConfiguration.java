@@ -16,63 +16,60 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.baidu.hugegraph.studio.conf;
+package com.baidu.hugegraph.studio.config;
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+/**
+ * The type Studio configuration.
+ */
 public class StudioConfiguration {
-    private static final String DEFAULT_CONFIGURATION_FILE = "hugestudio.properties";
     static {
-        OptionSpace.register(StudioApiOptions.Instance());
+        OptionSpace.register(StudioOptions.Instance());
     }
+
+
+
+
     private HugeConfig config = null;
-    public StudioConfiguration() {
+
+    public StudioConfiguration(String configurationFile) {
         try {
             URL configurationUrl = this.getClass().getClassLoader()
-                    .getResource(DEFAULT_CONFIGURATION_FILE);
+                    .getResource(configurationFile);
             Preconditions.checkNotNull(configurationUrl);
+
             config = new HugeConfig(configurationUrl.getFile());
         } catch (org.apache.commons.configuration.ConfigurationException e) {
             throw new RuntimeException(String.format(
                     "Caught exception loading StudioConfiguration from %s: ",
-                    DEFAULT_CONFIGURATION_FILE), e);
+                    configurationFile), e);
         }
     }
 
 
-    public String getConnectionsDirectory() {
-        return String.format("%s/%s",
-                getBaseUserDataDirectory(),
-                this.config.get(StudioApiOptions.STUDIO_DATA_CONNECTIONS_DIR));
+    public Integer getHttpPort() {
+        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT);
     }
 
-    public String getNotebooksDirectory() {
-        return String.format("%s/%s",
-                getBaseUserDataDirectory(),
-                this.config.get(StudioApiOptions.STUDIO_DATA_NOTEBOOKS_DIR));
-
+    public String getHttpBindAddress() {
+        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_BIND_ADDRESS);
     }
 
-    public String getBaseUserDataDirectory() {
-        String userDataDir = this.config.get(StudioApiOptions.STUDIO_DATA_BASE_DIR);
-        if (StringUtils.isEmpty(userDataDir) || userDataDir.equals("null")) {
-            userDataDir = "~/.hugestudio";
-        }
-        return replaceHomeDirReferences(userDataDir);
+    public String getServerBasePath() {
+        return this.config.get(StudioOptions.STUDIO_SERVER_BASE_DIR);
     }
 
-    private String replaceHomeDirReferences(String confDir) {
-        if (confDir != null) {
-            if (System.getProperty("user.home") != null) {
-                return confDir.replaceFirst("^~", System.getProperty("user.home"));
-            }
-            return confDir;
-        }
-        return null;
+    public String getServerUIDir() {
+        return this.config.get(StudioOptions.STUDIO_SERVER_UI_DIR);
     }
+
+    public String getServerWarDir() {
+        return this.config.get(StudioOptions.STUDIO_SERVER_WAR_DIR);
+    }
+
+
 }
+

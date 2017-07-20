@@ -4,7 +4,7 @@
 
     <formats>
         <format>dir</format>
-        <format>tar.bz2</format>
+        <!--<format>tar.bz2</format>-->
     </formats>
 
     <fileSets>
@@ -21,12 +21,12 @@
             <outputDirectory>/</outputDirectory>
             <filtered>false</filtered>
             <excludes>
-                <exclude>README.txt</exclude>
+                <exclude>README.md</exclude>
             </excludes>
         </fileSet>
         <fileSet>
             <directory>${top.level.basedir}/studio-ui/dist</directory>
-            <outputDirectory>/html</outputDirectory>
+            <outputDirectory>/ui</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${top.level.basedir}/studio-api/target</directory>

@@ -22,13 +22,19 @@
         <jackson.version>2.7.1</jackson.version>
         <tomcat.version>8.5.2</tomcat.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
+        <log4j2.version>2.8.2</log4j2.version>
         <metrics.version>3.1.2</metrics.version>
         <guava.version>19.0</guava.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- hugegraph -->
+            <dependency>
+                <groupId>com.baidu.hugegraph</groupId>
+                <artifactId>hugegraph-common</artifactId>
+                <version>0.1.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>com.baidu.hugegraph</groupId>
                 <artifactId>hugegraph-client</artifactId>
@@ -150,47 +156,26 @@
             <!-- Logging -->
 
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j2.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
-                <version>2.3</version>
+                <version>${log4j2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-web</artifactId>
-                <version>2.3</version>
+                <version>${log4j2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
-                <version>2.3</version>
+                <version>${log4j2.version}</version>
             </dependency>
 
-
-
-
-
-            <!-- yaml configuration -->
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>1.16</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.google.guava</groupId>
