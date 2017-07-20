@@ -9,18 +9,34 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {changeLoadingMode} from '../actions';
 
-export  class Code extends React.Component {
+export default  class Code extends React.Component {
     constructor() {
         super();
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.content === nextProps.content) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     render() {
+        console.log("Code render");
         return (
             <div style={{height: this.props.height + 'px'}}
                  className="code-content " id={this.props.id}>
 
             </div>
         );
+    }
+
+    componentDidUpdate() {
+        let paneJson = '#' + this.props.id;
+        let json = JSON.stringify(this.props.content);
+        $(paneJson).JSONView(json);
+        this.loadDone();
     }
 
     componentDidMount() {
@@ -31,29 +47,7 @@ export  class Code extends React.Component {
     }
 
     loadDone = () => {
-        this.props.changeLoadingMode({
-            loading: false,
-            cellId: this.props.cellId
-        });
+        let loadingId = this.props.cellId + '_loading';
+        document.getElementById(loadingId).style.display = 'none';
     }
 }
-
-// Map Redux state to component props
-function mapStateToProps(state) {
-    return {
-        loading: state.loadingMode.loading
-    };
-}
-
-// Map Redux actions to component props
-function mapDispatchToProps(dispatch) {
-    return {
-        changeLoadingMode: mode => dispatch(changeLoadingMode(mode))
-    };
-}
-
-// Connected Component
-export default  connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Code);

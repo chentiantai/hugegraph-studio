@@ -28,4 +28,17 @@ export default class MarkdownBrowser extends React.Component {
             </div>
         );
     }
+
+    componentDidUpdate() {
+        this.loadDone();
+    }
+
+    componentDidMount() {
+       this.loadDone()
+    }
+
+    loadDone = () => {
+        let loadingId=this.props.cellId+'_loading';
+        document.getElementById(loadingId).style.display='none';
+    }
 }

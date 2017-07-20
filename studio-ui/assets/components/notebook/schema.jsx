@@ -3,9 +3,9 @@
  * @author liunanke(liunanke@baidu.com)
  * Created on 2017/6/1.
  */
-import React from 'react';
-import {showSchema} from './actions'
-import {connect} from 'react-redux';
+import React from "react";
+import {showSchema} from "./actions";
+import {connect} from "react-redux";
 
 export class Schema extends React.Component {
     constructor() {

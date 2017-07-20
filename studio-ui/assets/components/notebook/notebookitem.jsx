@@ -9,19 +9,10 @@ import {changeHeadMode, changeLoadingMode} from '../actions';
 import {updateItem, sycnItemState, runMode} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
-import LoadPanel from "./loading";
-import NotebookResult from "./notebookresult";
-import {
-    TabsPage,
-    Tabs,
-    Tab,
-    TabContents,
-    TabContent
-} from '../commoncomponents/tabspage';
-import Graph from './graph';
-import Code from './code';
-import TableResult from './table';
 import MarkdownBrowser from './markdownbrowser';
+import GremlinResult from "./gremlinresult";
+import ErrorResult from "./errorresult";
+import DefaultResult from "./defaultresult";
 
 const headHeight = 32;
 const pannelbodyPadding = 10;
@@ -93,7 +84,6 @@ class NotebookItem extends React.Component {
         let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
         let result = this.showResult(language);
         let cardFooterResult = this.showFooter(language);
-        let loadingDisplay = this.props.loading ? 'block' : 'none';
 
         return (
             <div className={screenMode} style={{display: this.props.display}}>
@@ -167,10 +157,10 @@ class NotebookItem extends React.Component {
 
 
                                 <div className="card-content">
-                                    {console.log("loadingDisplay:" + loadingDisplay)}
                                     <div ref={el => this.progressWrapper = el}
+                                         id={this.props.itemId + "_loading"}
                                          className="progress-wrapper"
-                                         style={{display: loadingDisplay}}>
+                                         style={{display: 'block'}}>
                                         <img style={{
                                             width: "80px",
                                             height: "80px"
@@ -206,10 +196,10 @@ class NotebookItem extends React.Component {
     runMode = () => {
         console.log("runMode");
         this.progressWrapper.style.display = 'block';
-        this.props.changeLoadingMode({
-            loading: true,
-            cellId: this.props.itemId
-        });
+        // this.props.changeLoadingMode({
+        //     loading: true,
+        //     cellId: this.props.itemId
+        // });
         this.updateItem(true);
     }
 
@@ -315,51 +305,18 @@ class NotebookItem extends React.Component {
                     let mdContent = "";
                     if (this.props.result !== null) {
                         mdContent = this.props.aceContent;
-                        // mdContent = this.props.result.data[0];
                     }
                     result =
                         <MarkdownBrowser
                             id={this.props.itemId + '_markdown_browser'}
-                            mdContent={mdContent}/>
+                            mdContent={mdContent}
+                            cellId={this.props.itemId}/>
                     break;
                 case 'Gremlin':
-                    result =
-                        <TabsPage defaultTabkey={1}
-                                  onSelect={this.selectTabContent}>
-                            <Tabs>
-                                <Tab btClassName="btn btn-default"
-                                     iClassName="fa fa-table"
-                                     tabKey={1}/>
-                                <Tab btClassName="btn btn-default"
-                                     iClassName="fa fa-code"
-                                     tabKey={2}/>
-                                <Tab btClassName="btn btn-default"
-                                     iClassName="fa fa-joomla"
-                                     tabKey={3}/>
-                            </Tabs>
-                            <TabContents>
-                                <TabContent tabKey={1}>
-                                    <TableResult
-                                        content={this.props.result}
-                                        height={this.state.cardContentHeight}
-                                        cellId={this.props.itemId}/>
-                                </TabContent>
-                                <TabContent tabKey={2}>
-                                    <Code
-                                        id={this.props.itemId + '_code'}
-                                        cellId={this.props.itemId}
-                                        content={this.props.result}
-                                        height={this.state.cardContentHeight}/>
-                                </TabContent>
-                                <TabContent tabKey={3}>
-                                    <Graph
-                                        id={this.props.itemId + '_graph'}
-                                        cellId={this.props.itemId}
-                                        height={this.state.cardContentHeight}
-                                        content={this.props.result}/>
-                                </TabContent>
-                            </TabContents>
-                        </TabsPage>;
+                    result = <GremlinResult defaultTabkey={1}
+                                            content={this.props.result}
+                                            height={this.state.cardContentHeight}
+                                            cellId={this.props.itemId}/>
                     break;
                 default :
                     result = <div/>;
@@ -367,12 +324,15 @@ class NotebookItem extends React.Component {
         } else {
             if (this.props.status !== null) {
                 result =
-                    <div
-                        className="alert alert-danger">{this.props.status + ' : ' + this.props.msg}</div>;
+                    <ErrorResult status={this.props.status}
+                                 msg={this.props.msg}
+                                 cellId={this.props.itemId}/>;
+            } else {
+                result = <DefaultResult
+                    cellId={this.props.itemId}/>;
             }
         }
         return result;
-
     }
 
 

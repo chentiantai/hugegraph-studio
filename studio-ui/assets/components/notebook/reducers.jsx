@@ -42,7 +42,6 @@ export function notebook(state = [], action) {
                 cells: state.cells.filter(cell => cell.id !== action.cellId)
             };
         case UPDATE_ITEM: {
-            console.log("updateItemSuccess");
             return {
                 ...state,
                 cells: state.cells.map(
@@ -55,7 +54,6 @@ export function notebook(state = [], action) {
             };
         }
         case SYCN_ITEM: {
-            console.log("updateItemSuccess");
             return {
                 ...state,
                 cells: state.cells.map(

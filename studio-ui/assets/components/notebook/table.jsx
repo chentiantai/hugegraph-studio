@@ -8,12 +8,21 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {changeLoadingMode} from '../actions';
 
-export  class TableResult extends React.Component {
+export default  class TableResult extends React.Component {
     constructor() {
         super();
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.content === nextProps.content) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     render() {
+
         const tableContent = this.props.content.data;
         let dataType = this.props.content.type;
         switch (dataType) {
@@ -116,7 +125,7 @@ export  class TableResult extends React.Component {
         }
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
         this.loadDone();
     }
 
@@ -126,30 +135,8 @@ export  class TableResult extends React.Component {
 
 
     loadDone = () => {
-        this.props.changeLoadingMode({
-            loading: false,
-            cellId: this.props.cellId
-        });
+        let loadingId = this.props.cellId + '_loading';
+        document.getElementById(loadingId).style.display = 'none';
     }
 }
 
-
-// Map Redux state to component props
-function mapStateToProps(state) {
-    return {
-        loading: state.loadingMode.loading
-    };
-}
-
-// Map Redux actions to component props
-function mapDispatchToProps(dispatch) {
-    return {
-        changeLoadingMode: mode => dispatch(changeLoadingMode(mode))
-    };
-}
-
-// Connected Component
-export default  connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TableResult);

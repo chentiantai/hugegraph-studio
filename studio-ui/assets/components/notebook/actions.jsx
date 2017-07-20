@@ -185,10 +185,10 @@ export function runMode(notebookId, itemId) {
                     result: data
                 }
                 dispatch(runModeSuccess(cell));
-                dispatch(changeLoadingMode({
-                    loading: false,
-                    cellId: cell.id
-                }));
+                // dispatch(changeLoadingMode({
+                //     loading: false,
+                //     cellId: cell.id
+                // }));
             })
             .catch(err => {
                 let cell = {
@@ -198,13 +198,48 @@ export function runMode(notebookId, itemId) {
                     result: null
                 }
                 dispatch(runModeSuccess(cell));
-                dispatch(changeLoadingMode({
-                    loading: false,
-                    cellId: cell.id
-                }));
+                // dispatch(changeLoadingMode({
+                //     loading: false,
+                //     cellId: cell.id
+                // }));
             });
     };
 }
+
+export function excuteCell(notebookId, itemId, cell) {
+    let myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId;
+    return dispatch => {
+        return fetch(url,
+            {
+                method: 'PUT',
+                body: JSON.stringify(cell),
+                headers: myHeaders
+            })
+            .then(checkStatus)
+            .then(parseJSON)
+            .then(data => {
+                let cell = {
+                    id: itemId,
+                    status: 200,
+                    msg: 'success',
+                    result: data
+                }
+                dispatch(runModeSuccess(cell));
+            })
+            .catch(err => {
+                let cell = {
+                    id: itemId,
+                    status: err.status,
+                    msg: err.message,
+                    result: null
+                }
+                dispatch(runModeSuccess(cell));
+            });
+    };
+}
+
 
 export function showSchema(connectionId) {
     let myHeaders = new Headers();
