@@ -61,7 +61,6 @@ class NotebookBoard extends React.Component {
     }
 
     componentDidMount() {
-        console.log("NotebookBoard componentDidMount");
         this.props.loadCells(this.props.match.params.id);
         window.onbeforeunload = this.onbeforeunload;
     }

@@ -5,13 +5,19 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
-import {changeLoadingMode} from '../actions';
 
 
-export class Graph extends React.Component {
+export default class Graph extends React.Component {
     constructor() {
         super();
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.content === nextProps.content) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     render() {
@@ -26,20 +32,15 @@ export class Graph extends React.Component {
 
     componentDidUpdate() {
         console.log("graph componentDidUpdate");
-
-        // let graph = this.props.content.graph;
-        // if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
-        //     let vertexdata = graph.vertices;
-        //     let edgedata = graph.edges;
-        //     this.drawGraph(vertexdata, edgedata);
-        // }
+        let graph = this.props.content.graph;
+        if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
+            let vertexdata = graph.vertices;
+            let edgedata = graph.edges;
+            this.drawGraph(vertexdata, edgedata);
+        }
     }
 
     componentDidMount() {
-        // this.props.changeLoadingMode({
-        //     loading: true,
-        //     cellId: this.props.id
-        // });
         console.log("graph componentDidMount");
         let graph = this.props.content.graph;
         if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
@@ -162,33 +163,10 @@ export class Graph extends React.Component {
     }
 
     loadDone = () => {
-        this.props.changeLoadingMode({
-            loading: false,
-            cellId: this.props.cellId
-        });
+        let loadingId = this.props.cellId + '_loading';
+        document.getElementById(loadingId).style.display = 'none';
     }
 }
-
-
-// Map Redux state to component props
-function mapStateToProps(state) {
-    return {
-        loading: state.loadingMode.loading
-    };
-}
-
-// Map Redux actions to component props
-function mapDispatchToProps(dispatch) {
-    return {
-        changeLoadingMode: mode => dispatch(changeLoadingMode(mode))
-    };
-}
-
-// Connected Component
-export default  connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Graph);
 
 
 
