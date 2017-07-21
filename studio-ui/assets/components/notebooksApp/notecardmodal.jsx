@@ -132,6 +132,7 @@ class NoteCardModal extends React.Component {
                     </ModalHeader>
                     <ModalBody>
                         <form className="form-horizontal">
+                            <input style={{display: 'none'}} type="text" />
                             <div className="form-group">
                                 <label
                                     className="col-sm-2 control-label">Name*</label>
