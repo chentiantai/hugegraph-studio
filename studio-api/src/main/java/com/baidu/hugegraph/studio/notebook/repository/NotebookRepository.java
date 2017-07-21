@@ -23,6 +23,8 @@ public interface NotebookRepository {
 
     NotebookCell editNotebookCell(String notebookId, NotebookCell cell);
 
+    NotebookCell editNotebookCell(String notebookId, String cellId, NotebookCell cell);
+
     void deleteNotebookCell(String notebookId, String cellId);
 
     NotebookCell getNotebookCell(String notebookId, String cellId);

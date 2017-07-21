@@ -101,6 +101,7 @@ public class NoteBookService {
     @Path("{notebookId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteNotebook(@PathParam("notebookId") String notebookId) {
+        Preconditions.checkArgument(StringUtils.isNotEmpty(notebookId));
         notebookRepository.deleteNotebook(notebookId);
         Response response = Response.status(204)
                 .build();
@@ -188,39 +189,8 @@ public class NoteBookService {
                                      NotebookCell cell) {
         Preconditions
                 .checkArgument(cell != null && cellId.equals(cell.getId()));
-
-        NotebookCell cellLocal =
-                notebookRepository.getNotebookCell(notebookId, cellId);
-
-
-        /*It only update the value of field from Front End. There are some
-        operation to do it. It can avoid  transmitting big data. */
-        if (cell.getCode() != null) {
-            cellLocal.setCode(cell.getCode());
-        }
-        if (cell.getLanguage() != null) {
-            cellLocal.setLanguage(cell.getLanguage());
-        }
-        if (cell.getResult() != null) {
-            cellLocal.setResult(cell.getResult());
-        }
-        if (cell.getMsg() != null) {
-            cellLocal.setMsg(cell.getMsg());
-        }
-        if (cell.getStatus() != null) {
-            cellLocal.setStatus(cell.getStatus());
-        }
-        if (cell.getViewSettings() != null) {
-            cellLocal.setViewSettings(cell.getViewSettings());
-        }
-        if (cell.getDataViewType() != null) {
-            cellLocal.setDataViewType(cell.getDataViewType());
-        }
-
-
         Response response = Response.status(200)
-                .entity(notebookRepository.editNotebookCell(notebookId,
-                        cellLocal))
+                .entity(notebookRepository.editNotebookCell(notebookId, cellId, cell))
                 .build();
         return response;
     }
@@ -274,7 +244,6 @@ public class NoteBookService {
         HugeClient hugeClient = HugeClient.open(
                 notebook.getConnection().getConnectionUri(),
                 notebook.getConnection().getGraphName());
-
 
         String gremlin = String.format("g.V('%s').bothE()", vertexId);
         logger.debug("gremlin: " + gremlin);
@@ -368,11 +337,12 @@ public class NoteBookService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response executeNotebookCell(
             @PathParam("notebookId") String notebookId,
-            @PathParam("cellId") String cellId) {
-        Preconditions.checkArgument(notebookId != null && cellId != null);
+            @PathParam("cellId") String cellId,
+            NotebookCell newCell) {
+        Preconditions.checkArgument(notebookId != null &&
+                cellId != null && cellId.equals(newCell.getId()));
         NotebookCell cell =
-                notebookRepository.getNotebookCell(notebookId, cellId);
-        Preconditions.checkArgument(cellId.equals(cell.getId()));
+                notebookRepository.editNotebookCell(notebookId, cellId, newCell);
         Long startTime = System.currentTimeMillis();
 
         logger.debug("executeNotebookCell: notebookId={},cellId={} ,language={} \n code={}",
