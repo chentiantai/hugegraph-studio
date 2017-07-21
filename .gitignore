@@ -21,4 +21,5 @@ build
 dist
 .tar.bz2
 node_modules
-ace
+studio-api/logs/
+studio-api/src/main/java/com/baidu/hugegraph/ClientTest.java
