@@ -172,6 +172,32 @@ public class FileNotebookRepository implements NotebookRepository {
     }
 
     @Override
+    public NotebookCell editNotebookCell(String notebookId, String cellId, NotebookCell cell) {
+        Notebook notebook = getNotebook(notebookId);
+        Preconditions.checkNotNull(notebook);
+
+        NotebookCell cellLocal = this.getNotebookCell(notebookId, cellId);
+
+        if (cell.getCode() != null) {
+            cellLocal.setCode(cell.getCode());
+        }
+        if (cell.getLanguage() != null) {
+            cellLocal.setLanguage(cell.getLanguage());
+        }
+        if (cell.getViewSettings() != null) {
+            cellLocal.setViewSettings(cell.getViewSettings());
+        }
+        if (cell.getDataViewType() != null) {
+            cellLocal.setDataViewType(cell.getDataViewType());
+        }
+
+        notebook.setLastUsed(Instant.now().getEpochSecond());
+        notebook.addCell(cellLocal);
+        writeNotebook(notebook);
+        return cellLocal;
+    }
+
+    @Override
     public void deleteNotebookCell(String notebookId, String cellId) {
         Notebook notebook = getNotebook(notebookId);
         Preconditions.checkNotNull(notebook);
