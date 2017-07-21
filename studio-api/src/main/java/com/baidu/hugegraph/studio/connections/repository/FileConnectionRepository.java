@@ -1,8 +1,7 @@
 package com.baidu.hugegraph.studio.connections.repository;
 
-import com.baidu.hugegraph.studio.conf.StudioConfiguration;
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
 import com.baidu.hugegraph.studio.connections.model.Connection;
-import com.baidu.hugegraph.studio.notebook.repository.FileNotebookRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;

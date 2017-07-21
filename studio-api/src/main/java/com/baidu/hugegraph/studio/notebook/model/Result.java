@@ -1,3 +1,21 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.baidu.hugegraph.studio.notebook.model;
 
 import com.baidu.hugegraph.structure.graph.Edge;
@@ -8,6 +26,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 /**
  * The type Result.
@@ -120,16 +141,25 @@ public class Result {
             return vertices;
         }
 
+
         public void setVertices(List<Vertex> vertices) {
-            this.vertices = vertices;
+            // distinct using map
+            this.vertices = vertices.stream()
+                    .collect(toMap(Vertex::id, v -> v, (v1, v2) -> v1))
+                    .values().stream()
+                    .collect(Collectors.toList());
         }
 
         public List<Edge> getEdges() {
             return edges;
         }
 
+        // distinct using map
         public void setEdges(List<Edge> edges) {
-            this.edges = edges;
+            this.edges = edges.stream()
+                    .collect(toMap(Edge::id, e -> e, (e1, e2) -> e1))
+                    .values().stream()
+                    .collect(Collectors.toList());
         }
     }
 }
