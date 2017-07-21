@@ -16,21 +16,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.baidu.hugegraph.studio.conf;
+
+package com.baidu.hugegraph.studio.config;
+
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
+
 public class StudioConfiguration {
+
     private static final String DEFAULT_CONFIGURATION_FILE = "hugestudio.properties";
+
     static {
+
         OptionSpace.register(StudioApiOptions.Instance());
     }
+
     private HugeConfig config = null;
+
     public StudioConfiguration() {
         try {
             URL configurationUrl = this.getClass().getClassLoader()

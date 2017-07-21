@@ -1,6 +1,6 @@
 package com.baidu.hugegraph.studio.notebook.repository;
 
-import com.baidu.hugegraph.studio.conf.StudioConfiguration;
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.fasterxml.jackson.databind.ObjectMapper;
