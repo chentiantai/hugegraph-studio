@@ -35,14 +35,14 @@ export default  class Code extends React.Component {
     componentDidUpdate() {
         let paneJson = '#' + this.props.id;
         let json = JSON.stringify(this.props.content);
-        $(paneJson).JSONView(json);
+        $(paneJson).JSONView(json,{ collapsed: true });
         this.loadDone();
     }
 
     componentDidMount() {
         let paneJson = '#' + this.props.id;
         let json = JSON.stringify(this.props.content);
-        $(paneJson).JSONView(json);
+        $(paneJson).JSONView(json,{ collapsed: true });
         this.loadDone();
     }
 

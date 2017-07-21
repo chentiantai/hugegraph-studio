@@ -14,7 +14,7 @@ import NoteBookBoard from './notebook/notebookboard';
 import {connect} from 'react-redux';
 import {changeHeadMode} from './actions';
 import 'whatwg-fetch';
-import {HashRouter as Router, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 require('react-hot-loader/patch');
 
 class NotebooksApp extends React.Component {
