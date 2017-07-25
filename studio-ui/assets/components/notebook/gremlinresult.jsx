@@ -59,6 +59,13 @@ export default class GremlinResult extends React.Component {
         );
     }
 
+    componentDidUpdate(){
+        if(this.state.tabs.length===0) {
+            this.loadDone();
+        }
+    }
+
+
 
     componentDidMount() {
         let tabs = this.getTabs(this.props.content, this.props.defaultTabkey);
