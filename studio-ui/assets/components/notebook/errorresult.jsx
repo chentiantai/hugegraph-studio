@@ -7,7 +7,11 @@
 import React from 'react';
 
 export default class ErrorResult extends React.Component {
+
+
+
     render() {
+        console.log('ErrorResult render');
         return (
             <div
                 className="alert alert-danger">{this.props.status + ' : ' + this.props.msg}</div>

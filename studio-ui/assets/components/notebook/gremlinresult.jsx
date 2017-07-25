@@ -59,16 +59,25 @@ export default class GremlinResult extends React.Component {
         );
     }
 
+
     componentDidMount() {
         let tabs = this.getTabs(this.props.content, this.props.defaultTabkey);
+        if(tabs.length===0) {
+            this.loadDone();
+        }
         this.setState({tabs: tabs});
     }
 
 
+    loadDone = () => {
+        let loadingId = this.props.cellId + '_loading';
+        document.getElementById(loadingId).style.display = 'none';
+    }
+
     getTabs = (content, defaultTabkey) => {
         let tabs = [];
         switch (content.type) {
-            case "NUMBER":
+            case 'NUMBER':
                 tabs = [{
                     type: TABLE,
                     isActive: false,
@@ -81,7 +90,7 @@ export default class GremlinResult extends React.Component {
                     label: 'fa fa-code'
                 }];
                 break;
-            case "EMPTY":
+            case 'EMPTY':
                 tabs = [{
                     type: RAW,
                     isActive: false,
@@ -89,7 +98,9 @@ export default class GremlinResult extends React.Component {
                     label: 'fa fa-code'
                 }];
                 break;
-            default:
+            case 'EDGE':
+            case 'VERTEX':
+            case 'PATH':
                 tabs = [{
                     type: GRAPH,
                     isActive: false,
@@ -106,20 +117,26 @@ export default class GremlinResult extends React.Component {
                     exist: false,
                     label: 'fa fa-code'
                 }];
+                break;
+            default:
+                tabs = [];
         }
 
-        if (defaultTabkey === 1) {
-            tabs[0].isActive = true;
-            tabs[0].exist = true;
-        } else {
-            tabs = tabs.map(tab => {
-                if (tab.type === defaultTabkey) {
-                    tab.isActive = true;
-                    tab.exist = true;
-                }
-                return tab;
-            })
+        if(tabs.length>0){
+            if (defaultTabkey === 1) {
+                tabs[0].isActive = true;
+                tabs[0].exist = true;
+            } else {
+                tabs = tabs.map(tab => {
+                    if (tab.type === defaultTabkey) {
+                        tab.isActive = true;
+                        tab.exist = true;
+                    }
+                    return tab;
+                })
+            }
         }
+
         return tabs;
     }
 
