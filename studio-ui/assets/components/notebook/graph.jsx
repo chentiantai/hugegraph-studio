@@ -10,9 +10,16 @@ import React from 'react';
 export default class Graph extends React.Component {
     constructor() {
         super();
+        this.state = {
+            graphNodes: {},
+            graphEdges: {}
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        if(document.getElementById(this.props.id)!==null){
+            document.getElementById(this.props.id).style.height=nextProps.height+'px';
+        }
         if (this.props.content === nextProps.content) {
             return false;
         } else {
@@ -21,7 +28,7 @@ export default class Graph extends React.Component {
     }
 
     render() {
-        console.log("graph render");
+        console.log("graph render :" + this.props.height);
         return (
             <div style={{height: this.props.height}}
                  id={this.props.id}
@@ -52,51 +59,55 @@ export default class Graph extends React.Component {
 
 
     drawGraph = (vertexs, edges) => {
-        let graphNodes = new vis.DataSet();
+        console.log("drawGraph");
+        this.state.graphNodes = new vis.DataSet();
+        this.state.graphEdges = new vis.DataSet();
+        // let graphNodes = new vis.DataSet();
 
-        graphNodes.on('*', function () {
+        this.state.graphNodes.on('*', function () {
             //  do something
         });
 
+        if (vertexs !== null) {
+            vertexs.forEach(vertex => {
+                let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' + 'label : ' + vertex.label + '</div>';
+                for (let key in vertex.properties) {
+                    title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
+                        ' ' + vertex.properties[key][0].value + '</div>';
+                }
 
-        vertexs.forEach(vertex => {
-            let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' + 'label : ' + vertex.label + '</div>';
-            for (let key in vertex.properties) {
-                title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
-                    ' ' + vertex.properties[key][0].value + '</div>';
-            }
+                let label = vertex.id.split('\u0002')[1];
+                this.state.graphNodes.add([
+                    {id: vertex.id, label: label, title: title}
+                ]);
+            });
+        }
 
-            let label = vertex.id.split('\u0002')[1];
-            graphNodes.add([
-                {id: vertex.id, label: label, title: title}
-            ]);
-        });
-
-        let graphEdges = new vis.DataSet();
+        // let graphEdges = new vis.DataSet();
 
 
-        graphEdges.on('*', function () {
+        this.state.graphEdges.on('*', function () {
             // do something
         });
 
-
-        edges.forEach(edge => {
-
-            graphEdges.add([
-                {
-                    id: edge.id,
-                    from: edge.outV,
-                    to: edge.inV,
-                    label: edge.label
-                }
-            ]);
-        });
+        if (edges !== null) {
+            edges.forEach(edge => {
+                this.state.graphEdges.add([
+                    {
+                        id: edge.id,
+                        from: edge.outV,
+                        to: edge.inV,
+                        label: edge.label
+                    }
+                ]);
+            });
+        }
 
 
         var container = document.getElementById(this.props.id);
         var data = {
-            nodes: graphNodes,
-            edges: graphEdges,
+            nodes: this.state.graphNodes,
+            edges: this.state.graphEdges,
         };
 
 
@@ -115,8 +126,8 @@ export default class Graph extends React.Component {
                 shadow: false,
                 color: {
                     background: '#00ccff', border: '#00ccff',
-                    highlight: {background: '#0fa2f6', border: '#0fa2f6'},
-                    hover: {background: '#06e4f8', border: '#06e4f8'}
+                    highlight: {background: '#fb6a02', border: '#fb6a02'},
+                    hover: {background: '#ec3112', border: '#ec3112'}
                 },
             },
             edges: {
@@ -129,7 +140,7 @@ export default class Graph extends React.Component {
                     size: 8
                 },
                 arrows: 'to',
-                color: {highlight: '#0fa2f6', hover: '#06e4f8'},
+                color: {highlight: '#fb6a02', hover: '#ec3112'},
             },
             layout: {
                 randomSeed: 34
@@ -156,16 +167,112 @@ export default class Graph extends React.Component {
 
         network.once("stabilizationIterationsDone", this.loadDone);
 
-        // network.on('showPopup', function (params) {
-        //     //document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
-        //     // document.getElementById('eventSpan').firstChild.nodeValue = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
-        // });
+
+        network.on("doubleClick", (params) => this.doubleClick(params));
     }
 
     loadDone = () => {
         let loadingId = this.props.cellId + '_loading';
         document.getElementById(loadingId).style.display = 'none';
     }
+
+    doubleClick = (params) => {
+        params.event = "[original event]";
+        if(params.nodes.length>0){
+            console.log(params.nodes[0]);
+            let vertexs=[{
+                id: 'test\u0002new annabella Sciorra',
+                label: 'test person',
+                type: 'vertex',
+                properties: {
+                    born: [
+                        {
+                            id: 'born',
+                            value: 1960
+                        }
+                    ],
+                    name: [
+                        {
+                            id: 'name',
+                            value: 'annabella Sciorra'
+                        }
+                    ]
+                }
+            }];
+            this.addNode(vertexs);
+
+            let edges=[{
+                    label: 'ACTED_IN',
+                    id: 'person\u0002annabella Sciorra\u0001ACTED_IN\u0001annie Collins-Nielsen\u0001movie\u0002What Dreams May Come',
+                    type: 'edge',
+                    properties: {
+                        roles: 'annie Collins-Nielsen'
+                    },
+                    outV: 'test\u0002new annabella Sciorra',
+                    inV: 'person\u0002annabella Sciorra',
+                    outVLabel: 'person',
+                    inVLabel: 'person'
+                },
+                {
+                    label: 'TELL',
+                    id: 'person\u0002annabella' +
+                    ' Sciorra\u0001ACTED_IN\u0001annie Collins-Nielsen\u0001movie\u0002What Dreams May Come2',
+                    type: 'edge',
+                    properties: {
+                        roles: 'annie Collins-Nielsen'
+                    },
+                    outV: 'person\u0002annabella Sciorra',
+                    inV: 'person\u0002annabella Sciorra',
+                    outVLabel: 'person',
+                    inVLabel: 'person'
+                }]
+
+            this.addEdge(edges);
+        }
+    }
+
+
+    addNode = (vertexs) => {
+        try {
+            if (vertexs !== null) {
+                vertexs.forEach(vertex => {
+                    let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' + 'label : ' + vertex.label + '</div>';
+                    for (let key in vertex.properties) {
+                        title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
+                            ' ' + vertex.properties[key][0].value + '</div>';
+                    }
+
+                    let label = vertex.id.split('\u0002')[1];
+                    this.state.graphNodes.add(
+                        {id: vertex.id, label: label, title: title}
+                    );
+                });
+            }
+        }
+        catch (err) {
+            alert(err);
+        }
+    }
+
+     addEdge=(edges)=>{
+        try {
+            edges.forEach(edge => {
+                this.state.graphEdges.add([
+                    {
+                        id: edge.id,
+                        from: edge.outV,
+                        to: edge.inV,
+                        label: edge.label
+                    }
+                ]);
+            });
+        }
+        catch (err) {
+            alert(err);
+        }
+    }
+
+
 }
 
 

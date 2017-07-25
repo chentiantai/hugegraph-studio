@@ -6,7 +6,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {changeHeadMode, changeLoadingMode} from '../actions';
-import {updateItem, sycnItemState, runMode} from './actions';
+import {updateItem, sycnItemState, excuteCell} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 import MarkdownBrowser from './markdownbrowser';
@@ -72,7 +72,7 @@ class NotebookItem extends React.Component {
 
     componentWillUnmount() {
         if (!this.state.isDelete) {
-            this.updateItem(false);
+            this.updateItem();
         }
     }
 
@@ -196,14 +196,6 @@ class NotebookItem extends React.Component {
     runMode = () => {
         console.log("runMode");
         this.progressWrapper.style.display = 'block';
-        // this.props.changeLoadingMode({
-        //     loading: true,
-        //     cellId: this.props.itemId
-        // });
-        this.updateItem(true);
-    }
-
-    updateItem = (runFlag) => {
         let editorContent = ace.edit(this.geditor).getValue();
         let notebookId = this.props.notebookId;
         let cellId = this.props.itemId;
@@ -212,7 +204,19 @@ class NotebookItem extends React.Component {
             'code': editorContent,
             'language': this.props.language
         }
-        this.props.updateItem(itemContent, notebookId, cellId, runFlag);
+        this.props.excuteCell(notebookId, cellId, itemContent);
+    }
+
+    updateItem = () => {
+        let editorContent = ace.edit(this.geditor).getValue();
+        let notebookId = this.props.notebookId;
+        let cellId = this.props.itemId;
+        let itemContent = {
+            'id': cellId,
+            'code': editorContent,
+            'language': this.props.language
+        }
+        this.props.updateItem(notebookId, cellId, itemContent);
     }
 
 
@@ -229,7 +233,7 @@ class NotebookItem extends React.Component {
             'code': editorContent,
             'language': language
         }
-        this.props.updateItem(itemContent, notebookId, cellId, false);
+        this.props.updateItem(notebookId, cellId, itemContent);
     }
 
 
@@ -289,16 +293,8 @@ class NotebookItem extends React.Component {
 
     }
 
-    selectTabContent = () => {
-        this.props.changeLoadingMode({
-            loading: true,
-            cellId: this.props.itemId
-        });
-    }
-
-
     showResult = (language) => {
-        let result = <div/>;
+        let result = null;
         if (this.props.result !== null) {
             switch (language) {
                 case 'Markdown':
@@ -322,7 +318,7 @@ class NotebookItem extends React.Component {
                     result = <div/>;
             }
         } else {
-            if (this.props.status !== null) {
+            if (this.props.status!==null&&(this.props.status<200||this.props.status>300)) {
                 result =
                     <ErrorResult status={this.props.status}
                                  msg={this.props.msg}
@@ -385,9 +381,9 @@ function mapDispatchToProps(dispatch) {
     return {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
         changeLoadingMode: mode => dispatch(changeLoadingMode(mode)),
-        updateItem: (editorContent, notebookId, itemId, runFlag) => dispatch(updateItem(editorContent, notebookId, itemId, runFlag)),
+        updateItem: (notebookId, itemId, cell) => dispatch(updateItem(notebookId, itemId, cell)),
         sycnItemState: (itemContent) => dispatch(sycnItemState(itemContent)),
-        runMode: (notebookId, cellId) => dispatch(runMode(notebookId, cellId))
+        excuteCell: (notebookId, cellId, cell) => dispatch(excuteCell(notebookId, cellId, cell))
     };
 }
 

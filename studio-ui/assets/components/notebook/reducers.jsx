@@ -70,6 +70,7 @@ export function notebook(state = [], action) {
             };
         }
         case RUN_MODE: {
+            console.log(action.cell);
             return {
                 ...state,
                 cells: state.cells.map(

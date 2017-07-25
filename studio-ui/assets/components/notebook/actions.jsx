@@ -17,7 +17,7 @@ export const SHOW_SCHEMA = 'show_schema';
 export const SYCN_ITEM = 'sycn_item';
 
 
-export function runModeSuccess(cell) {
+export function runMode(cell) {
     return {
         type: RUN_MODE,
         cell
@@ -143,7 +143,7 @@ export function deleteItem(notebookId, cellId) {
     };
 }
 
-export function updateItem(itemContent, notebookId, itemId, runFlag) {
+export function updateItem(notebookId, itemId,cell) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId;
@@ -151,15 +151,12 @@ export function updateItem(itemContent, notebookId, itemId, runFlag) {
         return fetch(url,
             {
                 method: 'PUT',
-                body: JSON.stringify(itemContent),
+                body: JSON.stringify(cell),
                 headers: myHeaders
             })
             .then(checkStatus)
             .then(parseJSON)
             .then(data => {
-                if (runFlag) {
-                    dispatch(runMode(notebookId, itemId));
-                }
                 dispatch(updateItemSuccess(data));
             })
             .catch(err => {
@@ -169,47 +166,10 @@ export function updateItem(itemContent, notebookId, itemId, runFlag) {
     };
 }
 
-export function runMode(notebookId, itemId) {
-    let myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId + '/execute';
-    return dispatch => {
-        return fetch(url)
-            .then(checkStatus)
-            .then(parseJSON)
-            .then(data => {
-                let cell = {
-                    id: itemId,
-                    status: 200,
-                    msg: 'success',
-                    result: data
-                }
-                dispatch(runModeSuccess(cell));
-                // dispatch(changeLoadingMode({
-                //     loading: false,
-                //     cellId: cell.id
-                // }));
-            })
-            .catch(err => {
-                let cell = {
-                    id: itemId,
-                    status: err.status,
-                    msg: err.message,
-                    result: null
-                }
-                dispatch(runModeSuccess(cell));
-                // dispatch(changeLoadingMode({
-                //     loading: false,
-                //     cellId: cell.id
-                // }));
-            });
-    };
-}
-
 export function excuteCell(notebookId, itemId, cell) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId;
+    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId + '/execute';
     return dispatch => {
         return fetch(url,
             {
@@ -226,16 +186,17 @@ export function excuteCell(notebookId, itemId, cell) {
                     msg: 'success',
                     result: data
                 }
-                dispatch(runModeSuccess(cell));
+                dispatch(runMode(cell));
             })
             .catch(err => {
+                let infoDate = new Date();
                 let cell = {
                     id: itemId,
                     status: err.status,
-                    msg: err.message,
+                    msg: infoDate.toLocaleString()+' Internal Server Error',
                     result: null
                 }
-                dispatch(runModeSuccess(cell));
+                dispatch(runMode(cell));
             });
     };
 }
