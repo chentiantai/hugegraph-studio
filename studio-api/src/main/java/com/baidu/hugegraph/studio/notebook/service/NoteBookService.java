@@ -331,16 +331,19 @@ public class NoteBookService {
      * @return if code snippet is gremlin ,return the whole graph with json( vertices & edges )
      *         if code snippet is markdown , just return the original code user input.
      */
-    @GET
+
+    @PUT
     @Path("{notebookId}/cells/{cellId}/execute")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response executeNotebookCell(
-            @PathParam("notebookId") String notebookId,
-            @PathParam("cellId") String cellId,
-            NotebookCell newCell) {
+    public Response executeNotebookCell(@PathParam("notebookId") String notebookId,
+                                        @PathParam("cellId") String cellId,
+                                        NotebookCell newCell) {
+        logger.debug("executeNotebookCell: notebookId={},cellId={} ,language={} \n code={}",
+                notebookId, cellId, newCell.getLanguage(), newCell.getCode());
+
         Preconditions.checkArgument(notebookId != null &&
-                cellId != null && cellId.equals(newCell.getId()));
+                newCell != null && cellId != null && cellId.equals(newCell.getId()));
         NotebookCell cell =
                 notebookRepository.editNotebookCell(notebookId, cellId, newCell);
         Long startTime = System.currentTimeMillis();

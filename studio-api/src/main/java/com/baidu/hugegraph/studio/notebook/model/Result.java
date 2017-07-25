@@ -23,6 +23,8 @@ import com.baidu.hugegraph.structure.graph.Vertex;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +37,8 @@ import static java.util.stream.Collectors.toMap;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
+    private static final Logger logger =
+            LoggerFactory.getLogger(Result.class);
 
     @JsonProperty("id")
     private String id;
@@ -141,13 +145,20 @@ public class Result {
             return vertices;
         }
 
+        public Graph(){
+
+        }
 
         public void setVertices(List<Vertex> vertices) {
-            // distinct using map
-            this.vertices = vertices.stream()
-                    .collect(toMap(Vertex::id, v -> v, (v1, v2) -> v1))
-                    .values().stream()
-                    .collect(Collectors.toList());
+            if(vertices == null){
+                this.vertices = vertices;
+            }else {
+                // distinct using map
+                this.vertices = vertices.stream()
+                        .collect(toMap(Vertex::id, v -> v, (v1, v2) -> v1))
+                        .values().stream()
+                        .collect(Collectors.toList());
+            }
         }
 
         public List<Edge> getEdges() {
@@ -156,10 +167,15 @@ public class Result {
 
         // distinct using map
         public void setEdges(List<Edge> edges) {
-            this.edges = edges.stream()
-                    .collect(toMap(Edge::id, e -> e, (e1, e2) -> e1))
-                    .values().stream()
-                    .collect(Collectors.toList());
+            if(edges == null){
+                this.edges = edges;
+            }else{
+                this.edges = edges.stream()
+                        .collect(toMap(Edge::id, e -> e, (e1, e2) -> e1))
+                        .values().stream()
+                        .collect(Collectors.toList());
+
+            }
         }
     }
 }

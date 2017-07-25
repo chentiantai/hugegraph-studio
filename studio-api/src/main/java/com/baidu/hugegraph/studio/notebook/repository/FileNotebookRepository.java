@@ -1,3 +1,21 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.baidu.hugegraph.studio.notebook.repository;
 
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
@@ -22,9 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by jishilei on 2017/5/14.
- */
 @Repository("notebookRepository")
 public class FileNotebookRepository implements NotebookRepository {
     private static final Logger logger = LoggerFactory.getLogger(FileNotebookRepository.class);
@@ -44,7 +59,7 @@ public class FileNotebookRepository implements NotebookRepository {
         notebooksDataDirectory = configuration.getNotebooksDirectory();
         Preconditions.checkNotNull(notebooksDataDirectory);
 
-        logger.info("notebooksDataDirectory=" + notebooksDataDirectory);
+        logger.info("notebooksDataDirectory is {}",  notebooksDataDirectory);
         File dir = new File(notebooksDataDirectory);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -62,9 +77,9 @@ public class FileNotebookRepository implements NotebookRepository {
             try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                 writer.write(mapper.writeValueAsString(notebook));
             }
-            logger.debug("Write Notebook File :" + filePath);
+            logger.debug("Write Notebook File : {}", filePath);
         } catch (IOException e) {
-            logger.error("Could Not Write File : " + filePath, e);
+            logger.error("Could Not Write File : {} ", filePath, e);
         }
     }
 
@@ -111,13 +126,13 @@ public class FileNotebookRepository implements NotebookRepository {
                         try {
                             notebooks.add(mapper.readValue(Files.readAllBytes(path), Notebook.class));
                         } catch (IOException e) {
-                            logger.error("Could Not Read File : " + notebooksDataDirectory + "/" + path.getFileName(), e);
+                            logger.error("Could Not Read File : {}", notebooksDataDirectory + "/" + path.getFileName(), e);
                             // only skips this iteration.
                             return;
                         }
                     });
-        } catch (IOException e) {
-            logger.error("Could Not Read File : " + notebooksDataDirectory, e);
+        } catch (Exception e){
+            logger.error("Read File Exception : {}" , notebooksDataDirectory, e);
         }
         return notebooks;
     }
@@ -127,7 +142,7 @@ public class FileNotebookRepository implements NotebookRepository {
         try {
             FileUtils.forceDelete(FileUtils.getFile(notebooksDataDirectory, notebookId));
         } catch (IOException e) {
-            logger.error("Could Not Delete File : " + notebooksDataDirectory + "/" + notebookId, e);
+            logger.error("Could Not Delete File : {}", notebooksDataDirectory + "/" + notebookId, e);
         }
     }
 
@@ -138,7 +153,7 @@ public class FileNotebookRepository implements NotebookRepository {
                     Files.readAllBytes(Paths.get(notebooksDataDirectory + "/" + notebookId)),
                     Notebook.class);
         } catch (IOException e) {
-            logger.error("Could Not Read File : " + notebooksDataDirectory + "/" + notebookId, e);
+            logger.error("Could Not Read File : {}", notebooksDataDirectory + "/" + notebookId, e);
         }
         return null;
     }
