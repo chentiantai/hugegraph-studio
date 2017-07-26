@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>hugegraph-studio</artifactId>
@@ -16,8 +17,11 @@
     <properties>
         <top.level.basedir>${project.basedir}/..</top.level.basedir>
         <assembly.dir>${project.basedir}/src/assembly</assembly.dir>
-        <assembly.descriptor.dir>${assembly.dir}/descriptor</assembly.descriptor.dir>
+        <assembly.descriptor.dir>${assembly.dir}/descriptor
+        </assembly.descriptor.dir>
         <assembly.static.dir>${assembly.dir}/static</assembly.static.dir>
+        <studio-ui.dir>${top.level.basedir}/studio-ui</studio-ui.dir>
+        <shell-executable>bash</shell-executable>
     </properties>
 
     <dependencies>
@@ -26,9 +30,44 @@
             <artifactId>studio-server</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.baidu.hugegraph</groupId>
+            <artifactId>studio-api</artifactId>
+            <type>war</type>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo file="${top.level.basedir}/dist.sh">
+                                    cd ${studio-ui.dir}
+                                    npm run build
+                                    rm -f ${top.level.basedir}/dist.sh
+                                    echo
+                                    echo "ok...."
+                                    echo
+                                </echo>
+                                <exec executable="${shell-executable}"
+                                      dir="${top.level.basedir}"
+                                      failonerror="true">
+                                    <arg line="./dist.sh"/>
+                                </exec>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
@@ -41,15 +80,17 @@
                         </goals>
                         <configuration>
                             <attach>false</attach>
-                            <outputDirectory>${top.level.basedir}</outputDirectory>
-                            <finalName>studio-release</finalName>
+                            <outputDirectory>${top.level.basedir}
+                            </outputDirectory>
+                            <finalName>${final.name}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
-                            <descriptor>${assembly.descriptor.dir}/assembly.xml</descriptor>
+                            <descriptor>
+                                ${assembly.descriptor.dir}/assembly.xml
+                            </descriptor>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.0.0</version>
@@ -58,13 +99,16 @@
                         <fileset>
                             <directory>${top.level.basedir}</directory>
                             <includes>
+                                <include>*.tar</include>
+                                <include>*.tar.gz</include>
                                 <include>*.tar.bz2</include>
-                                <include>studio-release/**</include>
+                                <include>*.zip</include>
+                                <include>${final.name}/**</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                         <fileset>
-                            <directory>studio-release</directory>
+                            <directory>${final.name}</directory>
                         </fileset>
                     </filesets>
                 </configuration>
