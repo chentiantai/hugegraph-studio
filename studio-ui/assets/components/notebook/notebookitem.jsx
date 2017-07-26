@@ -312,13 +312,14 @@ class NotebookItem extends React.Component {
                     result = <GremlinResult defaultTabkey={1}
                                             content={this.props.result}
                                             height={this.state.cardContentHeight}
-                                            cellId={this.props.itemId}/>
+                                            cellId={this.props.itemId}
+                                            notebookId={this.props.notebookId}/>
                     break;
                 default :
                     result = <div/>;
             }
         } else {
-            if (this.props.status!==null&&(this.props.status<200||this.props.status>300)) {
+            if (this.props.status !== null && (this.props.status < 200 || this.props.status > 300)) {
                 result =
                     <ErrorResult status={this.props.status}
                                  msg={this.props.msg}

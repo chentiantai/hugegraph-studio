@@ -34,7 +34,8 @@ export default class GremlinResult extends React.Component {
                     <Graph id={this.props.cellId + '_graph'}
                            content={this.props.content}
                            height={this.props.height}
-                           cellId={this.props.cellId}/>
+                           cellId={this.props.cellId}
+                           notebookId={this.props.notebookId}/>
                 </TabPane>
             } else if (tab.type === TABLE) {
                 return <TabPane key={index}>
@@ -59,17 +60,16 @@ export default class GremlinResult extends React.Component {
         );
     }
 
-    componentDidUpdate(){
-        if(this.state.tabs.length===0) {
+    componentDidUpdate() {
+        if (this.state.tabs.length === 0) {
             this.loadDone();
         }
     }
 
 
-
     componentDidMount() {
         let tabs = this.getTabs(this.props.content, this.props.defaultTabkey);
-        if(tabs.length===0) {
+        if (tabs.length === 0) {
             this.loadDone();
         }
         this.setState({tabs: tabs});
@@ -129,7 +129,7 @@ export default class GremlinResult extends React.Component {
                 tabs = [];
         }
 
-        if(tabs.length>0){
+        if (tabs.length > 0) {
             if (defaultTabkey === 1) {
                 tabs[0].isActive = true;
                 tabs[0].exist = true;

@@ -190,21 +190,25 @@ public class NoteBookService {
         Preconditions
                 .checkArgument(cell != null && cellId.equals(cell.getId()));
         Response response = Response.status(200)
-                .entity(notebookRepository.editNotebookCell(notebookId, cellId, cell))
+                .entity(notebookRepository
+                        .editNotebookCell(notebookId, cellId, cell))
                 .build();
         return response;
     }
 
      /*
      * The method is used for get a vertex's adjacency nodes
-     * When a graph shows, the user can select any vertex that he is interested in
+     * When a graph shows, the user can select any vertex that he is
+     * interested in
      * as a starting point, add it's adjacency vertices & edges to current graph
      * by executing  the gremlin statement of 'g.V(id).bothE()'.
      *
-     * After the success of the gremlin need to merge the current local query results
+     * After the success of the gremlin need to merge the current local query
+      * results
      * to the notebook cell's result.
      *
-     * Note: this method should be executed after @see executeNotebookCell(String,String) has been executed.
+     * Note: this method should be executed after @see executeNotebookCell
+     * (String,String) has been executed.
      *
      * @param notebookId : the notebookId of current notebook.
      * @param cellId : the cellId of the current notebook.
@@ -225,19 +229,23 @@ public class NoteBookService {
         NotebookCell cell =
                 notebookRepository.getNotebookCell(notebookId, cellId);
 
-        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
+        Preconditions
+                .checkArgument(cell != null && cellId.equals(cell.getId()));
 
         // only be executed with 'gremlin' mode
         Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
 
         Long startTime = System.currentTimeMillis();
 
-        com.baidu.hugegraph.studio.notebook.model.Result result = cell.getResult();
+        com.baidu.hugegraph.studio.notebook.model.Result result =
+                cell.getResult();
 
-        // this method should be executed after the method of @see executeNotebookCell(String,String),
-        // it's must have a starting point and the result must have vertices or edges
-        Preconditions.checkArgument(result != null && result.getGraph() != null);
-
+        // this method should be executed after the method of @see
+        // executeNotebookCell(String,String),
+        // it's must have a starting point and the result must have vertices
+        // or edges
+        Preconditions
+                .checkArgument(result != null && result.getGraph() != null);
 
         Notebook notebook = notebookRepository.getNotebook(notebookId);
         Preconditions.checkArgument(notebook != null);
@@ -247,7 +255,6 @@ public class NoteBookService {
 
         String gremlin = String.format("g.V('%s').bothE()", vertexId);
         logger.debug("gremlin: " + gremlin);
-
 
         GremlinManager gremlinManager = hugeClient.gremlin();
         ResultSet resultSet =
@@ -265,7 +272,6 @@ public class NoteBookService {
 
         Preconditions.checkArgument(vertexIds.contains(vertexId));
 
-
         Iterator<Result> results = resultSet.iterator();
 
         com.baidu.hugegraph.studio.notebook.model.Result resultNew =
@@ -274,7 +280,6 @@ public class NoteBookService {
         resultNew.setType(
                 com.baidu.hugegraph.studio.notebook.model.Result.Type
                         .EDGE);
-
 
         List<Edge> edgesNew = new ArrayList<>();
         List<Vertex> verticesNew = new ArrayList<>();
@@ -288,13 +293,16 @@ public class NoteBookService {
                     }
                 });
 
-        List<Vertex> verticesCurrentFromEdge = getVertexfromEdge(hugeClient, edges);
-        verticesCurrentFromEdge.stream().forEach(v -> {
-            if (!vertexIds.contains(v.id())) {
-                vertexIds.add(v.id());
-                verticesNew.add(v);
-            }
-        });
+        List<Vertex> verticesCurrentFromEdge =
+                getVertexfromEdge(hugeClient, edgesNew);
+        if (verticesCurrentFromEdge != null) {
+            verticesCurrentFromEdge.stream().forEach(v -> {
+                if (!vertexIds.contains(v.id())) {
+                    vertexIds.add(v.id());
+                    verticesNew.add(v);
+                }
+            });
+        }
 
         resultNew.setGraphVertices(verticesNew);
         resultNew.setGraphEdges(edgesNew);
@@ -311,7 +319,6 @@ public class NoteBookService {
         Long duration = endTime - startTime;
         resultNew.setDuration(duration);
 
-
         Response response = Response.status(200)
                 .entity(resultNew)
                 .build();
@@ -321,40 +328,53 @@ public class NoteBookService {
     /*
      * To execute the code (gremlin or markdown) in a cell of notebook.
      *
-     * If the language of cell is markdown, just return the original code user input.
+     * If the language of cell is markdown, just return the original code
+     * user input.
      * If the language of cell is gremlin, execute gremlin code by HugeClient.
-     * Gremlin result will be served 2 places: original data is saved as List<Object>,
-     * Another data is translated into a graph or a table object if it's possible.
+     * Gremlin result will be served 2 places: original data is saved as
+     * List<Object>,
+     * Another data is translated into a graph or a table object if it's
+     * possible.
      *
      * @param notebookId : the notebookId of current notebook.
      * @param cellId : the cellId of the current notebook.
-     * @return if code snippet is gremlin ,return the whole graph with json( vertices & edges )
-     *         if code snippet is markdown , just return the original code user input.
+     * @return if code snippet is gremlin ,return the whole graph with json(
+     * vertices & edges )
+     *         if code snippet is markdown , just return the original code
+     *         user input.
      */
 
     @PUT
     @Path("{notebookId}/cells/{cellId}/execute")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response executeNotebookCell(@PathParam("notebookId") String notebookId,
-                                        @PathParam("cellId") String cellId,
-                                        NotebookCell newCell) {
-        logger.debug("executeNotebookCell: notebookId={},cellId={} ,language={} \n code={}",
+    public Response executeNotebookCell(
+            @PathParam("notebookId") String notebookId,
+            @PathParam("cellId") String cellId,
+            NotebookCell newCell) {
+        logger.debug(
+                "executeNotebookCell: notebookId={},cellId={} ,language={} \n"
+                        + " code={}",
                 notebookId, cellId, newCell.getLanguage(), newCell.getCode());
 
         Preconditions.checkArgument(notebookId != null &&
-                newCell != null && cellId != null && cellId.equals(newCell.getId()));
+                newCell != null && cellId != null && cellId
+                .equals(newCell.getId()));
         NotebookCell cell =
-                notebookRepository.editNotebookCell(notebookId, cellId, newCell);
+                notebookRepository
+                        .editNotebookCell(notebookId, cellId, newCell);
         Long startTime = System.currentTimeMillis();
 
-        logger.debug("executeNotebookCell: notebookId={},cellId={} ,language={} \n code={}",
+        logger.debug(
+                "executeNotebookCell: notebookId={},cellId={} ,language={} \n"
+                        + " code={}",
                 notebookId, cellId, cell.getLanguage(), cell.getCode());
 
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
 
-        // if code snippet language is markdown, just return the original code user input.
+        // if code snippet language is markdown, just return the original
+        // code user input.
         // The markdown code will be rendered in HTML by react
         if ("markdown".equals(cell.getLanguage())) {
             result.setData(new ArrayList<Object>() {
@@ -380,7 +400,8 @@ public class NoteBookService {
 
             // gremlin result will be served 2 places,
             // original data is saved as List<Object>,
-            // Another data is translated into a graph or a table object if it's possible.
+            // Another data is translated into a graph or a table object if
+            // it's possible.
             result.setData(resultSet.data());
 
             List<Vertex> vertices = new ArrayList<>();
@@ -389,7 +410,7 @@ public class NoteBookService {
             Iterator<Result> results = resultSet.iterator();
 
             // return empty
-            if( resultSet.data().size()==0){
+            if (resultSet.data().size() == 0) {
 
                 Long endTime = System.currentTimeMillis();
                 Long duration = endTime - startTime;
@@ -404,9 +425,8 @@ public class NoteBookService {
             // To get first object to determine the data type .
             Object object = results.next().getObject();
 
-
-
-            // Try to translate gremlin result into a graph when it's type is Vertex/Edge/Path
+            // Try to translate gremlin result into a graph when it's type is
+            // Vertex/Edge/Path
             if (object instanceof Vertex) {
                 result.setType(
                         com.baidu.hugegraph.studio.notebook.model.Result.Type
@@ -487,7 +507,7 @@ public class NoteBookService {
 
     private List<Vertex> getVertexfromEdge(HugeClient hugeClient,
                                            List<Edge> edges) {
-        if (edges == null) {
+        if (edges == null || edges.size() == 0) {
             return null;
         }
         Set<String> vertexIds = new HashSet<>();
@@ -507,7 +527,6 @@ public class NoteBookService {
             return null;
         }
         List<Edge> edges = new ArrayList<>();
-
 
         Set<String> vertexIds = new HashSet<>();
         vertices.stream().forEach(v -> vertexIds.add(v.id()));
@@ -535,8 +554,10 @@ public class NoteBookService {
                 r -> {
                     Edge edge = (Edge) r.getObject();
                     // As the results is queried by 'g.V(id).bothE()',
-                    // the source vertex of edge from results is in the set of vertexIds,
-                    // so just reserve the edge that it's target in the set of vertexIds .
+                    // the source vertex of edge from results is in the set
+                    // of vertexIds,
+                    // so just reserve the edge that it's target in the set
+                    // of vertexIds .
                     if (vertexIds.contains(edge.target())) {
                         edges.add(edge);
                     }
@@ -572,7 +593,8 @@ public class NoteBookService {
     }
 
     private List<Vertex> getVertexfromPath(HugeClient hugeClient,
-                                           List<com.baidu.hugegraph.structure.graph.Path> paths) {
+                                           List<com.baidu.hugegraph.structure
+                                                   .graph.Path> paths) {
         if (paths == null) {
             return null;
         }

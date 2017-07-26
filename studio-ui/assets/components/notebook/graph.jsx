@@ -17,8 +17,8 @@ export default class Graph extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if(document.getElementById(this.props.id)!==null){
-            document.getElementById(this.props.id).style.height=nextProps.height+'px';
+        if (document.getElementById(this.props.id) !== null) {
+            document.getElementById(this.props.id).style.height = nextProps.height + 'px';
         }
         if (this.props.content === nextProps.content) {
             return false;
@@ -76,7 +76,8 @@ export default class Graph extends React.Component {
                         ' ' + vertex.properties[key][0].value + '</div>';
                 }
 
-                let label = vertex.id.split('\u0002')[1];
+                // let label = vertex.id.split('\u0002')[1];
+                let label = vertex.id;
                 this.state.graphNodes.add([
                     {id: vertex.id, label: label, title: title}
                 ]);
@@ -178,59 +179,24 @@ export default class Graph extends React.Component {
 
     doubleClick = (params) => {
         params.event = "[original event]";
-        if(params.nodes.length>0){
-            console.log(params.nodes[0]);
-            let vertexs=[{
-                id: 'test\u0002new annabella Sciorra',
-                label: 'test person',
-                type: 'vertex',
-                properties: {
-                    born: [
-                        {
-                            id: 'born',
-                            value: 1960
-                        }
-                    ],
-                    name: [
-                        {
-                            id: 'name',
-                            value: 'annabella Sciorra'
-                        }
-                    ]
-                }
-            }];
-            this.addNode(vertexs);
-
-            let edges=[{
-                    label: 'ACTED_IN',
-                    id: 'person\u0002annabella Sciorra\u0001ACTED_IN\u0001annie Collins-Nielsen\u0001movie\u0002What Dreams May Come',
-                    type: 'edge',
-                    properties: {
-                        roles: 'annie Collins-Nielsen'
-                    },
-                    outV: 'test\u0002new annabella Sciorra',
-                    inV: 'person\u0002annabella Sciorra',
-                    outVLabel: 'person',
-                    inVLabel: 'person'
-                },
-                {
-                    label: 'TELL',
-                    id: 'person\u0002annabella' +
-                    ' Sciorra\u0001ACTED_IN\u0001annie Collins-Nielsen\u0001movie\u0002What Dreams May Come2',
-                    type: 'edge',
-                    properties: {
-                        roles: 'annie Collins-Nielsen'
-                    },
-                    outV: 'person\u0002annabella Sciorra',
-                    inV: 'person\u0002annabella Sciorra',
-                    outVLabel: 'person',
-                    inVLabel: 'person'
-                }]
-
-            this.addEdge(edges);
+        if (params.nodes.length > 0) {
+            let nodeId = params.nodes[0];
+            let myHeaders = new Headers();
+            myHeaders.append('Content-Type', 'application/json');
+            let url = '/api/v1/notebooks/' + this.props.notebookId + '/cells/' +
+                this.props.cellId + '/gremlin?vertexId=' + nodeId;
+            fetch(url, {method: 'GET', headers: myHeaders})
+                .then(response => this.checkStatus(response))
+                .then(response => this.parseJSON(response))
+                .then(data => {
+                    this.addNode(data.graph.vertices);
+                    this.addEdge(data.graph.edges)
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     }
-
 
     addNode = (vertexs) => {
         try {
@@ -242,7 +208,7 @@ export default class Graph extends React.Component {
                             ' ' + vertex.properties[key][0].value + '</div>';
                     }
 
-                    let label = vertex.id.split('\u0002')[1];
+                    let label = vertex.id;
                     this.state.graphNodes.add(
                         {id: vertex.id, label: label, title: title}
                     );
@@ -250,11 +216,11 @@ export default class Graph extends React.Component {
             }
         }
         catch (err) {
-            alert(err);
+            console.log(err);
         }
     }
 
-     addEdge=(edges)=>{
+    addEdge = (edges) => {
         try {
             edges.forEach(edge => {
                 this.state.graphEdges.add([
@@ -268,8 +234,22 @@ export default class Graph extends React.Component {
             });
         }
         catch (err) {
-            alert(err);
+            console.log(err);
         }
+    }
+
+    checkStatus(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return response
+        } else {
+            let error = new Error(response.statusText);
+            error.status = response.status;
+            throw error
+        }
+    }
+
+    parseJSON(response) {
+        return response.json()
     }
 
 
