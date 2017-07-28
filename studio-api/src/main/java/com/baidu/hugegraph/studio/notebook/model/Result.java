@@ -127,7 +127,7 @@ public class Result {
     // g.V().count() -> NUMBER
     // g.V().outE().path() -> PATH
     public enum Type {
-        VERTEX, EDGE, PATH, EMPTY, NUMBER;
+        VERTEX, EDGE, PATH, EMPTY, NUMBER, MARKDOWN;
     }
 
 

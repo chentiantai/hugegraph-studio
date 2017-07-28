@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {changeHeadMode, changeLoadingMode} from '../actions';
-import {updateItem, sycnItemState, excuteCell} from './actions';
+import {changeHeadMode} from '../actions';
+import {updateItem,excuteCell} from './actions';
 import ChangeButton from '../commoncomponents/changebutton';
 import DropDownMenu from '../commoncomponents/dropdownmenu';
 import MarkdownBrowser from './markdownbrowser';
@@ -66,7 +66,6 @@ class NotebookItem extends React.Component {
             enableSnippets: true,
             enableLiveAutocompletion: true
         });
-        editor.getSession().on('change', this.sycnItemState);
     }
 
 
@@ -182,17 +181,6 @@ class NotebookItem extends React.Component {
         );
     }
 
-
-    sycnItemState = () => {
-        let editorContent = ace.edit(this.geditor).getValue();
-        let cellId = this.props.itemId;
-        let itemContent = {
-            'id': cellId,
-            'code': editorContent
-        }
-        this.props.sycnItemState(itemContent);
-    }
-
     runMode = () => {
         console.log("runMode");
         this.progressWrapper.style.display = 'block';
@@ -299,8 +287,11 @@ class NotebookItem extends React.Component {
             switch (language) {
                 case 'Markdown':
                     let mdContent = "";
-                    if (this.props.result !== null) {
-                        mdContent = this.props.aceContent;
+                    if (this.props.result.type==='MARKDOWN') {
+                        mdContent = this.props.result.data[0];
+                        console.log(mdContent);
+                    }else{
+                       mdContent="";
                     }
                     result =
                         <MarkdownBrowser
@@ -381,9 +372,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
-        changeLoadingMode: mode => dispatch(changeLoadingMode(mode)),
         updateItem: (notebookId, itemId, cell) => dispatch(updateItem(notebookId, itemId, cell)),
-        sycnItemState: (itemContent) => dispatch(sycnItemState(itemContent)),
         excuteCell: (notebookId, cellId, cell) => dispatch(excuteCell(notebookId, cellId, cell))
     };
 }

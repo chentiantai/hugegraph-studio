@@ -54,7 +54,7 @@ export default class GremlinResult extends React.Component {
         });
 
         return (
-            <Tabs tabs={this.state.tabs}>
+            <Tabs tabs={this.state.tabs} loading={this.loading} >
                 {tabPanes}
             </Tabs>
         );
@@ -75,10 +75,14 @@ export default class GremlinResult extends React.Component {
         this.setState({tabs: tabs});
     }
 
-
     loadDone = () => {
         let loadingId = this.props.cellId + '_loading';
         document.getElementById(loadingId).style.display = 'none';
+    }
+
+    loading =() =>{
+        let loadingId = this.props.cellId + '_loading';
+        document.getElementById(loadingId).style.display = 'block';
     }
 
     getTabs = (content, defaultTabkey) => {
@@ -109,15 +113,15 @@ export default class GremlinResult extends React.Component {
             case 'VERTEX':
             case 'PATH':
                 tabs = [{
-                    type: GRAPH,
-                    isActive: false,
-                    exist: false,
-                    label: 'fa fa-joomla'
-                }, {
                     type: TABLE,
                     isActive: false,
                     exist: false,
                     label: 'fa fa-table'
+                }, {
+                    type: GRAPH,
+                    isActive: false,
+                    exist: false,
+                    label: 'fa fa-joomla'
                 }, {
                     type: RAW,
                     isActive: false,
