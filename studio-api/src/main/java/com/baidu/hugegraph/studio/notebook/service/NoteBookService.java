@@ -382,6 +382,8 @@ public class NoteBookService {
                     add(cell.getCode());
                 }
             });
+            result.setType(
+                    com.baidu.hugegraph.studio.notebook.model.Result.Type.MARKDOWN);
         }
 
         if ("gremlin".equals(cell.getLanguage())) {

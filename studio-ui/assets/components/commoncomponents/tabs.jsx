@@ -69,6 +69,8 @@ export class Tabs extends React.Component {
         );
     }
 
+
+
     componentDidMount() {
         this.setState({tabs: this.props.tabs});
     }
@@ -77,6 +79,9 @@ export class Tabs extends React.Component {
     onClick = (type) => {
         let tabs = this.state.tabs.map(tab => {
             if (tab.type === type) {
+                if(!tab.exist){
+                    this.props.loading();
+                }
                 tab.isActive = true;
                 tab.exist = true;
             }

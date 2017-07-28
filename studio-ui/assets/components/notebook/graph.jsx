@@ -28,7 +28,6 @@ export default class Graph extends React.Component {
     }
 
     render() {
-        console.log("graph render :" + this.props.height);
         return (
             <div style={{height: this.props.height}}
                  id={this.props.id}
@@ -62,7 +61,6 @@ export default class Graph extends React.Component {
         console.log("drawGraph");
         this.state.graphNodes = new vis.DataSet();
         this.state.graphEdges = new vis.DataSet();
-        // let graphNodes = new vis.DataSet();
 
         this.state.graphNodes.on('*', function () {
             //  do something
@@ -76,16 +74,12 @@ export default class Graph extends React.Component {
                         ' ' + vertex.properties[key][0].value + '</div>';
                 }
 
-                // let label = vertex.id.split('\u0002')[1];
                 let label = vertex.id;
                 this.state.graphNodes.add([
                     {id: vertex.id, label: label, title: title}
                 ]);
             });
         }
-
-        // let graphEdges = new vis.DataSet();
-
 
         this.state.graphEdges.on('*', function () {
             // do something
@@ -118,7 +112,7 @@ export default class Graph extends React.Component {
             interaction: {hover: true},
             nodes: {
                 font: {size: 12},
-                size: 20,
+                size: 15,
                 shape: 'dot',
                 widthConstraint: {
                     maximum: 80
