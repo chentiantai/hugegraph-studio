@@ -16,6 +16,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.baidu.hugegraph.studio.notebook.repository;
 
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
@@ -41,6 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The type File notebook repository.
+ *
+ * To save notebook entity to disk as json .
+ * To read notebook entity from disk.
+ */
 @Repository("notebookRepository")
 public class FileNotebookRepository implements NotebookRepository {
     private static final Logger logger = LoggerFactory.getLogger(FileNotebookRepository.class);
@@ -51,6 +58,9 @@ public class FileNotebookRepository implements NotebookRepository {
 
     private String notebooksDataDirectory;
 
+    /**
+     * Instantiates a new File notebook repository.
+     */
     public FileNotebookRepository() {
         initNotebookRepository();
     }

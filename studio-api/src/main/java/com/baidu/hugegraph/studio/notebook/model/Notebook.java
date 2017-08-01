@@ -1,3 +1,22 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package com.baidu.hugegraph.studio.notebook.model;
 
 import com.baidu.hugegraph.studio.connections.model.Connection;
@@ -8,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jishilei on 2017/5/13.
+ * Notebook entity for jersey restful api, and will be return as json.
+ * A notebook contains many cells.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Notebook {
@@ -34,68 +54,147 @@ public class Notebook {
 
     private List<NotebookCell> cells;
 
+    /**
+     * Instantiates a new Notebook.
+     */
     public Notebook() {
     }
 
+    /**
+     * Is favorite boolean.
+     *
+     * @return the boolean
+     */
     public boolean isFavorite() {
         return favorite;
     }
 
 
-
+    /**
+     * Sets connection id.
+     *
+     * @param connectionId the connection id
+     */
     public void setConnectionId(String connectionId) {
         this.connectionId = connectionId;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets id.
+     * NotebookId is uuid
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Gets connection id.
+     *
+     * @return the connection id
+     */
     public String getConnectionId() {
         return connectionId;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets created.
+     *
+     * @return the created
+     */
     public Long getCreated() {
         return created;
     }
 
+    /**
+     * Gets last used.
+     *
+     * @return the last used
+     */
     public Long getLastUsed() {
         return lastUsed;
     }
 
+    /**
+     * Gets cells.
+     *
+     * @return the cells
+     */
     public List<NotebookCell> getCells() {
         return cells;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
 
+    /**
+     * Sets created.
+     *
+     * @param created the created
+     */
     public void setCreated(Long created) {
         this.created = created;
     }
 
+    /**
+     * Sets last used.
+     *
+     * @param lastUsed the last used
+     */
     public void setLastUsed(Long lastUsed) {
         this.lastUsed = lastUsed;
     }
 
+    /**
+     * Sets favorite.
+     *
+     * @param favorite the favorite
+     */
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
 
+    /**
+     * Sets cells.
+     *
+     * @param cells the cells
+     */
     public void setCells(List<NotebookCell> cells) {
         this.cells = cells;
     }
 
+    /**
+     * Add cell.
+     *
+     * @param cell  the cell
+     * @param index the index
+     */
     public void addCell(NotebookCell cell, Integer index) {
         if (this.cells == null) {
             this.cells = new ArrayList<>();
@@ -108,6 +207,11 @@ public class Notebook {
         }
     }
 
+    /**
+     * Add cell.
+     *
+     * @param cell the cell
+     */
     public void addCell(NotebookCell cell) {
         if (this.cells == null) {
             this.cells = new ArrayList<>();
@@ -123,14 +227,29 @@ public class Notebook {
         this.cells.add(index, cell);
     }
 
+    /**
+     * Remove cell.
+     *
+     * @param cellId the cell id
+     */
     public void removeCell(String cellId) {
         this.cells.removeIf(c -> c.getId().equals(cellId));
     }
 
+    /**
+     * Gets connection.
+     *
+     * @return the connection
+     */
     public Connection getConnection() {
         return connection;
     }
 
+    /**
+     * Sets connection.
+     *
+     * @param connection the connection
+     */
     public void setConnection(Connection connection) {
         this.connection = connection;
     }

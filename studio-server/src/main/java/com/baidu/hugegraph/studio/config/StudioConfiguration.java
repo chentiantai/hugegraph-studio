@@ -16,12 +16,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.baidu.hugegraph.studio.config;
+
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
 import com.google.common.base.Preconditions;
 
 import java.net.URL;
+
 /**
  * The type Studio configuration.
  */

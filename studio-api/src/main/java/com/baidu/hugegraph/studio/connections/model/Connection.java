@@ -1,4 +1,41 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package com.baidu.hugegraph.studio.connections.model;
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -6,7 +43,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 
 /**
- * Created by jishilei on 2017/5/18.
+ * The Connection contain the information about hugeserver .
+ * hugeserver host address, port and graph name is required.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Connection implements Comparable<Connection> {
@@ -29,50 +67,110 @@ public class Connection implements Comparable<Connection> {
     @JsonProperty("lastModified")
     private Long lastModified;
 
+    /**
+     * Gets id from uuid.
+     *
+     * @return the id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets port.
+     *
+     * @return the port
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     * Sets port.
+     *
+     * @param port the port
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     * Gets graph name.
+     *
+     * @return the graph name
+     */
     public String getGraphName() {
         return graphName;
     }
 
+    /**
+     * Sets graph name.
+     *
+     * @param graphName the graph name
+     */
     public void setGraphName(String graphName) {
         this.graphName = graphName;
     }
 
+    /**
+     * Gets connection host.
+     *
+     * @return the connection host
+     */
     public String getConnectionHost() {
         return connectionHost;
     }
 
+    /**
+     * Sets connection host.
+     *
+     * @param connectionHost the connection host
+     */
     public void setConnectionHost(String connectionHost) {
         this.connectionHost = connectionHost;
     }
 
+    /**
+     * Gets last modified.
+     *
+     * @return the last modified
+     */
     public Long getLastModified() {
         return lastModified;
     }
 
+    /**
+     * Sets last modified.
+     *
+     * @param lastModified the last modified
+     */
     public void setLastModified(Long lastModified) {
         this.lastModified = lastModified;
     }
@@ -88,6 +186,11 @@ public class Connection implements Comparable<Connection> {
         return String.format("http://%s:%d", connectionHost, port);
     }
 
+    /**
+     * used for array sorting
+     * @param connection
+     * @return
+     */
     @Override
     public int compareTo(Connection connection) {
         if (this.lastModified > connection.lastModified) {

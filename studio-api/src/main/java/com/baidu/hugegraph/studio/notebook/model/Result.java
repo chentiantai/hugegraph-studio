@@ -16,6 +16,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.baidu.hugegraph.studio.notebook.model;
 
 import com.baidu.hugegraph.structure.graph.Edge;
@@ -25,15 +26,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import static java.util.stream.Collectors.toMap;
 
 /**
- * The type Result.
+ * The result entity for jersey restful api, and will be return as json.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
@@ -55,6 +54,14 @@ public class Result {
     @JsonProperty("graph")
     private Graph graph;
 
+    /**
+     * Instantiates a new Result.
+     *
+     * @param data     the data
+     * @param type     the type
+     * @param duration the duration
+     * @param id       the id
+     */
     @JsonCreator
     public Result(
             @JsonProperty("data") List<Object> data,
@@ -68,35 +75,73 @@ public class Result {
         this.graph = new Graph();
     }
 
+    /**
+     * Instantiates a new Result.
+     */
     public Result() {
         this.id = UUID.randomUUID().toString();
         this.graph = new Graph();
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public String getId() {
         return this.id;
     }
 
+    /**
+     * Gets type.
+     *
+     * @return the type
+     */
     public Result.Type getType() {
         return this.type;
     }
 
+    /**
+     * Gets duration.
+     *
+     * @return the duration
+     */
     public Long getDuration() {
         return this.duration;
     }
 
+    /**
+     * Gets data.
+     *
+     * @return the data
+     */
     public List<Object> getData() {
         return data;
     }
 
+    /**
+     * Sets data.
+     *
+     * @param data the data
+     */
     public void setData(List<Object> data) {
         this.data = data;
     }
 
+    /**
+     * Sets type.
+     *
+     * @param type the type
+     */
     public void setType(Type type) {
         this.type = type;
     }
 
+    /**
+     * Sets duration.
+     *
+     * @param duration the duration
+     */
     public void setDuration(Long duration) {
         this.duration = duration;
     }
@@ -112,26 +157,60 @@ public class Result {
         return graph;
     }
 
+    /**
+     * Sets graph vertices.
+     *
+     * @param vertices the vertices
+     */
     public void setGraphVertices(List<Vertex> vertices) {
 
         this.graph.setVertices(vertices);
     }
 
+    /**
+     * Sets graph edges.
+     *
+     * @param edges the edges
+     */
     public void setGraphEdges(List<Edge> edges) {
 
         this.graph.setEdges(edges);
     }
 
-    // g.V() -> VERTEX
-    // g.E() -> EDGE
-    // g.V().count() -> NUMBER
-    // g.V().outE().path() -> PATH
+    /**
+     * The type of gremlin result:
+     *
+     * g.V() -> VERTEX
+     * g.E() -> EDGE
+     * g.V().count() -> NUMBER
+     * g.V().outE().path() -> PATH
+     */
     public enum Type {
-        VERTEX, EDGE, PATH, EMPTY, NUMBER, MARKDOWN;
+        /**
+         * Vertex type.
+         */
+        VERTEX, /**
+         * Edge type.
+         */
+        EDGE, /**
+         * Path type.
+         */
+        PATH, /**
+         * Empty type.
+         */
+        EMPTY, /**
+         * Number type.
+         */
+        NUMBER, /**
+         * Markdown type.
+         */
+        MARKDOWN;
     }
 
 
-    // The Graph class is used for contain Vertices & edges
+    /**
+     * The Graph class is used for contain Vertices & edges.
+     */
     @JsonIgnoreProperties(ignoreUnknown = true)
     public class Graph {
 
@@ -141,14 +220,27 @@ public class Result {
         @JsonProperty
         private List<Edge> edges;
 
+        /**
+         * Gets vertices.
+         *
+         * @return the vertices
+         */
         public List<Vertex> getVertices() {
             return vertices;
         }
 
+        /**
+         * Instantiates a new Graph.
+         */
         public Graph(){
 
         }
 
+        /**
+         * Sets vertices.
+         *
+         * @param vertices the vertices
+         */
         public void setVertices(List<Vertex> vertices) {
             if(vertices == null){
                 this.vertices = vertices;
@@ -161,11 +253,21 @@ public class Result {
             }
         }
 
+        /**
+         * Gets edges.
+         *
+         * @return the edges
+         */
         public List<Edge> getEdges() {
             return edges;
         }
 
-        // distinct using map
+        /**
+         * Sets edges.
+         * distinct using map
+         *
+         * @param edges the edges
+         */
         public void setEdges(List<Edge> edges) {
             if(edges == null){
                 this.edges = edges;
