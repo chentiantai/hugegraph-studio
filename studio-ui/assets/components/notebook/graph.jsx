@@ -5,9 +5,11 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
+import {updateGraph} from './actions';
 
 
-export default class Graph extends React.Component {
+class Graph extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -28,6 +30,7 @@ export default class Graph extends React.Component {
     }
 
     render() {
+        console.log('graph render');
         return (
             <div style={{height: this.props.height}}
                  id={this.props.id}
@@ -37,7 +40,6 @@ export default class Graph extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log("graph componentDidUpdate");
         let graph = this.props.content.graph;
         if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
             let vertexdata = graph.vertices;
@@ -47,7 +49,6 @@ export default class Graph extends React.Component {
     }
 
     componentDidMount() {
-        console.log("graph componentDidMount");
         let graph = this.props.content.graph;
         if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
             let vertexdata = graph.vertices;
@@ -58,7 +59,6 @@ export default class Graph extends React.Component {
 
 
     drawGraph = (vertexs, edges) => {
-        console.log("drawGraph");
         this.state.graphNodes = new vis.DataSet();
         this.state.graphEdges = new vis.DataSet();
 
@@ -184,7 +184,10 @@ export default class Graph extends React.Component {
                 .then(response => this.parseJSON(response))
                 .then(data => {
                     this.addNode(data.graph.vertices);
-                    this.addEdge(data.graph.edges)
+                    this.addEdge(data.graph.edges);
+                    // this.props.updateGraph(this.props.cellId, data.graph);
+                    // this.syncResult(data.graph);
+
                 })
                 .catch(err => {
                     console.log(err);
@@ -192,10 +195,10 @@ export default class Graph extends React.Component {
         }
     }
 
-    addNode = (vertexs) => {
+    addNode = (vertices) => {
         try {
-            if (vertexs !== null) {
-                vertexs.forEach(vertex => {
+            if (vertices !== null) {
+                vertices.forEach(vertex => {
                     let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' + 'label : ' + vertex.label + '</div>';
                     for (let key in vertex.properties) {
                         title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
@@ -232,6 +235,25 @@ export default class Graph extends React.Component {
         }
     }
 
+    // syncResult = graph => {
+    //     let cell = this.props.cells.find(cell => cell.id === this.props.cellId)
+    //     this.syncCode(cell.result);
+    //     this.syncTable(cell.result.type, graph);
+    // }
+    //
+    // syncCode = result => {
+    //     if (document.getElementById(this.props.cellId+'_code') !== null) {
+    //         let paneJson = '#' + this.props.cellId+'_code';
+    //         let json = JSON.stringify(result);
+    //         $(paneJson).JSONView(json, {collapsed: true});
+    //     }
+    //
+    // }
+    //
+    // syncTable = (type, graph) => {
+    //
+    // }
+
     checkStatus(response) {
         if (response.status >= 200 && response.status < 300) {
             return response
@@ -250,4 +272,22 @@ export default class Graph extends React.Component {
 }
 
 
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {
+        cells: state.notebook.cells
+    };
+}
 
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        updateGraph: (cellId, graph) => dispatch(updateGraph(cellId, graph))
+    };
+}
+
+// Connected Component
+export default  connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Graph);

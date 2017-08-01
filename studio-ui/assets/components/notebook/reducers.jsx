@@ -11,7 +11,8 @@ import {
     CLEAR_NOTEBOOK_STATE,
     RUN_MODE,
     SHOW_SCHEMA,
-    SYCN_ITEM
+    SYCN_ITEM,
+    UPDATE_GRAPH
 } from './actions';
 
 export function notebook(state = [], action) {
@@ -78,6 +79,34 @@ export function notebook(state = [], action) {
                 )
             };
         }
+        case UPDATE_GRAPH : {
+            return {
+                ...state,
+                cells: state.cells.map(
+                    cell => {
+                        if (cell.id === action.cellId) {
+                            if (cell.result.type === 'EDGE') {
+                                if (action.graph.edges !== null) {
+                                    action.graph.edges.forEach(e => cell.result.data.push(e));
+                                }
+                            } else if (cell.result.type === 'VERTEX') {
+                                if (action.graph.vertices !== null) {
+                                    action.graph.vertices.forEach(v => cell.result.data.push(v));
+                                }
+                            }
+
+                            if (action.graph.edges !== null) {
+                                action.graph.edges.forEach(e => cell.result.graph.edges.push(e));
+                            }
+                            if (action.graph.vertices !== null) {
+                                action.graph.vertices.forEach(v => cell.result.graph.vertices.push(v));
+                            }
+                        }
+                        return cell;
+                    }
+                )
+            };
+        }
         default:
             return state;
     }
@@ -93,5 +122,7 @@ export function schema(state = null, action) {
             return state;
     }
 }
+
+
 
 

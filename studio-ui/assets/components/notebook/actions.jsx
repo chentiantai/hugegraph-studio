@@ -14,6 +14,7 @@ export const CLEAR_NOTEBOOK_STATE = 'clear_notebook_state';
 export const RUN_MODE = 'run_mode';
 export const SHOW_SCHEMA = 'show_schema';
 export const SYCN_ITEM = 'sycn_item';
+export const UPDATE_GRAPH = 'update_graph';
 
 
 export function runMode(cell) {
@@ -228,6 +229,15 @@ export function showSchemaSuccess(data) {
     return {
         type: SHOW_SCHEMA,
         data
+    };
+}
+
+
+export function updateGraph(cellId, graph) {
+    return {
+        type: UPDATE_GRAPH,
+        cellId,
+        graph
     };
 }
 

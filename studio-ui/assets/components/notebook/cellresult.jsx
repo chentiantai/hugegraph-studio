@@ -18,7 +18,6 @@ export default class CellResult extends React.Component {
     }
 
     render() {
-        console.log('CellResult render');
         let result = this.showResult();
 
         return (
@@ -57,7 +56,6 @@ export default class CellResult extends React.Component {
                             defaultTabKey = this.props.viewSettings.viewType;
                         }
                     }
-                    console.log(defaultTabKey);
                     resultPanel = <GremlinResult defaultTabKey={defaultTabKey}
                                                  cellId={this.props.cellId}
                                                  notebookId={this.props.notebookId}
