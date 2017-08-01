@@ -63,8 +63,8 @@ class NoteCardBoard extends React.Component {
         return (
             <div>
                 <StudioHead
-                    display={this.props.headMode.fullScreen ? 'none' : 'block'}
-                    name={this.props.headMode.studioHeadName}/>
+                    display="block"
+                    name="HugeGraph NoteBook Quick Start"/>
 
                 <div className="container">
 
@@ -97,8 +97,7 @@ class NoteCardBoard extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        noteCards: state.noteCards,
-        headMode: state.headMode
+        noteCards: state.noteCards
     };
 }
 

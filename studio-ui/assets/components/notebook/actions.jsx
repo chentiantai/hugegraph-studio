@@ -4,8 +4,7 @@
  * Created on 17/6/5
  */
 import {alertMessage} from '../connection/actions';
-import {changeHeadMode, changeLoadingMode} from '../actions';
-import {updateNoteCard} from '../notebooksApp/actions';
+import {changeHeadMode} from '../actions';
 
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
@@ -85,9 +84,9 @@ export function loadCells(notebookId) {
             .then(parseJSON)
             .then(data => {
                 dispatch(showCells(data));
+                let existFullScreenCell = data.cells.some(cell => cell.viewSettings.fullScreen);
                 dispatch(changeHeadMode({
-                    studioHeadName: data.name,
-                    fullScreen: false
+                    fullScreen: existFullScreenCell
                 }));
             })
             .catch(err => {
@@ -98,7 +97,11 @@ export function loadCells(notebookId) {
 
 export function addItem(notebookId, position) {
     let myHeaders = new Headers();
-    let initItem = {'code': '', 'language': 'gremlin'};
+    let initItem = {
+        'code': '',
+        'language': 'gremlin',
+        'viewSettings': {'fullScreen': false, 'view': true}
+    };
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells?position=' + position;
     return dispatch => {
@@ -143,7 +146,7 @@ export function deleteItem(notebookId, cellId) {
     };
 }
 
-export function updateItem(notebookId, itemId,cell) {
+export function updateItem(notebookId, itemId, cell) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId;
@@ -166,7 +169,7 @@ export function updateItem(notebookId, itemId,cell) {
     };
 }
 
-export function excuteCell(notebookId, itemId, cell) {
+export function executeCell(notebookId, itemId, cell) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId + '/execute';
@@ -180,23 +183,25 @@ export function excuteCell(notebookId, itemId, cell) {
             .then(checkStatus)
             .then(parseJSON)
             .then(data => {
-                let cell = {
+                let newCell = {
+                    ...cell,
                     id: itemId,
                     status: 200,
                     msg: 'success',
                     result: data
                 }
-                dispatch(runMode(cell));
+                dispatch(runMode(newCell));
             })
             .catch(err => {
                 let infoDate = new Date();
-                let cell = {
+                let newCell = {
+                    ...cell,
                     id: itemId,
                     status: err.status,
-                    msg: infoDate.toLocaleString()+' Internal Server Error',
+                    msg: infoDate.toLocaleString() + ' Internal Server Error',
                     result: null
                 }
-                dispatch(runMode(cell));
+                dispatch(runMode(newCell));
             });
     };
 }

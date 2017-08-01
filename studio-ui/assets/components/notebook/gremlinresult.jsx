@@ -4,26 +4,31 @@
  * Created on 17/7/20
  */
 import React from 'react';
+import {connect} from 'react-redux';
 import {Tabs, TabPane} from '../commoncomponents/tabs';
 import Graph from './graph';
 import Code from './code';
 import TableResult from './table';
+import {updateItem} from './actions';
 
 export const TABLE = 'TABLE';
 export const RAW = 'RAW';
 export const GRAPH = 'GRAPH';
 
 
-export default class GremlinResult extends React.Component {
+class GremlinResult extends React.Component {
     constructor() {
         super();
         this.state = {
             tabs: []
         }
+
+        this.curTabs = [];
+
     }
 
     componentWillReceiveProps(nextProps) {
-        let tabs = this.getTabs(nextProps.content, nextProps.defaultTabkey);
+        let tabs = this.getTabs(nextProps.content, nextProps.defaultTabKey);
         this.setState({tabs: tabs});
     }
 
@@ -54,7 +59,9 @@ export default class GremlinResult extends React.Component {
         });
 
         return (
-            <Tabs tabs={this.state.tabs} loading={this.loading} >
+            <Tabs tabs={this.state.tabs}
+                  loading={this.loading}
+                  onChangeTab={this.onChangeTab}>
                 {tabPanes}
             </Tabs>
         );
@@ -68,7 +75,7 @@ export default class GremlinResult extends React.Component {
 
 
     componentDidMount() {
-        let tabs = this.getTabs(this.props.content, this.props.defaultTabkey);
+        let tabs = this.getTabs(this.props.content, this.props.defaultTabKey);
         if (tabs.length === 0) {
             this.loadDone();
         }
@@ -80,16 +87,32 @@ export default class GremlinResult extends React.Component {
         document.getElementById(loadingId).style.display = 'none';
     }
 
-    loading =() =>{
+    loading = () => {
         let loadingId = this.props.cellId + '_loading';
         document.getElementById(loadingId).style.display = 'block';
     }
 
-    getTabs = (content, defaultTabkey) => {
-        let tabs = [];
+    onChangeTab = (type, tabs) => {
+        let notebookId = this.props.notebookId;
+        let cellId = this.props.cellId;
+
+        this.curTabs = tabs;
+
+        let cell = {
+            'id': cellId,
+            'viewSettings': {
+                ...this.props.viewSettings,
+                'viewType': type
+            }
+        }
+        this.props.updateCell(notebookId, cellId, cell);
+    }
+
+    getTabs = (content, defaultTabKey) => {
+        let nextTabs = [];
         switch (content.type) {
             case 'NUMBER':
-                tabs = [{
+                nextTabs = [{
                     type: TABLE,
                     isActive: false,
                     exist: false,
@@ -102,7 +125,7 @@ export default class GremlinResult extends React.Component {
                 }];
                 break;
             case 'EMPTY':
-                tabs = [{
+                nextTabs = [{
                     type: RAW,
                     isActive: false,
                     exist: false,
@@ -112,7 +135,7 @@ export default class GremlinResult extends React.Component {
             case 'EDGE':
             case 'VERTEX':
             case 'PATH':
-                tabs = [{
+                nextTabs = [{
                     type: TABLE,
                     isActive: false,
                     exist: false,
@@ -130,16 +153,29 @@ export default class GremlinResult extends React.Component {
                 }];
                 break;
             default:
-                tabs = [];
+                nextTabs = [];
         }
 
-        if (tabs.length > 0) {
-            if (defaultTabkey === 1) {
-                tabs[0].isActive = true;
-                tabs[0].exist = true;
+
+        // use the current tabs  and the defaultTabKey to identify the nextTabs
+        // the current tabs keep the state of tabs now，which can be changed
+        // by the function "onChangeTab"
+        this.curTabs.forEach(curTab => {
+            nextTabs = nextTabs.map(nextTab => {
+                if (nextTab.type === curTab.type) {
+                    nextTab.exist = curTab.exist;
+                }
+                return nextTab;
+            })
+        });
+
+        if (nextTabs.length > 0) {
+            if (defaultTabKey === 1) {
+                nextTabs[0].isActive = true;
+                nextTabs[0].exist = true;
             } else {
-                tabs = tabs.map(tab => {
-                    if (tab.type === defaultTabkey) {
+                nextTabs = nextTabs.map(tab => {
+                    if (tab.type === defaultTabKey) {
                         tab.isActive = true;
                         tab.exist = true;
                     }
@@ -148,8 +184,25 @@ export default class GremlinResult extends React.Component {
             }
         }
 
-        return tabs;
+        return nextTabs;
     }
-
-
 }
+
+
+// Map Redux state to component props
+function mapStateToProps(state) {
+    return {};
+}
+
+// Map Redux actions to component props
+function mapDispatchToProps(dispatch) {
+    return {
+        updateCell: (notebookId, cellId, cell) => dispatch(updateItem(notebookId, cellId, cell))
+    };
+}
+
+// Connected Component
+export default  connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(GremlinResult);

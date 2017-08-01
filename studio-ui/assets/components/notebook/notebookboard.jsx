@@ -4,7 +4,7 @@
  * Created on 17/6/12
  */
 import React from 'react';
-import NotebookItem from './notebookitem';
+import NotebookCell from './notebookcell';
 import StudioHead from '../studiohead';
 import {connect} from 'react-redux';
 import {
@@ -22,38 +22,30 @@ class NotebookBoard extends React.Component {
     }
 
     render() {
-        let fullScreenItem = this.props.headMode.cellId;
-        let fullScreen = this.props.headMode.fullScreen;
-        let addDisplay = fullScreen ? 'none' : 'block';
-        let deleteCss = this.props.cells.length === 1 ? 'btn btn-link' +
-            ' disabled' : 'btn btn-link';
+        let existFullScreenCell = this.props.notebook.cells.some(cell => cell.viewSettings.fullScreen);
+        let addDisplay = existFullScreenCell ? 'none' : 'block';
+        let canBeDelete = this.props.notebook.cells.length > 1 ? true : false;
         return (
-
             <div>
                 <StudioHead
-                    display={this.props.headMode.fullScreen ? 'none' : 'block'}
+                    display={existFullScreenCell ? 'none' : 'block'}
                     name={this.props.notebook.name}
-                    notebook={this.props.notebook}/>
+                    connection={this.props.notebook.connection}/>
                 {
-                    this.props.cells.map(cell =>
-                        <div key={cell.id}>
-                            <NotebookItem
-                                display={fullScreen ? (fullScreenItem === '' || fullScreenItem === cell.id ? 'block' : 'none') : 'block'}
-                                onDelete={this.deleteItem}
-                                deleteCss={deleteCss}
-                                itemId={cell.id}
-                                notebookId={this.props.match.params.id}
-                                aceContent={cell.code}
-                                language={cell.language}
-                                result={cell.result}
-                                status={cell.status}
-                                msg={cell.msg}
-                                loading={this.props.loadingMode.cellId === cell.id ? this.props.loadingMode.loading : false}/>
+                    this.props.notebook.cells.map(cell => {
 
-                            <NoteBookItemAdd cellId={cell.id}
-                                             display={addDisplay}
-                                             onClick={this.addItem}/>
-                        </div>
+                            let display = existFullScreenCell ? (cell.viewSettings.fullScreen ? 'block' : 'none') : 'block';
+
+                            return <div key={cell.id} style={{display: display}}>
+                                <NotebookCell cell={cell}
+                                              notebookId={this.props.match.params.id}
+                                              canBeDelete={canBeDelete}/>
+
+                                <NoteBookItemAdd cellId={cell.id}
+                                                 display={addDisplay}
+                                                 onClick={this.addItem}/>
+                            </div>;
+                        }
                     )
                 }
             </div>
@@ -62,7 +54,6 @@ class NotebookBoard extends React.Component {
 
     componentDidMount() {
         this.props.loadCells(this.props.match.params.id);
-        window.onbeforeunload = this.onbeforeunload;
     }
 
     componentWillUnmount() {
@@ -80,7 +71,7 @@ class NotebookBoard extends React.Component {
 
 
     addItem = preItemId => {
-        let cells = this.props.cells;
+        let cells = this.props.notebook.cells;
         let len = cells.length;
         let position = len - 1;
         for (let i = 0; i < len; i++) {
@@ -93,10 +84,10 @@ class NotebookBoard extends React.Component {
         this.props.addItem(this.props.match.params.id, position + 1);
     }
 
-    deleteItem = cellId => {
-        if (this.props.cells.length === 1) return;
-        this.props.deleteItem(this.props.match.params.id, cellId);
-    }
+    // deleteItem = cellId => {
+    //     if (this.props.notebook.cells.length === 1) return;
+    //     this.props.deleteItem(this.props.match.params.id, cellId);
+    // }
 }
 
 
@@ -134,10 +125,7 @@ class NoteBookItemAdd extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        headMode: state.headMode,
-        cells: state.notebook.cells,
-        notebook: state.notebook,
-        loadingMode: state.loadingMode
+        notebook: state.notebook
     };
 }
 

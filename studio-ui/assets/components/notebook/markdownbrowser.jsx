@@ -13,8 +13,6 @@ export default class MarkdownBrowser extends React.Component {
     }
 
     render() {
-
-        console.log("MarkdownBrowser render");
         let mdContent = this.props.mdContent.replace(/\n+/g, function (ns) {
             if (ns.length == 1)
                 return '  ' + ns
@@ -23,7 +21,9 @@ export default class MarkdownBrowser extends React.Component {
         let htmlContent = markdown.toHTML(mdContent);
 
         return (
-            <div className="html-content" id={this.props.id}
+            <div id={this.props.id}
+                 className="html-content"
+                 style={{height: this.props.height + 'px'}}
                  dangerouslySetInnerHTML={{__html: htmlContent}}>
             </div>
         );
@@ -34,11 +34,11 @@ export default class MarkdownBrowser extends React.Component {
     }
 
     componentDidMount() {
-       this.loadDone()
+        this.loadDone()
     }
 
     loadDone = () => {
-        let loadingId=this.props.cellId+'_loading';
-        document.getElementById(loadingId).style.display='none';
+        let loadingId = this.props.cellId + '_loading';
+        document.getElementById(loadingId).style.display = 'none';
     }
 }

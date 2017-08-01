@@ -5,8 +5,6 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
-import {changeLoadingMode} from '../actions';
 
 export default  class TableResult extends React.Component {
     constructor() {
@@ -14,7 +12,7 @@ export default  class TableResult extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.content === nextProps.content) {
+        if (this.props.content === nextProps.content && this.props.height === nextProps.height) {
             return false;
         } else {
             return true;
@@ -22,7 +20,6 @@ export default  class TableResult extends React.Component {
     }
 
     render() {
-        console.log("table render");
         const tableContent = this.props.content.data;
         let dataType = this.props.content.type;
         switch (dataType) {

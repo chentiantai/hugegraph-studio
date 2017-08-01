@@ -48,8 +48,7 @@ export function loadNoteCards() {
             .then(data => {
                 dispatch(showNoteCards(data));
                 dispatch(changeHeadMode({
-                    fullScreen: false,
-                    studioHeadName: 'HugeGraph NoteBook Quick Start'
+                    fullScreen: false
                 }));
             })
             .catch(err => {

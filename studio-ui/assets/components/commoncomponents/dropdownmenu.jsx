@@ -18,8 +18,8 @@ export default class DropDownMenu extends React.Component {
 
     componentDidMount() {
 
-        if (this.props.initLanguage !== undefined) {
-            this.setState({selectMenu: this.props.initLanguage});
+        if (this.props.initItem !== undefined) {
+            this.setState({selectMenu: this.props.initItem});
         } else {
             if (this.props.menuItems !== undefined && this.props.menuItems.length > 0) {
                 this.setState({selectMenu: this.props.menuItems[0]});

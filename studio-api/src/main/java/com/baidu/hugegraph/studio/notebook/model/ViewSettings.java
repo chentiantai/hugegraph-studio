@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class ViewSettings {
 
     public enum ViewType {
-        TABLE, CODE, GRAPH;
+        TABLE, RAW, GRAPH;
     }
 
     @JsonProperty("viewType")

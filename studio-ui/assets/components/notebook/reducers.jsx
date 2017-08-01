@@ -48,7 +48,8 @@ export function notebook(state = [], action) {
                     cell => cell.id === action.data.id ? {
                         ...cell,
                         code: action.data.code,
-                        language: action.data.language
+                        language: action.data.language,
+                        viewSettings: action.data.viewSettings
                     } : cell
                 )
             };
@@ -73,12 +74,7 @@ export function notebook(state = [], action) {
             return {
                 ...state,
                 cells: state.cells.map(
-                    cell => cell.id === action.cell.id ? {
-                        ...cell,
-                        result: action.cell.result,
-                        msg: action.cell.msg,
-                        status: action.cell.status
-                    } : cell
+                    cell => cell.id === action.cell.id ? {...cell, ...action.cell} : cell
                 )
             };
         }
