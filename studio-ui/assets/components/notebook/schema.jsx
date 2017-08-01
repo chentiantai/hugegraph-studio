@@ -65,7 +65,8 @@ export class Schema extends React.Component {
     }
 
     componentDidMount() {
-        let connectionId = this.props.notebook.connection.id;
+        console.log(this.props.connection);
+        let connectionId = this.props.connection.id;
         this.props.showSchema(connectionId);
     }
 }

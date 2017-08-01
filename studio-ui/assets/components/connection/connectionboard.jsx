@@ -100,8 +100,8 @@ class ConnectionsBoard extends React.Component {
             <div>
 
                 <StudioHead
-                    display={this.props.headMode.fullScreen ? 'none' : 'block'}
-                    name={this.props.headMode.studioHeadName}/>
+                    display="block"
+                    name="HugeGraph NoteBook Quick Start"/>
                 <div className="container">
 
 
@@ -159,8 +159,7 @@ class ConnectionsBoard extends React.Component {
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {
-        connections: state.connections,
-        headMode: state.headMode
+        connections: state.connections
     };
 }
 

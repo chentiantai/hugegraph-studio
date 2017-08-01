@@ -6,8 +6,6 @@
 
 
 import React from 'react';
-import {connect} from 'react-redux';
-import {changeLoadingMode} from '../actions';
 
 export default  class Code extends React.Component {
     constructor() {
@@ -15,6 +13,9 @@ export default  class Code extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        if (document.getElementById(this.props.id) !== null) {
+            document.getElementById(this.props.id).style.height = nextProps.height + 'px';
+        }
         if (this.props.content === nextProps.content) {
             return false;
         } else {
@@ -35,14 +36,14 @@ export default  class Code extends React.Component {
     componentDidUpdate() {
         let paneJson = '#' + this.props.id;
         let json = JSON.stringify(this.props.content);
-        $(paneJson).JSONView(json,{ collapsed: true });
+        $(paneJson).JSONView(json, {collapsed: true});
         this.loadDone();
     }
 
     componentDidMount() {
         let paneJson = '#' + this.props.id;
         let json = JSON.stringify(this.props.content);
-        $(paneJson).JSONView(json,{ collapsed: true });
+        $(paneJson).JSONView(json, {collapsed: true});
         this.loadDone();
     }
 

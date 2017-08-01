@@ -8,18 +8,14 @@ import React from 'react';
 export default class ChangeButton extends React.Component {
     constructor() {
         super();
-        this.state = {
-            cssFlag: true
-        }
     }
 
     onClick = () => {
-        this.props.onClick(this.state.cssFlag);
-        this.setState({cssFlag: !this.state.cssFlag});
+        this.props.onClick(!this.props.cssFlag);
     }
 
     render() {
-        let cssMode = this.state.cssFlag ? this.props.defaultCss : this.props.changeCss;
+        let cssMode = this.props.cssFlag ? this.props.trueCss : this.props.falseCss;
         return (
             <button type="button" className="btn btn-link"
                     onClick={this.onClick}>

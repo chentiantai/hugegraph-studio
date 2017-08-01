@@ -24,7 +24,7 @@ export class Tabs extends React.Component {
             <div>
                 <div className="react-tabs">
                     <ul className="nav nav-pills">
-                        {this.state.tabs.map((tab,index) => {
+                        {this.state.tabs.map((tab, index) => {
                                 if (tab.isActive)
                                     return <li className="active" key={index}>
                                         <a onClick={() => this.onClick(tab.type)}>
@@ -70,7 +70,6 @@ export class Tabs extends React.Component {
     }
 
 
-
     componentDidMount() {
         this.setState({tabs: this.props.tabs});
     }
@@ -79,7 +78,7 @@ export class Tabs extends React.Component {
     onClick = (type) => {
         let tabs = this.state.tabs.map(tab => {
             if (tab.type === type) {
-                if(!tab.exist){
+                if (!tab.exist) {
                     this.props.loading();
                 }
                 tab.isActive = true;
@@ -89,8 +88,8 @@ export class Tabs extends React.Component {
                 tab.isActive = false;
             }
             return tab;
-        })
-        this.setState({tabs: tabs});
+        });
+        this.props.onChangeTab(type, tabs);
     }
 }
 

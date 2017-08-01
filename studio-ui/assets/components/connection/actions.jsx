@@ -10,7 +10,6 @@ export const SHOW = 'show';
 export const UPDATE_SUCCESS = 'update_success';
 export const ADD_REQUEST = 'add_request';
 export const ADD_SUCCESS = 'add_success';
-// export const ADD_FAILURE = 'add_failure';
 export const DELETE_SUCCESS = 'delete_success';
 export const ALERT_SHOW = 'alert_show';
 export const ALERT_HIDE = 'alert_hide';
@@ -25,8 +24,7 @@ export function loadConnections() {
             .then(data => {
                 dispatch(showConnections(data));
                 dispatch(changeHeadMode({
-                    fullScreen: false,
-                    studioHeadName: 'HugeGraph NoteBook Quick Start'
+                    fullScreen: false
                 }));
             })
             .catch(err => {
@@ -139,7 +137,7 @@ export function deleteConnection(id) {
             })
             .then(response => {
                 // avoid the case : when the response is null
-                if(response.status>400)
+                if (response.status > 400)
                     return response.json();
                 else
                     return response;
@@ -158,7 +156,7 @@ export function deleteConnection(id) {
                 dispatch(alertMessage('Delete Connection Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Danger: '+err.message, 'danger'));
+                dispatch(alertMessage('Danger: ' + err.message, 'danger'));
             });
     };
 }
@@ -195,7 +193,7 @@ export function alertMessage(messageText, messageType, delay = 1000) {
             dispatch(alertShow(messageText, messageType, key));
             if (messageType === 'danger') {
                 // setTimeout(() => dispatch(alertHide(key)), 20000);
-            }else if(messageType === 'warning'){
+            } else if (messageType === 'warning') {
                 setTimeout(() => dispatch(alertHide(key)), 5000);
             } else {
                 setTimeout(() => dispatch(alertHide(key)), delay);

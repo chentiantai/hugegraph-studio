@@ -11,13 +11,12 @@ import Head from './head';
 import NoteCardBoard from './notebooksApp/notecardboard';
 import ConnectionsBoard from './connection/connectionboard';
 import NoteBookBoard from './notebook/notebookboard';
-import {connect} from 'react-redux';
-import {changeHeadMode} from './actions';
+
 import 'whatwg-fetch';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 require('react-hot-loader/patch');
 
-class NotebooksApp extends React.Component {
+export default class NotebooksApp extends React.Component {
 
     constructor() {
         super();
@@ -27,9 +26,8 @@ class NotebooksApp extends React.Component {
         return (
             <Router >
                 <div>
-                    <Head fluid={this.props.headMode.fullScreen}/>
+                    <Head/>
                     <Switch>
-                        {/*<Route exact path="/" component={NoteCardBoard}/>*/}
                         <Route path="/index" component={NoteCardBoard}/>
                         <Route path="/connections"
                                component={ConnectionsBoard}/>
@@ -43,25 +41,7 @@ class NotebooksApp extends React.Component {
 }
 
 
-// Map Redux state to component props
-function mapStateToProps(state) {
-    return {
-        headMode: state.headMode
-    };
-}
 
-// Map Redux actions to component props
-function mapDispatchToProps(dispatch) {
-    return {
-        changeHeadMode: mode => dispatch(changeHeadMode(mode))
-    };
-}
-
-// Connected Component
-export default  connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(NotebooksApp);
 
 
 

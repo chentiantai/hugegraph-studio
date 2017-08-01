@@ -21,6 +21,7 @@ package com.baidu.hugegraph.studio.notebook.repository;
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
+import com.baidu.hugegraph.studio.notebook.model.ViewSettings;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;
@@ -98,6 +99,10 @@ public class FileNotebookRepository implements NotebookRepository {
             NotebookCell notebookCell = new NotebookCell();
             notebookCell.setId(UUID.randomUUID().toString());
             notebookCell.setLanguage("gremlin");
+            ViewSettings viewSettings=new ViewSettings();
+            viewSettings.setFullScreen(false);
+            viewSettings.setView(true);
+            notebookCell.setViewSettings(viewSettings);
             notebook.addCell(notebookCell);
         }
         writeNotebook(notebook);

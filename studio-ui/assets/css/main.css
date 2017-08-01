@@ -314,6 +314,7 @@ td > button.btn {
 }
 
 .card-footer {
+    padding: 5px;
     font-size: 12px;
     color: #ccc;
 }

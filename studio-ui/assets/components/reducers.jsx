@@ -8,7 +8,7 @@ import {connections, alerts} from './connection/reducers';
 import {noteCards} from  './notebooksApp/reducers';
 
 import {notebook, schema} from './notebook/reducers';
-import {CHANGE_HEAD_MODE, CHANGE_LOADING_MODE} from './actions';
+import {CHANGE_HEAD_MODE} from './actions';
 
 const initialState = {
         noteCards: [],
@@ -19,15 +19,10 @@ const initialState = {
         },
         headMode: {
             studioHeadName: 'HugeGraph NoteBook Quick Start',
-            fullScreen: false,
-            cellId: ''
+            fullScreen: false
         },
         notebook: {
             cells: []
-        },
-        loadingMode: {
-            loading: false,
-            cellId: ''
         },
         schema: null
     }
@@ -41,7 +36,6 @@ export function operation(state = initialState, action) {
         noteCards: noteCards(state.noteCards, action),
         headMode: headMode(state.headMode, action),
         notebook: notebook(state.notebook, action),
-        loadingMode: loadingMode(state.loadingMode, action),
         schema: schema(state.schema, action)
     };
 }
@@ -59,11 +53,3 @@ function headMode(state = {}, action) {
     }
 }
 
-function loadingMode(state = {}, action) {
-    switch (action.type) {
-        case CHANGE_LOADING_MODE:
-            return action.mode;
-        default:
-            return state;
-    }
-}
