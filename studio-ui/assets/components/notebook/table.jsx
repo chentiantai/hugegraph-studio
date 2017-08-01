@@ -20,6 +20,8 @@ export default  class TableResult extends React.Component {
     }
 
     render() {
+        console.log('table render');
+
         const tableContent = this.props.content.data;
         let dataType = this.props.content.type;
         switch (dataType) {
