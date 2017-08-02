@@ -1,3 +1,22 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package com.baidu.hugegraph.studio.notebook.service;
 
 import com.baidu.hugegraph.driver.GremlinManager;
@@ -12,7 +31,6 @@ import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +47,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Created by jishilei on 2017/5/13.
+ * Notebook service for Jersey Restful Api
  */
 @Path("notebooks")
 public class NoteBookService {
@@ -51,6 +67,11 @@ public class NoteBookService {
     @Autowired
     private ConnectionRepository connectionRepository;
 
+    /**
+     * Gets notebooks.
+     *
+     * @return the notebooks
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getNotebooks() {
@@ -66,6 +87,12 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Gets notebook.
+     *
+     * @param notebookId the notebook id
+     * @return the notebook
+     */
     @GET
     @Path("{notebookId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -81,6 +108,12 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Add notebook response.
+     *
+     * @param notebook the notebook
+     * @return the response
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -97,6 +130,12 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Delete notebook response.
+     *
+     * @param notebookId the notebook id
+     * @return the response
+     */
     @DELETE
     @Path("{notebookId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -108,6 +147,13 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Edit notebook response.
+     *
+     * @param notebookId the notebook id
+     * @param notebook   the notebook
+     * @return the response
+     */
     @PUT
     @Path("{notebookId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -142,6 +188,13 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Gets notebook cell.
+     *
+     * @param notebookId the notebook id
+     * @param cellId     the cell id
+     * @return the notebook cell
+     */
     @GET
     @Path("{notebookId}/cells/{cellId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -155,6 +208,14 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Add notebook cell response.
+     *
+     * @param notebookId the notebook id
+     * @param position   the position
+     * @param cell       the cell
+     * @return the response
+     */
     @POST
     @Path("{notebookId}/cells")
     @Produces(MediaType.APPLICATION_JSON)
@@ -169,6 +230,13 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Delete notebook cell response.
+     *
+     * @param notebookId the notebook id
+     * @param cellId     the cell id
+     * @return the response
+     */
     @DELETE
     @Path("{notebookId}/cells/{cellId}")
     public Response deleteNotebookCell(
@@ -180,6 +248,14 @@ public class NoteBookService {
         return response;
     }
 
+    /**
+     * Edit notebook cell response.
+     *
+     * @param notebookId the notebook id
+     * @param cellId     the cell id
+     * @param cell       the cell
+     * @return the response
+     */
     @PUT
     @Path("{notebookId}/cells/{cellId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -216,6 +292,14 @@ public class NoteBookService {
      * @return : just return the offset graph( vertices & edges )
      */
 
+    /**
+     * Execute notebook cell gremlin response.
+     *
+     * @param notebookId the notebook id
+     * @param cellId     the cell id
+     * @param vertexId   the vertex id
+     * @return the response
+     */
     @GET
     @Path("{notebookId}/cells/{cellId}/gremlin")
     @Produces(MediaType.APPLICATION_JSON)
@@ -344,6 +428,14 @@ public class NoteBookService {
      *         user input.
      */
 
+    /**
+     * Execute notebook cell response.
+     *
+     * @param notebookId the notebook id
+     * @param cellId     the cell id
+     * @param newCell    the new cell
+     * @return the response
+     */
     @PUT
     @Path("{notebookId}/cells/{cellId}/execute")
     @Produces(MediaType.APPLICATION_JSON)

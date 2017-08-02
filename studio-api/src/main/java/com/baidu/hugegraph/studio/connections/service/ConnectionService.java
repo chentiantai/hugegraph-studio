@@ -1,3 +1,22 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package com.baidu.hugegraph.studio.connections.service;
 
 import com.baidu.hugegraph.driver.HugeClient;
@@ -48,7 +67,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Created by jishilei on 2017/5/19.
+ * Connection service for Jersey Restful Api
  */
 @Path("connections")
 public class ConnectionService {
@@ -78,7 +97,6 @@ public class ConnectionService {
      * Gets connection.
      *
      * @param connectionId the connection id
-     *
      * @return the connection
      */
     @GET
@@ -96,7 +114,6 @@ public class ConnectionService {
      * Create connection response.
      *
      * @param connection the connection
-     *
      * @return the response
      */
     @POST
@@ -114,7 +131,6 @@ public class ConnectionService {
      * Delete connection response.
      *
      * @param connectionId the connection id
-     *
      * @return the response
      */
     @DELETE
@@ -137,7 +153,6 @@ public class ConnectionService {
      *
      * @param connectionId the connection id
      * @param connection   the connection
-     *
      * @return the response
      */
     @PUT
@@ -162,7 +177,6 @@ public class ConnectionService {
      * Gets connection status.
      *
      * @param connection the connection
-     *
      * @return the connection status
      */
     @GET
@@ -189,7 +203,6 @@ public class ConnectionService {
      * Gets connection schema.
      *
      * @param connectionId the connection id
-     *
      * @return the connection schema
      */
     @GET

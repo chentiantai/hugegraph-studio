@@ -16,7 +16,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.baidu.hugegraph.studio.config;
+
 import com.baidu.hugegraph.config.ConfigOption;
 import com.baidu.hugegraph.config.OptionHolder;
 
