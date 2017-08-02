@@ -4,7 +4,6 @@
 
     <formats>
         <format>dir</format>
-        <format>tar.bz2</format>
     </formats>
 
     <fileSets>
@@ -23,10 +22,6 @@
             <excludes>
                 <exclude>README.md</exclude>
             </excludes>
-        </fileSet>
-        <fileSet>
-            <directory>${top.level.basedir}/studio-ui/dist</directory>
-            <outputDirectory>/ui</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${top.level.basedir}/studio-api/target</directory>

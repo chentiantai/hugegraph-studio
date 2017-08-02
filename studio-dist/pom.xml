@@ -22,6 +22,7 @@
         <assembly.static.dir>${assembly.dir}/static</assembly.static.dir>
         <studio-ui.dir>${top.level.basedir}/studio-ui</studio-ui.dir>
         <shell-executable>bash</shell-executable>
+        <final.name>studio-release</final.name>
     </properties>
 
     <dependencies>
@@ -39,35 +40,6 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <echo file="${top.level.basedir}/dist.sh">
-                                    cd ${studio-ui.dir}
-                                    npm run build
-                                    rm -f ${top.level.basedir}/dist.sh
-                                    echo
-                                    echo "ok...."
-                                    echo
-                                </echo>
-                                <exec executable="${shell-executable}"
-                                      dir="${top.level.basedir}"
-                                      failonerror="true">
-                                    <arg line="./dist.sh"/>
-                                </exec>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
@@ -112,6 +84,53 @@
                         </fileset>
                     </filesets>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo file="${top.level.basedir}/dist.sh">
+                                    cd ${studio-ui.dir}
+                                    npm run build
+                                    rm -f ${top.level.basedir}/dist.sh
+
+                                    rm -rf \
+                                    ${top.level.basedir}/studio-release/ui/*
+
+                                    cp -r \
+                                    ${top.level.basedir}/studio-ui/dist \
+                                    ${top.level.basedir}/studio-release/ui
+
+                                    echo
+                                    echo "latest studio-ui is ok...."
+                                    echo
+
+                                    cd ..
+                                    tar -zcvf \
+                                    ${top.level.basedir}/${final.name}.tar.gz \
+                                    ${final.name}
+                                    rm -f ${top.level.basedir}/dist.sh
+                                    echo
+                                    echo "HugeStudio dist tar.gz available at:
+                                    ${top.level.basedir}/${final.name}.tar.gz"
+                                    echo
+                                </echo>
+                                <exec executable="${shell-executable}"
+                                      dir="${top.level.basedir}"
+                                      failonerror="true">
+                                    <arg line="./dist.sh"/>
+                                </exec>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
