@@ -157,7 +157,7 @@ class GremlinResult extends React.Component {
         }
 
 
-        // use the current tabs  and the defaultTabKey to identify the nextTabs
+        // use the current tabs and the defaultTabKey to identify the nextTabs;
         // the current tabs keep the state of tabs now，which can be changed
         // by the function "onChangeTab"
         this.curTabs.forEach(curTab => {
@@ -169,18 +169,32 @@ class GremlinResult extends React.Component {
             })
         });
 
+
+        // according the current selected tabKey to identify next default Tab;
+        // details as follows:
+        // (1) if defaultTabKey === 1 ,next default tab is nextTabs[0]
+        // (2) if defaultTabKey !==1 and the new resultTabs contain this type
+        //         next default tab is  the current selected tabKey
+        //     else
+        //         next default tab is nextTabs[0]
         if (nextTabs.length > 0) {
             if (defaultTabKey === 1) {
                 nextTabs[0].isActive = true;
                 nextTabs[0].exist = true;
             } else {
+                let isExistDefaultTabKey = false;
                 nextTabs = nextTabs.map(tab => {
                     if (tab.type === defaultTabKey) {
                         tab.isActive = true;
                         tab.exist = true;
+                        isExistDefaultTabKey=true;
                     }
                     return tab;
                 })
+                if(!isExistDefaultTabKey){
+                    nextTabs[0].isActive = true;
+                    nextTabs[0].exist = true;
+                }
             }
         }
 

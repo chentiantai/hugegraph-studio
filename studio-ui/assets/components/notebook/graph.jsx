@@ -87,12 +87,19 @@ class Graph extends React.Component {
 
         if (edges !== null) {
             edges.forEach(edge => {
+                let title = '<div class="tooltips-label"> <a' +
+                    ' class="round-red">●</a>&nbsp;' + 'label : ' + edge.label + '</div>';
+                for (let key in edge.properties) {
+                    title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
+                        ' ' + edge.properties[key] + '</div>';
+                }
                 this.state.graphEdges.add([
                     {
                         id: edge.id,
                         from: edge.outV,
                         to: edge.inV,
-                        label: edge.label
+                        label: edge.label,
+                        title:title
                     }
                 ]);
             });
@@ -220,12 +227,19 @@ class Graph extends React.Component {
     addEdge = (edges) => {
         try {
             edges.forEach(edge => {
+                let title = '<div class="tooltips-label"> <a' +
+                    ' class="round-red">●</a>&nbsp;' + 'label : ' + edge.label + '</div>';
+                for (let key in edge.properties) {
+                    title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
+                        ' ' + edge.properties[key] + '</div>';
+                }
                 this.state.graphEdges.add([
                     {
                         id: edge.id,
                         from: edge.outV,
                         to: edge.inV,
-                        label: edge.label
+                        label: edge.label,
+                        title: title
                     }
                 ]);
             });
