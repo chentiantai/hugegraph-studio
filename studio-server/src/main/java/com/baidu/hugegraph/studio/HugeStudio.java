@@ -46,8 +46,12 @@ import java.nio.file.Paths;
  * The Bootstrap of HugeStudio.
  */
 public class HugeStudio {
-    private static final Logger logger = LoggerFactory.getLogger(HugeStudio.class);
-    private static final String DEFAULT_CONFIGURATION_FILE = "hugestudio.properties";
+
+    private static final Logger logger =
+                                LoggerFactory.getLogger(HugeStudio.class);
+    private static final String DEFAULT_CONFIGURATION_FILE =
+                                "hugestudio.properties";
+
     // The embed tomcat server
     private static Server server;
 
@@ -63,7 +67,6 @@ public class HugeStudio {
         server.await();
     }
 
-
     /**
      * Run tomcat with configuration
      *
@@ -73,10 +76,13 @@ public class HugeStudio {
     public static void run(StudioConfiguration configuration) throws Exception {
 
         String baseDir = configuration.getServerBasePath();
-        String uiDir = String.format("%s/%s", baseDir, configuration.getServerUIDir());
-        String apiWarFile = String.format("%s/%s", baseDir, configuration.getServerWarDir());
+        String uiDir = String.format("%s/%s",
+                       baseDir, configuration.getServerUIDirectory());
+        String apiWarFile = String.format("%s/%s",
+                            baseDir, configuration.getServerWarDirectory());
 
-        validateHttpPort(configuration.getHttpBindAddress(), configuration.getHttpPort());
+        validateHttpPort(configuration.getHttpBindAddress(),
+                         configuration.getHttpPort());
         validatePathExists(uiDir);
         validateFileExists(apiWarFile);
 
@@ -146,9 +152,9 @@ public class HugeStudio {
                 appBaseDirectory.mkdirs();
             }
             context.setUnpackWAR(true);
-            if ((context.getJarScanner() instanceof StandardJarScanner)) {
+            if (context.getJarScanner() instanceof StandardJarScanner) {
                 ((StandardJarScanner) context.getJarScanner())
-                        .setScanAllDirectories(true);
+                                             .setScanAllDirectories(true);
             }
             return context;
         }
@@ -158,47 +164,41 @@ public class HugeStudio {
 
     /**
      * To validate that the http port is available.
-     * System.exit() when the port is not available.
+     * exit when the port is not available.
      */
     private static void validateHttpPort(String httpBindAddress, int httpPort) {
         try {
             ServerSocket socket = new ServerSocket(httpPort, 1,
-                    InetAddress.getByName(httpBindAddress));
-            Object localObject = null;
+                                      InetAddress.getByName(httpBindAddress));
+        } catch (IOException ignored) {
+            logger.error(String.format("Can't start Studio on port %d: %s",
+                                       httpPort, e));
+            System.exit(1);
+        } finally {
             if (socket != null) {
-                if (localObject != null) {
-                    try {
-                        socket.close();
-                    } catch (Throwable t) {
-                        ((Throwable) localObject).addSuppressed(t);
-                    }
-                } else {
+                try {
                     socket.close();
+                } catch (IOException ignored) {
+                    logger.error("Failed to close socket {}", ignored);
                 }
             }
-        } catch (IOException e) {
-            logger.error(String.format(
-                    "Can't start Studio on port %d: %s",
-                    httpPort, e));
-            System.exit(1);
         }
     }
 
     private static void validatePathExists(String pathName) {
         File file = new File(pathName);
-        if (!(file.exists() && file.isDirectory())) {
-            logger.error("Can't start Studio, directory:{} does not exist", pathName);
+        if (!file.exists() || !file.isDirectory()) {
+            logger.error("Can't start Studio, directory {} doesn't exist",
+                         pathName);
             System.exit(1);
         }
     }
 
     private static void validateFileExists(String fileName) {
         File file = new File(fileName);
-        if (! (file.exists() && !file.isDirectory())) {
-            logger.error("Can't start Studio, file:{} does not exist", fileName);
+        if (!file.exists() || !file.isFile()) {
+            logger.error("Can't start Studio, file {} doesn't exist", fileName);
             System.exit(1);
         }
     }
-
-
 }

@@ -29,12 +29,10 @@ import java.net.URL;
  * The type Studio configuration.
  */
 public class StudioConfiguration {
+
     static {
         OptionSpace.register(StudioOptions.Instance());
     }
-
-
-
 
     private HugeConfig config = null;
 
@@ -47,11 +45,10 @@ public class StudioConfiguration {
             config = new HugeConfig(configurationUrl.getFile());
         } catch (org.apache.commons.configuration.ConfigurationException e) {
             throw new RuntimeException(String.format(
-                    "Caught exception loading StudioConfiguration from %s: ",
-                    configurationFile), e);
+                    "Caught exception while loading Studio configuration " +
+                    "from %s: ", configurationFile), e);
         }
     }
-
 
     public Integer getHttpPort() {
         return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT);
@@ -65,14 +62,11 @@ public class StudioConfiguration {
         return this.config.get(StudioOptions.STUDIO_SERVER_BASE_DIR);
     }
 
-    public String getServerUIDir() {
+    public String getServerUIDirectory() {
         return this.config.get(StudioOptions.STUDIO_SERVER_UI_DIR);
     }
 
-    public String getServerWarDir() {
+    public String getServerWarDirectory() {
         return this.config.get(StudioOptions.STUDIO_SERVER_WAR_DIR);
     }
-
-
 }
-
