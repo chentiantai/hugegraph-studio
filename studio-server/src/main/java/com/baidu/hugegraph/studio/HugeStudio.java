@@ -37,10 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * The Bootstrap of HugeStudio.
@@ -48,9 +44,9 @@ import java.nio.file.Paths;
 public class HugeStudio {
 
     private static final Logger logger =
-                                LoggerFactory.getLogger(HugeStudio.class);
+            LoggerFactory.getLogger(HugeStudio.class);
     private static final String DEFAULT_CONFIGURATION_FILE =
-                                "hugestudio.properties";
+            "hugestudio.properties";
 
     // The embed tomcat server
     private static Server server;
@@ -77,12 +73,12 @@ public class HugeStudio {
 
         String baseDir = configuration.getServerBasePath();
         String uiDir = String.format("%s/%s",
-                       baseDir, configuration.getServerUIDirectory());
+                baseDir, configuration.getServerUIDirectory());
         String apiWarFile = String.format("%s/%s",
-                            baseDir, configuration.getServerWarDirectory());
+                baseDir, configuration.getServerWarDirectory());
 
         validateHttpPort(configuration.getHttpBindAddress(),
-                         configuration.getHttpPort());
+                configuration.getHttpPort());
         validatePathExists(uiDir);
         validateFileExists(apiWarFile);
 
@@ -154,7 +150,7 @@ public class HugeStudio {
             context.setUnpackWAR(true);
             if (context.getJarScanner() instanceof StandardJarScanner) {
                 ((StandardJarScanner) context.getJarScanner())
-                                             .setScanAllDirectories(true);
+                        .setScanAllDirectories(true);
             }
             return context;
         }
@@ -167,15 +163,16 @@ public class HugeStudio {
      * exit when the port is not available.
      */
     private static void validateHttpPort(String httpBindAddress, int httpPort) {
+        ServerSocket socket = null;
         try {
-            ServerSocket socket = new ServerSocket(httpPort, 1,
-                                      InetAddress.getByName(httpBindAddress));
+            socket = new ServerSocket(httpPort, 1,
+                    InetAddress.getByName(httpBindAddress));
         } catch (IOException ignored) {
             logger.error(String.format("Can't start Studio on port %d: %s",
-                                       httpPort, e));
+                    httpPort, ignored));
             System.exit(1);
         } finally {
-            if (socket != null) {
+            if (socket != null && !socket.isClosed()) {
                 try {
                     socket.close();
                 } catch (IOException ignored) {
@@ -189,7 +186,7 @@ public class HugeStudio {
         File file = new File(pathName);
         if (!file.exists() || !file.isDirectory()) {
             logger.error("Can't start Studio, directory {} doesn't exist",
-                         pathName);
+                    pathName);
             System.exit(1);
         }
     }
