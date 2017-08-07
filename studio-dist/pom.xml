@@ -98,7 +98,6 @@
                             <tasks>
                                 <echo file="${top.level.basedir}/dist.sh">
                                     cd ${studio-ui.dir}
-                                    npm install
                                     npm run build
                                     rm -f ${top.level.basedir}/dist.sh
 
