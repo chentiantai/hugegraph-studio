@@ -534,3 +534,31 @@ form {
     background-color: #8a8989;
 }
 
+.err_msg h5 {
+    margin-top: 5px;
+}
+
+.err_title .detail {
+    min-width: 50px;
+    display: inline-block;
+    margin-left: 5px;
+    padding: .2em .6em .2em;
+}
+
+.err_title .detail:hover {
+    background-color: #5d5c5c;
+    color: #fff;
+    cursor: pointer;
+}
+
+.err_title {
+    padding-bottom: 5px;
+}
+
+.detailed_err_msg {
+    border-top: 1px #a2a0a0 dashed;
+    padding-top: 5px;
+    color: #000;
+    word-wrap: break-word;
+}
+

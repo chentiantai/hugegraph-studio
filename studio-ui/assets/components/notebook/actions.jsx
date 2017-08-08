@@ -5,6 +5,8 @@
  */
 import {alertMessage} from '../connection/actions';
 import {changeHeadMode} from '../actions';
+import {HTTPSTATUS} from '../httpstatus';
+
 
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
@@ -175,31 +177,54 @@ export function executeCell(notebookId, itemId, cell) {
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId + '/execute';
     return dispatch => {
+        let responseStatus = {
+            status: 200,
+            statusText: 'ok'
+        }
         return fetch(url,
             {
                 method: 'PUT',
                 body: JSON.stringify(cell),
                 headers: myHeaders
             })
-            .then(checkStatus)
-            .then(parseJSON)
+            .then(response => {
+                responseStatus.status = response.status;
+                responseStatus.statusText = response.statusText;
+                return response.json();
+            })
+            .then(response => {
+                if (responseStatus.status >= 200 && responseStatus.status < 300) {
+                    return response
+                } else {
+                    let error = new Error(responseStatus.statusText);
+                    error.response = response;
+                    throw error
+                }
+            })
             .then(data => {
                 let newCell = {
                     ...cell,
                     id: itemId,
                     status: 200,
-                    msg: 'success',
+                    msg: 'ok',
                     result: data
                 }
                 dispatch(runMode(newCell));
             })
             .catch(err => {
-                let infoDate = new Date();
+                if (responseStatus.statusText === '') {
+                    responseStatus.statusText = HTTPSTATUS[responseStatus.status];
+                }
+
+
                 let newCell = {
                     ...cell,
                     id: itemId,
-                    status: err.status,
-                    msg: infoDate.toLocaleString() + ' Internal Server Error',
+                    status: responseStatus.status,
+                    msg: {
+                        title: responseStatus.statusText,
+                        detailedMsg: err.response
+                    },
                     result: null
                 }
                 dispatch(runMode(newCell));
@@ -255,8 +280,6 @@ function checkStatus(response) {
 function parseJSON(response) {
     return response.json()
 }
-
-
 
 
 
