@@ -30,8 +30,8 @@ export default class ErrorResult extends React.Component {
                 </div>
                 <div id={this.props.cellId + '_error'}
                      className="detailed_err_msg"
-                     style={{display: display}}></div>
-
+                     style={{display: display}}>
+                </div>
             </div>;
         }
 
@@ -75,13 +75,13 @@ export default class ErrorResult extends React.Component {
 
     // replace \n\t with blank
     formatMessage = (message) => {
-        //
-        // if(message!==null||message!==undefined||message!==''){
-        //     console.log(message);
-        //     alert(message.replace(new RegExp("\n\t","gm"),""));
-        //     console.log(message);
-        // }
-        return message;
+
+        if (message !== null || message !== undefined || message !== '') {
+            return message.replace(/\\n\\t/g, "==>");
+        } else {
+            return message;
+        }
+
     }
 
 
