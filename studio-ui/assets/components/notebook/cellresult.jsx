@@ -33,7 +33,7 @@ export default class CellResult extends React.Component {
         let result = this.props.result;
         let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
 
-        if (result !== null) {
+        if ((this.props.status >= 200 || this.props.status <= 300) && result !== null) {
             switch (language) {
                 case Markdown:
                     let mdContent = "";
