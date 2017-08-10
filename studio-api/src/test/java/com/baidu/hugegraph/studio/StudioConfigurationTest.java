@@ -37,13 +37,13 @@ public class StudioConfigurationTest {
     @Test
     public void testConfiguration() {
 
+        // FIXME: Why we define the path with '.' after '/'?
         Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio",
                 configuration.getBaseUserDataDirectory());
         Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/connections",
                 configuration.getConnectionsDirectory());
         Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/notebooks",
                 configuration.getNotebooksDirectory());
-
 
     }
 }

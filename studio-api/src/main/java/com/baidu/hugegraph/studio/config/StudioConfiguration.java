@@ -28,10 +28,10 @@ import java.net.URL;
 
 public class StudioConfiguration {
 
-    private static final String DEFAULT_CONFIGURATION_FILE = "hugestudio.properties";
+    private static final String DEFAULT_CONFIGURATION_FILE =
+                                "hugestudio.properties";
 
     static {
-
         OptionSpace.register(StudioApiOptions.Instance());
     }
 
@@ -45,7 +45,7 @@ public class StudioConfiguration {
             config = new HugeConfig(configurationUrl.getFile());
         } catch (org.apache.commons.configuration.ConfigurationException e) {
             throw new RuntimeException(String.format(
-                    "Caught exception loading StudioConfiguration from %s: ",
+                    "Caught exception when loading Studio configurations: %s",
                     DEFAULT_CONFIGURATION_FILE), e);
         }
     }
@@ -65,7 +65,8 @@ public class StudioConfiguration {
     }
 
     public String getBaseUserDataDirectory() {
-        String userDataDir = this.config.get(StudioApiOptions.STUDIO_DATA_BASE_DIR);
+        String userDataDir = this.config.get(
+                             StudioApiOptions.STUDIO_DATA_BASE_DIR);
         if (StringUtils.isEmpty(userDataDir) || userDataDir.equals("null")) {
             userDataDir = "~/.hugestudio";
         }
@@ -73,12 +74,10 @@ public class StudioConfiguration {
     }
 
     private String replaceHomeDirReferences(String confDir) {
-        if (confDir != null) {
-            if (System.getProperty("user.home") != null) {
-                return confDir.replaceFirst("^~", System.getProperty("user.home"));
-            }
-            return confDir;
+        assert !confDir.isEmpty()
+
+        if (System.getProperty("user.home") != null) {
+            return confDir.replaceFirst("^~", System.getProperty("user.home"));
         }
         return null;
-    }
 }
