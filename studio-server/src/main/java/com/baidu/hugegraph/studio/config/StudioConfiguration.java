@@ -46,7 +46,7 @@ public class StudioConfiguration {
         } catch (org.apache.commons.configuration.ConfigurationException e) {
             throw new RuntimeException(String.format(
                     "Caught exception while loading Studio configuration " +
-                    "from %s: ", configurationFile), e);
+                    "from: %s ", configurationFile), e);
         }
     }
 
