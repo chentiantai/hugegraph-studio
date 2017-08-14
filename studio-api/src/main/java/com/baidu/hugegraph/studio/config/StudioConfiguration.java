@@ -74,10 +74,11 @@ public class StudioConfiguration {
     }
 
     private String replaceHomeDirReferences(String confDir) {
-        assert !confDir.isEmpty()
+        assert !confDir.isEmpty();
 
         if (System.getProperty("user.home") != null) {
             return confDir.replaceFirst("^~", System.getProperty("user.home"));
         }
         return null;
+    }
 }
