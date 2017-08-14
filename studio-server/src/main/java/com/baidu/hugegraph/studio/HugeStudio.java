@@ -45,6 +45,7 @@ public class HugeStudio {
 
     private static final Logger LOG =
             LoggerFactory.getLogger(HugeStudio.class);
+
     private static final String DEFAULT_CONFIGURATION_FILE =
             "hugestudio.properties";
 

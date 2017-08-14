@@ -39,7 +39,7 @@ public class StudioConfiguration {
     public StudioConfiguration(String configurationFile) {
         try {
             URL configurationUrl = this.getClass().getClassLoader()
-                                   .getResource(configurationFile);
+                                       .getResource(configurationFile);
             Preconditions.checkNotNull(configurationUrl);
 
             config = new HugeConfig(configurationUrl.getFile());
@@ -51,8 +51,7 @@ public class StudioConfiguration {
     }
 
     public int getHttpPort() {
-        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT)
-                            .intValue();
+        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT).intValue();
     }
 
     public String getHttpBindAddress() {
