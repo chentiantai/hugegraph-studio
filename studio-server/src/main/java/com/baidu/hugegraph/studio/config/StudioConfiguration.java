@@ -39,7 +39,7 @@ public class StudioConfiguration {
     public StudioConfiguration(String configurationFile) {
         try {
             URL configurationUrl = this.getClass().getClassLoader()
-                    .getResource(configurationFile);
+                                   .getResource(configurationFile);
             Preconditions.checkNotNull(configurationUrl);
 
             config = new HugeConfig(configurationUrl.getFile());

@@ -37,7 +37,9 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
     public Response toResponse(Throwable ex) {
         Pair<Response.Status, StudioError> errorDetailsPair = toErrorDetails(ex);
 
-        return Response.status((Response.Status) errorDetailsPair.getLeft()).entity(errorDetailsPair.getRight()).type("application/json").build();
+        return Response.status((Response.Status) errorDetailsPair.getLeft())
+                               .entity(errorDetailsPair.getRight())
+                               .type("application/json").build();
     }
 
     public Pair<Response.Status, StudioError> toErrorDetails(Throwable ex) {
@@ -85,7 +87,9 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
                 message = ex.getMessage();
             }
         }
-        StudioError studioError = new StudioError(status.getStatusCode(), errorCode, message);
-        return Pair.of(Response.Status.fromStatusCode(status.getStatusCode()), studioError);
+        StudioError studioError = new StudioError(status.getStatusCode(),
+                                                  errorCode, message);
+        return Pair.of(Response.Status.fromStatusCode(status.getStatusCode()),
+                       studioError);
     }
 }

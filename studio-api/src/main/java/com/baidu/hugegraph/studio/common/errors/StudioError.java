@@ -41,7 +41,9 @@ public class StudioError extends RuntimeException {
      * @param code    the code
      * @param message the message
      */
-    public StudioError(@JsonProperty("status") int status, @JsonProperty("code") int code, @JsonProperty("message") String message) {
+    public StudioError(@JsonProperty("status") int status,
+                       @JsonProperty("code") int code,
+                       @JsonProperty("message") String message) {
         super(message);
         this.status = status;
         this.code = code;
@@ -65,7 +67,9 @@ public class StudioError extends RuntimeException {
      * @return the studio error
      */
     public static StudioError notFound(String resourceName, String id) {
-        return new StudioError(404, 0, String.format("%s \"%s\" does not exist.", new Object[]{resourceName, id}));
+        return new StudioError(404, 0,
+                               String.format("%s \"%s\" does not exist.",
+                                             new Object[]{resourceName, id}));
     }
 
     /**
@@ -75,7 +79,9 @@ public class StudioError extends RuntimeException {
      * @return the studio error
      */
     public static StudioError notFound(String id) {
-        return new StudioError(404, 0, String.format("%s does not exist.", new Object[]{id}));
+        return new StudioError(404, 0,
+                               String.format("%s does not exist.",
+                                             new Object[]{id}));
     }
 
     /**
@@ -86,7 +92,11 @@ public class StudioError extends RuntimeException {
      * @return the studio error
      */
     public static StudioError conflict(String resourceName, String id) {
-        return new StudioError(409, 0, String.format("Resource with name %s already exists and is associated with id  \"%s\".", new Object[]{resourceName, id}));
+        return new StudioError(409, 0,
+                               String.format("Resource with name %s already "
+                                             + "exists and is associated with"
+                                             + "id  \"%s\".",
+                                             new Object[]{resourceName, id}));
     }
 
     /**

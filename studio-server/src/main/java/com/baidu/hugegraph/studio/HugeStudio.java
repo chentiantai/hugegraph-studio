@@ -72,13 +72,13 @@ public class HugeStudio {
     public static void run(StudioConfiguration configuration) throws Exception {
 
         String baseDir = configuration.getServerBasePath();
-        String uiDir = String.format("%s/%s",
-                baseDir, configuration.getServerUIDirectory());
-        String apiWarFile = String.format("%s/%s",
-                baseDir, configuration.getServerWarDirectory());
+        String uiDir = String.format("%s/%s", baseDir,
+                                     configuration.getServerUIDirectory());
+        String apiWarFile = String.format("%s/%s", baseDir,
+                                          configuration.getServerWarDirectory());
 
         validateHttpPort(configuration.getHttpBindAddress(),
-                configuration.getHttpPort());
+                         configuration.getHttpPort());
         validatePathExists(uiDir);
         validateFileExists(apiWarFile);
 
@@ -86,6 +86,7 @@ public class HugeStudio {
         tomcat.setPort(configuration.getHttpPort());
 
         ProtocolHandler ph = tomcat.getConnector().getProtocolHandler();
+
         if (ph instanceof AbstractProtocol) {
             ((AbstractProtocol) ph).setAddress(InetAddress.getByName
                     (configuration.getHttpBindAddress()));
@@ -103,20 +104,20 @@ public class HugeStudio {
         }
 
         if (!ui.getState().equals(LifecycleState.STARTED)) {
-            System.out.println(
-                    "\nStudio-ui failed to start. Please check logs for details");
+            System.out.println("\nStudio-ui failed to start. "
+                               + "Please check logs for details");
             System.exit(1);
         }
         if (!api.getState().equals(LifecycleState.STARTED)) {
-            System.out.println(
-                    "\nStudio-api failed to start. Please check logs for details");
+            System.out.println("\nStudio-api failed to start. "
+                               + "Please check logs for details");
             System.exit(1);
         }
 
-        String upMessage = String.format(
-                "HugeStudio is now running on: http://%s:%s\n",
-                configuration.getHttpBindAddress(),
-                configuration.getHttpPort());
+        String upMessage = String.format("HugeStudio is now running on: "
+                                         + "http://%s:%s\n",
+                                         configuration.getHttpBindAddress(),
+                                         configuration.getHttpPort());
 
         logger.info(upMessage);
     }
@@ -166,10 +167,10 @@ public class HugeStudio {
         ServerSocket socket = null;
         try {
             socket = new ServerSocket(httpPort, 1,
-                    InetAddress.getByName(httpBindAddress));
+                                      InetAddress.getByName(httpBindAddress));
         } catch (IOException ignored) {
             logger.error(String.format("Can't start Studio on port %d: %s",
-                    httpPort, ignored));
+                                       httpPort, ignored));
             System.exit(1);
         } finally {
             if (socket != null && !socket.isClosed()) {
@@ -186,7 +187,7 @@ public class HugeStudio {
         File file = new File(pathName);
         if (!file.exists() || !file.isDirectory()) {
             logger.error("Can't start Studio, directory {} doesn't exist",
-                    pathName);
+                         pathName);
             System.exit(1);
         }
     }
