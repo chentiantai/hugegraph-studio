@@ -45,13 +45,14 @@ public class StudioConfiguration {
             config = new HugeConfig(configurationUrl.getFile());
         } catch (org.apache.commons.configuration.ConfigurationException e) {
             throw new RuntimeException(String.format(
-                    "Caught exception while loading Studio configuration "
-                            + "from %s: ", configurationFile), e);
+                    "Caught exception while loading Studio configuration " +
+                    "from %s: ", configurationFile), e);
         }
     }
 
-    public Integer getHttpPort() {
-        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT);
+    public int getHttpPort() {
+        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT)
+                            .intValue();
     }
 
     public String getHttpBindAddress() {
