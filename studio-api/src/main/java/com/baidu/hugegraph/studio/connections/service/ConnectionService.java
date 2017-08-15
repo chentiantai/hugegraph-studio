@@ -19,6 +19,25 @@
 
 package com.baidu.hugegraph.studio.connections.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.exception.ClientException;
 import com.baidu.hugegraph.structure.schema.EdgeLabel;
@@ -27,14 +46,8 @@ import com.baidu.hugegraph.structure.schema.VertexLabel;
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.model.ConnectionState;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
-import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
-
-import org.apache.commons.collections.map.HashedMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 // import javax.ws.rs.Path;
 // import javax.ws.rs.POST;
@@ -46,25 +59,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 // import javax.ws.rs.Consumes;
 // import javax.ws.rs.core.MediaType;
 // import javax.ws.rs.core.Response;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.POST;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 // import java.util.List;
 // import java.util.Map;
 // import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Connection service for Jersey Restful Api

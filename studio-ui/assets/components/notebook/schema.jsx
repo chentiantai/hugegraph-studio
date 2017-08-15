@@ -114,13 +114,13 @@ export class Schema extends React.Component {
                                                                 <span
                                                                     className="property_name_span">Source</span>:
                                                                 <span
-                                                                    className="property_value_span">{edgeLabel.links[0].source}</span>
+                                                                    className="property_value_span">{edgeLabel.sourceLabel}</span>
                                                             </div>
                                                             <div>
                                                                 <span
                                                                     className="property_name_span">Target</span>:
                                                                 <span
-                                                                    className="property_value_span">{edgeLabel.links[0].target}</span>
+                                                                    className="property_value_span">{edgeLabel.targetLabel}</span>
                                                             </div>
                                                             <div>
                                                                 <span

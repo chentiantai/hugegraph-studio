@@ -569,5 +569,6 @@ form {
 
 .property_value_span {
     margin-left: 5px;
+    word-wrap: break-word;
 }
 
