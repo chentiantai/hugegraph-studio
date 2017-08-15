@@ -71,14 +71,15 @@ public class HugeStudio {
      */
     public static void run(StudioConfiguration configuration) throws Exception {
 
+        String address = configuration.getHttpBindAddress();
+        int port = configuration.getHttpPort();
+        validateHttpPort(address, port);
+
         String baseDir = configuration.getServerBasePath();
         String uiDir = String.format("%s/%s", baseDir,
                                      configuration.getServerUIDirectory());
         String apiWarFile = String.format("%s/%s", baseDir,
                                           configuration.getServerWarDirectory());
-
-        validateHttpPort(configuration.getHttpBindAddress(),
-                         configuration.getHttpPort());
         validatePathExists(uiDir);
         validateFileExists(apiWarFile);
 
@@ -86,12 +87,10 @@ public class HugeStudio {
         tomcat.setPort(configuration.getHttpPort());
 
         ProtocolHandler ph = tomcat.getConnector().getProtocolHandler();
-
         if (ph instanceof AbstractProtocol) {
-            ((AbstractProtocol) ph).setAddress(InetAddress.getByName
-                    (configuration.getHttpBindAddress()));
+            ((AbstractProtocol) ph).setAddress(InetAddress.getByName(address));
         }
-        tomcat.setHostname(configuration.getHttpBindAddress());
+        tomcat.setHostname(address);
 
         StandardContext ui = configureUi(tomcat, uiDir);
         StandardContext api = configureWar(apiWarFile, "/api", tomcat);
@@ -104,20 +103,20 @@ public class HugeStudio {
         }
 
         if (!ui.getState().equals(LifecycleState.STARTED)) {
-            System.out.println("\nStudio-ui failed to start. "
-                               + "Please check logs for details");
+            System.out.println();
+            System.out.println("Studio-ui failed to start. " +
+                               "Please check logs for details");
             System.exit(1);
         }
         if (!api.getState().equals(LifecycleState.STARTED)) {
-            System.out.println("\nStudio-api failed to start. "
+            System.out.println();
+            System.out.println("Studio-api failed to start. "
                                + "Please check logs for details");
             System.exit(1);
         }
 
-        String upMessage = String.format("HugeStudio is now running on: "
-                                         + "http://%s:%s\n",
-                                         configuration.getHttpBindAddress(),
-                                         configuration.getHttpPort());
+        String upMessage = String.format("HugeStudio is now running on: " +
+                                         "http://%s:%s\n", address, port);
 
         logger.info(upMessage);
     }
