@@ -26,13 +26,19 @@ public enum ErrorCodes {
     /**
      * Graph not found error codes.
      */
-    GRAPH_NOT_FOUND(100401), /**
+    GRAPH_NOT_FOUND(100401),
+
+    /**
      * Invalid connection error codes.
      */
-    INVALID_CONNECTION(100402), /**
+    INVALID_CONNECTION(100402),
+
+    /**
      * Script evaluation error error codes.
      */
-    SCRIPT_EVALUATION_ERROR(10403), /**
+    SCRIPT_EVALUATION_ERROR(10403),
+
+    /**
      * Server serialization error error codes.
      */
     SERVER_SERIALIZATION_ERROR(10404);
