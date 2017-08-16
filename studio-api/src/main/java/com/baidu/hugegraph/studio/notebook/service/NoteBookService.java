@@ -81,9 +81,7 @@ public class NoteBookService {
                     connectionRepository.get(notebook.getConnectionId());
             notebook.setConnection(connection);
         });
-        Response response = Response.status(200)
-                .entity(notebookList)
-                .build();
+        Response response = Response.status(200).entity(notebookList).build();
         return response;
     }
 
@@ -102,9 +100,7 @@ public class NoteBookService {
         Connection connection =
                 connectionRepository.get(notebook.getConnectionId());
         notebook.setConnection(connection);
-        Response response = Response.status(200)
-                .entity(notebook)
-                .build();
+        Response response = Response.status(200).entity(notebook).build();
         return response;
     }
 
@@ -142,8 +138,7 @@ public class NoteBookService {
     public Response deleteNotebook(@PathParam("notebookId") String notebookId) {
         Preconditions.checkArgument(StringUtils.isNotEmpty(notebookId));
         notebookRepository.deleteNotebook(notebookId);
-        Response response = Response.status(204)
-                .build();
+        Response response = Response.status(204).build();
         return response;
     }
 
@@ -166,8 +161,10 @@ public class NoteBookService {
         Connection connection =
                 connectionRepository.get(notebook.getConnectionId());
 
-        /*We only update the value of field from Front End. There are some
-        operation to do it. It can avoid  transmitting big data. */
+        /*
+         * We only update the value of field from Front End. There are some
+         * operation to do it. It can avoid  transmitting big data.
+         */
         Notebook notebookLocal =
                 notebookRepository.getNotebook(notebook.getId());
         if (notebook.getName() != null) {
@@ -182,9 +179,7 @@ public class NoteBookService {
         notebook = notebookRepository.editNotebook(notebookLocal);
 
         notebook.setConnection(connection);
-        Response response = Response.status(200)
-                .entity(notebook)
-                .build();
+        Response response = Response.status(200).entity(notebook).build();
         return response;
     }
 
@@ -225,8 +220,7 @@ public class NoteBookService {
                                     NotebookCell cell) {
         Response response = Response.status(201)
                 .entity(notebookRepository
-                        .addCellToNotebook(notebookId, cell, position))
-                .build();
+                        .addCellToNotebook(notebookId, cell, position)).build();
         return response;
     }
 
@@ -243,8 +237,7 @@ public class NoteBookService {
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId) {
         notebookRepository.deleteNotebookCell(notebookId, cellId);
-        Response response = Response.status(204)
-                .build();
+        Response response = Response.status(204).build();
         return response;
     }
 
@@ -263,12 +256,10 @@ public class NoteBookService {
     public Response editNotebookCell(@PathParam("notebookId") String notebookId,
                                      @PathParam("cellId") String cellId,
                                      NotebookCell cell) {
-        Preconditions
-                .checkArgument(cell != null && cellId.equals(cell.getId()));
+        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
         Response response = Response.status(200)
                 .entity(notebookRepository
-                        .editNotebookCell(notebookId, cellId, cell))
-                .build();
+                        .editNotebookCell(notebookId, cellId, cell)).build();
         return response;
     }
 
@@ -308,13 +299,12 @@ public class NoteBookService {
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId,
             @QueryParam("vertexId") String vertexId) {
-        Preconditions.checkArgument(notebookId != null
-                && cellId != null && vertexId != null);
+        Preconditions.checkArgument(notebookId != null && cellId != null &&
+                                    vertexId != null);
         NotebookCell cell =
                 notebookRepository.getNotebookCell(notebookId, cellId);
 
-        Preconditions
-                .checkArgument(cell != null && cellId.equals(cell.getId()));
+        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
 
         // only be executed with 'gremlin' mode
         Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
@@ -324,12 +314,12 @@ public class NoteBookService {
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 cell.getResult();
 
-        // this method should be executed after the method of @see
-        // executeNotebookCell(String,String),
-        // it's must have a starting point and the result must have vertices
-        // or edges
-        Preconditions
-                .checkArgument(result != null && result.getGraph() != null);
+        /*
+         * This method should be executed after the method of @see
+         * executeNotebookCell(String,String). It must have a starting
+         * point and the result must have vertices or edges.
+         */
+        Preconditions.checkArgument(result != null && result.getGraph() != null);
 
         Notebook notebook = notebookRepository.getNotebook(notebookId);
         Preconditions.checkArgument(notebook != null);
@@ -341,8 +331,7 @@ public class NoteBookService {
         logger.debug("gremlin: " + gremlin);
 
         GremlinManager gremlinManager = hugeClient.gremlin();
-        ResultSet resultSet =
-                gremlinManager.gremlin(gremlin).execute();
+        ResultSet resultSet = gremlinManager.gremlin(gremlin).execute();
         result.setData(resultSet.data());
 
         Set<String> vertexIds = new HashSet<>();
@@ -692,6 +681,7 @@ public class NoteBookService {
         if (paths == null) {
             return null;
         }
+
         Set<String> vertexIds = new HashSet<>();
         // the path node can be a Vertex, or it can be a Edge
         paths.stream().forEach(path -> path.objects().forEach(obj -> {
