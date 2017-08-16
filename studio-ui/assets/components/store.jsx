@@ -7,9 +7,8 @@ import {createStore, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
 import {operation} from './reducers';
 
-
 let store;
-if (!(window.__REDUX_DEVTOOLS_EXTENSION__ || window.__REDUX_DEVTOOLS_EXTENSION__)) {
+if (!window.__REDUX_DEVTOOLS_EXTENSION__) {
     store = createStore(
         operation,
         applyMiddleware(thunk)
