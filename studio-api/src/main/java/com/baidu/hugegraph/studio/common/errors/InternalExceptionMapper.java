@@ -32,10 +32,12 @@ import java.util.concurrent.CompletionException;
 
 @Provider
 public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
-    private static final Logger logger = LogManager.getLogger(InternalExceptionMapper.class);
+    private static final Logger LOG =
+            LogManager.getLogger(InternalExceptionMapper.class);
 
     public Response toResponse(Throwable ex) {
-        Pair<Response.Status, StudioError> errorDetailsPair = toErrorDetails(ex);
+        Pair<Response.Status, StudioError> errorDetailsPair =
+                toErrorDetails(ex);
 
         return Response.status((Response.Status) errorDetailsPair.getLeft())
                                .entity(errorDetailsPair.getRight())
@@ -43,21 +45,24 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
     }
 
     public Pair<Response.Status, StudioError> toErrorDetails(Throwable ex) {
-        if ((ex instanceof StudioError)) {
+        if (ex instanceof StudioError) {
             StudioError er = (StudioError) ex;
             return Pair.of(Response.Status.fromStatusCode(er.status()), er);
         }
+
         int errorCode = 0;
         String message;
         Response.StatusType status;
-        if ((ex instanceof WebApplicationException)) {
-            logger.trace("Returning HTTP error:", ex);
-            status = ((WebApplicationException) ex).getResponse().getStatusInfo();
+        if (ex instanceof WebApplicationException) {
+            LOG.trace("Returning HTTP error:", ex);
+            status = ((WebApplicationException) ex).getResponse()
+                                                   .getStatusInfo();
             message = status.getReasonPhrase();
         } else {
-            if ((ex instanceof ResponseException)) {
+            if (ex instanceof ResponseException) {
                 message = ex.getMessage();
-                switch (((ResponseException) ex).getResponseStatusCode().ordinal()) {
+                switch (((ResponseException) ex).getResponseStatusCode()
+                                                .ordinal()) {
                     case 1:
                         status = Response.Status.BAD_GATEWAY;
                         break;
@@ -73,16 +78,18 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
                         status = Response.Status.GATEWAY_TIMEOUT;
                         break;
                     default:
-                        status = Response.Status.fromStatusCode(((ResponseException) ex).getResponseStatusCode().getValue());
+                        status = Response.Status.fromStatusCode(
+                                        ((ResponseException) ex)
+                                        .getResponseStatusCode().getValue());
                 }
                 if (status == null) {
                     status = Response.Status.BAD_GATEWAY;
                 }
             } else {
-                if ((ex instanceof CompletionException)) {
+                if (ex instanceof CompletionException) {
                     return toErrorDetails(ex.getCause());
                 }
-                logger.error("Unknown internal server error: ", ex);
+                LOG.error("Unknown internal server error: ", ex);
                 status = Response.Status.INTERNAL_SERVER_ERROR;
                 message = ex.getMessage();
             }
