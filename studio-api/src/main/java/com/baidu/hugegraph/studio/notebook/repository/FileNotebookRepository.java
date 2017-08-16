@@ -50,7 +50,7 @@ import java.util.UUID;
  */
 @Repository("notebookRepository")
 public class FileNotebookRepository implements NotebookRepository {
-    private static final Logger logger = LoggerFactory.getLogger(FileNotebookRepository.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FileNotebookRepository.class);
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -70,7 +70,7 @@ public class FileNotebookRepository implements NotebookRepository {
         notebooksDataDirectory = configuration.getNotebooksDirectory();
         Preconditions.checkNotNull(notebooksDataDirectory);
 
-        logger.info("notebooksDataDirectory is {}",  notebooksDataDirectory);
+        LOG.info("notebooksDataDirectory is {}",  notebooksDataDirectory);
         File dir = new File(notebooksDataDirectory);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -88,9 +88,9 @@ public class FileNotebookRepository implements NotebookRepository {
             try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                 writer.write(mapper.writeValueAsString(notebook));
             }
-            logger.debug("Write Notebook File : {}", filePath);
+            LOG.debug("Write Notebook File : {}", filePath);
         } catch (IOException e) {
-            logger.error("Could Not Write File : {} ", filePath, e);
+            LOG.error("Could Not Write File : {} ", filePath, e);
         }
     }
 
@@ -141,13 +141,13 @@ public class FileNotebookRepository implements NotebookRepository {
                         try {
                             notebooks.add(mapper.readValue(Files.readAllBytes(path), Notebook.class));
                         } catch (IOException e) {
-                            logger.error("Could Not Read File : {}", notebooksDataDirectory + "/" + path.getFileName(), e);
+                            LOG.error("Could Not Read File : {}", notebooksDataDirectory + "/" + path.getFileName(), e);
                             // only skips this iteration.
                             return;
                         }
                     });
         } catch (Exception e){
-            logger.error("Read File Exception : {}" , notebooksDataDirectory, e);
+            LOG.error("Read File Exception : {}" , notebooksDataDirectory, e);
         }
         return notebooks;
     }
@@ -157,7 +157,7 @@ public class FileNotebookRepository implements NotebookRepository {
         try {
             FileUtils.forceDelete(FileUtils.getFile(notebooksDataDirectory, notebookId));
         } catch (IOException e) {
-            logger.error("Could Not Delete File : {}", notebooksDataDirectory + "/" + notebookId, e);
+            LOG.error("Could Not Delete File : {}", notebooksDataDirectory + "/" + notebookId, e);
         }
     }
 
@@ -168,7 +168,7 @@ public class FileNotebookRepository implements NotebookRepository {
                     Files.readAllBytes(Paths.get(notebooksDataDirectory + "/" + notebookId)),
                     Notebook.class);
         } catch (IOException e) {
-            logger.error("Could Not Read File : {}", notebooksDataDirectory + "/" + notebookId, e);
+            LOG.error("Could Not Read File : {}", notebooksDataDirectory + "/" + notebookId, e);
         }
         return null;
     }

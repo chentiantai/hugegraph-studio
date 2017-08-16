@@ -118,9 +118,7 @@ class NoteBookItemAdd extends React.Component {
             </div>
         );
     }
-
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {

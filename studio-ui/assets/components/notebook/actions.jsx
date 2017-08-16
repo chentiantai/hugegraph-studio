@@ -88,9 +88,7 @@ export function loadCells(notebookId) {
             .then(data => {
                 dispatch(showCells(data));
                 let existFullScreenCell = data.cells.some(cell => cell.viewSettings.fullScreen);
-                dispatch(changeHeadMode({
-                    fullScreen: existFullScreenCell
-                }));
+                dispatch(changeHeadMode({ fullScreen: existFullScreenCell }));
             })
             .catch(err => {
                 dispatch(alertMessage('Load Cells Fetch Exception:' + err, 'danger'));

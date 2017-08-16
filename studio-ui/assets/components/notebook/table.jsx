@@ -102,7 +102,6 @@ export default  class TableResult extends React.Component {
                             <tr className="info">
                                 <th>path</th>
                             </tr>
-
                             {
                                 tableContent.map((obj, index) => {
                                     let vertexName = obj.objects[0].id.split('\u0002')[1];
@@ -112,9 +111,7 @@ export default  class TableResult extends React.Component {
                                         <td>{pathResult}</td>
                                     </tr>;
                                 })
-
                             }
-
                             </tbody>
                         </table>
                     </div>

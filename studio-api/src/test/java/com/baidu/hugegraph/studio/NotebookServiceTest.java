@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Set;
 
 public class NotebookServiceTest extends JerseyTest {
-    private static final Logger logger = LoggerFactory.getLogger(NotebookServiceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NotebookServiceTest.class);
     private ObjectMapper mapper;
 
     private Set<String> notebookIds;
@@ -70,7 +70,7 @@ public class NotebookServiceTest extends JerseyTest {
         }
         notebookIds.stream().forEach( id -> {
             deleteNotebook(id);
-            logger.info("delete notebook=" + id );
+            LOG.info("delete notebook=" + id );
         });
     }
 
@@ -128,7 +128,7 @@ public class NotebookServiceTest extends JerseyTest {
         String notebookId = notebook.getId();
 
         Assert.assertTrue(StringUtils.isNotEmpty(notebookId));
-        logger.info("notebookId=" + notebookId );
+        LOG.info("notebookId=" + notebookId );
         addNotebookId(notebookId);
 
     }

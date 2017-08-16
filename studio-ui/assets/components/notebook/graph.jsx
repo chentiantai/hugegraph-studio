@@ -68,10 +68,11 @@ class Graph extends React.Component {
 
         if (vertexs !== null) {
             vertexs.forEach(vertex => {
-                let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' + 'label : ' + vertex.label + '</div>';
+                let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' +
+                            'label : ' + vertex.label + '</div>';
                 for (let key in vertex.properties) {
                     title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
-                        ' ' + vertex.properties[key][0].value + '</div>';
+                            ' ' + vertex.properties[key][0].value + '</div>';
                 }
 
                 let label = vertex.id;
@@ -99,7 +100,7 @@ class Graph extends React.Component {
                         from: edge.outV,
                         to: edge.inV,
                         label: edge.label,
-                        title:title
+                        title: title
                     }
                 ]);
             });
@@ -206,10 +207,11 @@ class Graph extends React.Component {
         try {
             if (vertices !== null) {
                 vertices.forEach(vertex => {
-                    let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' + 'label : ' + vertex.label + '</div>';
+                    let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' +
+                                'label : ' + vertex.label + '</div>';
                     for (let key in vertex.properties) {
                         title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
-                            ' ' + vertex.properties[key][0].value + '</div>';
+                                ' ' + vertex.properties[key][0].value + '</div>';
                     }
 
                     let label = vertex.id;
@@ -249,25 +251,6 @@ class Graph extends React.Component {
         }
     }
 
-    // syncResult = graph => {
-    //     let cell = this.props.cells.find(cell => cell.id === this.props.cellId)
-    //     this.syncCode(cell.result);
-    //     this.syncTable(cell.result.type, graph);
-    // }
-    //
-    // syncCode = result => {
-    //     if (document.getElementById(this.props.cellId+'_code') !== null) {
-    //         let paneJson = '#' + this.props.cellId+'_code';
-    //         let json = JSON.stringify(result);
-    //         $(paneJson).JSONView(json, {collapsed: true});
-    //     }
-    //
-    // }
-    //
-    // syncTable = (type, graph) => {
-    //
-    // }
-
     checkStatus(response) {
         if (response.status >= 200 && response.status < 300) {
             return response
@@ -281,10 +264,7 @@ class Graph extends React.Component {
     parseJSON(response) {
         return response.json()
     }
-
-
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {

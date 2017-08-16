@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ConnectionServiceTest extends JerseyTest {
-    private static final Logger logger = LoggerFactory.getLogger(ConnectionServiceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConnectionServiceTest.class);
     private ObjectMapper mapper;
 
     private Set<String> connectionIds;
@@ -70,7 +70,7 @@ public class ConnectionServiceTest extends JerseyTest {
         }
         connectionIds.stream().forEach(id -> {
             deleteConnection(id);
-            logger.info("delete connection=" + id);
+            LOG.info("delete connection=" + id);
         });
     }
 
@@ -135,7 +135,7 @@ public class ConnectionServiceTest extends JerseyTest {
         String connectionId = connection.getId();
 
         Assert.assertTrue(StringUtils.isNotEmpty(connectionId));
-        logger.info("connectionId=" + connectionId);
+        LOG.info("connectionId=" + connectionId);
 
         addConnectionId(connectionId);
     }

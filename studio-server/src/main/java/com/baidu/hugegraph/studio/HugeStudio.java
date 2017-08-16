@@ -43,7 +43,7 @@ import java.net.ServerSocket;
  */
 public class HugeStudio {
 
-    private static final Logger logger =
+    private static final Logger LOG =
             LoggerFactory.getLogger(HugeStudio.class);
     private static final String DEFAULT_CONFIGURATION_FILE =
             "hugestudio.properties";
@@ -118,7 +118,7 @@ public class HugeStudio {
         String upMessage = String.format("HugeStudio is now running on: " +
                                          "http://%s:%s\n", address, port);
 
-        logger.info(upMessage);
+        LOG.info(upMessage);
     }
 
 
@@ -127,9 +127,10 @@ public class HugeStudio {
         ErrorPage errorPage = new ErrorPage();
         errorPage.setErrorCode(404);
         errorPage.setLocation("/index.html");
+        String finaLocation = new File(uiLocation).getAbsolutePath();
 
         StandardContext context = (StandardContext) tomcat.addWebapp(
-                "", new File(uiLocation).getAbsolutePath());
+                "", finaLocation);
         context.addWelcomeFile("/index.html");
         context.addErrorPage(errorPage);
 
@@ -139,6 +140,7 @@ public class HugeStudio {
     private static StandardContext configureWar(String warFile, String appBase,
                                                 Tomcat tomcat)
             throws ServletException, IOException {
+
         if (warFile != null && warFile.length() > 0) {
             StandardContext context = (StandardContext) tomcat.addWebapp(
                     appBase, new File(warFile).getAbsolutePath());
@@ -168,7 +170,7 @@ public class HugeStudio {
             socket = new ServerSocket(httpPort, 1,
                                       InetAddress.getByName(httpBindAddress));
         } catch (IOException ignored) {
-            logger.error(String.format("Can't start Studio on port %d: %s",
+            LOG.error(String.format("Can't start Studio on port %d: %s",
                                        httpPort, ignored));
             System.exit(1);
         } finally {
@@ -176,7 +178,7 @@ public class HugeStudio {
                 try {
                     socket.close();
                 } catch (IOException ignored) {
-                    logger.error("Failed to close socket {}", ignored);
+                    LOG.error("Failed to close socket {}", ignored);
                 }
             }
         }
@@ -185,7 +187,7 @@ public class HugeStudio {
     private static void validatePathExists(String pathName) {
         File file = new File(pathName);
         if (!file.exists() || !file.isDirectory()) {
-            logger.error("Can't start Studio, directory {} doesn't exist",
+            LOG.error("Can't start Studio, directory {} doesn't exist",
                          pathName);
             System.exit(1);
         }
@@ -194,7 +196,7 @@ public class HugeStudio {
     private static void validateFileExists(String fileName) {
         File file = new File(fileName);
         if (!file.exists() || !file.isFile()) {
-            logger.error("Can't start Studio, file {} doesn't exist", fileName);
+            LOG.error("Can't start Studio, file {} doesn't exist", fileName);
             System.exit(1);
         }
     }

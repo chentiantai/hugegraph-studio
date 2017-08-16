@@ -58,7 +58,8 @@ export class Schema extends React.Component {
                                                                     className="property_value_span">{vertexLabel.primaryKeys.length === 0 ? '[ ]' : vertexLabel.primaryKeys}</span>
                                                             </div>
                                                         </div>
-                                                    }</Popover>;
+                                                    }
+                                                    </Popover>;
                                                 return (
                                                     <OverlayTrigger
                                                         key={index}
@@ -129,8 +130,8 @@ export class Schema extends React.Component {
                                                                     className="property_value_span">{edgeLabel.sortKeys.length === 0 ? '[ ]' : edgeLabel.sortKeys}</span>
                                                             </div>
                                                         </div>
-
-                                                    }</Popover>;
+                                                    }
+                                                    </Popover>;
                                                 return (
                                                     <OverlayTrigger
                                                         key={index}
@@ -183,7 +184,8 @@ export class Schema extends React.Component {
                                                                     className="property_value_span">{propertyKey.cardinality}</span>
                                                             </div>
                                                         </div>
-                                                    }</Popover>;
+                                                    }
+                                                    </Popover>;
                                                 return (
                                                     <OverlayTrigger
                                                         key={index}

@@ -66,7 +66,7 @@ public class StudioConfiguration {
     public String getBaseUserDataDirectory() {
         String userDataDir = this.config.get(
                              StudioApiOptions.STUDIO_DATA_BASE_DIR);
-        if (StringUtils.isBlank(userDataDir))
+        if (StringUtils.isBlank(userDataDir)) {
             userDataDir = "~/.hugestudio";
         }
         return replaceHomeDirReferences(userDataDir);

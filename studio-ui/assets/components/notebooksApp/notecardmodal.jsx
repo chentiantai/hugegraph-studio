@@ -97,7 +97,8 @@ class NoteCardModal extends React.Component {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    console.error('Load Connection: Server Side Error；\r\nCode:' + response.status);
+                    console.error('Load Connection: Server Side Error；\r\nCode:' +
+                                  response.status);
                 }
             })
             .then(data => {
@@ -118,9 +119,10 @@ class NoteCardModal extends React.Component {
     }
 
     render() {
-        let selectValue =
-            this.state.noteCard.connectionId === '' && this.state.connections.length > 0 ?
-                this.state.connections[0].id : this.state.noteCard.connectionId;
+        let conId = this.state.noteCard.connectionId;
+        let conId0 = this.state.connections[0].id;
+        let conLen = this.state.connections.length;
+        let selectValue = conId === '' && conLen > 0 ? conId0 : conId;
 
         return (
             <div>
@@ -132,7 +134,7 @@ class NoteCardModal extends React.Component {
                     </ModalHeader>
                     <ModalBody>
                         <form className="form-horizontal">
-                            <input style={{display: 'none'}} type="text" />
+                            <input style={{display: 'none'}} type="text"/>
                             <div className="form-group">
                                 <label
                                     className="col-sm-2 control-label">Name*</label>

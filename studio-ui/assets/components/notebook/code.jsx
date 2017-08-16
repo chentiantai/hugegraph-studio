@@ -24,7 +24,6 @@ export default  class Code extends React.Component {
     }
 
     render() {
-        console.log("Code render");
         return (
             <div style={{height: this.props.height + 'px'}}
                  className="code-content " id={this.props.id}>

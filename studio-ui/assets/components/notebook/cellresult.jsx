@@ -32,8 +32,9 @@ export default class CellResult extends React.Component {
         let resultPanel = null;
         let result = this.props.result;
         let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
+        let status = this.props.status;
 
-        if ((this.props.status >= 200 || this.props.status <= 300) && result !== null) {
+        if ((status >= 200 || status <= 300) && result !== null) {
             switch (language) {
                 case Markdown:
                     let mdContent = "";
@@ -67,9 +68,9 @@ export default class CellResult extends React.Component {
                     resultPanel = <div/>;
             }
         } else {
-            if (this.props.status !== null && (this.props.status < 200 || this.props.status > 300)) {
+            if (status !== null && (status < 200 || status > 300)) {
                 resultPanel =
-                    <ErrorResult status={this.props.status}
+                    <ErrorResult status={status}
                                  msg={this.props.msg}
                                  cellId={this.props.cellId}/>;
             } else {

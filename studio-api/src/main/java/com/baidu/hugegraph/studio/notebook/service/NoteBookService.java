@@ -59,7 +59,7 @@ import java.util.stream.Collectors;
  */
 @Path("notebooks")
 public class NoteBookService {
-    private static final Logger logger =
+    private static final Logger LOG =
             LoggerFactory.getLogger(NoteBookService.class);
 
     @Autowired
@@ -328,7 +328,7 @@ public class NoteBookService {
                 notebook.getConnection().getGraphName());
 
         String gremlin = String.format("g.V('%s').bothE()", vertexId);
-        logger.debug("gremlin: " + gremlin);
+        LOG.debug("gremlin: " + gremlin);
 
         GremlinManager gremlinManager = hugeClient.gremlin();
         ResultSet resultSet = gremlinManager.gremlin(gremlin).execute();
@@ -433,7 +433,7 @@ public class NoteBookService {
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId,
             NotebookCell newCell) {
-        logger.debug(
+        LOG.debug(
                 "executeNotebookCell: notebookId={},cellId={} ,language={} \n"
                         + " code={}",
                 notebookId, cellId, newCell.getLanguage(), newCell.getCode());
@@ -446,7 +446,7 @@ public class NoteBookService {
                         .editNotebookCell(notebookId, cellId, newCell);
         Long startTime = System.currentTimeMillis();
 
-        logger.debug(
+        LOG.debug(
                 "executeNotebookCell: notebookId={},cellId={} ,language={} \n"
                         + " code={}",
                 notebookId, cellId, cell.getLanguage(), cell.getCode());
