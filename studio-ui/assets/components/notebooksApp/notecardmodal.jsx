@@ -120,9 +120,8 @@ class NoteCardModal extends React.Component {
 
     render() {
         let conId = this.state.noteCard.connectionId;
-        let conId0 = this.state.connections[0].id;
         let conLen = this.state.connections.length;
-        let selectValue = conId === '' && conLen > 0 ? conId0 : conId;
+        let selectValue = conId === '' && conLen > 0 ? this.state.connections[0].id : conId;
 
         return (
             <div>
