@@ -68,8 +68,6 @@ import com.google.common.base.Preconditions;
  */
 @Path("connections")
 public class ConnectionService {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ConnectionService.class);
 
     @Autowired
     private ConnectionRepository connectionRepository;
