@@ -45,11 +45,10 @@ public class StudioConfiguration {
             config = new HugeConfig(configurationUrl.getFile());
         } catch (org.apache.commons.configuration.ConfigurationException e) {
             throw new RuntimeException(String.format(
-                    "Caught exception when loading Studio configurations: %s",
+                    "Caught exception while loading Studio configurations: %s",
                     DEFAULT_CONFIGURATION_FILE), e);
         }
     }
-
 
     public String getConnectionsDirectory() {
         return String.format("%s/%s",
@@ -67,7 +66,7 @@ public class StudioConfiguration {
     public String getBaseUserDataDirectory() {
         String userDataDir = this.config.get(
                              StudioApiOptions.STUDIO_DATA_BASE_DIR);
-        if (StringUtils.isEmpty(userDataDir) || userDataDir.equals("null")) {
+        if (StringUtils.isBlank(userDataDir))
             userDataDir = "~/.hugestudio";
         }
         return replaceHomeDirReferences(userDataDir);
