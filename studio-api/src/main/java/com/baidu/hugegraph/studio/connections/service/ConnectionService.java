@@ -49,20 +49,6 @@ import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
 
-// import javax.ws.rs.Path;
-// import javax.ws.rs.POST;
-// import javax.ws.rs.DELETE;
-// import javax.ws.rs.GET;
-// import javax.ws.rs.PUT;
-// import javax.ws.rs.PathParam;
-// import javax.ws.rs.Produces;
-// import javax.ws.rs.Consumes;
-// import javax.ws.rs.core.MediaType;
-// import javax.ws.rs.core.Response;
-// import java.util.List;
-// import java.util.Map;
-// import java.util.HashMap;
-
 /**
  * Connection service for Jersey Restful Api
  */
@@ -134,9 +120,9 @@ public class ConnectionService {
     public Response deleteConnection(
             @PathParam("connectionId") String connectionId) {
         Preconditions.checkArgument(!notebookRepository.getNotebooks().stream()
-                        .anyMatch(n -> n.getConnectionId().equals(connectionId)),
-                "The connection can not been deleted if it has been used by "
-                        + "any notebook");
+                .anyMatch(n -> n.getConnectionId().equals(connectionId)),
+                "The connection can't be deleted if it has already been used " +
+                "by any notebook");
 
         connectionRepository.deleteConnection(connectionId);
         Response response = Response.status(204).build();
@@ -157,14 +143,12 @@ public class ConnectionService {
     public Response editConnection(
             @PathParam("connectionId") String connectionId,
             Connection connection) {
-        Preconditions.checkArgument(connectionId != null
-                && connectionId.equals(connection.getId()));
+        Preconditions.checkArgument(connectionId != null &&
+                                    connectionId.equals(connection.getId()));
         connection.setLastModified(System.currentTimeMillis());
         connectionRepository.editConnection(connection);
 
-        Response response = Response.status(200)
-                .entity(connection)
-                .build();
+        Response response = Response.status(200).entity(connection).build();
         return response;
     }
 
@@ -180,12 +164,11 @@ public class ConnectionService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getConnectionStatus(Connection connection) {
         Preconditions.checkNotNull(connection);
-        Response response = Response.status(200)
-                .entity(ConnectionState.OPEN)
+        Response response = Response.status(200).entity(ConnectionState.OPEN)
                 .build();
         try {
             HugeClient.open(connection.getConnectionUri(),
-                    connection.getGraphName());
+                            connection.getGraphName());
         } catch (ClientException ex) {
             response = Response.status(ex.status())
                     .entity(ConnectionState.CLOSED)
@@ -209,27 +192,22 @@ public class ConnectionService {
         Connection connection = connectionRepository.get(connectionId);
         Preconditions.checkNotNull(connection);
         Preconditions.checkArgument(connection.getId().equals(connectionId));
+
         Response response = null;
-        HugeClient hugeClient = null;
         try {
-            hugeClient = HugeClient.open(connection.getConnectionUri(),
-                    connection.getGraphName());
+            HugeClient client = HugeClient.open(connection.getConnectionUri(),
+                                                connection.getGraphName());
             Map<String, List> schemas = new HashMap<>();
-            List<PropertyKey> propertyKeys =
-                    hugeClient.schema().getPropertyKeys();
-            List<VertexLabel> vertexLabels =
-                    hugeClient.schema().getVertexLabels();
-            List<EdgeLabel> edgeLabels = hugeClient.schema().getEdgeLabels();
+            List<PropertyKey> propertyKeys = client.schema().getPropertyKeys();
+            List<VertexLabel> vertexLabels = client.schema().getVertexLabels();
+            List<EdgeLabel> edgeLabels = client.schema().getEdgeLabels();
             schemas.put("propertyKeys", propertyKeys);
             schemas.put("vertexLabels", vertexLabels);
             schemas.put("edgeLabels", edgeLabels);
-            response = Response.status(200)
-                    .entity(schemas)
-                    .build();
+            response = Response.status(200).entity(schemas).build();
         } catch (ClientException ex) {
-            response = Response.status(ex.status())
-                    .entity(ex.message())
-                    .build();
+            response = Response.status(ex.status()).entity(ex.message())
+                        .build();
         }
         return response;
     }
