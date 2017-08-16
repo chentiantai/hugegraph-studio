@@ -21,19 +21,16 @@ class Head extends React.Component {
                         fluid={this.props.headMode.fullScreen}>
                     <Navbar.Header>
                         <Navbar.Brand>
-                            <Link to="/index"><img
-                                src='../images/logo.png'/></Link>
+                            <Link to="/index"><img src='../images/logo.png'/></Link>
                         </Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav pullRight>
-                            <NavDropdown eventKey={1} title="setting"
-                                         id="head-nav-dropdown">
+                            <NavDropdown eventKey={1} title="setting" id="head-nav-dropdown">
                                 <MenuItem eventKey={1.1}><Link to="/index">notebooks</Link></MenuItem>
                                 <MenuItem divider/>
-                                <MenuItem eventKey={1.2}><Link
-                                    to="/connections">connections</Link></MenuItem>
+                                <MenuItem eventKey={1.2}><Link to="/connections">connections</Link></MenuItem>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
@@ -59,12 +56,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Connected Component
-export default  withRouter(connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
 )(Head));
-
-
-
-
-
