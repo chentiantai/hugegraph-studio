@@ -23,7 +23,7 @@ export default class MarkdownBrowser extends React.Component {
         return (
             <div id={this.props.id}
                  className="html-content"
-                 style={{height: this.props.height + 'px'}}
+                 style={{minHeight: this.props.height + 'px'}}
                  dangerouslySetInnerHTML={{__html: htmlContent}}>
             </div>
         );
