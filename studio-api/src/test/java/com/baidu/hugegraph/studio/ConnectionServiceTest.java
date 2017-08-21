@@ -91,7 +91,8 @@ public class ConnectionServiceTest extends JerseyTest {
         return ServletDeploymentContext
                 .forServlet(new ServletContainer(new ResourceRegister()))
                 .addListener(ContextLoaderListener.class)
-                .contextParam("contextConfigLocation", "classpath:applicationContext.xml")
+                .contextParam("contextConfigLocation",
+                              "classpath:applicationContext.xml")
                 .build();
     }
 

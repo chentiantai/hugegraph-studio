@@ -18,13 +18,14 @@ export default class ErrorResult extends React.Component {
     render() {
         let display = this.state.showDetail ? 'block' : 'none';
         let errorPanel = <div className="alert alert-danger err_msg">
-            <h5>{this.props.msg.title}</h5>
-        </div>;
-        if (this.props.msg.detailedMsg !== undefined) {
+                            <h5>{this.props.msg.title}</h5>
+                         </div>;
+        let  detailedMsg = this.props.msg.detailedMsg;
+        if (detailedMsg !== undefined) {
             errorPanel = <div className="alert alert-danger err_msg">
                 <h5>{this.props.msg.title}</h5>
                 <div className="err_title">
-                    {JSON.parse(this.props.msg.detailedMsg.message).message}
+                    {JSON.parse(detailedMsg.message).message}
                     <span className="label label-danger detail"
                           onClick={this.showDetail}>Detail</span>
                 </div>

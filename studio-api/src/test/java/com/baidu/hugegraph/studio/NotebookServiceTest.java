@@ -91,7 +91,8 @@ public class NotebookServiceTest extends JerseyTest {
         return ServletDeploymentContext
                 .forServlet(new ServletContainer(new ResourceRegister()))
                 .addListener(ContextLoaderListener.class)
-                .contextParam("contextConfigLocation", "classpath:applicationContext.xml")
+                .contextParam("contextConfigLocation",
+                              "classpath:applicationContext.xml")
                 .build();
     }
 
@@ -122,7 +123,8 @@ public class NotebookServiceTest extends JerseyTest {
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.json(notebook));
 
-        Assert.assertEquals("should return status 201", 201, response.getStatus());
+        Assert.assertEquals("should return status 201", 201,
+                            response.getStatus());
 
         notebook = response.readEntity(Notebook.class);
         String notebookId = notebook.getId();
