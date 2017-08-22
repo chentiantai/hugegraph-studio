@@ -4,7 +4,6 @@
  * Created on 17/6/5
  */
 
-
 import {changeHeadMode} from '../actions';
 export const SHOW = 'show';
 export const UPDATE_SUCCESS = 'update_success';
@@ -13,7 +12,6 @@ export const ADD_SUCCESS = 'add_success';
 export const DELETE_SUCCESS = 'delete_success';
 export const ALERT_SHOW = 'alert_show';
 export const ALERT_HIDE = 'alert_hide';
-
 
 export function loadConnections() {
     let url = '/api/v1/connections';
@@ -32,7 +30,6 @@ export function loadConnections() {
             });
     };
 }
-
 
 export function showConnections(connections) {
     return {
@@ -186,6 +183,7 @@ export function alertHide(key) {
     };
 }
 
+// TODO: Please add comments for why delay should be 1000 and make (success, warning..) as a variable.
 export function alertMessage(messageText, messageType, delay = 1000) {
     return (dispatch, getState) => {
         if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
@@ -199,11 +197,12 @@ export function alertMessage(messageText, messageType, delay = 1000) {
                 setTimeout(() => dispatch(alertHide(key)), delay);
             }
         } else {
-            console.error('messageText must be string and messageType must be success, warning, danger, info');
+            console.error('messageText must be string type and messageType must be either [%s, %s, %s, %s]', 'success', 'warning', 'danger', 'info');
         }
     };
 }
 
+// TODO: Please add comments for why delay should be 1500.
 export function hideAllAlert(delay = 1500) {
     return (dispatch, getState) => {
         getState().alerts.items.forEach(item => {
@@ -227,5 +226,3 @@ function checkStatus(response) {
 function parseJSON(response) {
     return response.json()
 }
-
-

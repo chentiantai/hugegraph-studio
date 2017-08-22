@@ -19,7 +19,7 @@ class ConnectionsBoard extends React.Component {
         super();
         this.state = {
             alert: null,
-            title: 'add a new connection',
+            title: 'Add a new connection',
             isOpen: false,
             connection: {
                 id: '',
@@ -39,7 +39,7 @@ class ConnectionsBoard extends React.Component {
 
     openAddModal() {
         this.setState({
-            title: 'add a new connection',
+            title: 'Add a new connection',
             isOpen: true,
             connection: {
                 id: '',
@@ -68,7 +68,7 @@ class ConnectionsBoard extends React.Component {
             <AlertModal
                 cancel={() => this.cancelDelete()}
                 confirm={() => this.confirmDelete(id)}
-                message='Do you want to delete this connection'
+                message='Do you want to delete this connection?'
             />
 
         );
@@ -103,7 +103,6 @@ class ConnectionsBoard extends React.Component {
                     display="block"
                     name="HugeGraph NoteBook Quick Start"/>
                 <div className="container">
-
 
                     <div className="row">
                         <div className="panel panel-default">
@@ -151,8 +150,6 @@ class ConnectionsBoard extends React.Component {
             </div>
         );
     }
-
-
 }
 
 

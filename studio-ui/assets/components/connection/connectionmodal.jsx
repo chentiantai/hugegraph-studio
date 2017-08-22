@@ -3,6 +3,7 @@
  * @author huanghaiping(huanghaiping02@baidu.com)
  * Created on 17/5/31
  */
+
 import React from 'react';
 import {connect} from 'react-redux';
 import {saveConnection} from './actions';
@@ -16,14 +17,13 @@ import {
 import Input from '../commoncomponents/input';
 import {isNull,isNumber} from '../commoncomponents/validator';
 
-
 class ConnectionModal extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             isValidateByForce: false,
-            isOpen:false,
+            isOpen: false,
             connection: {
                 id: '',
                 name: '',
@@ -31,8 +31,8 @@ class ConnectionModal extends React.Component {
                 connectionHost: '',
                 port: ''
             },
-            title:'',
-            operation:''
+            title: '',
+            operation: ''
         };
         this.validation = {
             name: true,
@@ -42,11 +42,11 @@ class ConnectionModal extends React.Component {
         };
     }
 
-    handleChange = (name, value, ...needles) => {
-        if (needles.length > 0) {
-            this.validation[name] = needles[0];
+    handleChange = (name, value, ...needless) => {
+        if (needless.length > 0) {
+            this.validation[name] = needless[0];
         }
-        this.state.connection[name]=value;
+        this.state.connection[name] = value;
     }
 
     saveConnection() {
@@ -58,10 +58,10 @@ class ConnectionModal extends React.Component {
                 break;
             }
         }
-        if (validationStatus) {
 
+        if (validationStatus) {
             let modalInfo = {}
-            if (this.props.operation == 'add') {
+            if (this.props.operation === 'add') {
                 modalInfo = {
                     operation: this.props.operation,
                     connection: {
@@ -82,8 +82,6 @@ class ConnectionModal extends React.Component {
             this.closeModal();
         }
     }
-
-
 
     componentDidUpdate() {
         this.state.isValidateByForce = false;
@@ -177,7 +175,6 @@ class ConnectionModal extends React.Component {
         );
     }
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {

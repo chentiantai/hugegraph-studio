@@ -4,6 +4,7 @@
  * @author2 liunanke(liunanke@baidu.com)
  * Created on 17/5/31
  */
+
 import '../vendors/bootstrap/css/bootstrap.min.css';
 import '../css/main.css';
 import React from 'react';
@@ -29,8 +30,7 @@ export default class NotebooksApp extends React.Component {
                     <Head/>
                     <Switch>
                         <Route path="/index" component={NoteCardBoard}/>
-                        <Route path="/connections"
-                               component={ConnectionsBoard}/>
+                        <Route path="/connections" component={ConnectionsBoard}/>
                         <Route path="/notebook/:id" component={NoteBookBoard}/>
                         <Route component={NoteCardBoard}/>
                     </Switch>
@@ -39,9 +39,3 @@ export default class NotebooksApp extends React.Component {
         );
     }
 }
-
-
-
-
-
-
