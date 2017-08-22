@@ -18,24 +18,6 @@
  */
 
 package com.baidu.hugegraph.studio.connections.model;
-/*
- * Copyright 2017 HugeGraph Authors
- *
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with this
- * work for additional information regarding copyright ownership. The ASF
- * licenses this file to You under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -43,8 +25,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 
 /**
- * The Connection contain the information about hugeserver .
- * hugeserver host address, port and graph name is required.
+ * The Connection contain the information about hugeserver.
+ * Huge Server host address, port and graph name is required.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Connection implements Comparable<Connection> {
@@ -70,7 +52,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets id from uuid.
      *
-     * @return the id
+     * @return the id.
      */
     public String getId() {
         return id;
@@ -79,7 +61,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Sets id.
      *
-     * @param id the id
+     * @param id the id.
      */
     public void setId(String id) {
         this.id = id;
@@ -88,7 +70,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets name.
      *
-     * @return the name
+     * @return the name.
      */
     public String getName() {
         return name;
@@ -97,7 +79,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Sets name.
      *
-     * @param name the name
+     * @param name the name.
      */
     public void setName(String name) {
         this.name = name;
@@ -106,7 +88,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets port.
      *
-     * @return the port
+     * @return the port.
      */
     public int getPort() {
         return port;
@@ -115,7 +97,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Sets port.
      *
-     * @param port the port
+     * @param port the port.
      */
     public void setPort(int port) {
         this.port = port;
@@ -124,7 +106,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets graph name.
      *
-     * @return the graph name
+     * @return the graph name.
      */
     public String getGraphName() {
         return graphName;
@@ -133,7 +115,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Sets graph name.
      *
-     * @param graphName the graph name
+     * @param graphName the graph name.
      */
     public void setGraphName(String graphName) {
         this.graphName = graphName;
@@ -142,7 +124,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets connection host.
      *
-     * @return the connection host
+     * @return the connection host.
      */
     public String getConnectionHost() {
         return connectionHost;
@@ -151,7 +133,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Sets connection host.
      *
-     * @param connectionHost the connection host
+     * @param connectionHost the connection host.
      */
     public void setConnectionHost(String connectionHost) {
         this.connectionHost = connectionHost;
@@ -160,7 +142,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets last modified.
      *
-     * @return the last modified
+     * @return the last modified.
      */
     public Long getLastModified() {
         return lastModified;
@@ -169,7 +151,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Sets last modified.
      *
-     * @param lastModified the last modified
+     * @param lastModified the last modified.
      */
     public void setLastModified(Long lastModified) {
         this.lastModified = lastModified;
@@ -187,7 +169,8 @@ public class Connection implements Comparable<Connection> {
     }
 
     /**
-     * used for array sorting
+     * Used for array sorting.
+     *
      * @param connection
      * @return
      */
