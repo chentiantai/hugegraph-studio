@@ -32,6 +32,7 @@ import java.util.concurrent.CompletionException;
 
 @Provider
 public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
+
     private static final Logger LOG =
             LogManager.getLogger(InternalExceptionMapper.class);
 
@@ -46,15 +47,15 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
 
     public Pair<Response.Status, StudioError> toErrorDetails(Throwable ex) {
         if (ex instanceof StudioError) {
-            StudioError er = (StudioError) ex;
-            return Pair.of(Response.Status.fromStatusCode(er.status()), er);
+            StudioError error = (StudioError) ex;
+            return Pair.of(Response.Status.fromStatusCode(error.status()), error);
         }
 
         int errorCode = 0;
         String message;
         Response.StatusType status;
         if (ex instanceof WebApplicationException) {
-            LOG.trace("Returning HTTP error:", ex);
+            LOG.debug("Returning HTTP error:", ex);
             status = ((WebApplicationException) ex).getResponse()
                                                    .getStatusInfo();
             message = status.getReasonPhrase();
