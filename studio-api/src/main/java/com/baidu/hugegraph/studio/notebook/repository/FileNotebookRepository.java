@@ -45,12 +45,14 @@ import java.util.UUID;
 /**
  * The type File notebook repository.
  *
- * To save notebook entity to disk as json .
- * To read notebook entity from disk.
+ * Save notebook entity to disk as json.
+ * Read notebook entity from disk.
  */
 @Repository("notebookRepository")
 public class FileNotebookRepository implements NotebookRepository {
-    private static final Logger LOG = LoggerFactory.getLogger(FileNotebookRepository.class);
+
+    private static final Logger LOG =
+            LoggerFactory.getLogger(FileNotebookRepository.class);
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -70,7 +72,7 @@ public class FileNotebookRepository implements NotebookRepository {
         notebooksDataDirectory = configuration.getNotebooksDirectory();
         Preconditions.checkNotNull(notebooksDataDirectory);
 
-        LOG.info("notebooksDataDirectory is {}",  notebooksDataDirectory);
+        LOG.info("notebooksDataDirectory is: {}",  notebooksDataDirectory);
         File dir = new File(notebooksDataDirectory);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -82,24 +84,29 @@ public class FileNotebookRepository implements NotebookRepository {
         Preconditions.checkNotNull(notebook);
         Preconditions.checkArgument(StringUtils.isNotEmpty(notebook.getId()));
 
+        /*
+         * Should we flush and close for each buffered writing? Also, why
+         * not throw runtime exception if write failed in this case?
+         */
         String filePath = notebooksDataDirectory + "/" + notebook.getId();
-        Path path = Paths.get(filePath);
-        try {
-            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+        try (BufferedWriter writer =
+             Files.newBufferedWriter(Paths.get(filePath)) {
                 writer.write(mapper.writeValueAsString(notebook));
             }
-            LOG.debug("Write Notebook File : {}", filePath);
-        } catch (IOException e) {
-            LOG.error("Could Not Write File : {} ", filePath, e);
+            LOG.debug("Write Notebook file: {}", filePath);
+        } catch (IOException ignored) {
+            LOG.error("Failed to write Notebook file: {} ", filePath, e);
         }
     }
 
     @Override
     public Notebook createNotebook(Notebook notebook) {
         Preconditions.checkNotNull(notebook);
-        Preconditions.checkArgument(StringUtils.isNotEmpty(notebook.getName())
-                && StringUtils.isNotEmpty(notebook.getConnectionId()));
-        // create new uuid when notebookId is empty
+        Preconditions.checkArgument(
+                StringUtils.isNotEmpty(notebook.getName()) &&
+                StringUtils.isNotEmpty(notebook.getConnectionId()));
+
+        // Create new uuid if notebookId is empty.
         if (StringUtils.isEmpty(notebook.getId())) {
             notebook.setId(UUID.randomUUID().toString());
             notebook.setCreated(Instant.now().getEpochSecond());
@@ -123,8 +130,9 @@ public class FileNotebookRepository implements NotebookRepository {
     public Notebook editNotebook(Notebook notebook) {
         Preconditions.checkNotNull(notebook);
         // ensure notebookId is not empty.
-        Preconditions.checkArgument(StringUtils.isNotEmpty(notebook.getName())
-                && StringUtils.isNotEmpty(notebook.getId()));
+        Preconditions.checkArgument(
+                StringUtils.isNotEmpty(notebook.getName()) &&
+                StringUtils.isNotEmpty(notebook.getId()));
 
         notebook.setLastUsed(Instant.now().getEpochSecond());
         writeNotebook(notebook);
@@ -141,13 +149,14 @@ public class FileNotebookRepository implements NotebookRepository {
                         try {
                             notebooks.add(mapper.readValue(Files.readAllBytes(path), Notebook.class));
                         } catch (IOException e) {
-                            LOG.error("Could Not Read File : {}", notebooksDataDirectory + "/" + path.getFileName(), e);
+                            LOG.error("Failed to read file : {}", notebooksDataDirectory + "/" + path.getFileName(), e);
                             // only skips this iteration.
                             return;
                         }
                     });
-        } catch (Exception e){
-            LOG.error("Read File Exception : {}" , notebooksDataDirectory, e);
+        } catch (Exception ignored){
+            LOG.error("Failed to read file : {}",
+                      notebooksDataDirectory, e);
         }
         return notebooks;
     }
@@ -155,26 +164,30 @@ public class FileNotebookRepository implements NotebookRepository {
     @Override
     public void deleteNotebook(String notebookId) {
         try {
-            FileUtils.forceDelete(FileUtils.getFile(notebooksDataDirectory, notebookId));
+            FileUtils.forceDelete(FileUtils.getFile(notebooksDataDirectory,
+                                                    notebookId));
         } catch (IOException e) {
-            LOG.error("Could Not Delete File : {}", notebooksDataDirectory + "/" + notebookId, e);
+            LOG.error("Failed to remove file : {}",
+                    notebooksDataDirectory + "/" + notebookId, e);
         }
     }
 
     @Override
     public Notebook getNotebook(String notebookId) {
         try {
-            return mapper.readValue(
-                    Files.readAllBytes(Paths.get(notebooksDataDirectory + "/" + notebookId)),
+            return mapper.readValue(Files.readAllBytes(
+                    Paths.get(notebooksDataDirectory + "/" + notebookId)),
                     Notebook.class);
         } catch (IOException e) {
-            LOG.error("Could Not Read File : {}", notebooksDataDirectory + "/" + notebookId, e);
+            LOG.error("Failed to read File : {}",
+                    notebooksDataDirectory + "/" + notebookId, e);
         }
         return null;
     }
 
     @Override
-    public NotebookCell addCellToNotebook(String notebookId, NotebookCell cell, Integer index) {
+    public NotebookCell addCellToNotebook(String notebookId, NotebookCell cell,
+                                          Integer index) {
         Preconditions.checkNotNull(cell);
         if (StringUtils.isEmpty(cell.getId())) {
             cell.setId(UUID.randomUUID().toString());
@@ -202,7 +215,8 @@ public class FileNotebookRepository implements NotebookRepository {
     }
 
     @Override
-    public NotebookCell editNotebookCell(String notebookId, String cellId, NotebookCell cell) {
+    public NotebookCell editNotebookCell(String notebookId, String cellId,
+                                         NotebookCell cell) {
         Notebook notebook = getNotebook(notebookId);
         Preconditions.checkNotNull(notebook);
 
