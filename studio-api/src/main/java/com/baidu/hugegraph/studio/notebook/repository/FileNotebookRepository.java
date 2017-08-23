@@ -90,12 +90,11 @@ public class FileNotebookRepository implements NotebookRepository {
          */
         String filePath = notebooksDataDirectory + "/" + notebook.getId();
         try (BufferedWriter writer =
-             Files.newBufferedWriter(Paths.get(filePath)) {
+             Files.newBufferedWriter(Paths.get(filePath))) {
                 writer.write(mapper.writeValueAsString(notebook));
-            }
-            LOG.debug("Write Notebook file: {}", filePath);
+             LOG.debug("Write Notebook file: {}", filePath);
         } catch (IOException ignored) {
-            LOG.error("Failed to write Notebook file: {} ", filePath, e);
+            LOG.error("Failed to write Notebook file: {} ", filePath, ignored);
         }
     }
 
@@ -156,7 +155,7 @@ public class FileNotebookRepository implements NotebookRepository {
                     });
         } catch (Exception ignored){
             LOG.error("Failed to read file : {}",
-                      notebooksDataDirectory, e);
+                      notebooksDataDirectory, ignored);
         }
         return notebooks;
     }

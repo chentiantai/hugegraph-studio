@@ -18,14 +18,29 @@ export default class ErrorResult extends React.Component {
     render() {
         let display = this.state.showDetail ? 'block' : 'none';
         let errorPanel = <div className="alert alert-danger err_msg">
-                            <h5>{this.props.msg.title}</h5>
-                         </div>;
-        let  detailedMsg = this.props.msg.detailedMsg;
+            <h5>{this.props.msg.title}</h5>
+        </div>;
+        let detailedMsg = this.props.msg.detailedMsg;
+        let title_message = '';
+        if (detailedMsg.message !== null) {
+            let innerMessage = '';
+            try{
+                innerMessage = JSON.parse(detailedMsg.message).message;
+            }catch(err){
+                innerMessage = detailedMsg.message;
+            }
+
+            title_message = innerMessage;
+
+        } else {
+            title_message = detailedMsg.message;
+        }
+
         if (detailedMsg !== undefined) {
             errorPanel = <div className="alert alert-danger err_msg">
                 <h5>{this.props.msg.title}</h5>
                 <div className="err_title">
-                    {JSON.parse(detailedMsg.message).message}
+                    {title_message}
                     <span className="label label-danger detail"
                           onClick={this.showDetail}>Detail</span>
                 </div>
@@ -54,7 +69,8 @@ export default class ErrorResult extends React.Component {
     componentDidUpdate() {
         if (this.props.msg.detailedMsg !== undefined) {
             let paneJson = '#' + this.props.cellId + '_error';
-            let json = this.formatMessage(this.props.msg.detailedMsg.message);
+            let json = this.formatMessage(this.props.msg.detailedMsg);
+            console.log(json);
             $(paneJson).JSONView(json, {collapsed: false});
         }
         this.loadDone();
@@ -63,7 +79,8 @@ export default class ErrorResult extends React.Component {
     componentDidMount() {
         if (this.props.msg.detailedMsg !== undefined) {
             let paneJson = '#' + this.props.cellId + '_error';
-            let json = this.formatMessage(this.props.msg.detailedMsg.message);
+            let json = this.formatMessage(this.props.msg.detailedMsg);
+            console.log(json);
             $(paneJson).JSONView(json, {collapsed: false});
         }
         this.loadDone();
@@ -75,13 +92,24 @@ export default class ErrorResult extends React.Component {
     }
 
     // replace \n\t with blank
-    formatMessage = (message) => {
+    formatMessage = (detailedMsg) => {
+
+        let message = '';
+        if (detailedMsg.message !== null) {
+            message =detailedMsg.message;
+        }
 
         if (message !== null || message !== undefined || message !== '') {
-            return message.replace(/\\n\\t/g, "==>");
-        } else {
-            return message;
+            message = message.replace(/\\n\\t/g, "==>");
         }
+
+
+        try{
+            JSON.parse(message);
+        }catch(err){
+            message = {'message':message};
+        }
+        return message;
 
     }
 
