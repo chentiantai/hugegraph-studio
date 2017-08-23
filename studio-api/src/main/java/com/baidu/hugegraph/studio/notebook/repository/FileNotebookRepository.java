@@ -142,22 +142,27 @@ public class FileNotebookRepository implements NotebookRepository {
     public List<Notebook> getNotebooks() {
         List<Notebook> notebooks = new ArrayList<>();
         try {
-            Files.list(Paths.get(notebooksDataDirectory))
-                    .filter(Files::isRegularFile)
-                    .forEach(path -> {
-                        try {
-                            notebooks.add(mapper.readValue(Files.readAllBytes(path), Notebook.class));
-                        } catch (IOException e) {
-                            LOG.error("Failed to read file : {}", notebooksDataDirectory + "/" + path.getFileName(), e);
-                            // only skips this iteration.
+            Files.list(Paths.get(notebooksDataDirectory)).forEach(path -> {
+                if (Files.isRegularFile(path)) {
+                    try {
+                        notebooks.add(mapper.readValue(Files.readAllBytes(path),
+                                      Notebook.class));
+                    } catch (IOException ignored) {
+                        LOG.error("Failed to read file: {}",
+                                  notebooksDataDirectory + "/" + path.getFileName(), ignored);
+                            /*
+                             * Just skips this iteration and return the fetched
+                             * notebooks if there were.
+                             */
                             return;
                         }
-                    });
-        } catch (Exception ignored){
-            LOG.error("Failed to read file : {}",
-                      notebooksDataDirectory, ignored);
+                    }
+                });
+            }catch (Exception ignored){
+                LOG.error("Failed to read file : {}",
+                          notebooksDataDirectory, ignored);
         }
-        return notebooks;
+            return notebooks;
     }
 
     @Override
