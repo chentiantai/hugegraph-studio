@@ -67,9 +67,11 @@ export default class ErrorResult extends React.Component {
 
 
     componentDidUpdate() {
-        if (this.props.msg.detailedMsg !== undefined) {
-            let paneJson = '#' + this.props.cellId + '_error';
-            let json = this.formatMessage(this.props.msg.detailedMsg);
+        let detailedMsg = this.props.msg.detailedMsg;
+        let cellId = this.props.cellId;
+        if (detailedMsg !== undefined) {
+            let paneJson = '#' + cellId + '_error';
+            let json = this.formatMessage(detailedMsg);
             console.log(json);
             $(paneJson).JSONView(json, {collapsed: false});
         }
@@ -77,9 +79,11 @@ export default class ErrorResult extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.msg.detailedMsg !== undefined) {
-            let paneJson = '#' + this.props.cellId + '_error';
-            let json = this.formatMessage(this.props.msg.detailedMsg);
+        let detailedMsg = this.props.msg.detailedMsg;
+        let cellId = this.props.cellId;
+        if (detailedMsg !== undefined) {
+            let paneJson = '#' + cellId + '_error';
+            let json = this.formatMessage(detailedMsg);
             console.log(json);
             $(paneJson).JSONView(json, {collapsed: false});
         }

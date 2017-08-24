@@ -168,13 +168,14 @@ class NotebookCell extends React.Component {
         this.progressWrapper.style.display = 'block';
         let notebookId = this.props.notebookId;
         let cellId = this.props.cell.id;
+        let cellLanguage = this.props.cell.language;
         let editorId = cellId + '_editor';
         let editorContent = ace.edit(editorId).getValue();
 
         let cell = {
             'id': cellId,
             'code': editorContent,
-            'language': this.props.cell.language
+            'language': cellLanguage
         }
         this.props.executeCell(notebookId, cellId, cell);
     }
@@ -182,12 +183,13 @@ class NotebookCell extends React.Component {
     updateCell = () => {
         let notebookId = this.props.notebookId;
         let cellId = this.props.cell.id;
+        let cellLanguage = this.props.cell.language;
         let editorId = cellId + '_editor';
         let editorContent = ace.edit(editorId).getValue();
         let cell = {
             'id': cellId,
             'code': editorContent,
-            'language': this.props.cell.language
+            'language': cellLanguage
         }
         this.props.updateCell(notebookId, cellId, cell);
     }
@@ -270,10 +272,11 @@ class NotebookCell extends React.Component {
         let cellId = this.props.cell.id;
         let editorId = cellId + '_editor';
         let editorContent = ace.edit(editorId).getValue();
+        let cellLanguage = this.props.cell.language;
         let cell = {
             'id': cellId,
             'code': editorContent,
-            'language': this.props.cell.language,
+            'language': cellLanguage,
             'viewSettings': {
                 ...this.props.cell.viewSettings,
                 'fullScreen': cssFlag

@@ -14,7 +14,6 @@ class AlertList extends React.Component {
         super();
     }
 
-
     componentDidMount() {
         this.props.hideAllAlert();
     }
@@ -26,8 +25,7 @@ class AlertList extends React.Component {
                     <Alert
                         key={i}
                         bsStyle={item.messageType}
-                        onDismiss={() => this.props.alertHide(item.key)}
-                    >
+                        onDismiss={() => this.props.alertHide(item.key)}>
                         {item.messageText}
                     </Alert>
                 ))}

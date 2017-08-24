@@ -26,7 +26,8 @@ export function loadConnections() {
                 }));
             })
             .catch(err => {
-                dispatch(alertMessage('Load Connections Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Load Connections Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -65,7 +66,8 @@ export function updateConnection(connection) {
                 dispatch(alertMessage('Update Connection Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Update Connection Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Update Connection Fetch Exception:' + err,
+                                      'danger'));
 
             });
     };
@@ -97,7 +99,8 @@ export function addConnection(newConnection) {
                 dispatch(alertMessage('Add Connection Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Add Connection Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Add Connection Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -183,10 +186,13 @@ export function alertHide(key) {
     };
 }
 
-// TODO: Please add comments for why delay should be 1000 and make (success, warning..) as a variable.
 export function alertMessage(messageText, messageType, delay = 1000) {
+    let msgContent = 'messageText must be string type and messageType must' +
+                     ' be either [%s, %s, %s, %s]';
+    let msgType = ['success', 'warning', 'danger', 'info'];
     return (dispatch, getState) => {
-        if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
+        if (typeof messageText === 'string' &&
+            msgType.indexOf(messageType) > -1) {
             const key = getState().alerts.lastKey + 1;
             dispatch(hideAllAlert(0));
             dispatch(alertShow(messageText, messageType, key));
@@ -198,12 +204,11 @@ export function alertMessage(messageText, messageType, delay = 1000) {
                 setTimeout(() => dispatch(alertHide(key)), delay);
             }
         } else {
-            console.error('messageText must be string type and messageType must be either [%s, %s, %s, %s]', 'success', 'warning', 'danger', 'info');
+            console.error(msgContent, ...msgType);
         }
     };
 }
 
-// TODO: Please add comments for why delay should be 1500.
 export function hideAllAlert(delay = 0) {
     return (dispatch, getState) => {
         getState().alerts.items.forEach(item => {

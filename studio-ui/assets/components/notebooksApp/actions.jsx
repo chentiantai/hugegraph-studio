@@ -27,7 +27,8 @@ export function deleteNoteCard(id) {
                 dispatch(alertMessage('Delete NoteCard Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Delete NoteCard Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Delete NoteCard Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -52,7 +53,8 @@ export function loadNoteCards() {
                 }));
             })
             .catch(err => {
-                dispatch(alertMessage('Load Notebooks Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Load Notebooks Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -95,7 +97,8 @@ export function updateNoteCard(noteCard) {
                 dispatch(alertMessage('Update NoteCard Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Update NoteCard Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Update NoteCard Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -126,7 +129,8 @@ export function addNoteCard(noteCard) {
                 dispatch(alertMessage('Add NoteCard Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Add noteCard Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Add noteCard Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
