@@ -209,19 +209,22 @@ td > button.btn {
 
 .notebook-card-createtime {
     float: left;
-    width: 65%;
+    width: 85%;
     font-size: 12px;
     font-style: normal;
     line-height: 18px;
     color: #CCC;
     margin-left: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+    white-space: nowrap;
 }
 
 .notebook-card-operation {
-    float: right;
-    margin-top: -4px;
-    width: 12%;
-    color: #999;
+    margin-top: -6px;
+    margin-left: 143px;
+    position: absolute;
 }
 
 .notebook-card .btn {
