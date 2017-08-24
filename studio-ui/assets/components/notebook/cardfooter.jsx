@@ -25,7 +25,7 @@ export default class CardFooter extends React.Component {
             if (this.props.result.duration != null && this.isConsistent()) {
                 return (
                     <div>
-                        Real-time Success. 1 element returned.
+                        Real-time Success.
                         Duration {this.props.result.duration * 1.0 / 1000} s
                     </div>
                 );
