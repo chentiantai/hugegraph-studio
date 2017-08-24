@@ -188,6 +188,7 @@ export function alertMessage(messageText, messageType, delay = 1000) {
     return (dispatch, getState) => {
         if (typeof messageText === 'string' && ['success', 'warning', 'danger', 'info'].indexOf(messageType) > -1) {
             const key = getState().alerts.lastKey + 1;
+            dispatch(hideAllAlert(0));
             dispatch(alertShow(messageText, messageType, key));
             if (messageType === 'danger') {
                 // setTimeout(() => dispatch(alertHide(key)), 20000);
@@ -203,7 +204,7 @@ export function alertMessage(messageText, messageType, delay = 1000) {
 }
 
 // TODO: Please add comments for why delay should be 1500.
-export function hideAllAlert(delay = 1500) {
+export function hideAllAlert(delay = 0) {
     return (dispatch, getState) => {
         getState().alerts.items.forEach(item => {
             setTimeout(() => {
