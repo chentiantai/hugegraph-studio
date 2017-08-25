@@ -132,14 +132,14 @@ class NotebookCell extends React.Component {
 
                                 <div className="card-content">
                                     <div ref={el => this.progressWrapper = el}
-                                         id={cell.id + "_loading"}
-                                         className="progress-wrapper"
-                                         style={{display: 'block'}}>
-                                        <img style={{
-                                            width: "80px",
-                                            height: "80px"
-                                        }}
-                                             src='/images/spinner.gif'/>
+                                         id={cell.id + "_loading"}>
+                                        <div className="progress-wrapper"
+                                             style={{display: 'block'}}>
+                                            <img className="loading-image"
+                                                 src='/images/spinner.gif'/>
+                                        </div>
+                                        <div className="loading-backdrop">
+                                        </div>
                                     </div>
 
                                     <CellResult cellId={cell.id}
