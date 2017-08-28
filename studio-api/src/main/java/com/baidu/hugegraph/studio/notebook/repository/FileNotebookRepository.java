@@ -95,6 +95,7 @@ public class FileNotebookRepository implements NotebookRepository {
              LOG.debug("Write Notebook file: {}", filePath);
         } catch (IOException ignored) {
             LOG.error("Failed to write Notebook file: {} ", filePath, ignored);
+            throw new RuntimeException("Failed to write Notebook file:  " + filePath );
         }
     }
 

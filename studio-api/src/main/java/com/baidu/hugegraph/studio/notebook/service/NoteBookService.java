@@ -156,7 +156,8 @@ public class NoteBookService {
     public Response editNotebook(@PathParam("notebookId") String notebookId,
                                  Notebook notebook) {
         Preconditions.checkArgument(
-                notebookId != null && notebookId.equals(notebook.getId()));
+                notebookId != null &&
+                        notebookId.equals(notebook.getId()));
 
         Connection connection =
                 connectionRepository.get(notebook.getConnectionId());
@@ -196,7 +197,8 @@ public class NoteBookService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getNotebookCell(@PathParam("notebookId") String notebookId,
                                     @PathParam("cellId") String cellId) {
-        Preconditions.checkArgument(notebookId != null && cellId != null);
+        Preconditions.checkArgument(notebookId != null
+                && cellId != null);
         Response response = Response.status(201)
                 .entity(notebookRepository.getNotebookCell(notebookId, cellId))
                 .build();
@@ -256,7 +258,8 @@ public class NoteBookService {
     public Response editNotebookCell(@PathParam("notebookId") String notebookId,
                                      @PathParam("cellId") String cellId,
                                      NotebookCell cell) {
-        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
+        Preconditions.checkArgument(cell != null
+                && cellId.equals(cell.getId()));
         Response response = Response.status(200)
                 .entity(notebookRepository
                         .editNotebookCell(notebookId, cellId, cell)).build();
@@ -299,12 +302,13 @@ public class NoteBookService {
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId,
             @QueryParam("vertexId") String vertexId) {
-        Preconditions.checkArgument(notebookId != null && cellId != null &&
-                                    vertexId != null);
+        Preconditions.checkArgument(notebookId != null
+                && cellId != null && vertexId != null);
         NotebookCell cell =
                 notebookRepository.getNotebookCell(notebookId, cellId);
 
-        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
+        Preconditions.checkArgument(cell != null
+                && cellId.equals(cell.getId()));
 
         // only be executed with 'gremlin' mode
         Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
@@ -319,7 +323,8 @@ public class NoteBookService {
          * executeNotebookCell(String,String). It must have a starting
          * point and the result must have vertices or edges.
          */
-        Preconditions.checkArgument(result != null && result.getGraph() != null);
+        Preconditions.checkArgument(result != null
+                && result.getGraph() != null);
 
         Notebook notebook = notebookRepository.getNotebook(notebookId);
         Preconditions.checkArgument(notebook != null);
@@ -411,19 +416,11 @@ public class NoteBookService {
      *
      * @param notebookId : the notebookId of current notebook.
      * @param cellId : the cellId of the current notebook.
+     * @param newCell: the cell value of the current cell.
      * @return if code snippet is gremlin ,return the whole graph with json(
      * vertices & edges )
      *         if code snippet is markdown , just return the original code
      *         user input.
-     */
-
-    /**
-     * Execute notebook cell response.
-     *
-     * @param notebookId the notebook id
-     * @param cellId     the cell id
-     * @param newCell    the new cell
-     * @return the response
      */
     @PUT
     @Path("{notebookId}/cells/{cellId}/execute")
@@ -434,8 +431,8 @@ public class NoteBookService {
             @PathParam("cellId") String cellId,
             NotebookCell newCell) {
         LOG.debug(
-                "executeNotebookCell: notebookId={},cellId={} ,language={} \n"
-                        + " code={}",
+                "executeNotebookCell: notebookId={},cellId={} ,language={} " +
+                        " code={}",
                 notebookId, cellId, newCell.getLanguage(), newCell.getCode());
 
         Preconditions.checkArgument(notebookId != null &&
@@ -447,8 +444,8 @@ public class NoteBookService {
         Long startTime = System.currentTimeMillis();
 
         LOG.debug(
-                "executeNotebookCell: notebookId={},cellId={} ,language={} \n"
-                        + " code={}",
+                "executeNotebookCell: notebookId={},cellId={} ,language={} " +
+                        " code={}",
                 notebookId, cellId, cell.getLanguage(), cell.getCode());
 
         com.baidu.hugegraph.studio.notebook.model.Result result =
@@ -464,7 +461,8 @@ public class NoteBookService {
                 }
             });
             result.setType(
-                    com.baidu.hugegraph.studio.notebook.model.Result.Type.MARKDOWN);
+                    com.baidu.hugegraph.studio.notebook.model.
+                            Result.Type.MARKDOWN);
         }
 
         if ("gremlin".equals(cell.getLanguage())) {
@@ -489,91 +487,79 @@ public class NoteBookService {
 
             List<Vertex> vertices = new ArrayList<>();
             List<Edge> edges = new ArrayList<>();
-
+            List<com.baidu.hugegraph.structure.graph.Path> paths =
+                    new ArrayList<>();
             Iterator<Result> results = resultSet.iterator();
 
-            // return empty
-            if (resultSet.data().size() == 0) {
+            while (results.hasNext()){
 
-                Long endTime = System.currentTimeMillis();
-                Long duration = endTime - startTime;
-                result.setDuration(duration);
+                //the result maybe null, and the object
+                // must get by Result.getObjecy()
+                Result or = results.next();
 
-                return Response.status(200)
-                        .entity(result)
-                        .build();
+                if (or == null){
+                    result.setType(
+                            com.baidu.hugegraph.studio.notebook.model.
+                                    Result.Type.EMPTY);
+                } else {
+                    Object object = or.getObject();
+                    if (object instanceof Vertex) {
+                        result.setType(
+                                com.baidu.hugegraph.studio.notebook.model.
+                                        Result.Type.VERTEX);
+                        // Convert Object to Vertex ;
+                        vertices.add((Vertex) object);
+                    } else if (object instanceof Edge) {
+                        result.setType(
+                                com.baidu.hugegraph.studio.notebook.model.
+                                        Result.Type.EDGE);
+                        // Convert Object to Edge ;
+                        edges.add((Edge) object);
+                    } else if (object instanceof com.baidu.hugegraph.structure.
+                            graph.Path) {
+                        result.setType(
+                                com.baidu.hugegraph.studio.notebook.model.
+                                        Result.Type.PATH);
+                        //convert Object to Path
+                        paths.add((com.baidu.hugegraph.structure.graph.Path)
+                                object);
 
+                    } else if (object instanceof Integer) {
+                        result.setType(
+                                com.baidu.hugegraph.studio.notebook.model.
+                                        Result.Type.NUMBER);
+                    } else {
+                        result.setType(
+                                com.baidu.hugegraph.studio.notebook.model.
+                                        Result.Type.OTHER);
+                    }
+                }
             }
 
-            // To get first object to determine the data type .
-            Object object = results.next().getObject();
-
-            // Try to translate gremlin result into a graph when it's type is
-            // Vertex/Edge/Path
-            if (object instanceof Vertex) {
-                result.setType(
-                        com.baidu.hugegraph.studio.notebook.model.Result.Type
-                                .VERTEX);
-                // Convert Object to Vertex ;
-                List<Vertex> finalVertices = vertices;
-                //add first object
-                vertices.add((Vertex) object);
-                results.forEachRemaining(vertex -> finalVertices
-                        .add((Vertex) vertex.getObject()));
-
-                // Extract vertices from edges ;
-                edges = getEdgefromVertex(hugeClient, vertices);
-
-                result.setGraphVertices(vertices);
-                result.setGraphEdges(edges);
-
-            } else if (object instanceof Edge) {
-                result.setType(
-                        com.baidu.hugegraph.studio.notebook.model.Result.Type
-                                .EDGE);
-                // Convert Object to Edge ;
-                List<Edge> finalEdges = edges;
-                edges.add((Edge) object);
-                results.forEachRemaining(
-                        edge -> finalEdges.add((Edge) edge.getObject()));
-
-                // Extract vertices from edges ;
-                vertices = getVertexfromEdge(hugeClient, edges);
-
-                result.setGraphVertices(vertices);
-                result.setGraphEdges(edges);
-
-            } else if (object instanceof com.baidu.hugegraph.structure.graph
-                    .Path) {
-                result.setType(
-                        com.baidu.hugegraph.studio.notebook.model.Result.Type
-                                .PATH);
-
-                List<com.baidu.hugegraph.structure.graph.Path> paths =
-                        new ArrayList<com.baidu.hugegraph.structure.graph
-                                .Path>();
-                paths.add((com.baidu.hugegraph.structure.graph.Path) object);
-                results.forEachRemaining(path -> paths
-                        .add((com.baidu.hugegraph.structure.graph.Path) path
-                                .getObject()));
-
+            //when the results contains not only vertices\edges\paths, how to
+            //deal with ?
+            if(result.getType() == com.baidu.hugegraph.studio.notebook.model.
+                    Result.Type.PATH){
                 // Extract vertices from paths ;
                 vertices = getVertexfromPath(hugeClient, paths);
-                // Extract edges from vertices ;
                 edges = getEdgefromVertex(hugeClient, vertices);
-
-                result.setGraphVertices(vertices);
-                result.setGraphEdges(edges);
-
-            } else if (object instanceof Integer) {
-                result.setType(
-                        com.baidu.hugegraph.studio.notebook.model.Result.Type
-                                .NUMBER);
-            } else {
-                result.setType(
-                        com.baidu.hugegraph.studio.notebook.model.Result.Type
-                                .EMPTY);
             }
+
+            if(result.getType() == com.baidu.hugegraph.studio.notebook.model.
+                    Result.Type.VERTEX){
+                // Extract vertices from edges ;
+                edges = getEdgefromVertex(hugeClient, vertices);
+            }
+
+            if(result.getType() == com.baidu.hugegraph.studio.notebook.model.
+                    Result.Type.EDGE) {
+                // Extract vertices from edges ;
+                vertices = getVertexfromEdge(hugeClient, edges);
+            }
+
+            result.setGraphVertices(vertices);
+            result.setGraphEdges(edges);
+
         }
 
         cell.setResult(result);

@@ -204,7 +204,12 @@ public class Result {
         NUMBER, /**
          * Markdown type.
          */
-        MARKDOWN;
+        MARKDOWN,
+        /**
+         * IF TYPE NOT IN THE ABOVES, SET TO OTHER
+         */
+        OTHER,
+        ;
     }
 
 
