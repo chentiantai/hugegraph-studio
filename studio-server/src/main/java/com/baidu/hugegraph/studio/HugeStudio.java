@@ -111,8 +111,8 @@ public class HugeStudio {
         }
         if (!api.getState().equals(LifecycleState.STARTED)) {
             System.out.println();
-            System.out.println("Studio-api failed to start. "
-                               + "Please check logs for details");
+            System.out.println("\nStudio-api failed to start. " +
+                               "Please check logs for details");
             System.exit(1);
         }
 
@@ -175,7 +175,7 @@ public class HugeStudio {
                                        httpPort, ignored));
             System.exit(1);
         } finally {
-            if (socket != null && !socket.isClosed()) {
+            if (socket != null) {
                 try {
                     socket.close();
                 } catch (IOException ignored) {
