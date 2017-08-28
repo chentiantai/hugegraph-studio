@@ -46,6 +46,7 @@ class Graph extends React.Component {
             let edgedata = graph.edges;
             this.drawGraph(vertexdata, edgedata);
         }
+        this.loadDone();
     }
 
     componentDidMount() {
@@ -54,25 +55,27 @@ class Graph extends React.Component {
             let vertexdata = graph.vertices;
             let edgedata = graph.edges;
             this.drawGraph(vertexdata, edgedata);
-        }
-    }
 
+        }
+        this.loadDone();
+
+    }
 
     drawGraph = (vertexs, edges) => {
         this.state.graphNodes = new vis.DataSet();
         this.state.graphEdges = new vis.DataSet();
 
-        this.state.graphNodes.on('*', function () {
-            //  do something
-        });
-
         if (vertexs !== null) {
             vertexs.forEach(vertex => {
-                let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' +
-                            'label : ' + vertex.label + '</div>';
+                let title = '<div class="tooltips-label">' +
+                    '<a class="round-red">●</a>&nbsp;' +
+                    'label : ' + vertex.label + '</div>';
                 for (let key in vertex.properties) {
-                    title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
-                            ' ' + vertex.properties[key][0].value + '</div>';
+                    title = title +
+                        '<div>' +
+                        '<a class="round-gray">●</a>&nbsp;' +
+                        key + ' : ' + vertex.properties[key][0].value +
+                        '</div>';
                 }
 
                 let label = vertex.id;
@@ -82,17 +85,16 @@ class Graph extends React.Component {
             });
         }
 
-        this.state.graphEdges.on('*', function () {
-            // do something
-        });
-
         if (edges !== null) {
             edges.forEach(edge => {
-                let title = '<div class="tooltips-label"> <a' +
-                    ' class="round-red">●</a>&nbsp;' + 'label : ' + edge.label + '</div>';
+                let title = '<div class="tooltips-label">' +
+                    '<a class="round-red">●</a>&nbsp;' +
+                    'label : ' + edge.label + '</div>';
                 for (let key in edge.properties) {
-                    title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
-                        ' ' + edge.properties[key] + '</div>';
+                    title = title +
+                        '<div>' +
+                        '<a class="round-gray">●</a>&nbsp;' +
+                        key + ' : ' + edge.properties[key] + '</div>';
                 }
                 this.state.graphEdges.add([
                     {
@@ -106,13 +108,11 @@ class Graph extends React.Component {
             });
         }
 
-
         var container = document.getElementById(this.props.id);
         var data = {
             nodes: this.state.graphNodes,
             edges: this.state.graphEdges,
         };
-
 
         var options = {
             autoResize: true,
@@ -120,13 +120,11 @@ class Graph extends React.Component {
             interaction: {hover: true},
             nodes: {
                 font: {size: 12},
-                size: 15,
-                shape: 'dot',
-                widthConstraint: {
-                    maximum: 80
+                scaling: {
+                    min: 10,
+                    max: 30
                 },
-                heightConstraint: {valign: 'middle'},
-                shadow: false,
+                shape: 'dot',
                 color: {
                     background: '#00ccff', border: '#00ccff',
                     highlight: {background: '#fb6a02', border: '#fb6a02'},
@@ -145,24 +143,11 @@ class Graph extends React.Component {
                 arrows: 'to',
                 color: {highlight: '#fb6a02', hover: '#ec3112'},
             },
-            layout: {
-                randomSeed: 34
-            },
             physics: {
-                forceAtlas2Based: {
-                    gravitationalConstant: -26,
-                    centralGravity: 0.005,
-                    springLength: 230,
-                    springConstant: 0.18
-                },
                 maxVelocity: 146,
-                solver: 'forceAtlas2Based',
+                solver: 'barnesHut',
                 timestep: 0.35,
-                stabilization: {
-                    enabled: true,
-                    iterations: 2000,
-                    updateInterval: 25
-                }
+                stabilization: {iterations: 150}
             }
         };
         var network = new vis.Network(container, data, options);
@@ -193,9 +178,6 @@ class Graph extends React.Component {
                 .then(data => {
                     this.addNode(data.graph.vertices);
                     this.addEdge(data.graph.edges);
-                    // this.props.updateGraph(this.props.cellId, data.graph);
-                    // this.syncResult(data.graph);
-
                 })
                 .catch(err => {
                     console.log(err);
@@ -207,11 +189,15 @@ class Graph extends React.Component {
         try {
             if (vertices !== null) {
                 vertices.forEach(vertex => {
-                    let title = '<div class="tooltips-label"> <a class="round-red">●</a>&nbsp;' +
-                                'label : ' + vertex.label + '</div>';
+                    let title = '<div class="tooltips-label">' +
+                        '<a class="round-red">●</a>&nbsp;' +
+                        'label : ' + vertex.label + '</div>';
                     for (let key in vertex.properties) {
-                        title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
-                                ' ' + vertex.properties[key][0].value + '</div>';
+                        title = title +
+                            '<div> ' +
+                            '<a class="round-gray">●</a>&nbsp;' +
+                            key + ' : ' + vertex.properties[key][0].value +
+                            '</div>';
                     }
 
                     let label = vertex.id;
@@ -229,11 +215,15 @@ class Graph extends React.Component {
     addEdge = (edges) => {
         try {
             edges.forEach(edge => {
-                let title = '<div class="tooltips-label"> <a' +
-                    ' class="round-red">●</a>&nbsp;' + 'label : ' + edge.label + '</div>';
+                let title = '<div class="tooltips-label"> ' +
+                    '<a class="round-red">●</a>&nbsp;' +
+                    'label : ' + edge.label + '</div>';
                 for (let key in edge.properties) {
-                    title = title + '<div> <a class="round-gray">●</a>&nbsp;' + key + ' :' +
-                        ' ' + edge.properties[key] + '</div>';
+                    title = title +
+                        '<div>' +
+                        '<a class="round-gray">●</a>&nbsp;' +
+                        key + ' : ' + edge.properties[key] +
+                        '</div>';
                 }
                 this.state.graphEdges.add([
                     {
