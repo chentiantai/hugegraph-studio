@@ -94,7 +94,7 @@ public class HugeStudio {
         tomcat.setHostname(address);
 
         StandardContext ui = configureUi(tomcat, uiDir);
-        StandardContext api = configureWar(apiWarFile, "/api", tomcat);
+        StandardContext api = configureWar(tomcat, apiWarFile, "/api");
 
         tomcat.start();
 
@@ -138,8 +138,8 @@ public class HugeStudio {
         return context;
     }
 
-    private static StandardContext configureWar(String warFile, String appBase,
-                                                Tomcat tomcat)
+    private static StandardContext configureWar(Tomcat tomcat, String warFile,
+                                                String appBase)
             throws ServletException, IOException {
 
         if (warFile != null && warFile.length() > 0) {

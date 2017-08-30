@@ -156,8 +156,7 @@ public class NoteBookService {
     public Response editNotebook(@PathParam("notebookId") String notebookId,
                                  Notebook notebook) {
         Preconditions.checkArgument(
-                notebookId != null &&
-                        notebookId.equals(notebook.getId()));
+                notebookId != null && notebookId.equals(notebook.getId()));
 
         Connection connection =
                 connectionRepository.get(notebook.getConnectionId());
@@ -403,7 +402,7 @@ public class NoteBookService {
         return response;
     }
 
-    /*
+    /**
      * To execute the code (gremlin or markdown) in a cell of notebook.
      *
      * If the language of cell is markdown, just return the original code
@@ -414,9 +413,9 @@ public class NoteBookService {
      * Another data is translated into a graph or a table object if it's
      * possible.
      *
-     * @param notebookId : the notebookId of current notebook.
-     * @param cellId : the cellId of the current notebook.
-     * @param newCell: the cell value of the current cell.
+     * @param notebookId  the notebookId of current notebook.
+     * @param cellId  the cellId of the current notebook.
+     * @param newCell the cell value of the current cell.
      * @return if code snippet is gremlin ,return the whole graph with json(
      * vertices & edges )
      *         if code snippet is markdown , just return the original code
