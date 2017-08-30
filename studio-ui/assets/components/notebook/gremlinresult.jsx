@@ -124,6 +124,7 @@ class GremlinResult extends React.Component {
                     label: 'fa fa-code'
                 }];
                 break;
+            case 'OTHER':
             case 'EMPTY':
                 nextTabs = [{
                     type: RAW,
