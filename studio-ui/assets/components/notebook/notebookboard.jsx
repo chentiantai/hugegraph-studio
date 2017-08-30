@@ -19,12 +19,21 @@ import {withRouter} from 'react-router-dom';
 class NotebookBoard extends React.Component {
     constructor() {
         super();
+        this.shouldScroll = false;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let nextCellsLen = nextProps.notebook.cells.length;
+        let currentCellsLen = this.props.notebook.cells.length;
+        this.shouldScroll = nextCellsLen > currentCellsLen ? true : false;
     }
 
     render() {
-        let existFullScreenCell = this.props.notebook.cells.some(cell => cell.viewSettings.fullScreen);
+        let cells = this.props.notebook.cells;
+        let existFullScreenCell = cells.some(cell => cell.viewSettings.fullScreen);
         let addDisplay = existFullScreenCell ? 'none' : 'block';
-        let canBeDelete = this.props.notebook.cells.length > 1 ? true : false;
+        let cellLength = this.props.notebook.cells.length;
+        let canBeDelete = cellLength > 1 ? true : false;
         return (
             <div>
                 <StudioHead
@@ -33,8 +42,8 @@ class NotebookBoard extends React.Component {
                     connection={this.props.notebook.connection}/>
                 {
                     this.props.notebook.cells.map(cell => {
-
-                            let display = existFullScreenCell ? (cell.viewSettings.fullScreen ? 'block' : 'none') : 'block';
+                            let display = existFullScreenCell ?
+                                (cell.viewSettings.fullScreen ? 'block' : 'none') : 'block';
 
                             return <div key={cell.id} style={{display: display}}>
                                 <NotebookCell cell={cell}
@@ -56,19 +65,15 @@ class NotebookBoard extends React.Component {
         this.props.loadCells(this.props.match.params.id);
     }
 
+    componentDidUpdate() {
+        if (this.shouldScroll) {
+            this.handleScroll();
+        }
+    }
+
     componentWillUnmount() {
         this.props.clearNotebookState();
     }
-
-    onbeforeunload = () => {
-        // TODO
-        // console.log(JSON.stringify(this.props.notebook));
-        // return this.props.updateNoteBook(this.props.notebook);
-        //
-        // let warning="确认退出?";
-        // return warning;
-    }
-
 
     addItem = preItemId => {
         let cells = this.props.notebook.cells;
@@ -84,10 +89,10 @@ class NotebookBoard extends React.Component {
         this.props.addItem(this.props.match.params.id, position + 1);
     }
 
-    // deleteItem = cellId => {
-    //     if (this.props.notebook.cells.length === 1) return;
-    //     this.props.deleteItem(this.props.match.params.id, cellId);
-    // }
+    handleScroll = () => {
+        let scrollTop = document.body.scrollTop;
+        scrollTo(0, scrollTop + 200);
+    }
 }
 
 
