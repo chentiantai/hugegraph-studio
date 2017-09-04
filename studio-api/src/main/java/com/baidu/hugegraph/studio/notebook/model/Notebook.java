@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Notebook entity for jersey restful api, and will be return as json.
@@ -141,6 +142,19 @@ public class Notebook {
      */
     public List<NotebookCell> getCells() {
         return cells;
+    }
+
+    /**
+     * Gets cell by cellId from notebook
+     * @param cellId the cellId
+     * @return the non-null value
+     * @throws NoSuchElementException if there is no value present
+     */
+    public NotebookCell getCellById(String cellId) {
+        return this.cells
+                   .stream().filter(c -> c.getId().equals(cellId))
+                   .findFirst()
+                   .get();
     }
 
     /**

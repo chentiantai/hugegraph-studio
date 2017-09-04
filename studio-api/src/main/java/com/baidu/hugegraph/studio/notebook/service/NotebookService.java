@@ -58,9 +58,9 @@ import java.util.stream.Collectors;
  * Notebook service for Jersey Restful Api
  */
 @Path("notebooks")
-public class NoteBookService {
+public class NotebookService {
     private static final Logger LOG =
-            LoggerFactory.getLogger(NoteBookService.class);
+            LoggerFactory.getLogger(NotebookService.class);
 
     @Autowired
     private NotebookRepository notebookRepository;
@@ -265,7 +265,7 @@ public class NoteBookService {
         return response;
     }
 
-     /*
+     /**
      * The method is used for get a vertex's adjacency nodes
      * When a graph shows, the user can select any vertex that he is
      * interested in
@@ -279,19 +279,10 @@ public class NoteBookService {
      * Note: this method should be executed after @see executeNotebookCell
      * (String,String) has been executed.
      *
-     * @param notebookId : the notebookId of current notebook.
-     * @param cellId : the cellId of the current notebook.
-     * @param vertexId : The id of vertex as a starting point.
-     * @return : just return the offset graph( vertices & edges )
-     */
-
-    /**
-     * Execute notebook cell gremlin response.
-     *
-     * @param notebookId the notebook id
-     * @param cellId     the cell id
-     * @param vertexId   the vertex id
-     * @return the response
+     * @param notebookId  the notebookId of current notebook.
+     * @param cellId  the cellId of the current notebook.
+     * @param vertexId  The id of vertex as a starting point.
+     * @return  just return the offset graph( vertices & edges )
      */
     @GET
     @Path("{notebookId}/cells/{cellId}/gremlin")
@@ -303,12 +294,13 @@ public class NoteBookService {
             @QueryParam("vertexId") String vertexId) {
         Preconditions.checkArgument(notebookId != null
                 && cellId != null && vertexId != null);
-        NotebookCell cell =
-                notebookRepository.getNotebookCell(notebookId, cellId);
 
+        Notebook notebook = notebookRepository.getNotebook(notebookId);
+        Preconditions.checkArgument(notebook != null);
+
+        NotebookCell cell = notebook.getCellById(cellId);
         Preconditions.checkArgument(cell != null
                 && cellId.equals(cell.getId()));
-
         // only be executed with 'gremlin' mode
         Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
 
@@ -325,43 +317,36 @@ public class NoteBookService {
         Preconditions.checkArgument(result != null
                 && result.getGraph() != null);
 
-        Notebook notebook = notebookRepository.getNotebook(notebookId);
-        Preconditions.checkArgument(notebook != null);
+        Set<String> vertexIds = new HashSet<>();
+        Set<String> edgeIds = new HashSet<>();
+        List<Vertex> vertices = result.getGraph().getVertices();
+        List<Edge> edges = result.getGraph().getEdges();
+        vertices.stream().forEach(v -> vertexIds.add(v.id()));
+        edges.stream().forEach(e -> edgeIds.add(e.id()));
+        Preconditions.checkArgument(vertexIds.contains(vertexId));
+
         HugeClient hugeClient = HugeClient.open(
                 notebook.getConnection().getConnectionUri(),
                 notebook.getConnection().getGraphName());
 
-        String gremlin = String.format("g.V('%s').bothE()", vertexId);
-        LOG.debug("gremlin: " + gremlin);
+        String gremlinVertexId = vertexId.replaceAll("'", "\\\\'");
+        String gremlin = String.format("g.V('%s').bothE()", gremlinVertexId);
 
         GremlinManager gremlinManager = hugeClient.gremlin();
         ResultSet resultSet = gremlinManager.gremlin(gremlin).execute();
         result.setData(resultSet.data());
 
-        Set<String> vertexIds = new HashSet<>();
-        Set<String> edgeIds = new HashSet<>();
-
-        List<Vertex> vertices = result.getGraph().getVertices();
-        List<Edge> edges = result.getGraph().getEdges();
-
-        vertices.stream().forEach(v -> vertexIds.add(v.id()));
-        edges.stream().forEach(e -> edgeIds.add(e.id()));
-
-        Preconditions.checkArgument(vertexIds.contains(vertexId));
-
-        Iterator<Result> results = resultSet.iterator();
+        Iterator<Result> iterator= resultSet.iterator();
 
         com.baidu.hugegraph.studio.notebook.model.Result resultNew =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
-
         resultNew.setType(
-                com.baidu.hugegraph.studio.notebook.model.Result.Type
-                        .EDGE);
+                com.baidu.hugegraph.studio.notebook.model.Result.Type.EDGE);
 
         List<Edge> edgesNew = new ArrayList<>();
         List<Vertex> verticesNew = new ArrayList<>();
 
-        results.forEachRemaining(
+        iterator.forEachRemaining(
                 r -> {
                     Edge e = (Edge) r.getObject();
                     if (!edgeIds.contains(e.id())) {
@@ -369,11 +354,10 @@ public class NoteBookService {
                         edgesNew.add(e);
                     }
                 });
-
-        List<Vertex> verticesCurrentFromEdge =
+        List<Vertex> verticesFromEdges =
                 getVertexfromEdge(hugeClient, edgesNew);
-        if (verticesCurrentFromEdge != null) {
-            verticesCurrentFromEdge.stream().forEach(v -> {
+        if (verticesFromEdges != null) {
+            verticesFromEdges.stream().forEach(v -> {
                 if (!vertexIds.contains(v.id())) {
                     vertexIds.add(v.id());
                     verticesNew.add(v);
@@ -401,6 +385,7 @@ public class NoteBookService {
                 .build();
         return response;
     }
+
 
     /**
      * To execute the code (gremlin or markdown) in a cell of notebook.
@@ -599,11 +584,10 @@ public class NoteBookService {
         Set<String> vertexIds = new HashSet<>();
         vertices.stream().forEach(v -> vertexIds.add(v.id()));
 
-        String ids = StringUtils.join(
-                vertices.stream()
-                        .map(vertex -> String.format("\"%s\"", vertex.id()))
-                        .collect(Collectors.toList()),
-                ",");
+        String ids = StringUtils.join( vertices.stream().map(
+           vertex ->
+                   String.format("'%s'", vertex.id().replaceAll("'", "\\\\'")))
+                .collect(Collectors.toList()), ",");
 
         // de-duplication by edgeId,
         // Reserve the edges only if both it's srcVertexId and tgtVertexId is a
@@ -640,20 +624,15 @@ public class NoteBookService {
         if (vertexIds == null) {
             return null;
         }
-        List<Vertex> vertices = new ArrayList<Vertex>();
+        List<Vertex> vertices = new ArrayList<>();
 
-        String ids = StringUtils.join(
-                vertexIds.stream()
-                        .map(id -> String.format("\"%s\"", id))
-                        .collect(Collectors.toList()),
-                ",");
+        String ids = StringUtils.join(vertexIds.stream().map(
+                id -> String.format("'%s'", id.replaceAll("'", "\\\\'"))
+            ).collect(Collectors.toList()), ",");
 
         String gremlin = String.format("g.V(%s)", ids);
-
         ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
-
         Iterator<Result> results = resultSet.iterator();
-
         List<Vertex> finalVertices = vertices;
         results.forEachRemaining(
                 vertex -> finalVertices.add((Vertex) vertex.getObject()));
