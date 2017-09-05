@@ -117,7 +117,16 @@ class Graph extends React.Component {
         var options = {
             autoResize: true,
             width: '100%',
-            interaction: {hover: true},
+            interaction: {
+                hover: true,
+                keyboard: {
+                    enabled: true,
+                    speed: {x: 1, y: 1, zoom: 0.02},
+                    bindToWindow: false
+                },
+                navigationButtons: true,
+                zoomView: true
+            },
             nodes: {
                 font: {size: 12},
                 scaling: {
@@ -144,9 +153,9 @@ class Graph extends React.Component {
                 color: {highlight: '#fb6a02', hover: '#ec3112'},
             },
             physics: {
-                maxVelocity: 146,
+                maxVelocity: 50,
                 solver: 'barnesHut',
-                timestep: 0.35,
+                timestep: 0.5,
                 stabilization: {iterations: 150}
             }
         };

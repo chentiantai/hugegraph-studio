@@ -39,8 +39,6 @@ body {
 }
 
 .studio-header {
-    /*padding-top: 3px;*/
-    /*padding-bottom: 3px;*/
     margin: 0 0 20px;
     border-bottom: 1px solid #ddd;
     background-color: #fff;
@@ -311,8 +309,6 @@ td > button.btn {
 }
 
 .card-content {
-    /*margin-bottom: 8px;*/
-    /*min-height: 50px;*/
     height: auto;
 }
 
@@ -597,6 +593,65 @@ form {
     z-index: 2040;
 }
 
+/* vis */
+div.vis-network div.vis-navigation div.vis-button {
+    border-radius: 0;
+    width: 30px;
+    height: 30px;
+    display: none;
+}
 
+div.vis-network:hover div.vis-navigation div.vis-button {
+    display: block;
+}
 
+div.vis-network div.vis-navigation div.vis-button:hover {
+    box-shadow: 0 0 8px #3071a9;
+    background-color: #f9f9f9;
+}
 
+div.vis-network div.vis-navigation div.vis-button.vis-zoomIn {
+    background-image: url(../images/zoom-in.png) !important;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 16px 16px;
+    bottom: 60px !important;
+    right: 2px;
+    opacity: .5;
+}
+
+div.vis-network div.vis-navigation div.vis-button.vis-zoomOut {
+    background-image: url(../images/zoom-out.png) !important;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    bottom: 30px !important;
+    right: 2px;
+    opacity: .5;
+}
+
+div.vis-network div.vis-navigation div.vis-button.vis-zoomExtends {
+    background-image: url(../images/shrink.png) !important;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    bottom: 0 !important;
+    right: 2px;
+    opacity: .5;
+}
+
+div.vis-network div.vis-navigation div.vis-button.vis-up {
+    display: none;
+}
+
+div.vis-network div.vis-navigation div.vis-button.vis-down {
+    display: none;
+}
+
+div.vis-network div.vis-navigation div.vis-button.vis-left {
+    display: none;
+}
+
+div.vis-network div.vis-navigation div.vis-button.vis-right {
+    display: none;
+}
