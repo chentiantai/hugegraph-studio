@@ -157,13 +157,9 @@ public class NotebookService {
                                  Notebook notebook) {
         Preconditions.checkArgument(
                 notebookId != null && notebookId.equals(notebook.getId()));
-
-        Connection connection =
-                connectionRepository.get(notebook.getConnectionId());
-
         /*
          * We only update the value of field from Front End. There are some
-         * operation to do it. It can avoid  transmitting big data.
+         * operation to do it. It can avoid transmitting big data.
          */
         Notebook notebookLocal =
                 notebookRepository.getNotebook(notebook.getId());
@@ -175,10 +171,11 @@ public class NotebookService {
         }
         if (notebook.getConnectionId() != null) {
             notebookLocal.setConnectionId(notebook.getConnectionId());
+            Connection connection =
+                    connectionRepository.get(notebook.getConnectionId());
+            notebookLocal.setConnection(connection);
         }
         notebook = notebookRepository.editNotebook(notebookLocal);
-
-        notebook.setConnection(connection);
         Response response = Response.status(200).entity(notebook).build();
         return response;
     }
@@ -414,11 +411,6 @@ public class NotebookService {
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId,
             NotebookCell newCell) {
-        LOG.debug(
-                "executeNotebookCell: notebookId={},cellId={} ,language={} " +
-                        " code={}",
-                notebookId, cellId, newCell.getLanguage(), newCell.getCode());
-
         Preconditions.checkArgument(notebookId != null &&
                 newCell != null && cellId != null && cellId
                 .equals(newCell.getId()));
@@ -426,11 +418,6 @@ public class NotebookService {
                 notebookRepository
                         .editNotebookCell(notebookId, cellId, newCell);
         Long startTime = System.currentTimeMillis();
-
-        LOG.debug(
-                "executeNotebookCell: notebookId={},cellId={} ,language={} " +
-                        " code={}",
-                notebookId, cellId, cell.getLanguage(), cell.getCode());
 
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
@@ -476,7 +463,6 @@ public class NotebookService {
             Iterator<Result> results = resultSet.iterator();
 
             while (results.hasNext()){
-
                 //the result maybe null, and the object
                 // must get by Result.getObjecy()
                 Result or = results.next();
