@@ -431,6 +431,8 @@ form {
 
 .html-content {
     padding: 0 5px 0 5px;
+    word-wrap: break-word;
+    word-break: normal;
 }
 
 .progress-wrapper {
