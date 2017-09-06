@@ -119,11 +119,6 @@ class Graph extends React.Component {
             width: '100%',
             interaction: {
                 hover: true,
-                keyboard: {
-                    enabled: true,
-                    speed: {x: 1, y: 1, zoom: 0.02},
-                    bindToWindow: false
-                },
                 navigationButtons: true,
                 zoomView: true
             },

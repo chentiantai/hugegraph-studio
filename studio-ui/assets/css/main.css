@@ -610,6 +610,7 @@ div.vis-network div.vis-navigation div.vis-button:hover {
     background-color: #f9f9f9;
 }
 
+
 div.vis-network div.vis-navigation div.vis-button.vis-zoomIn {
     background-image: url(../images/zoom-in.png) !important;
     background-repeat: no-repeat;
