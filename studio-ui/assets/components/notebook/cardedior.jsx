@@ -15,6 +15,7 @@ export default class CardEditor extends React.Component {
         } else {
             return true;
         }
+
     }
 
     render() {
@@ -51,14 +52,12 @@ export default class CardEditor extends React.Component {
         editor.setAutoScrollEditorIntoView(true);
         editor.setOption('maxLines', 10);
         editor.setOption('minLines', 3);
-        editor.focus();
         this.editor.style.fontSize = '12px';
         if (this.props.code !== null) {
             editor.setValue(this.props.code);
         } else {
             editor.setValue('');
         }
-
         editor.resize();
         editor.setOptions({
             enableBasicAutocompletion: true,
@@ -66,5 +65,4 @@ export default class CardEditor extends React.Component {
             enableLiveAutocompletion: true
         });
     }
-
 }

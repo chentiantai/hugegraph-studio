@@ -25,7 +25,11 @@ class NotebookBoard extends React.Component {
     componentWillReceiveProps(nextProps) {
         let nextCellsLen = nextProps.notebook.cells.length;
         let currentCellsLen = this.props.notebook.cells.length;
-        this.shouldScroll = nextCellsLen > currentCellsLen ? true : false;
+        if(currentCellsLen != 0){
+            this.shouldScroll = nextCellsLen > currentCellsLen ? true : false;
+        } else {
+            this.shouldScroll = false;
+        }
     }
 
     render() {
@@ -85,7 +89,6 @@ class NotebookBoard extends React.Component {
                 break;
             }
         }
-
         this.props.addItem(this.props.match.params.id, position + 1);
     }
 
