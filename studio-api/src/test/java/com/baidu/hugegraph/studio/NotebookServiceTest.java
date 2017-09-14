@@ -14,19 +14,28 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.context.ContextLoaderListener;
 
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.baidu.hugegraph.studio.notebook.model.Result;
+import com.baidu.hugegraph.studio.notebook.model.ViewSettings;
 import com.baidu.hugegraph.studio.notebook.service.NotebookService;
 
 /**
  * Created by huanghaiping02 on 17/8/31.
  */
 public class NotebookServiceTest extends JerseyTest {
+
+    static final String notebookName = "testNotebookService";
+    static final String connectionId = "ac32ec5b-1817-46f8-98d7-2da9cc8903ae";
+    static Notebook notebook =  null;
+    static String notebookId = "";
+    static String cellId="";
 
     public class ResourceRegister extends ResourceConfig {
         public ResourceRegister() {
@@ -49,6 +58,57 @@ public class NotebookServiceTest extends JerseyTest {
                 .build();
     }
 
+
+
+    @Before
+    public void before() {
+        notebook = new Notebook();
+        notebook.setConnectionId(connectionId);
+        notebook.setName(notebookName);
+
+        Response response = target("notebooks")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.json(notebook));
+
+        notebook = response.readEntity(Notebook.class);
+        notebookId = notebook.getId();
+        if(notebook.getCells().size()>0){
+            cellId = notebook.getCells().get(0).getId();
+        }else{
+            cellId = this.addCell();
+        }
+
+    }
+
+    public String addCell() {
+        NotebookCell cell = new NotebookCell();
+        cell.setLanguage("gremlin");
+        cell.setCode("");
+        ViewSettings viewSettings = new ViewSettings();
+        viewSettings.setFullScreen( false );
+        viewSettings.setView( true );
+        cell.setViewSettings(viewSettings);
+
+        Response response = target("notebooks/"+notebookId+"/cells")
+                .queryParam( "position",1 )
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.json(cell));
+
+        NotebookCell notebookCell = response.readEntity(NotebookCell.class);
+        return notebookCell.getId();
+
+    }
+
+
+    @After
+    public void after() {
+        Response response = target("notebooks/" + notebookId)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .delete();
+    }
+
+
+
     @Test
     public void testGetNotebooks(){
         Response response = target("notebooks")
@@ -65,13 +125,21 @@ public class NotebookServiceTest extends JerseyTest {
 
     @Test
     public void testExecuteNotebookCellGremlin(){
-        String notebookId="cde49180-478e-4b5c-ae2d-200b8ae370da";
-        String cellId="d0bd4629-5158-4993-b458-00d15479aed2";
         String vertexId="person:Rosie O'Donnell";
-        String url="notebooks/"+notebookId+"/cells/"+cellId+ "/gremlin";
+        NotebookCell cell = new NotebookCell();
+        cell.setId(cellId);
+        cell.setLanguage( "gremlin" );
+        cell.setCode("g.V('person:Rosie O\\'Donnell')");
+        String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
+        System.out.println(url);
+        Response response = target(url)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.json(cell));
+
+        url="notebooks/"+notebookId+"/cells/"+cellId+ "/gremlin";
         System.out.println(url);
 
-        Response response =
+        Response response1 =
                 target(url).queryParam( "vertexId",vertexId )
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .get();
@@ -79,24 +147,24 @@ public class NotebookServiceTest extends JerseyTest {
         Assert.assertEquals(200, response.getStatus());
     }
 
+
     @Test
     public void testExecuteNotebookCell(){
-
-        String notebookId="34b06d58-91cb-4394-9f8a-729cf05635b8";
-        String cellId="727e77a1-fe85-4e49-ab11-6f1a55fcf3ff";
+        String code = "g.V().count()";
         NotebookCell cell = new NotebookCell();
-        cell.setId("727e77a1-fe85-4e49-ab11-6f1a55fcf3ff");
+        cell.setId(cellId);
         cell.setLanguage( "gremlin" );
-        cell.setCode("g.V()");
+        cell.setCode(code);
         String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
         System.out.println(url);
 
         Response response = target(url)
                         .request(MediaType.APPLICATION_JSON_TYPE)
                         .put(Entity.json(cell));
-
-        Assert.assertEquals(200, response.getStatus());
         Result result = response.readEntity(Result.class);
+        Assert.assertEquals(200, response.getStatus());
+
+
     }
 
 

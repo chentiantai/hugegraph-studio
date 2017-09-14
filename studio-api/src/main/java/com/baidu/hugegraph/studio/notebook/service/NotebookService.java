@@ -27,6 +27,7 @@ import com.baidu.hugegraph.structure.gremlin.Result;
 import com.baidu.hugegraph.structure.gremlin.ResultSet;
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
+import com.baidu.hugegraph.studio.gremlin.GremlinOptimizer;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
@@ -66,6 +67,8 @@ public class NotebookService {
     private NotebookRepository notebookRepository;
     @Autowired
     private ConnectionRepository connectionRepository;
+    @Autowired
+    private GremlinOptimizer gremlinOptimizer;
 
     /**
      * Gets notebooks.
@@ -327,7 +330,8 @@ public class NotebookService {
                 notebook.getConnection().getGraphName());
 
         String gremlinVertexId = vertexId.replaceAll("'", "\\\\'");
-        String gremlin = String.format("g.V('%s').bothE()", gremlinVertexId);
+        String gremlin = gremlinOptimizer.limitOptimize(
+                         String.format("g.V('%s').bothE()", gremlinVertexId));
 
         GremlinManager gremlinManager = hugeClient.gremlin();
         ResultSet resultSet = gremlinManager.gremlin(gremlin).execute();
@@ -447,8 +451,8 @@ public class NotebookService {
             GremlinManager gremlinManager = hugeClient.gremlin();
 
             // execute gremlin by HugeClient.
-            ResultSet resultSet =
-                    gremlinManager.gremlin(cell.getCode()).execute();
+            ResultSet resultSet = gremlinManager.gremlin(
+                    gremlinOptimizer.limitOptimize(cell.getCode())).execute();
 
             // gremlin result will be served 2 places,
             // original data is saved as List<Object>,
