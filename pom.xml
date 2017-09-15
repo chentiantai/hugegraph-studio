@@ -28,7 +28,7 @@
         <guava.version>19.0</guava.version>
         <compiler.source>1.8</compiler.source>
         <compiler.target>1.8</compiler.target>
-        <final.name>studio-release</final.name>
+        <final.name>hugestudio-release-0.2-SNAPSHOT</final.name>
     </properties>
 
     <dependencyManagement>
