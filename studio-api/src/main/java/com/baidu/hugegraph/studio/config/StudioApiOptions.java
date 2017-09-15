@@ -23,6 +23,8 @@ import com.baidu.hugegraph.config.ConfigOption;
 import com.baidu.hugegraph.config.OptionHolder;
 
 import static com.baidu.hugegraph.config.OptionChecker.disallowEmpty;
+import static com.baidu.hugegraph.config.OptionChecker.positiveInt;
+
 /**
  * The type Studio api options.
  */
@@ -45,12 +47,12 @@ public class StudioApiOptions extends OptionHolder {
                 if (instance == null) {
                     instance = new StudioApiOptions();
                     instance.registerOptions();
-
                 }
             }
         }
         return instance;
     }
+
     /**
      * The constant STUDIO_DATA_BASE_DIR.
      */
@@ -86,4 +88,17 @@ public class StudioApiOptions extends OptionHolder {
                     "The notebooks directory of HugeStudio's user data.",
                     disallowEmpty(String.class)
             );
+
+    /**
+     * The constant STUDIO_DATA_Vertex_Edge_Limit.
+     */
+    public static final ConfigOption<Integer> STUDIO_DATA_LIMIT =
+            new ConfigOption<>(
+                    "studioData.limit",
+                    100,
+                    true,
+                    "MAX_SIZE for the data render in web.",
+                    positiveInt()
+            );
+
 }

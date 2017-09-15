@@ -1,3 +1,22 @@
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package com.baidu.hugegraph.studio;
 
 import java.util.List;
@@ -26,13 +45,10 @@ import com.baidu.hugegraph.studio.notebook.model.Result;
 import com.baidu.hugegraph.studio.notebook.model.ViewSettings;
 import com.baidu.hugegraph.studio.notebook.service.NotebookService;
 
-/**
- * Created by huanghaiping02 on 17/8/31.
- */
 public class NotebookServiceTest extends JerseyTest {
 
     static final String notebookName = "testNotebookService";
-    static final String connectionId = "ac32ec5b-1817-46f8-98d7-2da9cc8903ae";
+    static final String connectionId = "bd6a0e72-de3e-425a-90f0-edf8a3d5f910";
     static Notebook notebook =  null;
     static String notebookId = "";
     static String cellId="";
@@ -58,8 +74,6 @@ public class NotebookServiceTest extends JerseyTest {
                 .build();
     }
 
-
-
     @Before
     public void before() {
         notebook = new Notebook();
@@ -67,8 +81,8 @@ public class NotebookServiceTest extends JerseyTest {
         notebook.setName(notebookName);
 
         Response response = target("notebooks")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.json(notebook));
+                            .request(MediaType.APPLICATION_JSON_TYPE)
+                            .post(Entity.json(notebook));
 
         notebook = response.readEntity(Notebook.class);
         notebookId = notebook.getId();
@@ -90,9 +104,9 @@ public class NotebookServiceTest extends JerseyTest {
         cell.setViewSettings(viewSettings);
 
         Response response = target("notebooks/"+notebookId+"/cells")
-                .queryParam( "position",1 )
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.json(cell));
+                            .queryParam( "position",1 )
+                            .request(MediaType.APPLICATION_JSON_TYPE)
+                            .post(Entity.json(cell));
 
         NotebookCell notebookCell = response.readEntity(NotebookCell.class);
         return notebookCell.getId();
@@ -103,11 +117,9 @@ public class NotebookServiceTest extends JerseyTest {
     @After
     public void after() {
         Response response = target("notebooks/" + notebookId)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .delete();
+                            .request(MediaType.APPLICATION_JSON_TYPE)
+                            .delete();
     }
-
-
 
     @Test
     public void testGetNotebooks(){
@@ -121,8 +133,6 @@ public class NotebookServiceTest extends JerseyTest {
         Assert.assertEquals(200, response.getStatus());
     }
 
-
-
     @Test
     public void testExecuteNotebookCellGremlin(){
         String vertexId="person:Rosie O'Donnell";
@@ -133,16 +143,15 @@ public class NotebookServiceTest extends JerseyTest {
         String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
         System.out.println(url);
         Response response = target(url)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .put(Entity.json(cell));
+                            .request(MediaType.APPLICATION_JSON_TYPE)
+                            .put(Entity.json(cell));
 
         url="notebooks/"+notebookId+"/cells/"+cellId+ "/gremlin";
         System.out.println(url);
 
-        Response response1 =
-                target(url).queryParam( "vertexId",vertexId )
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .get();
+        Response response1 = target(url).queryParam( "vertexId",vertexId )
+                             .request(MediaType.APPLICATION_JSON_TYPE)
+                             .get();
 
         Assert.assertEquals(200, response.getStatus());
     }
@@ -150,7 +159,7 @@ public class NotebookServiceTest extends JerseyTest {
 
     @Test
     public void testExecuteNotebookCell(){
-        String code = "g.V().count()";
+        String code = "g.V()";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
         cell.setLanguage( "gremlin" );
@@ -159,8 +168,8 @@ public class NotebookServiceTest extends JerseyTest {
         System.out.println(url);
 
         Response response = target(url)
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .put(Entity.json(cell));
+                            .request(MediaType.APPLICATION_JSON_TYPE)
+                            .put(Entity.json(cell));
         Result result = response.readEntity(Result.class);
         Assert.assertEquals(200, response.getStatus());
 

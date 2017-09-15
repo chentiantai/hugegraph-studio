@@ -22,6 +22,7 @@ package com.baidu.hugegraph.studio.config;
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
 import com.google.common.base.Preconditions;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -40,7 +41,7 @@ public class StudioConfiguration {
     public StudioConfiguration() {
         try {
             URL configurationUrl = this.getClass().getClassLoader()
-                    .getResource(DEFAULT_CONFIGURATION_FILE);
+                                   .getResource(DEFAULT_CONFIGURATION_FILE);
             Preconditions.checkNotNull(configurationUrl);
             config = new HugeConfig(configurationUrl.getFile());
         } catch (org.apache.commons.configuration.ConfigurationException e) {
@@ -70,6 +71,10 @@ public class StudioConfiguration {
             userDataDir = "~/.hugestudio";
         }
         return replaceHomeDirReferences(userDataDir);
+    }
+
+    public Integer getDataLimit() {
+        return this.config.get(StudioApiOptions.STUDIO_DATA_LIMIT);
     }
 
     private String replaceHomeDirReferences(String confDir) {

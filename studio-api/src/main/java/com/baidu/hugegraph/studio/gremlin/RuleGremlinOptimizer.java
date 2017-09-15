@@ -25,6 +25,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
 
 /**
  * add some rules for the gremlin code
@@ -33,12 +34,15 @@ import org.springframework.stereotype.Repository;
 @Repository("ruleGremlinOptimizer")
 public class RuleGremlinOptimizer implements GremlinOptimizer {
 
+
     private static final Logger LOG =
             LoggerFactory.getLogger( RuleGremlinOptimizer.class );
-
-    List<String> atomSentences = new ArrayList<>();
+    private StudioConfiguration configuration;
+    private List<String> atomSentences = new ArrayList<>();
 
     public RuleGremlinOptimizer() {
+        configuration = new StudioConfiguration();
+
         atomSentences.add( "g.V\\(\\)" );
         atomSentences.add( "g.E\\(\\)" );
         atomSentences.add( "bothE\\(\\)" );
@@ -63,7 +67,7 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
 
     @Override
     public String limitOptimize(String code) {
-        return limitOptimize( code, 50 );
+        return limitOptimize(code, configuration.getDataLimit());
     }
 
 }
