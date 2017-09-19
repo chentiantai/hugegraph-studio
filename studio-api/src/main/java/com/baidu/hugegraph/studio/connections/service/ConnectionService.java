@@ -69,8 +69,8 @@ public class ConnectionService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConnections() {
         Response response = Response.status(200)
-                .entity(connectionRepository.getConnections())
-                .build();
+                            .entity(connectionRepository.getConnections())
+                            .build();
         return response;
     }
 
@@ -86,8 +86,8 @@ public class ConnectionService {
     public Response getConnection(
             @PathParam("connectionId") String connectionId) {
         Response response = Response.status(200)
-                .entity(connectionRepository.get(connectionId))
-                .build();
+                            .entity(connectionRepository.get(connectionId))
+                            .build();
         return response;
     }
 
@@ -103,8 +103,8 @@ public class ConnectionService {
     public Response createConnection(Connection connection) {
         connection.setLastModified(System.currentTimeMillis());
         Response response = Response.status(201)
-                .entity(connectionRepository.createConnection(connection))
-                .build();
+                            .entity(connectionRepository.createConnection(connection))
+                            .build();
         return response;
     }
 
@@ -120,9 +120,9 @@ public class ConnectionService {
     public Response deleteConnection(
             @PathParam("connectionId") String connectionId) {
         Preconditions.checkArgument(!notebookRepository.getNotebooks().stream()
-                .anyMatch(n -> n.getConnectionId().equals(connectionId)),
-                "The connection can't be deleted if it has already been used " +
-                "by any notebook");
+                                    .anyMatch(n -> n.getConnectionId().equals(connectionId)),
+                                    "The connection can't be deleted if it has " +
+                                    "already been used by any notebook");
 
         connectionRepository.deleteConnection(connectionId);
         Response response = Response.status(204).build();
@@ -165,7 +165,7 @@ public class ConnectionService {
     public Response getConnectionStatus(Connection connection) {
         Preconditions.checkNotNull(connection);
         Response response = Response.status(200).entity(ConnectionState.OPEN)
-                .build();
+                           .build();
         try {
             HugeClient.open(connection.getConnectionUri(),
                             connection.getGraphName());
@@ -186,29 +186,23 @@ public class ConnectionService {
     @GET
     @Path("{connectionId}/schema")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConnectionSchema(
-            @PathParam("connectionId") String connectionId) {
+    public Response getConnectionSchema(@PathParam("connectionId") String connectionId) {
         Preconditions.checkNotNull(connectionId);
         Connection connection = connectionRepository.get(connectionId);
         Preconditions.checkNotNull(connection);
         Preconditions.checkArgument(connection.getId().equals(connectionId));
 
         Response response = null;
-        try {
-            HugeClient client = HugeClient.open(connection.getConnectionUri(),
-                                                connection.getGraphName());
-            Map<String, List> schemas = new HashMap<>();
-            List<PropertyKey> propertyKeys = client.schema().getPropertyKeys();
-            List<VertexLabel> vertexLabels = client.schema().getVertexLabels();
-            List<EdgeLabel> edgeLabels = client.schema().getEdgeLabels();
-            schemas.put("propertyKeys", propertyKeys);
-            schemas.put("vertexLabels", vertexLabels);
-            schemas.put("edgeLabels", edgeLabels);
-            response = Response.status(200).entity(schemas).build();
-        } catch (ClientException ex) {
-            response = Response.status(ex.status()).entity(ex.message())
-                        .build();
-        }
+        HugeClient client = HugeClient.open(connection.getConnectionUri(),
+                                            connection.getGraphName());
+        Map<String, List> schemas = new HashMap<>();
+        List<PropertyKey> propertyKeys = client.schema().getPropertyKeys();
+        List<VertexLabel> vertexLabels = client.schema().getVertexLabels();
+        List<EdgeLabel> edgeLabels = client.schema().getEdgeLabels();
+        schemas.put("propertyKeys", propertyKeys);
+        schemas.put("vertexLabels", vertexLabels);
+        schemas.put("edgeLabels", edgeLabels);
+        response = Response.status(200).entity(schemas).build();
         return response;
     }
 }
