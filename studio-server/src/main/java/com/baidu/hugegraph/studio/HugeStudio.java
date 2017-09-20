@@ -111,7 +111,7 @@ public class HugeStudio {
         }
         if (!api.getState().equals(LifecycleState.STARTED)) {
             System.out.println();
-            System.out.println("\nStudio-api failed to start. " +
+            System.out.println("Studio-api failed to start. " +
                                "Please check logs for details");
             System.exit(1);
         }
@@ -162,8 +162,8 @@ public class HugeStudio {
     }
 
     /**
-     * To validate that the http port is available.
-     * exit when the port is not available.
+     * To validate if the http port is available or not. Exit if the port is
+     * not available.
      */
     private static void validateHttpPort(String httpBindAddress, int httpPort) {
         ServerSocket socket = null;
