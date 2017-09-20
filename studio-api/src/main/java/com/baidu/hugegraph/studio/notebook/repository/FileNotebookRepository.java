@@ -95,7 +95,8 @@ public class FileNotebookRepository implements NotebookRepository {
              LOG.debug("Write Notebook file: {}", filePath);
         } catch (IOException ignored) {
             LOG.error("Failed to write Notebook file: {} ", filePath, ignored);
-            throw new RuntimeException("Failed to write Notebook file:  " + filePath );
+            throw new RuntimeException("Failed to write Notebook file:  " +
+                                       filePath );
         }
     }
 
@@ -150,7 +151,8 @@ public class FileNotebookRepository implements NotebookRepository {
                                       Notebook.class));
                     } catch (IOException ignored) {
                         LOG.error("Failed to read file: {}",
-                                  notebooksDataDirectory + "/" + path.getFileName(), ignored);
+                                  notebooksDataDirectory + "/" + path.getFileName(),
+                                  ignored);
                             /*
                              * Just skips this iteration and return the fetched
                              * notebooks if there were.
@@ -160,32 +162,31 @@ public class FileNotebookRepository implements NotebookRepository {
                     }
                 });
             }catch (Exception ignored){
-                LOG.error("Failed to read file : {}",
-                          notebooksDataDirectory, ignored);
+                LOG.error("Failed to read file : {}", notebooksDataDirectory,
+                          ignored);
         }
             return notebooks;
     }
 
     @Override
     public void deleteNotebook(String notebookId) {
+        String path = notebooksDataDirectory + "/" + notebookId;
         try {
             FileUtils.forceDelete(FileUtils.getFile(notebooksDataDirectory,
                                                     notebookId));
         } catch (IOException e) {
-            LOG.error("Failed to remove file : {}",
-                    notebooksDataDirectory + "/" + notebookId, e);
+            LOG.error("Failed to remove file : {}", path, e);
         }
     }
 
     @Override
     public Notebook getNotebook(String notebookId) {
+        String path = notebooksDataDirectory + "/" + notebookId;
         try {
-            return mapper.readValue(Files.readAllBytes(
-                    Paths.get(notebooksDataDirectory + "/" + notebookId)),
-                    Notebook.class);
+            return mapper.readValue(Files.readAllBytes(Paths.get(path)),
+                                    Notebook.class);
         } catch (IOException e) {
-            LOG.error("Failed to read File : {}",
-                    notebooksDataDirectory + "/" + notebookId, e);
+            LOG.error("Failed to read File : {}", path, e);
         }
         return null;
     }
@@ -258,9 +259,7 @@ public class FileNotebookRepository implements NotebookRepository {
     public NotebookCell getNotebookCell(String notebookId, String cellId) {
         Notebook notebook = getNotebook(notebookId);
         Preconditions.checkNotNull(notebook);
-        return notebook.getCells()
-                .stream().filter(c -> c.getId().equals(cellId))
-                .findFirst()
-                .get();
+        return notebook.getCells().stream().filter(c -> c.getId().equals(cellId))
+               .findFirst().get();
     }
 }

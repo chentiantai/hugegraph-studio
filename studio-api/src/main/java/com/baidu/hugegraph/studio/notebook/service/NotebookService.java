@@ -196,11 +196,11 @@ public class NotebookService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getNotebookCell(@PathParam("notebookId") String notebookId,
                                     @PathParam("cellId") String cellId) {
-        Preconditions.checkArgument(notebookId != null
-                && cellId != null);
+        Preconditions.checkArgument(notebookId != null && cellId != null);
         Response response = Response.status(201)
-                .entity(notebookRepository.getNotebookCell(notebookId, cellId))
-                .build();
+                            .entity(notebookRepository
+                                    .getNotebookCell(notebookId, cellId))
+                            .build();
         return response;
     }
 
@@ -220,8 +220,7 @@ public class NotebookService {
                                     @QueryParam("position") Integer position,
                                     NotebookCell cell) {
         Response response = Response.status(201)
-                .entity(notebookRepository
-                        .addCellToNotebook(notebookId, cell, position)).build();
+                            .entity(notebookRepository.addCellToNotebook(notebookId, cell, position)).build();
         return response;
     }
 
@@ -257,11 +256,9 @@ public class NotebookService {
     public Response editNotebookCell(@PathParam("notebookId") String notebookId,
                                      @PathParam("cellId") String cellId,
                                      NotebookCell cell) {
-        Preconditions.checkArgument(cell != null
-                && cellId.equals(cell.getId()));
-        Response response = Response.status(200)
-                .entity(notebookRepository
-                        .editNotebookCell(notebookId, cellId, cell)).build();
+        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
+        Response response = Response.status(200).entity(notebookRepository
+                            .editNotebookCell(notebookId, cellId, cell)).build();
         return response;
     }
 
@@ -292,15 +289,15 @@ public class NotebookService {
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId,
             @QueryParam("vertexId") String vertexId) {
-        Preconditions.checkArgument(notebookId != null
-                && cellId != null && vertexId != null);
+        Preconditions.checkArgument(notebookId != null && cellId != null &&
+                                    vertexId != null);
 
         Notebook notebook = notebookRepository.getNotebook(notebookId);
         Preconditions.checkArgument(notebook != null);
 
         NotebookCell cell = notebook.getCellById(cellId);
-        Preconditions.checkArgument(cell != null
-                && cellId.equals(cell.getId()));
+        Preconditions.checkArgument(cell != null &&
+                                    cellId.equals(cell.getId()));
         // only be executed with 'gremlin' mode
         Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
 
@@ -314,8 +311,8 @@ public class NotebookService {
          * executeNotebookCell(String,String). It must have a starting
          * point and the result must have vertices or edges.
          */
-        Preconditions.checkArgument(result != null
-                && result.getGraph() != null);
+        Preconditions.checkArgument(result != null &&
+                                    result.getGraph() != null);
 
         Set<String> vertexIds = new HashSet<>();
         Set<String> edgeIds = new HashSet<>();
@@ -326,8 +323,8 @@ public class NotebookService {
         Preconditions.checkArgument(vertexIds.contains(vertexId));
 
         HugeClient hugeClient = HugeClient.open(
-                notebook.getConnection().getConnectionUri(),
-                notebook.getConnection().getGraphName());
+                                notebook.getConnection().getConnectionUri(),
+                                notebook.getConnection().getGraphName());
 
         String gremlinVertexId = vertexId.replaceAll("'", "\\\\'");
         String gremlin = gremlinOptimizer.limitOptimize(
@@ -355,8 +352,7 @@ public class NotebookService {
                         edgesNew.add(e);
                     }
                 });
-        List<Vertex> verticesFromEdges =
-                getVertexfromEdge(hugeClient, edgesNew);
+        List<Vertex> verticesFromEdges = getVertexfromEdge(hugeClient, edgesNew);
         if (verticesFromEdges != null) {
             verticesFromEdges.stream().forEach(v -> {
                 if (!vertexIds.contains(v.id())) {
@@ -381,9 +377,7 @@ public class NotebookService {
         Long duration = endTime - startTime;
         resultNew.setDuration(duration);
 
-        Response response = Response.status(200)
-                .entity(resultNew)
-                .build();
+        Response response = Response.status(200).entity(resultNew).build();
         return response;
     }
 
@@ -411,16 +405,18 @@ public class NotebookService {
     @Path("{notebookId}/cells/{cellId}/execute")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response executeNotebookCell(
-            @PathParam("notebookId") String notebookId,
-            @PathParam("cellId") String cellId,
-            NotebookCell newCell) {
+    public Response executeNotebookCell(@PathParam("notebookId") String notebookId,
+                                        @PathParam("cellId") String cellId,
+                                        NotebookCell newCell) {
+
         Preconditions.checkArgument(notebookId != null &&
-                newCell != null && cellId != null && cellId
-                .equals(newCell.getId()));
-        NotebookCell cell =
-                notebookRepository
-                        .editNotebookCell(notebookId, cellId, newCell);
+                                    newCell != null &&
+                                    cellId != null &&
+                                    cellId.equals(newCell.getId()));
+
+        NotebookCell cell = notebookRepository.editNotebookCell(notebookId,
+                                                                cellId,
+                                                                newCell);
         Long startTime = System.currentTimeMillis();
 
         com.baidu.hugegraph.studio.notebook.model.Result result =
@@ -435,9 +431,8 @@ public class NotebookService {
                     add(cell.getCode());
                 }
             });
-            result.setType(
-                    com.baidu.hugegraph.studio.notebook.model.
-                            Result.Type.MARKDOWN);
+            result.setType(com.baidu.hugegraph.studio.notebook.model.Result
+                           .Type.MARKDOWN);
         }
 
         if ("gremlin".equals(cell.getLanguage())) {
@@ -445,8 +440,8 @@ public class NotebookService {
 
             // build HugeClient from the connection info from the notebook.
             HugeClient hugeClient = HugeClient.open(
-                    notebook.getConnection().getConnectionUri(),
-                    notebook.getConnection().getGraphName());
+                                    notebook.getConnection().getConnectionUri(),
+                                    notebook.getConnection().getGraphName());
 
             GremlinManager gremlinManager = hugeClient.gremlin();
 
@@ -462,8 +457,7 @@ public class NotebookService {
 
             List<Vertex> vertices = new ArrayList<>();
             List<Edge> edges = new ArrayList<>();
-            List<com.baidu.hugegraph.structure.graph.Path> paths =
-                    new ArrayList<>();
+            List<com.baidu.hugegraph.structure.graph.Path> paths = new ArrayList<>();
             Iterator<Result> results = resultSet.iterator();
 
             while (results.hasNext()){
@@ -472,61 +466,55 @@ public class NotebookService {
                 Result or = results.next();
 
                 if (or == null){
-                    result.setType(
-                            com.baidu.hugegraph.studio.notebook.model.
-                                    Result.Type.EMPTY);
+                    result.setType(com.baidu.hugegraph.studio.notebook.model
+                                   .Result.Type.EMPTY);
                 } else {
                     Object object = or.getObject();
                     if (object instanceof Vertex) {
-                        result.setType(
-                                com.baidu.hugegraph.studio.notebook.model.
-                                        Result.Type.VERTEX);
+                        result.setType(com.baidu.hugegraph.studio.notebook.model
+                                       .Result.Type.VERTEX);
                         // Convert Object to Vertex ;
                         vertices.add((Vertex) object);
                     } else if (object instanceof Edge) {
-                        result.setType(
-                                com.baidu.hugegraph.studio.notebook.model.
-                                        Result.Type.EDGE);
+                        result.setType(com.baidu.hugegraph.studio.notebook.model
+                                       .Result.Type.EDGE);
                         // Convert Object to Edge ;
                         edges.add((Edge) object);
-                    } else if (object instanceof com.baidu.hugegraph.structure.
-                            graph.Path) {
-                        result.setType(
-                                com.baidu.hugegraph.studio.notebook.model.
-                                        Result.Type.PATH);
+                    } else if (object instanceof
+                               com.baidu.hugegraph.structure.graph.Path) {
+                        result.setType(com.baidu.hugegraph.studio.notebook.model
+                                       .Result.Type.PATH);
                         //convert Object to Path
                         paths.add((com.baidu.hugegraph.structure.graph.Path)
-                                object);
+                                  object);
 
                     } else if (object instanceof Integer) {
-                        result.setType(
-                                com.baidu.hugegraph.studio.notebook.model.
-                                        Result.Type.NUMBER);
+                        result.setType(com.baidu.hugegraph.studio.notebook.model
+                                       .Result.Type.NUMBER);
                     } else {
-                        result.setType(
-                                com.baidu.hugegraph.studio.notebook.model.
-                                        Result.Type.OTHER);
+                        result.setType(com.baidu.hugegraph.studio.notebook.model
+                                       .Result.Type.OTHER);
                     }
                 }
             }
 
             //when the results contains not only vertices\edges\paths, how to
             //deal with ?
-            if(result.getType() == com.baidu.hugegraph.studio.notebook.model.
-                    Result.Type.PATH){
+            if(result.getType() == com.baidu.hugegraph.studio.notebook.model
+                                   .Result.Type.PATH){
                 // Extract vertices from paths ;
                 vertices = getVertexfromPath(hugeClient, paths);
                 edges = getEdgefromVertex(hugeClient, vertices);
             }
 
-            if(result.getType() == com.baidu.hugegraph.studio.notebook.model.
-                    Result.Type.VERTEX){
+            if(result.getType() == com.baidu.hugegraph.studio.notebook.model
+                                   .Result.Type.VERTEX){
                 // Extract vertices from edges ;
                 edges = getEdgefromVertex(hugeClient, vertices);
             }
 
-            if(result.getType() == com.baidu.hugegraph.studio.notebook.model.
-                    Result.Type.EDGE) {
+            if(result.getType() == com.baidu.hugegraph.studio.notebook.model
+                                   .Result.Type.EDGE) {
                 // Extract vertices from edges ;
                 vertices = getVertexfromEdge(hugeClient, edges);
             }
@@ -542,9 +530,7 @@ public class NotebookService {
         result.setDuration(duration);
 
         notebookRepository.editNotebookCell(notebookId, cell);
-        Response response = Response.status(200)
-                .entity(result)
-                .build();
+        Response response = Response.status(200).entity(result).build();
         return response;
     }
 
@@ -559,7 +545,7 @@ public class NotebookService {
             vertexIds.add(e.target());
         });
         return getVertices(hugeClient,
-                vertexIds.stream().collect(Collectors.toList()));
+                           vertexIds.stream().collect(Collectors.toList()));
 
     }
 
@@ -576,19 +562,15 @@ public class NotebookService {
 
         String ids = StringUtils.join( vertices.stream().map(
            vertex ->
-                   String.format("'%s'", vertex.id().replaceAll("'", "\\\\'")))
-                .collect(Collectors.toList()), ",");
+                    String.format("'%s'", vertex.id().replaceAll("'", "\\\\'")))
+                    .collect(Collectors.toList()), ",");
 
         // de-duplication by edgeId,
         // Reserve the edges only if both it's srcVertexId and tgtVertexId is a
         // member of vertices;
-        String gremlin = String.format(
-                "g.V(%s).bothE().dedup()", ids);
+        String gremlin = String.format("g.V(%s).bothE().dedup()", ids);
 
-        ResultSet resultSet = hugeClient
-                .gremlin()
-                .gremlin(gremlin)
-                .execute();
+        ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
 
         Iterator<Result> results = resultSet.iterator();
 
@@ -617,8 +599,8 @@ public class NotebookService {
         List<Vertex> vertices = new ArrayList<>();
 
         String ids = StringUtils.join(vertexIds.stream().map(
-                id -> String.format("'%s'", id.replaceAll("'", "\\\\'"))
-            ).collect(Collectors.toList()), ",");
+                     id -> String.format("'%s'", id.replaceAll("'", "\\\\'")))
+                           .collect(Collectors.toList()), ",");
 
         String gremlin = String.format("g.V(%s)", ids);
         ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
@@ -631,7 +613,7 @@ public class NotebookService {
 
     private List<Vertex> getVertexfromPath(HugeClient hugeClient,
                                            List<com.baidu.hugegraph.structure
-                                                   .graph.Path> paths) {
+                                           .graph.Path> paths) {
         if (paths == null) {
             return null;
         }
@@ -650,7 +632,7 @@ public class NotebookService {
             }
         }));
         return getVertices(hugeClient,
-                vertexIds.stream().collect(Collectors.toList()));
+                           vertexIds.stream().collect(Collectors.toList()));
 
     }
 
