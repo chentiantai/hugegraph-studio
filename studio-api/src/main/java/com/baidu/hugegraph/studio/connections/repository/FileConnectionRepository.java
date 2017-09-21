@@ -45,7 +45,8 @@ import java.util.*;
  */
 @Repository("connectionRepository")
 public class FileConnectionRepository implements ConnectionRepository {
-    private static final Logger LOG = LoggerFactory.getLogger(FileConnectionRepository.class);
+    private static final Logger LOG =
+            LoggerFactory.getLogger(FileConnectionRepository.class);
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -65,7 +66,7 @@ public class FileConnectionRepository implements ConnectionRepository {
         connectionsDataDirectory = configuration.getConnectionsDirectory();
         Preconditions.checkNotNull(connectionsDataDirectory);
 
-        LOG.info("connectionsDataDirectory=" + connectionsDataDirectory);
+        LOG.info("connectionsDataDirectory: " + connectionsDataDirectory);
         File dir = new File(connectionsDataDirectory);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -80,12 +81,11 @@ public class FileConnectionRepository implements ConnectionRepository {
         String filePath = connectionsDataDirectory + "/" + connection.getId();
         Path path = Paths.get(filePath);
         try {
-            try (BufferedWriter writer = Files.newBufferedWriter(path)) {
-                writer.write(mapper.writeValueAsString(connection));
-            }
-            LOG.debug("Write Connection File :" + filePath);
-        } catch (IOException e) {
-            LOG.error("Could Not Write File : " + filePath, e);
+            BufferedWriter writer = Files.newBufferedWriter(path);
+            writer.write(mapper.writeValueAsString(connection));
+            LOG.debug("Write connection file: " + filePath);
+        } catch (IOException ignored) {
+            LOG.error("Can't write file: " + filePath, ignored);
         }
     }
 
@@ -94,23 +94,23 @@ public class FileConnectionRepository implements ConnectionRepository {
         List<Connection> connections = new ArrayList<>();
         try {
             Files.list(Paths.get(connectionsDataDirectory))
-                    .filter(Files::isRegularFile)
-                    .forEach(path -> {
-                        try {
-                            connections.add(mapper.readValue(Files.readAllBytes(path), Connection.class));
-                        } catch (IOException e) {
-                            LOG.error("Could Not Read File : " + connectionsDataDirectory + "/" + path.getFileName(), e);
-                            // only skips this iteration.
-                            return;
-                        }
-                    });
-            Collections.sort(connections, (connection1, connection2) ->
-                        connection2.getLastModified().compareTo(connection1.getLastModified()));
-        } catch (IOException e) {
-            LOG.error("Could Not Read File : " + connectionsDataDirectory, e);
+                .filter(Files::isRegularFile).forEach(path -> {
+                try {
+                    connections.add(mapper.readValue(Files.readAllBytes(path),
+                                                     Connection.class));
+                } catch (IOException ignored) {
+                    LOG.error("Can't read file: " + connectionsDataDirectory +
+                              "/" + path.getFileName(), ignored);
+                    return;
+                }});
+
+            Collections.sort(connections, (conn1, conn2) ->
+                    conn2.getLastModified().compareTo(conn1.getLastModified()));
+        } catch (IOException ignored) {
+            LOG.error("Can't read file: " + connectionsDataDirectory, ignored);
         } catch (NullPointerException e) {
-            LOG.error("Could Not Sort File, Some Files May Not Have A lastModified Field : "
-                    + connectionsDataDirectory, e);
+            LOG.error("Can't sorting files. Some files may not have a " +
+                      "lastModified Field: " + connectionsDataDirectory, e);
         }
         return connections;
     }
@@ -118,8 +118,8 @@ public class FileConnectionRepository implements ConnectionRepository {
     @Override
     public Connection createConnection(Connection connection) {
         Preconditions.checkNotNull(connection);
-        Preconditions.checkArgument(connection.getConnectionHost() != null
-                && connection.getPort() > 0);
+        Preconditions.checkArgument(connection.getConnectionHost() != null &&
+                                    connection.getPort() > 0);
 
         if (StringUtils.isEmpty(connection.getId())) {
             connection.setId(UUID.randomUUID().toString());
@@ -131,10 +131,10 @@ public class FileConnectionRepository implements ConnectionRepository {
     @Override
     public Connection editConnection(Connection connection) {
         Preconditions.checkNotNull(connection);
-        // ensure connectionId is not empty.
-        Preconditions.checkArgument(connection.getConnectionHost() != null
-                && connection.getPort() > 0
-                && StringUtils.isNotEmpty(connection.getId()));
+        // Ensure connectionId is not empty.
+        Preconditions.checkArgument(connection.getConnectionHost() != null &&
+                                    connection.getPort() > 0 &&
+                                    StringUtils.isNotEmpty(connection.getId()));
         writeConnection(connection);
         return connection;
     }
@@ -142,11 +142,12 @@ public class FileConnectionRepository implements ConnectionRepository {
     @Override
     public Connection get(String connectionId) {
         try {
-            return mapper.readValue(
-                    Files.readAllBytes(Paths.get(connectionsDataDirectory + "/" + connectionId)),
-                    Connection.class);
+            return mapper.readValue(Files.readAllBytes(
+                                    Paths.get(connectionsDataDirectory + "/" +
+                                    connectionId)), Connection.class);
         } catch (IOException e) {
-            LOG.error("Could Not Read Connection File : " + connectionsDataDirectory + "/" + connectionId, e);
+            LOG.error("Can't read connection file: " + connectionsDataDirectory +
+                      "/" + connectionId, e);
         }
         return null;
     }
@@ -154,9 +155,11 @@ public class FileConnectionRepository implements ConnectionRepository {
     @Override
     public void deleteConnection(String connectionId) {
         try {
-            FileUtils.forceDelete(FileUtils.getFile(connectionsDataDirectory, connectionId));
+            FileUtils.forceDelete(FileUtils.getFile(connectionsDataDirectory,
+                                  connectionId));
         } catch (IOException e) {
-            LOG.error("Could Not Delete Connection File : " + connectionsDataDirectory + "/" + connectionId, e);
+            LOG.error("Can't remove connection file: " + connectionsDataDirectory +
+                      "/" + connectionId, e);
         }
     }
 }
