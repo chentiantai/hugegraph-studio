@@ -41,6 +41,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * The type File notebook repository.
@@ -59,6 +61,8 @@ public class FileNotebookRepository implements NotebookRepository {
     private StudioConfiguration configuration;
 
     private String notebooksDataDirectory;
+
+    private ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * Instantiates a new File notebook repository.
@@ -89,6 +93,8 @@ public class FileNotebookRepository implements NotebookRepository {
          * not throw runtime exception if write failed in this case?
          */
         String filePath = notebooksDataDirectory + "/" + notebook.getId();
+
+        lock.writeLock().lock();
         try (BufferedWriter writer =
              Files.newBufferedWriter(Paths.get(filePath))) {
                 writer.write(mapper.writeValueAsString(notebook));
@@ -97,6 +103,8 @@ public class FileNotebookRepository implements NotebookRepository {
             LOG.error("Failed to write Notebook file: {} ", filePath, ignored);
             throw new RuntimeException("Failed to write Notebook file:  " +
                                        filePath );
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -182,11 +190,14 @@ public class FileNotebookRepository implements NotebookRepository {
     @Override
     public Notebook getNotebook(String notebookId) {
         String path = notebooksDataDirectory + "/" + notebookId;
+        lock.readLock().lock();
         try {
             return mapper.readValue(Files.readAllBytes(Paths.get(path)),
                                     Notebook.class);
         } catch (IOException e) {
             LOG.error("Failed to read File : {}", path, e);
+        } finally {
+            lock.readLock().unlock();
         }
         return null;
     }
