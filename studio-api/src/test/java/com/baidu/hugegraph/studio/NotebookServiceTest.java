@@ -20,6 +20,9 @@
 package com.baidu.hugegraph.studio;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
@@ -48,7 +51,7 @@ import com.baidu.hugegraph.studio.notebook.service.NotebookService;
 public class NotebookServiceTest extends JerseyTest {
 
     static final String notebookName = "testNotebookService";
-    static final String connectionId = "bd6a0e72-de3e-425a-90f0-edf8a3d5f910";
+    static final String connectionId = "ac32ec5b-1817-46f8-98d7-2da9cc8903ae";
     static Notebook notebook =  null;
     static String notebookId = "";
     static String cellId="";
@@ -116,6 +119,7 @@ public class NotebookServiceTest extends JerseyTest {
 
     @After
     public void after() {
+        System.out.println("after");
         Response response = target("notebooks/" + notebookId)
                             .request(MediaType.APPLICATION_JSON_TYPE)
                             .delete();
@@ -172,11 +176,62 @@ public class NotebookServiceTest extends JerseyTest {
                             .put(Entity.json(cell));
         Result result = response.readEntity(Result.class);
         Assert.assertEquals(200, response.getStatus());
+    }
 
+    @Test
+    public void testCocurrentEditNotebookCell(){
+        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(25);
+        for (int i = 0; i < 50; i++) {
+            final int index = i;
+            fixedThreadPool.execute(new Runnable() {
+                public void run() {
+                    editNotebookCell(index);
+                }
+            });
+        }
+        //closed the theadpool after all task has been finished
+        fixedThreadPool.shutdown();
+        try {
+            fixedThreadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void editNotebookCell(int index){
+        String code = "g.V('"+index+"')";
+        NotebookCell cell = new NotebookCell();
+        cell.setId(cellId);
+        cell.setLanguage( "gremlin" );
+        cell.setCode(code);
+        String url="notebooks/"+notebookId+"/cells/"+cellId;
+        System.out.println(url);
+
+        Response response = target(url)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.json(cell));
+    }
+
+    @Test
+    public void testEditNotebookCell(){
+        String code = "g.V()";
+        NotebookCell cell = new NotebookCell();
+        cell.setId(cellId);
+        cell.setLanguage( "gremlin" );
+        cell.setCode(code);
+        String url="notebooks/"+notebookId+"/cells/"+cellId;
+        System.out.println(url);
+
+        Response response = target(url)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.json(cell));
+        Result result = response.readEntity(Result.class);
     }
 
 
-
-
 }
+
+
+
+
+
