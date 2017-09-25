@@ -34,7 +34,7 @@ public class StudioConfiguration {
         OptionSpace.register(StudioOptions.Instance());
     }
 
-    private HugeConfig config = null;
+    private HugeConfig config;
 
     public StudioConfiguration(String configurationFile) {
         try {
