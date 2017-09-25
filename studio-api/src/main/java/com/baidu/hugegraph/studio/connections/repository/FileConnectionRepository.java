@@ -94,14 +94,13 @@ public class FileConnectionRepository implements ConnectionRepository {
         List<Connection> connections = new ArrayList<>();
         try {
             Files.list(Paths.get(connectionsDataDirectory))
-                .filter(Files::isRegularFile).forEach(path -> {
+                 .filter(Files::isRegularFile).forEach(path -> {
                 try {
                     connections.add(mapper.readValue(Files.readAllBytes(path),
                                                      Connection.class));
                 } catch (IOException ignored) {
                     LOG.error("Can't read file: " + connectionsDataDirectory +
                               "/" + path.getFileName(), ignored);
-                    return;
                 }});
 
             Collections.sort(connections, (conn1, conn2) ->
