@@ -216,7 +216,7 @@ public class Notebook {
         this.cells.removeIf(c -> c.getId().equals(cell.getId()));
         if (index != null) {
             this.cells.add(index.intValue(), cell);
-        }else {
+        } else {
             this.cells.add(cell);
         }
     }
@@ -231,12 +231,13 @@ public class Notebook {
             this.cells = new ArrayList<>();
         }
         int index = 0;
-        for (int i = 0; i < this.cells.size(); i++) {
+        for (int i = 0, n = this.cells.size(); i < n; i++) {
             if (this.cells.get(i).getId().equals(cell.getId())) {
                 index = i;
                 break;
             }
         }
+
         this.cells.removeIf(c -> c.getId().equals(cell.getId()));
         this.cells.add(index, cell);
     }
