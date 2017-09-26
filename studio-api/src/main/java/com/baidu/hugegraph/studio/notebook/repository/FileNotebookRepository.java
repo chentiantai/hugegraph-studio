@@ -41,6 +41,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -56,13 +57,13 @@ public class FileNotebookRepository implements NotebookRepository {
     private static final Logger LOG =
             LoggerFactory.getLogger(FileNotebookRepository.class);
 
-    private ObjectMapper mapper = new ObjectMapper();
-
+    private final ObjectMapper mapper = new ObjectMapper();
     private StudioConfiguration configuration;
-
     private String notebooksDataDirectory;
 
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock readLock = lock.readLock();
+    private final Lock writeLock = lock.writeLock();
 
     /**
      * Instantiates a new File notebook repository.
@@ -94,7 +95,7 @@ public class FileNotebookRepository implements NotebookRepository {
          */
         String filePath = notebooksDataDirectory + "/" + notebook.getId();
 
-        lock.writeLock().lock();
+        writeLock.lock();
         try (BufferedWriter writer =
              Files.newBufferedWriter(Paths.get(filePath))) {
                 writer.write(mapper.writeValueAsString(notebook));
@@ -104,7 +105,7 @@ public class FileNotebookRepository implements NotebookRepository {
             throw new RuntimeException("Failed to write Notebook file: " +
                                        filePath );
         } finally {
-            lock.writeLock().unlock();
+            writeLock.unlock();
         }
     }
 
@@ -154,50 +155,57 @@ public class FileNotebookRepository implements NotebookRepository {
         try {
             Files.list(Paths.get(notebooksDataDirectory)).forEach(path -> {
                 if (Files.isRegularFile(path)) {
-                    try {
-                        notebooks.add(mapper.readValue(Files.readAllBytes(path),
-                                      Notebook.class));
-                    } catch (IOException ignored) {
-                        LOG.error("Failed to read file: {}",
-                                  notebooksDataDirectory + "/" + path.getFileName(),
-                                  ignored);
-                            /*
-                             * Just skips this iteration and return the fetched
-                             * notebooks if there were.
-                             */
-                            return;
-                        }
+                    Notebook notebook = getNotebookByPath(path);
+                    if(notebook!=null){
+                        notebooks.add(notebook);
                     }
-                });
-            }catch (Exception ignored){
+                }
+            });
+        }catch (Exception ignored){
                 LOG.error("Failed to read file : {}", notebooksDataDirectory,
                           ignored);
         }
-            return notebooks;
+        return notebooks;
     }
 
     @Override
     public void deleteNotebook(String notebookId) {
         String path = notebooksDataDirectory + "/" + notebookId;
+        writeLock.lock();
         try {
             FileUtils.forceDelete(FileUtils.getFile(notebooksDataDirectory,
                                                     notebookId));
         } catch (IOException e) {
             LOG.error("Failed to remove file : {}", path, e);
+        }finally {
+            writeLock.unlock();
         }
     }
 
     @Override
     public Notebook getNotebook(String notebookId) {
         String path = notebooksDataDirectory + "/" + notebookId;
-        lock.readLock().lock();
+        readLock.lock();
         try {
             return mapper.readValue(Files.readAllBytes(Paths.get(path)),
                                     Notebook.class);
         } catch (IOException e) {
             LOG.error("Failed to read File : {}", path, e);
         } finally {
-            lock.readLock().unlock();
+            readLock.unlock();
+        }
+        return null;
+    }
+
+    public Notebook getNotebookByPath(Path path) {
+        readLock.lock();
+        try {
+            return mapper.readValue(Files.readAllBytes(path),
+                    Notebook.class);
+        } catch (IOException e) {
+            LOG.error("Failed to read File : {}", path, e);
+        } finally {
+            readLock.unlock();
         }
         return null;
     }

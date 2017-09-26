@@ -36,6 +36,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * The type File connection repository.
@@ -48,11 +51,13 @@ public class FileConnectionRepository implements ConnectionRepository {
     private static final Logger LOG =
             LoggerFactory.getLogger(FileConnectionRepository.class);
 
-    private ObjectMapper mapper = new ObjectMapper();
-
+    private final ObjectMapper mapper = new ObjectMapper();
     private StudioConfiguration configuration;
-
     private String connectionsDataDirectory;
+
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock readLock = lock.readLock();
+    private final Lock writeLock = lock.writeLock();
 
     /**
      * Instantiates a new File connection repository.
@@ -80,12 +85,14 @@ public class FileConnectionRepository implements ConnectionRepository {
 
         String filePath = connectionsDataDirectory + "/" + connection.getId();
         Path path = Paths.get(filePath);
-        try {
-            BufferedWriter writer = Files.newBufferedWriter(path);
+        writeLock.lock();
+        try (BufferedWriter writer = Files.newBufferedWriter(path)){
             writer.write(mapper.writeValueAsString(connection));
             LOG.debug("Write connection file: " + filePath);
         } catch (IOException ignored) {
             LOG.error("Can't write file: " + filePath, ignored);
+        }finally {
+            writeLock.unlock();
         }
     }
 
@@ -95,13 +102,11 @@ public class FileConnectionRepository implements ConnectionRepository {
         try {
             Files.list(Paths.get(connectionsDataDirectory))
                  .filter(Files::isRegularFile).forEach(path -> {
-                try {
-                    connections.add(mapper.readValue(Files.readAllBytes(path),
-                                                     Connection.class));
-                } catch (IOException ignored) {
-                    LOG.error("Can't read file: " + connectionsDataDirectory +
-                              "/" + path.getFileName(), ignored);
-                }});
+                    Connection connection = getConnectionByPath(path);
+                    if(connection!=null){
+                        connections.add(connection);
+                    }
+                 });
 
             Collections.sort(connections, (conn1, conn2) ->
                     conn2.getLastModified().compareTo(conn1.getLastModified()));
@@ -140,6 +145,7 @@ public class FileConnectionRepository implements ConnectionRepository {
 
     @Override
     public Connection get(String connectionId) {
+        readLock.lock();
         try {
             return mapper.readValue(Files.readAllBytes(
                                     Paths.get(connectionsDataDirectory + "/" +
@@ -147,18 +153,35 @@ public class FileConnectionRepository implements ConnectionRepository {
         } catch (IOException e) {
             LOG.error("Can't read connection file: " + connectionsDataDirectory +
                       "/" + connectionId, e);
+        }finally {
+            readLock.unlock();
+        }
+        return null;
+    }
+
+    public Connection getConnectionByPath(Path path) {
+        readLock.lock();
+        try {
+            return mapper.readValue(Files.readAllBytes(path), Connection.class);
+        } catch (IOException e) {
+            LOG.error("Failed to read connection file : {}", path, e);
+        }finally {
+            readLock.unlock();
         }
         return null;
     }
 
     @Override
     public void deleteConnection(String connectionId) {
+        writeLock.lock();
         try {
             FileUtils.forceDelete(FileUtils.getFile(connectionsDataDirectory,
                                   connectionId));
         } catch (IOException e) {
             LOG.error("Can't remove connection file: " + connectionsDataDirectory +
                       "/" + connectionId, e);
+        }finally {
+            writeLock.unlock();
         }
     }
 }
