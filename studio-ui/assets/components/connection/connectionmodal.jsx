@@ -1,7 +1,7 @@
 /**
  * @file Desciption:
  * @author huanghaiping(huanghaiping02@baidu.com)
- * Created on 17/5/31
+ * Created on  17/5/31
  */
 
 import React from 'react';
@@ -46,7 +46,7 @@ class ConnectionModal extends React.Component {
         if (needless.length > 0) {
             this.validation[name] = needless[0];
         }
-        this.state.connection[name] = value;
+        this.state.connection[name] = value.trim();
     }
 
     saveConnection() {

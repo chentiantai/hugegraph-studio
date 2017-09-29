@@ -46,6 +46,7 @@ import com.baidu.hugegraph.structure.schema.VertexLabel;
 import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.model.ConnectionState;
 import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
+import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
 
@@ -103,8 +104,8 @@ public class ConnectionService {
     public Response createConnection(Connection connection) {
         connection.setLastModified(System.currentTimeMillis());
         Response response = Response.status(201)
-                            .entity(connectionRepository.createConnection(connection))
-                            .build();
+                     .entity(connectionRepository.createConnection(connection))
+                     .build();
         return response;
     }
 
@@ -120,9 +121,9 @@ public class ConnectionService {
     public Response deleteConnection(
             @PathParam("connectionId") String connectionId) {
         Preconditions.checkArgument(!notebookRepository.getNotebooks().stream()
-                                    .anyMatch(n -> n.getConnectionId().equals(connectionId)),
-                                    "The connection can't be deleted if it has " +
-                                    "already been used by any notebook");
+              .anyMatch( n -> n.getConnectionId().equals(connectionId)),
+               "The connection can't be deleted if it has " +
+               "already been used by any notebook");
 
         connectionRepository.deleteConnection(connectionId);
         Response response = Response.status(204).build();
@@ -147,6 +148,18 @@ public class ConnectionService {
                                     connectionId.equals(connection.getId()));
         connection.setLastModified(System.currentTimeMillis());
         connectionRepository.editConnection(connection);
+
+        /*
+         * Update the connection information of notebook according of the
+         * connection
+         */
+        List<Notebook> notebookList = notebookRepository.getNotebooks();
+        notebookList.forEach(notebook -> {
+            if(notebook.getConnectionId().equals(connectionId)){
+                notebook.setConnection(connection);
+                notebookRepository.editNotebook(notebook);
+            }
+        });
 
         Response response = Response.status(200).entity(connection).build();
         return response;
@@ -186,7 +199,8 @@ public class ConnectionService {
     @GET
     @Path("{connectionId}/schema")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConnectionSchema(@PathParam("connectionId") String connectionId) {
+    public Response getConnectionSchema(
+            @PathParam("connectionId") String connectionId) {
         Preconditions.checkNotNull(connectionId);
         Connection connection = connectionRepository.get(connectionId);
         Preconditions.checkNotNull(connection);

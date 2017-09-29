@@ -77,5 +77,24 @@ public class ConnectionServiceTest extends JerseyTest {
     }
 
 
+    @Test
+    public void testEditConnection(){
+        String connectionId = "28e7cc2b-00b7-4492-a97d-eb382b018a07";
+        Connection connection = new Connection();
+        connection.setId(connectionId);
+        connection.setConnectionHost("127.0.1.3");
+        connection.setGraphName("hugegraph1");
+        connection.setPort( 8080 );
+        connection.setName( "testCreateConnection" );
+
+        Response response = target("connections/"+connectionId)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.json(connection));
+
+        Connection connection1 = response.readEntity(Connection.class);
+        Assert.assertEquals(200, response.getStatus());
+    }
+
+
 
 }
