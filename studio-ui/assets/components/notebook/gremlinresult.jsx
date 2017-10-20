@@ -8,12 +8,14 @@ import {connect} from 'react-redux';
 import {Tabs, TabPane} from '../commoncomponents/tabs';
 import Graph from './graph';
 import Code from './code';
+import NoData from './nodata';
 import TableResult from './table';
 import {updateItem} from './actions';
 
 export const TABLE = 'TABLE';
 export const RAW = 'RAW';
 export const GRAPH = 'GRAPH';
+export const NODATA = 'NODATA';
 
 
 class GremlinResult extends React.Component {
@@ -47,6 +49,13 @@ class GremlinResult extends React.Component {
                     <TableResult content={this.props.content}
                                  height={this.props.height}
                                  cellId={this.props.cellId}/>
+                </TabPane>
+            } else if (tab.type === NODATA) {
+                return <TabPane key={index}>
+                    <NoData id={this.props.cellId + '_code'}
+                            content={this.props.content}
+                            height={this.props.height}
+                            cellId={this.props.cellId}/>
                 </TabPane>
             } else {
                 return <TabPane key={index}>
@@ -153,6 +162,14 @@ class GremlinResult extends React.Component {
                     label: 'fa fa-code'
                 }];
                 break;
+            case null:
+                nextTabs = [{
+                    type: NODATA,
+                    isActive: false,
+                    exist: false,
+                    label: 'fa fa-code'
+                }];
+                break;
             default:
                 nextTabs = [];
         }
@@ -188,11 +205,11 @@ class GremlinResult extends React.Component {
                     if (tab.type === defaultTabKey) {
                         tab.isActive = true;
                         tab.exist = true;
-                        isExistDefaultTabKey=true;
+                        isExistDefaultTabKey = true;
                     }
                     return tab;
                 })
-                if(!isExistDefaultTabKey){
+                if (!isExistDefaultTabKey) {
                     nextTabs[0].isActive = true;
                     nextTabs[0].exist = true;
                 }

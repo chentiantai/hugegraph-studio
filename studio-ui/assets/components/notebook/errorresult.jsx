@@ -24,9 +24,9 @@ export default class ErrorResult extends React.Component {
         let title_message = '';
         if (detailedMsg.message !== null) {
             let innerMessage = '';
-            try{
+            try {
                 innerMessage = JSON.parse(detailedMsg.message).message;
-            }catch(err){
+            } catch (err) {
                 innerMessage = detailedMsg.message;
             }
 
@@ -72,7 +72,6 @@ export default class ErrorResult extends React.Component {
         if (detailedMsg !== undefined) {
             let paneJson = '#' + cellId + '_error';
             let json = this.formatMessage(detailedMsg);
-            console.log(json);
             $(paneJson).JSONView(json, {collapsed: false});
         }
         this.loadDone();
@@ -84,7 +83,6 @@ export default class ErrorResult extends React.Component {
         if (detailedMsg !== undefined) {
             let paneJson = '#' + cellId + '_error';
             let json = this.formatMessage(detailedMsg);
-            console.log(json);
             $(paneJson).JSONView(json, {collapsed: false});
         }
         this.loadDone();
@@ -100,7 +98,7 @@ export default class ErrorResult extends React.Component {
 
         let message = '';
         if (detailedMsg.message !== null) {
-            message =detailedMsg.message;
+            message = detailedMsg.message;
         }
 
         if (message !== null || message !== undefined || message !== '') {
@@ -108,10 +106,10 @@ export default class ErrorResult extends React.Component {
         }
 
 
-        try{
+        try {
             JSON.parse(message);
-        }catch(err){
-            message = {'message':message};
+        } catch (err) {
+            message = {'message': message};
         }
         return message;
 
