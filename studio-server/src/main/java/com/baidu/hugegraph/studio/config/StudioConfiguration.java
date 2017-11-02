@@ -22,6 +22,7 @@ package com.baidu.hugegraph.studio.config;
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
 import com.google.common.base.Preconditions;
+import org.apache.commons.configuration.ConfigurationException;
 
 import java.net.URL;
 
@@ -43,10 +44,10 @@ public class StudioConfiguration {
             Preconditions.checkNotNull(configurationUrl);
 
             config = new HugeConfig(configurationUrl.getFile());
-        } catch (org.apache.commons.configuration.ConfigurationException e) {
+        } catch (ConfigurationException e) {
             throw new RuntimeException(String.format(
-                    "Caught exception while loading Studio configuration " +
-                    "from: %s ", configurationFile), e);
+                    "Caught exception while loading the studio configuration " +
+                    "from: %s", configurationFile), e);
         }
     }
 
