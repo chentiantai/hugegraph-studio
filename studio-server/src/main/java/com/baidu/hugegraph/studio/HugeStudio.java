@@ -81,8 +81,8 @@ public class HugeStudio {
                                      configuration.getServerUIDirectory());
         String apiWarFile = String.format("%s/%s", baseDir,
                                           configuration.getServerWarDirectory());
-        validatePathExists(uiDir);
-        validateFileExists(apiWarFile);
+        validatePathExists(new File(uiDir));
+        validateFileExists(new File(apiWarFile));
 
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(configuration.getHttpPort());
@@ -162,8 +162,8 @@ public class HugeStudio {
     }
 
     /**
-     * To validate if the http port is available or not. Exit if the port is
-     * not available.
+     * To validate if the given http port is available or not. Exit if the port
+     * is being used.
      */
     private static void validateHttpPort(String httpBindAddress, int httpPort) {
         ServerSocket socket = null;
@@ -185,19 +185,18 @@ public class HugeStudio {
         }
     }
 
-    private static void validatePathExists(String pathName) {
-        File file = new File(pathName);
+    private static void validatePathExists(File file) {
         if (!file.exists() || !file.isDirectory()) {
             LOG.error("Can't start Studio, directory {} doesn't exist",
-                         pathName);
+                      file.getPath());
             System.exit(1);
         }
     }
 
-    private static void validateFileExists(String fileName) {
-        File file = new File(fileName);
+    private static void validateFileExists(File file) {
         if (!file.exists() || !file.isFile()) {
-            LOG.error("Can't start Studio, file {} doesn't exist", fileName);
+            LOG.error("Can't start Studio, file {} doesn't exist",
+                      file.getPath());
             System.exit(1);
         }
     }
