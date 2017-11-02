@@ -93,9 +93,9 @@ public class StudioError extends RuntimeException {
      */
     public static StudioError conflict(String resourceName, String id) {
         return new StudioError(409, 0,
-                               String.format("Resource with name %s already "
-                                             + "exists and is associated with"
-                                             + "id  \"%s\".",
+                               String.format("Resource with name %s already " +
+                                             "exists and is associated with " +
+                                             "id \"%s\".",
                                              new Object[]{resourceName, id}));
     }
 
