@@ -322,7 +322,7 @@ public class NotebookService {
         edges.stream().forEach(e -> edgeIds.add(e.id()));
         Preconditions.checkArgument(vertexIds.contains(vertexId));
 
-        HugeClient hugeClient = HugeClient.open(
+        HugeClient hugeClient = new HugeClient(
                                 notebook.getConnection().getConnectionUri(),
                                 notebook.getConnection().getGraphName());
 
@@ -439,7 +439,7 @@ public class NotebookService {
             Notebook notebook = notebookRepository.getNotebook(notebookId);
 
             // build HugeClient from the connection info from the notebook.
-            HugeClient hugeClient = HugeClient.open(
+            HugeClient hugeClient = new HugeClient(
                                     notebook.getConnection().getConnectionUri(),
                                     notebook.getConnection().getGraphName());
 

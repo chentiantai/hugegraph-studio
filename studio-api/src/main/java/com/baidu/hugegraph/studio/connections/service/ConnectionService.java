@@ -34,12 +34,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.baidu.hugegraph.driver.HugeClient;
-import com.baidu.hugegraph.exception.ClientException;
+import com.baidu.hugegraph.exception.ServerException;
 import com.baidu.hugegraph.structure.schema.EdgeLabel;
 import com.baidu.hugegraph.structure.schema.PropertyKey;
 import com.baidu.hugegraph.structure.schema.VertexLabel;
@@ -180,12 +178,12 @@ public class ConnectionService {
         Response response = Response.status(200).entity(ConnectionState.OPEN)
                            .build();
         try {
-            HugeClient.open(connection.getConnectionUri(),
-                            connection.getGraphName());
-        } catch (ClientException ex) {
+            new HugeClient(connection.getConnectionUri(),
+                           connection.getGraphName());
+        } catch (ServerException ex) {
             response = Response.status(ex.status())
-                    .entity(ConnectionState.CLOSED)
-                    .build();
+                       .entity(ConnectionState.CLOSED)
+                       .build();
         }
         return response;
     }
@@ -207,8 +205,8 @@ public class ConnectionService {
         Preconditions.checkArgument(connection.getId().equals(connectionId));
 
         Response response = null;
-        HugeClient client = HugeClient.open(connection.getConnectionUri(),
-                                            connection.getGraphName());
+        HugeClient client = new HugeClient(connection.getConnectionUri(),
+                                           connection.getGraphName());
         Map<String, List> schemas = new HashMap<>();
         List<PropertyKey> propertyKeys = client.schema().getPropertyKeys();
         List<VertexLabel> vertexLabels = client.schema().getVertexLabels();
