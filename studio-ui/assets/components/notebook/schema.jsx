@@ -49,13 +49,13 @@ export class Schema extends React.Component {
                                                                 <span
                                                                     className="property_name_span">IndexNames</span>:
                                                                 <span
-                                                                    className="property_value_span">{vertexLabel.indexNames.length === 0 ? '[ ]' : JSON.stringify(vertexLabel.indexNames)}</span>
+                                                                    className="property_value_span">{vertexLabel.index_names.length === 0 ? '[ ]' : JSON.stringify(vertexLabel.index_names)}</span>
                                                             </div>
                                                             <div>
                                                                 <span
                                                                     className="property_name_span">PrimaryKeys</span>:
                                                                 <span
-                                                                    className="property_value_span">{vertexLabel.primaryKeys.length === 0 ? '[ ]' : vertexLabel.primaryKeys}</span>
+                                                                    className="property_value_span">{vertexLabel.primary_keys.length === 0 ? '[ ]' : vertexLabel.primary_keys}</span>
                                                             </div>
                                                         </div>
                                                     }
@@ -103,7 +103,7 @@ export class Schema extends React.Component {
                                                                 <span
                                                                     className="property_name_span">IndexNames</span>:
                                                                 <span
-                                                                    className="property_value_span">{edgeLabel.indexNames.length === 0 ? '[ ]' : JSON.stringify(edgeLabel.indexNames)}</span>
+                                                                    className="property_value_span">{edgeLabel.index_names.length === 0 ? '[ ]' : JSON.stringify(edgeLabel.index_names)}</span>
                                                             </div>
                                                             <div>
                                                                 <span
@@ -115,19 +115,19 @@ export class Schema extends React.Component {
                                                                 <span
                                                                     className="property_name_span">Source</span>:
                                                                 <span
-                                                                    className="property_value_span">{edgeLabel.sourceLabel}</span>
+                                                                    className="property_value_span">{edgeLabel.source_label}</span>
                                                             </div>
                                                             <div>
                                                                 <span
                                                                     className="property_name_span">Target</span>:
                                                                 <span
-                                                                    className="property_value_span">{edgeLabel.targetLabel}</span>
+                                                                    className="property_value_span">{edgeLabel.target_label}</span>
                                                             </div>
                                                             <div>
                                                                 <span
                                                                     className="property_name_span">SortKeys</span>:
                                                                 <span
-                                                                    className="property_value_span">{edgeLabel.sortKeys.length === 0 ? '[ ]' : edgeLabel.sortKeys}</span>
+                                                                    className="property_value_span">{edgeLabel.sort_keys.length === 0 ? '[ ]' : edgeLabel.sort_keys}</span>
                                                             </div>
                                                         </div>
                                                     }
@@ -175,7 +175,7 @@ export class Schema extends React.Component {
                                                                 <span
                                                                     className="property_name_span">DataType</span>:
                                                                 <span
-                                                                    className="property_value_span">{propertyKey.dataType}</span>
+                                                                    className="property_value_span">{propertyKey.data_type}</span>
                                                             </div>
                                                             <div>
                                                                 <span
