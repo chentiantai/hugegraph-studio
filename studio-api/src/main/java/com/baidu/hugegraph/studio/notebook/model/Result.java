@@ -36,8 +36,6 @@ import static java.util.stream.Collectors.toMap;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Result.class);
 
     @JsonProperty("id")
     private String id;

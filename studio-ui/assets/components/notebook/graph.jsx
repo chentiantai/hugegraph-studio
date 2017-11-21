@@ -30,7 +30,6 @@ class Graph extends React.Component {
     }
 
     render() {
-        console.log('graph render');
         return (
             <div style={{height: this.props.height}}
                  id={this.props.id}
@@ -42,9 +41,9 @@ class Graph extends React.Component {
     componentDidUpdate() {
         let graph = this.props.content.graph;
         if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
-            let vertexdata = graph.vertices;
-            let edgedata = graph.edges;
-            this.drawGraph(vertexdata, edgedata);
+            let vertexData = graph.vertices;
+            let edgeData = graph.edges;
+            this.drawGraph(vertexData, edgeData);
         }
         this.loadDone();
     }
@@ -52,9 +51,9 @@ class Graph extends React.Component {
     componentDidMount() {
         let graph = this.props.content.graph;
         if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
-            let vertexdata = graph.vertices;
-            let edgedata = graph.edges;
-            this.drawGraph(vertexdata, edgedata);
+            let vertexData = graph.vertices;
+            let edgeData = graph.edges;
+            this.drawGraph(vertexData, edgeData);
 
         }
         this.loadDone();
@@ -74,8 +73,7 @@ class Graph extends React.Component {
                     title = title +
                         '<div>' +
                         '<a class="round-gray">●</a>&nbsp;' +
-                        key + ' : ' + vertex.properties[key][0].value +
-                        '</div>';
+                        key + ' : ' + vertex.properties[key] + '</div>';
                 }
 
                 let label = vertex.id;

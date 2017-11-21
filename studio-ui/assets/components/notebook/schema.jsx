@@ -59,7 +59,7 @@ export class Schema extends React.Component {
                                                             </div>
                                                         </div>
                                                     }
-                                                    </Popover>;
+                                                </Popover>;
                                                 return (
                                                     <OverlayTrigger
                                                         key={index}
@@ -131,7 +131,7 @@ export class Schema extends React.Component {
                                                             </div>
                                                         </div>
                                                     }
-                                                    </Popover>;
+                                                </Popover>;
                                                 return (
                                                     <OverlayTrigger
                                                         key={index}
@@ -185,7 +185,7 @@ export class Schema extends React.Component {
                                                             </div>
                                                         </div>
                                                     }
-                                                    </Popover>;
+                                                </Popover>;
                                                 return (
                                                     <OverlayTrigger
                                                         key={index}
@@ -210,7 +210,6 @@ export class Schema extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props.connection);
         let connectionId = this.props.connection.id;
         this.props.showSchema(connectionId);
     }
