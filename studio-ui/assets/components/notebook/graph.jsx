@@ -198,7 +198,7 @@ class Graph extends React.Component {
                         title = title +
                             '<div> ' +
                             '<a class="round-gray">●</a>&nbsp;' +
-                            key + ' : ' + vertex.properties[key][0].value +
+                            key + ' : ' + vertex.properties[key] +
                             '</div>';
                     }
 
