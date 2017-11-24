@@ -102,7 +102,7 @@ export default  class TableResult extends React.Component {
                             </tr>
                             {
                                 tableContent.map((obj, index) => {
-                                    let vertexName = obj.objects[0].id.split('\u0002')[1];
+                                    let vertexName = obj.objects[0].id.split(':')[1];
                                     let edgeLabel = obj.objects[1].label;
                                     let pathResult = vertexName + '--' + edgeLabel;
                                     return <tr key={index}>
