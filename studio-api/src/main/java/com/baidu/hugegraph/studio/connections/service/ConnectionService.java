@@ -152,12 +152,12 @@ public class ConnectionService {
          * connection
          */
         List<Notebook> notebookList = notebookRepository.getNotebooks();
-        notebookList.forEach(notebook -> {
-            if(notebook.getConnectionId().equals(connectionId)){
+        for (Notebook notebook : notebookList) {
+            if (notebook.getConnectionId().equals(connectionId)) {
                 notebook.setConnection(connection);
                 notebookRepository.editNotebook(notebook);
             }
-        });
+        }
 
         Response response = Response.status(200).entity(connection).build();
         return response;
