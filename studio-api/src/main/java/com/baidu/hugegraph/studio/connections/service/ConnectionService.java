@@ -119,7 +119,7 @@ public class ConnectionService {
     public Response deleteConnection(
             @PathParam("connectionId") String connectionId) {
         Preconditions.checkArgument(!notebookRepository.getNotebooks().stream()
-              .anyMatch( n -> n.getConnectionId().equals(connectionId)),
+               .paralle().anyMatch(n -> n.getConnectionId().equals(connectionId)),
                "The connection can't be deleted if it has " +
                "already been used by any notebook");
 
