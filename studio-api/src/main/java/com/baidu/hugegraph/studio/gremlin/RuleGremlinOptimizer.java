@@ -56,9 +56,12 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
         if (code.contains("count()")) {
             return code;
         }
+
+        StringBuilder sb = new StringBuilder();
         for (String atomSentence : atomSentences) {
-            String targetSentence = atomSentence + ".limit(" + limit + ")";
-            code = StringUtils.replace(code, atomSentence, targetSentence);
+            sb.append(atomSentence).append(".limit(").append(limit).append(")");
+            code = StringUtils.replace(code, atomSentence, sb.toString());
+            sb.setLength(0);
         }
         LOG.info("limit: " + code);
         return code;
