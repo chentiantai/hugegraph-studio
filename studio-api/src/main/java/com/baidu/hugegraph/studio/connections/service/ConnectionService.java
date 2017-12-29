@@ -62,7 +62,7 @@ public class ConnectionService {
     /**
      * Gets connections.
      *
-     * @return the connections
+     * @return The connections.
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -76,8 +76,8 @@ public class ConnectionService {
     /**
      * Gets connection.
      *
-     * @param connectionId the connection id
-     * @return the connection
+     * @param connectionId The connection id.
+     * @return The connection.
      */
     @GET
     @Path("{connectionId}")
@@ -93,8 +93,8 @@ public class ConnectionService {
     /**
      * Create connection response.
      *
-     * @param connection the connection
-     * @return the response
+     * @param connection The connection.
+     * @return The response.
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -110,8 +110,8 @@ public class ConnectionService {
     /**
      * Delete connection response.
      *
-     * @param connectionId the connection id
-     * @return the response
+     * @param connectionId The connection id.
+     * @return The response.
      */
     @DELETE
     @Path("{connectionId}")
@@ -131,9 +131,9 @@ public class ConnectionService {
     /**
      * Edit connection response.
      *
-     * @param connectionId the connection id
-     * @param connection   the connection
-     * @return the response
+     * @param connectionId The connection id.
+     * @param connection The connection.
+     * @return The response.
      */
     @PUT
     @Path("{connectionId}")
@@ -148,8 +148,8 @@ public class ConnectionService {
         connectionRepository.editConnection(connection);
 
         /*
-         * Update the connection information of notebook according of the
-         * connection
+         * Update the connection information of notebook according to the
+         * connection.
          */
         List<Notebook> notebookList = notebookRepository.getNotebooks();
         for (Notebook notebook : notebookList) {
@@ -166,8 +166,8 @@ public class ConnectionService {
     /**
      * Gets connection status.
      *
-     * @param connection the connection
-     * @return the connection status
+     * @param connection The connection.
+     * @return The connection status.
      */
     @GET
     @Path("status")
@@ -191,8 +191,8 @@ public class ConnectionService {
     /**
      * Gets connection schema.
      *
-     * @param connectionId the connection id
-     * @return the connection schema
+     * @param connectionId The connection id.
+     * @return The connection schema.
      */
     @GET
     @Path("{connectionId}/schema")

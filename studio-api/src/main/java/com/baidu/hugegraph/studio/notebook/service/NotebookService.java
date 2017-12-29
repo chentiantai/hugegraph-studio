@@ -132,8 +132,8 @@ public class NotebookService {
     /**
      * Delete notebook response.
      *
-     * @param notebookId the notebook id
-     * @return the response
+     * @param notebookId The notebook id.
+     * @return The response.
      */
     @DELETE
     @Path("{notebookId}")
@@ -148,9 +148,9 @@ public class NotebookService {
     /**
      * Edit notebook response.
      *
-     * @param notebookId the notebook id
-     * @param notebook   the notebook
-     * @return the response
+     * @param notebookId The notebook id.
+     * @param notebook Tthe notebook.
+     * @return The response.
      */
     @PUT
     @Path("{notebookId}")
@@ -186,9 +186,9 @@ public class NotebookService {
     /**
      * Gets notebook cell.
      *
-     * @param notebookId the notebook id
-     * @param cellId     the cell id
-     * @return the notebook cell
+     * @param notebookId The notebook id.
+     * @param cellId The cell id
+     * @return The notebook cell.
      */
     @GET
     @Path("{notebookId}/cells/{cellId}")
@@ -207,10 +207,10 @@ public class NotebookService {
     /**
      * Add notebook cell response.
      *
-     * @param notebookId the notebook id
-     * @param position   the position
-     * @param cell       the cell
-     * @return the response
+     * @param notebookId the notebook id.
+     * @param position the position.
+     * @param cell the cell.
+     * @return the response.
      */
     @POST
     @Path("{notebookId}/cells")
@@ -220,16 +220,18 @@ public class NotebookService {
                                     @QueryParam("position") Integer position,
                                     NotebookCell cell) {
         Response response = Response.status(201)
-                            .entity(notebookRepository.addCellToNotebook(notebookId, cell, position)).build();
+                            .entity(notebookRepository
+                                    .addCellToNotebook(notebookId, cell, position))
+                            .build();
         return response;
     }
 
     /**
      * Delete notebook cell response.
      *
-     * @param notebookId the notebook id
-     * @param cellId     the cell id
-     * @return the response
+     * @param notebookId the notebook id.
+     * @param cellId the cell id.
+     * @return the response.
      */
     @DELETE
     @Path("{notebookId}/cells/{cellId}")
@@ -244,10 +246,10 @@ public class NotebookService {
     /**
      * Edit notebook cell response.
      *
-     * @param notebookId the notebook id
-     * @param cellId     the cell id
-     * @param cell       the cell
-     * @return the response
+     * @param notebookId The notebook id.
+     * @param cellId The cell id.
+     * @param cell The cell.
+     * @return The response.
      */
     @PUT
     @Path("{notebookId}/cells/{cellId}")
@@ -262,24 +264,22 @@ public class NotebookService {
         return response;
     }
 
-     /**
-     * The method is used for get a vertex's adjacency nodes
-     * When a graph shows, the user can select any vertex that he is
-     * interested in
-     * as a starting point, add it's adjacency vertices & edges to current graph
-     * by executing  the gremlin statement of 'g.V(id).bothE()'.
+    /**
+     * The method is used for get a vertex's adjacency nodes when a graph is
+     * shown. The user can select any vertex which is interested in as a start
+     * point, add it's adjacency vertices & edges to current graph by executing
+     * the gremlin statement of 'g.V(id).bothE()'.
      *
-     * After the success of the gremlin need to merge the current local query
-      * results
-     * to the notebook cell's result.
+     * After successful of the gremlin need to merge the current local query
+     * results to the notebook cell's result.
      *
      * Note: this method should be executed after @see executeNotebookCell
-     * (String,String) has been executed.
+     * (String, String) has been executed.
      *
-     * @param notebookId  the notebookId of current notebook.
-     * @param cellId  the cellId of the current notebook.
-     * @param vertexId  The id of vertex as a starting point.
-     * @return  just return the offset graph( vertices & edges )
+     * @param notebookId The notebookId of current notebook.
+     * @param cellId The cellId of the current notebook.
+     * @param vertexId The id of vertex as a start point.
+     * @return The offset graph(vertices & edges).
      */
     @GET
     @Path("{notebookId}/cells/{cellId}/gremlin")
@@ -298,7 +298,7 @@ public class NotebookService {
         NotebookCell cell = notebook.getCellById(cellId);
         Preconditions.checkArgument(cell != null &&
                                     cellId.equals(cell.getId()));
-        // only be executed with 'gremlin' mode
+        // Only be executed with 'gremlin' mode
         Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
 
         Long startTime = System.currentTimeMillis();
@@ -308,7 +308,7 @@ public class NotebookService {
 
         /*
          * This method should be executed after the method of @see
-         * executeNotebookCell(String,String). It must have a starting
+         * executeNotebookCell(String,String). It must has a start
          * point and the result must have vertices or edges.
          */
         Preconditions.checkArgument(result != null &&
@@ -326,7 +326,7 @@ public class NotebookService {
                                 notebook.getConnection().getConnectionUri(),
                                 notebook.getConnection().getGraphName());
 
-        String gremlinVertexId = vertexId.replaceAll("'", "\\\\'");
+        String gremlinVertexId = StringUtils.replace(vertexId, "'", "\\\\'");
         String gremlin = gremlinOptimizer.limitOptimize(
                          String.format("g.V('%s').bothE()", gremlinVertexId));
 
@@ -343,7 +343,6 @@ public class NotebookService {
 
         List<Edge> edgesNew = new ArrayList<>();
         List<Vertex> verticesNew = new ArrayList<>();
-
         iterator.forEachRemaining(
                 r -> {
                     Edge e = (Edge) r.getObject();
@@ -365,7 +364,7 @@ public class NotebookService {
         resultNew.setGraphVertices(verticesNew);
         resultNew.setGraphEdges(edgesNew);
 
-        // save the current query result to cell
+        // Save the current query result to cell.
         vertices.addAll(verticesNew);
         edges.addAll(edgesNew);
         result.setGraphVertices(vertices);
@@ -381,25 +380,20 @@ public class NotebookService {
         return response;
     }
 
-
     /**
      * To execute the code (gremlin or markdown) in a cell of notebook.
      *
-     * If the language of cell is markdown, just return the original code
-     * user input.
-     * If the language of cell is gremlin, execute gremlin code by HugeClient.
-     * Gremlin result will be served 2 places: original data is saved as
-     * List<Object>,
-     * Another data is translated into a graph or a table object if it's
-     * possible.
+     * Return the original user input code if the cell language is markdown.
+     * Execute the gremlin code via HugeClient if the cell language is gremlin.
+     * Gremlin result will be stored in two places, the original data is saved
+     * as a List<Object>, another is translated into a graph or a table object
+     * if possible.
      *
-     * @param notebookId  the notebookId of current notebook.
-     * @param cellId  the cellId of the current notebook.
-     * @param newCell the cell value of the current cell.
-     * @return if code snippet is gremlin ,return the whole graph with json(
-     * vertices & edges )
-     *         if code snippet is markdown , just return the original code
-     *         user input.
+     * @param notebookId The notebookId of current notebook.
+     * @param cellId The cellId of the current notebook.
+     * @param newCell The cell value of the current cell.
+     * @return The whole graph with json(Vertices & Eges) if the code snippet is
+     *         gremlin. The original user input if the code snippet is markdown.
      */
     @PUT
     @Path("{notebookId}/cells/{cellId}/execute")
@@ -422,9 +416,10 @@ public class NotebookService {
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
 
-        // if code snippet language is markdown, just return the original
-        // code user input.
-        // The markdown code will be rendered in HTML by react
+        /**
+         * Return the original user input if the code snippet language is
+         * markdown and the markdown code will be rendered in HTML by React.
+         */
         if ("markdown".equals(cell.getLanguage())) {
             result.setData(new ArrayList<Object>() {
                 {
@@ -438,33 +433,33 @@ public class NotebookService {
         if ("gremlin".equals(cell.getLanguage())) {
             Notebook notebook = notebookRepository.getNotebook(notebookId);
 
-            // build HugeClient from the connection info from the notebook.
+            // Build HugeClient from the connection info from the notebook.
             HugeClient hugeClient = new HugeClient(
                                     notebook.getConnection().getConnectionUri(),
                                     notebook.getConnection().getGraphName());
 
             GremlinManager gremlinManager = hugeClient.gremlin();
 
-            // execute gremlin by HugeClient.
+            // Execute gremlin by HugeClient.
             ResultSet resultSet = gremlinManager.gremlin(
                     gremlinOptimizer.limitOptimize(cell.getCode())).execute();
 
-            // gremlin result will be served 2 places,
-            // original data is saved as List<Object>,
-            // Another data is translated into a graph or a table object if
-            // it's possible.
+            /**
+             * Gremlin result will be stored in two places, the original data is
+             * saved as a List<Object>, another is translated into a graph or a
+             * table object if possible.
+             */
             result.setData(resultSet.data());
 
             List<Vertex> vertices = new ArrayList<>();
             List<Edge> edges = new ArrayList<>();
             List<com.baidu.hugegraph.structure.graph.Path> paths = new ArrayList<>();
-            Iterator<Result> results = resultSet.iterator();
-
-            while (results.hasNext()){
-                //the result maybe null, and the object
-                // must get by Result.getObjecy()
+            for (Iterator<Result> results = resultSet.iterator(); results.hasNext();) {
+                /**
+                 * The result might be null, and the object must be got via
+                 * Result.getObjecy method.
+                 */
                 Result or = results.next();
-
                 if (or == null){
                     result.setType(com.baidu.hugegraph.studio.notebook.model
                                    .Result.Type.EMPTY);
@@ -498,9 +493,11 @@ public class NotebookService {
                 }
             }
 
-            //when the results contains not only vertices\edges\paths, how to
-            //deal with ?
-            if(result.getType() == com.baidu.hugegraph.studio.notebook.model
+            /**
+             * When the results contains not only vertices\edges\paths, how to
+             * deal with that?
+             */
+            if (result.getType() == com.baidu.hugegraph.studio.notebook.model
                                    .Result.Type.PATH){
                 // Extract vertices from paths ;
                 vertices = getVertexfromPath(hugeClient, paths);
@@ -560,14 +557,15 @@ public class NotebookService {
         Set<String> vertexIds = new HashSet<>();
         vertices.stream().forEach(v -> vertexIds.add(v.id()));
 
-        String ids = StringUtils.join( vertices.stream().map(
-           vertex ->
-                    String.format("'%s'", vertex.id().replaceAll("'", "\\\\'")))
+        String ids = StringUtils.join(vertices.stream().map(
+           vertex -> String.format("'%s'",
+                     StringUtils.replace(vertex.id(), "'", "\\\\'")))
                     .collect(Collectors.toList()), ",");
 
-        // de-duplication by edgeId,
-        // Reserve the edges only if both it's srcVertexId and tgtVertexId is a
-        // member of vertices;
+        /**
+         * De-duplication by edgeId. Reserve the edges only if both srcVertexId
+         * and tgtVertexId is a member of vertices.
+         */
         String gremlin = String.format("g.V(%s).bothE().dedup()", ids);
 
         ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
@@ -577,11 +575,12 @@ public class NotebookService {
         results.forEachRemaining(
                 r -> {
                     Edge edge = (Edge) r.getObject();
-                    // As the results is queried by 'g.V(id).bothE()',
-                    // the source vertex of edge from results is in the set
-                    // of vertexIds,
-                    // so just reserve the edge that it's target in the set
-                    // of vertexIds .
+                    /**
+                     * As the results is queried by 'g.V(id).bothE()', the
+                     * source vertex of edge from results is in the set of
+                     * vertexIds. Hence, just reserve the edge which that
+                     * the target in the set of vertexIds.
+                     */
                     if (vertexIds.contains(edge.target())) {
                         edges.add(edge);
                     }
@@ -599,7 +598,8 @@ public class NotebookService {
         List<Vertex> vertices = new ArrayList<>();
 
         String ids = StringUtils.join(vertexIds.stream().map(
-                     id -> String.format("'%s'", id.replaceAll("'", "\\\\'")))
+                     id -> String.format("'%s'",
+                           StringUtils.replace(id, "'", "\\\\'")))
                            .collect(Collectors.toList()), ",");
 
         String gremlin = String.format("g.V(%s)", ids);
@@ -619,7 +619,7 @@ public class NotebookService {
         }
 
         Set<String> vertexIds = new HashSet<>();
-        // the path node can be a Vertex, or it can be a Edge
+        // The path node can be a Vertex, or an Edge.
         paths.stream().forEach(path -> path.objects().forEach(obj -> {
             if (obj instanceof Vertex) {
                 Vertex vertex = (Vertex) obj;
@@ -633,7 +633,5 @@ public class NotebookService {
         }));
         return getVertices(hugeClient,
                            vertexIds.stream().collect(Collectors.toList()));
-
     }
-
 }
