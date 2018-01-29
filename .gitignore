@@ -25,3 +25,6 @@ studio-api/logs/
 studio-api/src/main/java/com/baidu/hugegraph/ClientTest.java
 lib/
 logs/
+hugestudio-release-*
+studio-server/bin
+studio-server/repo

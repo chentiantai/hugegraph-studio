@@ -24,6 +24,7 @@ import com.baidu.hugegraph.config.OptionHolder;
 
 import static com.baidu.hugegraph.config.OptionChecker.disallowEmpty;
 import static com.baidu.hugegraph.config.OptionChecker.positiveInt;
+import static com.baidu.hugegraph.config.OptionChecker.positiveLong;
 
 /**
  * The type Studio api options.
@@ -92,13 +93,25 @@ public class StudioApiOptions extends OptionHolder {
     /**
      * The constant STUDIO_DATA_Vertex_Edge_Limit.
      */
-    public static final ConfigOption<Integer> STUDIO_DATA_LIMIT =
+    public static final ConfigOption<Long> STUDIO_DATA_LIMIT =
             new ConfigOption<>(
                     "studioData.limit",
-                    100,
+                    100L,
                     true,
                     "MAX_SIZE for the data render in web.",
-                    positiveInt()
+                    positiveLong()
+            );
+
+    /**
+     * The constant GREMLIN_EXCLUDE_LIMIT.
+     */
+    public static final ConfigOption<String> SUFFIX_GREMLINS_EXCLUDE_LIMIT =
+            new ConfigOption<>(
+                    "suffix.gremlins.exclude.limit",
+                    "count()",
+                    true,
+                    "The suffix gremlin sentence which can be add limit ",
+                    disallowEmpty(String.class)
             );
 
 }

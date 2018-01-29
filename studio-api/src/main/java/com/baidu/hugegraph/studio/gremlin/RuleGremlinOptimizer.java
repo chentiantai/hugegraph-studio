@@ -18,15 +18,14 @@
  */
 
 package com.baidu.hugegraph.studio.gremlin;
+
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Add some rules for gremlin code.
@@ -37,34 +36,26 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
     private static final Logger LOG =
             LoggerFactory.getLogger(RuleGremlinOptimizer.class);
     private StudioConfiguration configuration;
-    private List<String> atomSentences = new ArrayList<>();
+    private Set<String> excludeLimitPostfixGremlins;
 
     public RuleGremlinOptimizer() {
         configuration = new StudioConfiguration();
-
-        atomSentences.add( "g.V\\(\\)" );
-        atomSentences.add( "g.E\\(\\)" );
-        atomSentences.add( "bothE\\(\\)" );
-        atomSentences.add( "bothV\\(\\)" );
+        excludeLimitPostfixGremlins =
+                configuration.getExcludeLimitPostfixGremlins();
     }
 
     @Override
-    public String limitOptimize(String code, Integer limit) {
+    public String limitOptimize(String code, Long limit) {
 
-        LOG.info("raw: " + code);
-        // 1.if the code call count(), return the code immediately
-        if (code.contains("count()")) {
-            return code;
+        for (String excludeAtomSentence : excludeLimitPostfixGremlins) {
+            if (code.endsWith(excludeAtomSentence)) {
+                return code;
+            }
         }
 
         StringBuilder sb = new StringBuilder();
-        for (String atomSentence : atomSentences) {
-            sb.append(atomSentence).append(".limit(").append(limit).append(")");
-            code = StringUtils.replace(code, atomSentence, sb.toString());
-            sb.setLength(0);
-        }
-        LOG.info("limit: " + code);
-        return code;
+        sb.append(code).append(".limit(").append(limit).append(")");
+        return sb.toString();
     }
 
     @Override

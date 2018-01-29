@@ -26,6 +26,8 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 public class StudioConfiguration {
 
@@ -73,8 +75,22 @@ public class StudioConfiguration {
         return replaceHomeDirReferences(userDataDir);
     }
 
-    public Integer getDataLimit() {
+    public Long getDataLimit() {
         return this.config.get(StudioApiOptions.STUDIO_DATA_LIMIT);
+    }
+
+    public Set<String> getExcludeLimitPostfixGremlins() {
+        String value =
+                this.config.get(StudioApiOptions.SUFFIX_GREMLINS_EXCLUDE_LIMIT);
+        if (value == null) {
+            return new HashSet<>();
+        }
+        String[] gremlins = StringUtils.split(value, ",");
+        Set<String> gremlinSet = new HashSet<>();
+        for (String g : gremlins) {
+            gremlinSet.add(g);
+        }
+        return gremlinSet;
     }
 
     private String replaceHomeDirReferences(String confDir) {

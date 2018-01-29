@@ -51,7 +51,7 @@ import com.baidu.hugegraph.studio.notebook.service.NotebookService;
 public class NotebookServiceTest extends JerseyTest {
 
     static final String notebookName = "testNotebookService";
-    static final String connectionId = "ac32ec5b-1817-46f8-98d7-2da9cc8903ae";
+    static final String connectionId = "0e2e8c84-c176-499c-98d0-92153ce48a1c";
     static Notebook notebook =  null;
     static String notebookId = "";
     static String cellId="";
@@ -139,23 +139,28 @@ public class NotebookServiceTest extends JerseyTest {
 
     @Test
     public void testExecuteNotebookCellGremlin(){
-        String vertexId="person:Rosie O'Donnell";
+        String vertexId="1:peter";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
         cell.setLanguage( "gremlin" );
-        cell.setCode("g.V('person:Rosie O\\'Donnell')");
+
+        cell.setCode("g.V(2147483648)");
         String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
         System.out.println(url);
         Response response = target(url)
                             .request(MediaType.APPLICATION_JSON_TYPE)
                             .put(Entity.json(cell));
+        System.out.println(response.readEntity(String.class));
 
         url="notebooks/"+notebookId+"/cells/"+cellId+ "/gremlin";
         System.out.println(url);
 
-        Response response1 = target(url).queryParam( "vertexId",vertexId )
+        Object vertexId1 = 2147483648L;
+        response = target(url).queryParam( "vertexId",vertexId1)
+                              .queryParam("label","software")
                              .request(MediaType.APPLICATION_JSON_TYPE)
                              .get();
+        System.out.println("ex:"+response.readEntity(String.class));
 
         Assert.assertEquals(200, response.getStatus());
     }
@@ -178,8 +183,40 @@ public class NotebookServiceTest extends JerseyTest {
         Assert.assertEquals(200, response.getStatus());
     }
 
+
     @Test
-    public void testCocurrentEditNotebookCell(){
+    public void testExecuteGremlinWithNumberId(){
+        String code = "g.V(123456)";
+        NotebookCell cell = new NotebookCell();
+        cell.setId(cellId);
+        cell.setLanguage( "gremlin" );
+        cell.setCode(code);
+        String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
+        System.out.println(url);
+
+        Response response = target(url)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.json(cell));
+        Assert.assertEquals(200, response.getStatus());
+
+
+        code = "g.V('123456')";
+        cell = new NotebookCell();
+        cell.setId(cellId);
+        cell.setLanguage( "gremlin" );
+        cell.setCode(code);
+        url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
+        System.out.println(url);
+
+        response = target(url)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .put(Entity.json(cell));
+        System.out.println(response.readEntity(String.class));
+        Assert.assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    public void testConcurrentEditNotebookCell(){
         ExecutorService fixedThreadPool = Executors.newFixedThreadPool(25);
         for (int i = 0; i < 50; i++) {
             final int index = i;

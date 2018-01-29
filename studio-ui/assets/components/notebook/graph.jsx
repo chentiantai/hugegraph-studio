@@ -78,7 +78,7 @@ class Graph extends React.Component {
 
                 let label = vertex.id;
                 this.state.graphNodes.add([
-                    {id: vertex.id, label: label, title: title}
+                    {id: vertex.id, label: label, title: title, propertiesLabel: vertex.label}
                 ]);
             });
         }
@@ -157,7 +157,6 @@ class Graph extends React.Component {
 
         network.once("stabilizationIterationsDone", this.loadDone);
 
-
         network.on("doubleClick", (params) => this.doubleClick(params));
     }
 
@@ -168,12 +167,14 @@ class Graph extends React.Component {
 
     doubleClick = (params) => {
         params.event = "[original event]";
+
         if (params.nodes.length > 0) {
             let nodeId = params.nodes[0];
+            let label = this.state.graphNodes._data[nodeId].propertiesLabel;
             let myHeaders = new Headers();
             myHeaders.append('Content-Type', 'application/json');
             let url = '/api/v1/notebooks/' + this.props.notebookId + '/cells/' +
-                this.props.cellId + '/gremlin?vertexId=' + nodeId;
+                this.props.cellId + '/gremlin?vertexId=' + nodeId + '&label='+label;
             fetch(url, {method: 'GET', headers: myHeaders})
                 .then(response => this.checkStatus(response))
                 .then(response => this.parseJSON(response))
@@ -204,7 +205,7 @@ class Graph extends React.Component {
 
                     let label = vertex.id;
                     this.state.graphNodes.add(
-                        {id: vertex.id, label: label, title: title}
+                        {id: vertex.id, label: label, title: title,propertiesLabel: vertex.label}
                     );
                 });
             }

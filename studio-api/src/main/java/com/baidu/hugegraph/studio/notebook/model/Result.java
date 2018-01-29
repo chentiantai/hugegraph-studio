@@ -187,27 +187,37 @@ public class Result {
         /**
          * Vertex type.
          */
-        VERTEX, /**
+        VERTEX,
+
+        /**
          * Edge type.
          */
-        EDGE, /**
+        EDGE,
+
+        /**
          * Path type.
          */
-        PATH, /**
+        PATH,
+
+        /**
          * Empty type.
          */
-        EMPTY, /**
+        EMPTY,
+
+        /**
          * Number type.
          */
-        NUMBER, /**
+        NUMBER,
+
+        /**
          * Markdown type.
          */
         MARKDOWN,
+
         /**
-         * IF TYPE NOT IN THE ABOVES, SET TO OTHER
+         * IF TYPE NOT IN THE ABOVE, SET TO OTHER
          */
-        OTHER,
-        ;
+        OTHER
     }
 
 
