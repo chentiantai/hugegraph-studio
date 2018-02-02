@@ -19,12 +19,13 @@
 
 package com.baidu.hugegraph.studio.config;
 
+import com.baidu.hugegraph.config.ConfigListOption;
 import com.baidu.hugegraph.config.ConfigOption;
 import com.baidu.hugegraph.config.OptionHolder;
 
 import static com.baidu.hugegraph.config.OptionChecker.disallowEmpty;
-import static com.baidu.hugegraph.config.OptionChecker.positiveInt;
-import static com.baidu.hugegraph.config.OptionChecker.positiveLong;
+import static com.baidu.hugegraph.config.OptionChecker.rangeInt;
+
 
 /**
  * The type Studio api options.
@@ -60,10 +61,9 @@ public class StudioApiOptions extends OptionHolder {
     public static final ConfigOption<String> STUDIO_DATA_BASE_DIR =
             new ConfigOption<>(
                     "userData.baseDirectory",
-                    "null",
-                    true,
                     "The base directory of HugeStudio's user data.",
-                    disallowEmpty(String.class)
+                    disallowEmpty(),
+                    "~/.hugestudio"
             );
 
     /**
@@ -72,10 +72,10 @@ public class StudioApiOptions extends OptionHolder {
     public static final ConfigOption<String> STUDIO_DATA_CONNECTIONS_DIR =
             new ConfigOption<>(
                     "userData.connectionsDirectory",
-                    "connections",
-                    true,
                     "The connections directory of HugeStudio's user data.",
-                    disallowEmpty(String.class)
+                    disallowEmpty(),
+                    "connections"
+
             );
 
     /**
@@ -84,10 +84,10 @@ public class StudioApiOptions extends OptionHolder {
     public static final ConfigOption<String> STUDIO_DATA_NOTEBOOKS_DIR =
             new ConfigOption<>(
                     "userData.notebooksDirectory",
-                    "notebooks",
-                    true,
                     "The notebooks directory of HugeStudio's user data.",
-                    disallowEmpty(String.class)
+                    disallowEmpty(),
+                    "notebooks"
+
             );
 
     /**
@@ -96,22 +96,22 @@ public class StudioApiOptions extends OptionHolder {
     public static final ConfigOption<Long> STUDIO_DATA_LIMIT =
             new ConfigOption<>(
                     "studioData.limit",
-                    100L,
-                    true,
                     "MAX_SIZE for the data render in web.",
-                    positiveLong()
+                    rangeInt(1L, 10000000000L),
+                    100L
             );
 
     /**
      * The constant GREMLIN_EXCLUDE_LIMIT.
      */
-    public static final ConfigOption<String> SUFFIX_GREMLINS_EXCLUDE_LIMIT =
-            new ConfigOption<>(
-                    "suffix.gremlins.exclude.limit",
-                    "count()",
-                    true,
-                    "The suffix gremlin sentence which can be add limit ",
-                    disallowEmpty(String.class)
+    public static final ConfigListOption<String>
+            GREMLINS_APPEND_LIMIT_SUFFIX =
+            new ConfigListOption<>(
+                    "gremlins.append.limit.suffix",
+                    false,
+                    "The suffixes of gremlin statement which should be appended limit()",
+                    disallowEmpty(),
+                    String.class,
+                    "V()", "E()"
             );
-
 }

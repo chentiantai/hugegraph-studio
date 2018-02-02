@@ -47,12 +47,6 @@ export class Schema extends React.Component {
                                                             </div>
                                                             <div>
                                                                 <span
-                                                                    className="property_name_span">IndexNames</span>:
-                                                                <span
-                                                                    className="property_value_span">{vertexLabel.index_names.length === 0 ? '[ ]' : JSON.stringify(vertexLabel.index_names)}</span>
-                                                            </div>
-                                                            <div>
-                                                                <span
                                                                     className="property_name_span">PrimaryKeys</span>:
                                                                 <span
                                                                     className="property_value_span">{vertexLabel.primary_keys.length === 0 ? '[ ]' : vertexLabel.primary_keys}</span>
@@ -98,12 +92,6 @@ export class Schema extends React.Component {
                                                                     className="property_name_span">Properties</span>:
                                                                 <span
                                                                     className="property_value_span">{edgeLabel.properties.length === 0 ? '[ ]' : JSON.stringify(edgeLabel.properties)}</span>
-                                                            </div>
-                                                            <div>
-                                                                <span
-                                                                    className="property_name_span">IndexNames</span>:
-                                                                <span
-                                                                    className="property_value_span">{edgeLabel.index_names.length === 0 ? '[ ]' : JSON.stringify(edgeLabel.index_names)}</span>
                                                             </div>
                                                             <div>
                                                                 <span

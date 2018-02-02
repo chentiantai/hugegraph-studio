@@ -23,16 +23,18 @@ import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
 import com.google.common.base.Preconditions;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class StudioConfiguration {
 
     private static final String DEFAULT_CONFIGURATION_FILE =
-                                "hugestudio.properties";
+            "hugestudio.properties";
 
     static {
         OptionSpace.register(StudioApiOptions.Instance());
@@ -42,11 +44,18 @@ public class StudioConfiguration {
 
     public StudioConfiguration() {
         try {
-            URL configurationUrl = this.getClass().getClassLoader()
-                                   .getResource(DEFAULT_CONFIGURATION_FILE);
-            Preconditions.checkNotNull(configurationUrl);
-            config = new HugeConfig(configurationUrl.getFile());
-        } catch (org.apache.commons.configuration.ConfigurationException e) {
+            if (System.getProperty("studio.home") != null) {
+                config = new HugeConfig(
+                        String.format("%s/conf/%s",
+                                      System.getProperty("studio.home"),
+                                      DEFAULT_CONFIGURATION_FILE));
+            } else {
+                URL confUrl = this.getClass().getClassLoader()
+                                  .getResource(DEFAULT_CONFIGURATION_FILE);
+                Preconditions.checkNotNull(confUrl);
+                config = new HugeConfig(confUrl.getFile());
+            }
+        } catch (ConfigurationException e) {
             throw new RuntimeException(String.format(
                     "Caught exception while loading Studio configurations: %s",
                     DEFAULT_CONFIGURATION_FILE), e);
@@ -54,21 +63,19 @@ public class StudioConfiguration {
     }
 
     public String getConnectionsDirectory() {
-        return String.format("%s/%s",
-                getBaseUserDataDirectory(),
-                this.config.get(StudioApiOptions.STUDIO_DATA_CONNECTIONS_DIR));
+        return String.format("%s/%s", getBaseUserDataDirectory(),
+               this.config.get(StudioApiOptions.STUDIO_DATA_CONNECTIONS_DIR));
     }
 
     public String getNotebooksDirectory() {
-        return String.format("%s/%s",
-                getBaseUserDataDirectory(),
+        return String.format("%s/%s", getBaseUserDataDirectory(),
                 this.config.get(StudioApiOptions.STUDIO_DATA_NOTEBOOKS_DIR));
 
     }
 
     public String getBaseUserDataDirectory() {
         String userDataDir = this.config.get(
-                             StudioApiOptions.STUDIO_DATA_BASE_DIR);
+                StudioApiOptions.STUDIO_DATA_BASE_DIR);
         if (StringUtils.isBlank(userDataDir)) {
             userDataDir = "~/.hugestudio";
         }
@@ -79,13 +86,13 @@ public class StudioConfiguration {
         return this.config.get(StudioApiOptions.STUDIO_DATA_LIMIT);
     }
 
-    public Set<String> getExcludeLimitPostfixGremlins() {
-        String value =
-                this.config.get(StudioApiOptions.SUFFIX_GREMLINS_EXCLUDE_LIMIT);
-        if (value == null) {
+    public Set<String> getAppendLimitSuffixes() {
+        List<String> gremlins =
+                this.config.get(StudioApiOptions.GREMLINS_APPEND_LIMIT_SUFFIX);
+
+        if (gremlins == null || gremlins.size() == 0) {
             return new HashSet<>();
         }
-        String[] gremlins = StringUtils.split(value, ",");
         Set<String> gremlinSet = new HashSet<>();
         for (String g : gremlins) {
             gremlinSet.add(g);

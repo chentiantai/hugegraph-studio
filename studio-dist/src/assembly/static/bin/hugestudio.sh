@@ -167,7 +167,7 @@ fi
 
 # echo "$JAVA" $JVM_OPTS -Dapp.name="$STUDIO_APP_NAME" $MAIN_CLASS "$@"
 
-exec "$JAVA" $JVM_OPTS -Dapp.name="$STUDIO_APP_NAME" $MAIN_CLASS "$@"
+exec "$JAVA" $JVM_OPTS -Dstudio.home="$STUDIO_HOME" -Dapp.name="$STUDIO_APP_NAME" $MAIN_CLASS "$@"
 
 
 

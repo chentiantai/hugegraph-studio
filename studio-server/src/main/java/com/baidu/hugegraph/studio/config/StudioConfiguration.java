@@ -21,15 +21,17 @@ package com.baidu.hugegraph.studio.config;
 
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
-import com.google.common.base.Preconditions;
 import org.apache.commons.configuration.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.URL;
 
 /**
  * The type Studio configuration.
  */
 public class StudioConfiguration {
+    private static final Logger LOG =
+            LoggerFactory.getLogger(StudioConfiguration.class);
 
     static {
         OptionSpace.register(StudioOptions.Instance());
@@ -37,17 +39,16 @@ public class StudioConfiguration {
 
     private HugeConfig config;
 
-    public StudioConfiguration(String configurationFile) {
+    public StudioConfiguration( String fileName ) {
         try {
-            URL configurationUrl = this.getClass().getClassLoader()
-                                       .getResource(configurationFile);
-            Preconditions.checkNotNull(configurationUrl);
-
-            config = new HugeConfig(configurationUrl.getFile());
+            // hugestudio.sh : -Dstudio.home="$STUDIO_HOME"
+            String homeDir = System.getProperty("studio.home");
+            config = new HugeConfig(String.format("%s/conf/%s",
+                    homeDir, fileName));
         } catch (ConfigurationException e) {
             throw new RuntimeException(String.format(
                     "Caught exception while loading the studio configuration " +
-                    "from: %s", configurationFile), e);
+                            "from: %s", fileName), e);
         }
     }
 

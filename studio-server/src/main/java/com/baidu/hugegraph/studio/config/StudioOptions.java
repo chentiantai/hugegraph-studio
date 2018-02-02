@@ -56,34 +56,32 @@ public class StudioOptions extends OptionHolder {
     }
 
 
-    // STUDIO_HOME defined in hugestudio.sh
+    // -Dstudio.home="$STUDIO_HOME" defined in hugestudio.sh
     public static final ConfigOption<String> STUDIO_SERVER_BASE_DIR =
             new ConfigOption<>(
-                               "server.baseDirectory",
-                               StringUtils.isNoneEmpty(System.getenv("STUDIO_HOME"))
-                               ? System.getenv("STUDIO_HOME") :
-                               System.getProperty("user.dir"),
-                               true,
-                               "The base path of HugeStudio server.",
-                               disallowEmpty(String.class)
+                    "server.baseDirectory",
+                    "The base path of HugeStudio server.",
+                    disallowEmpty(),
+                    StringUtils.isNoneEmpty(System.getProperty("studio.home"))
+                            ? System.getProperty("studio.home") :
+                            System.getProperty("user.dir")
             );
 
     public static final ConfigOption<String> STUDIO_SERVER_UI_DIR =
             new ConfigOption<>(
-                               "server.ui",
-                               "ui",
-                               true,
-                               "The ui directory of HugeStudio server.",
-                                disallowEmpty(String.class)
+                    "server.ui",
+                    "The ui directory of HugeStudio server.",
+                    disallowEmpty(),
+                    "ui"
             );
 
     public static final ConfigOption<String> STUDIO_SERVER_WAR_DIR =
             new ConfigOption<>(
-                               "server.api.war",
-                               "war/studio-api.war",
-                               true,
-                               "The war directory of HugeStudio server.",
-                               disallowEmpty(String.class)
+                    "server.api.war",
+                    "The war directory of HugeStudio server.",
+                    disallowEmpty(),
+                    "war/studio-api.war"
+
             );
 
     /**
@@ -91,11 +89,11 @@ public class StudioOptions extends OptionHolder {
      */
     public static final ConfigOption<String> STUDIO_SERVER_HTTP_BIND_ADDRESS =
             new ConfigOption<>(
-                               "server.httpBindAddress",
-                               "localhost",
-                               true,
-                               "The http bind address of HugeStudio.",
-                               disallowEmpty(String.class)
+                    "server.httpBindAddress",
+                    "The http bind address of HugeStudio.",
+                    disallowEmpty(),
+                    "localhost"
+
             );
 
     /**
@@ -103,10 +101,10 @@ public class StudioOptions extends OptionHolder {
      */
     public static final ConfigOption<Integer> STUDIO_SERVER_HTTP_PORT =
             new ConfigOption<>(
-                               "server.httpPort",
-                               8088,
-                               true,
-                               "The http port of HugeStudio http server.",
-                               positiveInt()
+                    "server.httpPort",
+                    "The http port of HugeStudio http server.",
+                    positiveInt(),
+                    8088
+
             );
 }
