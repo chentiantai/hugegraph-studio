@@ -104,6 +104,14 @@
                                     ${top.level.basedir}/${final.name}/ui/*
 
                                     cp -r \
+                                    ${top.level.basedir}/studio-ui/assets/images \
+                                    ${top.level.basedir}/studio-ui/dist
+
+                                    cp -r \
+                                    ${top.level.basedir}/studio-ui/assets/vendors \
+                                    ${top.level.basedir}/studio-ui/dist
+
+                                    cp -r \
                                     ${top.level.basedir}/studio-ui/dist \
                                     ${top.level.basedir}/${final.name}/ui
 
