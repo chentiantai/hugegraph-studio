@@ -40,6 +40,7 @@ import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
 import com.baidu.hugegraph.studio.gremlin.GremlinOptimizer;
 import com.baidu.hugegraph.studio.notebook.model.Notebook;
 import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
+import com.baidu.hugegraph.studio.notebook.model.vis.VisNode;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.StringUtils;
@@ -59,9 +60,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -380,12 +383,13 @@ public class NotebookService {
 
         resultNew.setGraphVertices(verticesNew);
         resultNew.setGraphEdges(edgesNew);
-
+        resultNew.setGroups(getSchemaVertexGroups(hugeClient));
         // Save the current query result to cell.
         vertices.addAll(verticesNew);
         edges.addAll(edgesNew);
         result.setGraphVertices(vertices);
         result.setGraphEdges(edges);
+        result.setGroups(resultNew.getGraph().getGroups());
         cell.setResult(result);
         notebookRepository.editNotebookCell(notebookId, cell);
 
@@ -500,9 +504,12 @@ public class NotebookService {
                                     notebook.getConnection().getConnectionUri(),
                                     notebook.getConnection().getGraphName());
 
+
             GremlinManager gremlinManager = hugeClient.gremlin();
 
-            System.out.println(gremlinOptimizer.limitOptimize(cell.getCode()));
+
+
+            LOG.info(gremlinOptimizer.limitOptimize(cell.getCode()));
 
             // Execute gremlin by HugeClient.
             ResultSet resultSet = gremlinManager.gremlin(
@@ -517,6 +524,7 @@ public class NotebookService {
 
             List<Vertex> vertices = new ArrayList<>();
             List<Edge> edges = new ArrayList<>();
+            Map<String, VisNode> groups = new HashMap<>();
             List<com.baidu.hugegraph.structure.graph.Path> paths = new ArrayList<>();
             if(!resultSet.iterator().hasNext()) {
                 result.setType(EMPTY);
@@ -562,14 +570,17 @@ public class NotebookService {
                     // Extract vertices from paths ;
                     vertices = getVertexFromPath(hugeClient, paths);
                     edges = getEdgeFromVertex(hugeClient, vertices);
+                    groups = getSchemaVertexGroups(hugeClient);
                     break;
                 case VERTEX:
                     // Extract edges from vertex ;
                     edges = getEdgeFromVertex(hugeClient, vertices);
+                    groups = getSchemaVertexGroups(hugeClient);
                     break;
                 case EDGE:
                     // Extract vertices from edges ;
                     vertices = getVertexFromEdge(hugeClient, edges);
+                    groups = getSchemaVertexGroups(hugeClient);
                     break;
                 default:
                     break;
@@ -577,10 +588,12 @@ public class NotebookService {
 
             result.setGraphVertices(vertices);
             result.setGraphEdges(edges);
+            result.setGroups(groups);
 
         }
 
         cell.setResult(result);
+
 
         Long endTime = System.currentTimeMillis();
         Long duration = endTime - startTime;
@@ -590,6 +603,19 @@ public class NotebookService {
         Response response = Response.status(200).entity(result).build();
         return response;
     }
+
+    private Map<String, VisNode> getSchemaVertexGroups(HugeClient hugeClient) {
+
+        Map<String, VisNode> groups = new HashMap<>();
+        List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
+        for (VertexLabel vertexLabel : vertexLabels) {
+            groups.put(vertexLabel.name(),
+                       new VisNode(vertexLabel.userData()));
+        }
+        return groups;
+    }
+
+
 
     private List<Vertex> getVertexFromEdge(HugeClient hugeClient,
                                            List<Edge> edges) {

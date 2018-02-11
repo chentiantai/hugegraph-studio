@@ -21,12 +21,13 @@ package com.baidu.hugegraph.studio.notebook.model;
 
 import com.baidu.hugegraph.structure.graph.Edge;
 import com.baidu.hugegraph.structure.graph.Vertex;
+import com.baidu.hugegraph.studio.notebook.model.vis.VisNode;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
@@ -175,6 +176,11 @@ public class Result {
         this.graph.setEdges(edges);
     }
 
+
+    public void setGroups(Map<String,VisNode> groups) {
+        this.graph.setGroups(groups);
+    }
+
     /**
      * The type of gremlin result:
      *
@@ -233,6 +239,18 @@ public class Result {
         @JsonProperty
         private List<Edge> edges;
 
+        @JsonProperty
+        private Map<String, VisNode> groups;
+
+
+
+        /**
+         * Instantiates a new Graph.
+         */
+        public Graph(){
+
+        }
+
         /**
          * Gets vertices.
          *
@@ -242,12 +260,6 @@ public class Result {
             return vertices;
         }
 
-        /**
-         * Instantiates a new Graph.
-         */
-        public Graph(){
-
-        }
 
         /**
          * Sets vertices.
@@ -291,6 +303,15 @@ public class Result {
                         .collect(Collectors.toList());
 
             }
+        }
+
+        public Map<String, VisNode> getGroups() {
+            return groups;
+        }
+
+        public void setGroups(
+                Map<String, VisNode> groups) {
+            this.groups = groups;
         }
     }
 }

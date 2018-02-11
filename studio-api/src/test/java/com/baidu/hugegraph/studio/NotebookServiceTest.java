@@ -52,6 +52,7 @@ public class NotebookServiceTest extends JerseyTest {
 
     static final String notebookName = "testNotebookService";
     static final String connectionId = "0e2e8c84-c176-499c-98d0-92153ce48a1c";
+
     static Notebook notebook =  null;
     static String notebookId = "";
     static String cellId="";
@@ -169,6 +170,7 @@ public class NotebookServiceTest extends JerseyTest {
     @Test
     public void testExecuteNotebookCell(){
         String code = "g.V()";
+        // code = "schema.getVertexLabel(\"person2\").userData()";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
         cell.setLanguage( "gremlin" );
@@ -179,7 +181,8 @@ public class NotebookServiceTest extends JerseyTest {
         Response response = target(url)
                             .request(MediaType.APPLICATION_JSON_TYPE)
                             .put(Entity.json(cell));
-        Result result = response.readEntity(Result.class);
+        String result = response.readEntity(String.class);
+        System.out.println(result);
         Assert.assertEquals(200, response.getStatus());
     }
 

@@ -204,7 +204,7 @@ public class ConnectionService {
         Preconditions.checkNotNull(connection);
         Preconditions.checkArgument(connection.getId().equals(connectionId));
 
-        Response response = null;
+        Response response;
         HugeClient client = new HugeClient(connection.getConnectionUri(),
                                            connection.getGraphName());
         Map<String, List> schemas = new HashMap<>();

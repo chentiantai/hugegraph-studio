@@ -1,9 +1,3 @@
-/**
- * @file Desciption:
- * @author huanghaiping(huanghaiping02@baidu.com)
- * Created on 17/6/30
- */
-
 import React from 'react';
 import {connect} from 'react-redux';
 import {updateGraph} from './actions';
@@ -14,7 +8,8 @@ class Graph extends React.Component {
         super();
         this.state = {
             graphNodes: {},
-            graphEdges: {}
+            graphEdges: {},
+            groups:{}
         }
     }
 
@@ -41,9 +36,10 @@ class Graph extends React.Component {
     componentDidUpdate() {
         let graph = this.props.content.graph;
         if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
-            let vertexData = graph.vertices;
-            let edgeData = graph.edges;
-            this.drawGraph(vertexData, edgeData);
+            if(graph.groups == null){
+                graph.groups = {};
+            }
+            this.drawGraph(graph.vertices, graph.edges, graph.groups);
         }
         this.loadDone();
     }
@@ -51,21 +47,22 @@ class Graph extends React.Component {
     componentDidMount() {
         let graph = this.props.content.graph;
         if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
-            let vertexData = graph.vertices;
-            let edgeData = graph.edges;
-            this.drawGraph(vertexData, edgeData);
+            if(graph.groups == null){
+                graph.groups = {};
+            }
+            this.drawGraph(graph.vertices, graph.edges, graph.groups);
 
         }
         this.loadDone();
 
     }
 
-    drawGraph = (vertexs, edges) => {
+    drawGraph = (vertices, edges, groups) => {
         this.state.graphNodes = new vis.DataSet();
         this.state.graphEdges = new vis.DataSet();
 
-        if (vertexs !== null) {
-            vertexs.forEach(vertex => {
+        if (vertices !== null) {
+            vertices.forEach(vertex => {
                 let title = '<div class="tooltips-label">' +
                     '<a class="round-red">●</a>&nbsp;' +
                     'label : ' + vertex.label + '</div>';
@@ -76,10 +73,13 @@ class Graph extends React.Component {
                         key + ' : ' + vertex.properties[key] + '</div>';
                 }
 
-                let label = vertex.id;
-                this.state.graphNodes.add([
-                    {id: vertex.id, label: label, title: title, propertiesLabel: vertex.label}
-                ]);
+                this.state.graphNodes.add([{
+                    id: vertex.id,
+                    label: vertex.id,
+                    title: title,
+                    propertiesLabel: vertex.label,
+                    group: vertex.label
+                }]);
             });
         }
 
@@ -112,7 +112,11 @@ class Graph extends React.Component {
             edges: this.state.graphEdges,
         };
 
+
+
+
         var options = {
+            groups: groups,
             autoResize: true,
             width: '100%',
             interaction: {
@@ -128,7 +132,8 @@ class Graph extends React.Component {
                 },
                 shape: 'dot',
                 color: {
-                    background: '#00ccff', border: '#00ccff',
+                    background: '#00ccff',
+                    border: '#00ccff',
                     highlight: {background: '#fb6a02', border: '#fb6a02'},
                     hover: {background: '#ec3112', border: '#ec3112'}
                 },
@@ -154,9 +159,7 @@ class Graph extends React.Component {
         };
         var network = new vis.Network(container, data, options);
 
-
         network.once("stabilizationIterationsDone", this.loadDone);
-
         network.on("doubleClick", (params) => this.doubleClick(params));
     }
 
@@ -181,11 +184,16 @@ class Graph extends React.Component {
                 .then(data => {
                     this.addNode(data.graph.vertices);
                     this.addEdge(data.graph.edges);
+                    this.updateGroups(data.graph.groups);
                 })
                 .catch(err => {
                     console.log(err);
                 });
         }
+    }
+
+    updateGroups = (groups) => {
+        this.state.groups = groups;
     }
 
     addNode = (vertices) => {
@@ -203,14 +211,16 @@ class Graph extends React.Component {
                             '</div>';
                     }
 
-                    let label = vertex.id;
-                    this.state.graphNodes.add(
-                        {id: vertex.id, label: label, title: title,propertiesLabel: vertex.label}
-                    );
+                    this.state.graphNodes.add({
+                        id: vertex.id,
+                        label: vertex.id,
+                        title: title,
+                        propertiesLabel: vertex.label,
+                        group: vertex.label
+                    });
                 });
             }
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
         }
     }
@@ -238,8 +248,7 @@ class Graph extends React.Component {
                     }
                 ]);
             });
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
         }
     }
