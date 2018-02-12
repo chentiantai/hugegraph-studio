@@ -79,9 +79,9 @@ public class VisNode {
     private VisNode transformUserDataToVisNode(Map<String, Object> userData) {
 
         // size
-        Integer size = (Integer) userData.get(VIS_SIZE);
+        Number size = (Number) userData.get(VIS_SIZE);
         if (size != null) {
-            this.size = size;
+            this.size = size.intValue();
         }
 
         // color

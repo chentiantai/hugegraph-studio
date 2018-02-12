@@ -10,14 +10,14 @@ public class Scaling {
     private Integer max = 30;
 
     public Scaling(Map<String, Object> userData) {
-        Integer min = (Integer) userData.get(SCALING_MIN);
+        Number min = (Number) userData.get(SCALING_MIN);
         if (min != null) {
-            this.min = min;
+            this.min = min.intValue();
         }
 
-        Integer max = (Integer) userData.get(SCALING_MAX);
+        Number max = (Number) userData.get(SCALING_MAX);
         if (max != null) {
-            this.max = max;
+            this.max = max.intValue();
         }
     }
 

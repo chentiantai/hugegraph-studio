@@ -20,9 +20,9 @@ public class Font {
     }
 
     public Font(Map<String, Object> userData) {
-        Integer size = (Integer) userData.get(FONT_SIZE);
+        Number size = (Number) userData.get(FONT_SIZE);
         if (size != null) {
-            this.size = size;
+            this.size = size.intValue();
         }
 
         String color = (String) userData.get(FONT_COLOR);

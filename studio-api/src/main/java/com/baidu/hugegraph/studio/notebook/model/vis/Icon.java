@@ -42,9 +42,9 @@ public class Icon {
             this.color = iconColor;
         }
 
-        Integer iconSize = (Integer) userData.get(ICON_SIZE);
+        Number iconSize = (Number) userData.get(ICON_SIZE);
         if (iconSize != null) {
-            this.size = iconSize;
+            this.size = iconSize.intValue();
         }
     }
 
