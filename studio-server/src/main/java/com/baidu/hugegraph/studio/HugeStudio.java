@@ -117,7 +117,7 @@ public class HugeStudio {
         }
 
         String upMessage = String.format("HugeStudio is now running on: " +
-                                         "http://%s:%s\n", address, port);
+                                         "http://%s:%d\n", address, port);
 
         LOG.info(upMessage);
     }
@@ -166,22 +166,12 @@ public class HugeStudio {
      * is being used.
      */
     private static void validateHttpPort(String httpBindAddress, int httpPort) {
-        ServerSocket socket = null;
-        try {
-            socket = new ServerSocket(httpPort, 1,
-                                      InetAddress.getByName(httpBindAddress));
+        try (ServerSocket socket = new ServerSocket(httpPort, 1,
+                                    InetAddress.getByName(httpBindAddress))) {
         } catch (IOException ignored) {
             LOG.error(String.format("Can't start Studio on port %d: %s",
-                                       httpPort, ignored));
+                                    httpPort, ignored));
             System.exit(1);
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (IOException ignored) {
-                    LOG.error("Failed to close socket {}", ignored);
-                }
-            }
         }
     }
 
