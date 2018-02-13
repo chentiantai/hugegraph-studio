@@ -23,9 +23,8 @@ package com.baidu.hugegraph.studio.gremlin;
  * The interface Gremlin code optimization.
  */
 public interface GremlinOptimizer {
-
     /**
-     * add limit rules for the code
+     * Add limit rules for the code
      *
      * @param code
      * @param limit the value need be greater than 0
@@ -34,7 +33,7 @@ public interface GremlinOptimizer {
     String limitOptimize(String code, Long limit);
 
     /**
-     * add limit rules for the code, the limit is setted to default value :100
+     * Add limit rules for the code, the limit value is 100 by default.
      *
      * @param code
      * @return the code added limit rule

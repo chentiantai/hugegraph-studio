@@ -33,42 +33,34 @@ import org.springframework.stereotype.Repository;
 @Repository("ruleGremlinOptimizer")
 public class RuleGremlinOptimizer implements GremlinOptimizer {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(RuleGremlinOptimizer.class);
     private StudioConfiguration configuration;
     private Set<String> appendLimitSuffixes;
 
     public RuleGremlinOptimizer() {
         configuration = new StudioConfiguration();
-        appendLimitSuffixes =
-                configuration.getAppendLimitSuffixes();
+        appendLimitSuffixes = configuration.getAppendLimitSuffixes();
     }
 
     /**
-     * add 'limit' to the end of gremlin statement to avoid OOM,
-     * when the statement end with suffixed.
+     * Add 'limit' to the end of gremlin statement to avoid OOM,
+     * when the statement end up with the desired suffix string.
      *
-     * @param code
-     * @param limit the value need be greater than 0
+     * @param code.
+     * @param limit the value need be greater than 0.
      * @return
      */
     @Override
-    public String limitOptimize( String code, Long limit ) {
-
+    public String limitOptimize(String code, Long limit) {
         for (String suffix : appendLimitSuffixes) {
             if (code.endsWith(suffix)) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(code).append(".limit(").append(limit).append(")");
-                return sb.toString();
+                return code + ".limit(" + limit + ")";
             }
         }
         return code;
-
-
     }
 
     @Override
-    public String limitOptimize( String code ) {
+    public String limitOptimize(String code) {
         return limitOptimize(code, configuration.getDataLimit());
     }
 }

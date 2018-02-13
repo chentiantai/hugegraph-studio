@@ -87,9 +87,9 @@ public class StudioError extends RuntimeException {
     /**
      * Conflict studio error.
      *
-     * @param resourceName the resource name
-     * @param id           the id
-     * @return the studio error
+     * @param resourceName The resource name.
+     * @param id The id.
+     * @return The studio error.
      */
     public static StudioError conflict(String resourceName, String id) {
         return new StudioError(409, 0,
