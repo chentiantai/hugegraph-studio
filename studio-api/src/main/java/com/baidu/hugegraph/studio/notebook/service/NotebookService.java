@@ -609,8 +609,11 @@ public class NotebookService {
         Map<String, VisNode> groups = new HashMap<>();
         List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
         for (VertexLabel vertexLabel : vertexLabels) {
-            groups.put(vertexLabel.name(),
-                       new VisNode(vertexLabel.userData()));
+            if (vertexLabel.userData() != null &&
+                !vertexLabel.userData().isEmpty()) {
+                groups.put(vertexLabel.name(),
+                           new VisNode(vertexLabel.userData()));
+            }
         }
         return groups;
     }
