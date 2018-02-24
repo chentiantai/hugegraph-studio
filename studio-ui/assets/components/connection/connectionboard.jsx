@@ -1,9 +1,3 @@
-/**
- * @file Desciption:
- * @author huanghaiping(huanghaiping02@baidu.com)
- * Created on 17/6/5
- */
-
 import React from 'react';
 import StudioHead from '../studiohead';
 import Connection from './connection';
@@ -55,7 +49,7 @@ class ConnectionsBoard extends React.Component {
 
     openUpdateModal(connection) {
         this.setState({
-            title: 'Update Connection Information',
+            title: 'Update connection information',
             isOpen: true,
             connection: {...connection},
             operation: 'update',
@@ -127,11 +121,11 @@ class ConnectionsBoard extends React.Component {
                                 <table className="table table-striped">
                                     <tbody>
                                     <tr>
-                                        <th>name</th>
-                                        <th>graphName</th>
-                                        <th>connectionHost</th>
-                                        <th>port</th>
-                                        <th>operation</th>
+                                        <th>Name</th>
+                                        <th>Graph</th>
+                                        <th>Host</th>
+                                        <th>Port</th>
+                                        <th>Operation</th>
                                     </tr>
                                     {
                                         connections.map(connection =>

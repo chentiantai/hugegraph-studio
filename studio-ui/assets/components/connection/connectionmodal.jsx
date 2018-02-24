@@ -1,9 +1,3 @@
-/**
- * @file Desciption:
- * @author huanghaiping(huanghaiping02@baidu.com)
- * Created on  17/5/31
- */
-
 import React from 'react';
 import {connect} from 'react-redux';
 import {saveConnection} from './actions';
@@ -126,9 +120,9 @@ class ConnectionModal extends React.Component {
                                        onKeyPress={() => this.saveConnection()}/>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">graphName</label>
+                                <label className="col-sm-2 control-label">Graph</label>
                                 <Input className="col-sm-10"
-                                       placeholder="graphName" name="graphName"
+                                       placeholder="Graph Name" name="graphName"
                                        validator={isNull}
                                        isValidateByForce={this.state.isValidateByForce}
                                        value={connection.graphName}
@@ -139,7 +133,7 @@ class ConnectionModal extends React.Component {
                                 <label
                                     className="col-sm-2 control-label">Host</label>
                                 <Input className="col-sm-10"
-                                       placeholder="ConnectionHost"
+                                       placeholder="HugeGraph server ip/hostname (like 127.0.0.1)"
                                        name="connectionHost"
                                        validator={isNull}
                                        isValidateByForce={this.state.isValidateByForce}
@@ -150,7 +144,7 @@ class ConnectionModal extends React.Component {
                             <div className="form-group">
                                 <label
                                     className="col-sm-2 control-label">Port</label>
-                                <Input className="col-sm-10" placeholder="Port"
+                                <Input className="col-sm-10" placeholder="HugeGraph server port (like 8080)"
                                        name="port"
                                        validator={isNumber}
                                        isValidateByForce={this.state.isValidateByForce}

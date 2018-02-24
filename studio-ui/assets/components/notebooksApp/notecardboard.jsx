@@ -1,9 +1,3 @@
-/**
- * @file Desciption:
- * @author huanghaiping(huanghaiping02@baidu.com)
- * Created on 17/6/14
- */
-
 import React from 'react';
 import NoteCardAdd from './notecardadd';
 import NoteCard from './notecard';
@@ -32,7 +26,7 @@ class NoteCardBoard extends React.Component {
 
     addNoteCard() {
         this.setState({
-            title: 'add notebook',
+            title: 'Add notebook',
             isOpen: true,
             addTimes: this.state.addTimes + 1,
             noteCard: {
@@ -46,7 +40,7 @@ class NoteCardBoard extends React.Component {
 
     updateNoteCard = noteCard => {
         this.setState({
-            title: 'update notebook',
+            title: 'Update notebook',
             isOpen: true,
             addTimes: this.state.addTimes + 1,
             noteCard: {
