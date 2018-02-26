@@ -338,7 +338,7 @@ public class NotebookService {
         VertexLabel vertexLabel = schema.getVertexLabel(label);
 
         Object transformedVertexId = transformId(vertexId,vertexLabel);
-        String gremlin = transformGremlin(transformedVertexId);
+        String gremlin = createGremlin(transformedVertexId);
 
 
         Set<Object> vertexIds = new HashSet<>();
@@ -432,7 +432,7 @@ public class NotebookService {
     }
 
 
-    private String transformGremlin(Object transformedVertexId){
+    private String createGremlin(Object transformedVertexId){
         String gremlin;
         if(transformedVertexId instanceof String){
             String gremlinVertexId =

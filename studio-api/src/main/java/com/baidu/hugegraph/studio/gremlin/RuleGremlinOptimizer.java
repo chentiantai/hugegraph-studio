@@ -21,10 +21,11 @@ package com.baidu.hugegraph.studio.gremlin;
 
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -32,27 +33,77 @@ import org.springframework.stereotype.Repository;
  */
 @Repository("ruleGremlinOptimizer")
 public class RuleGremlinOptimizer implements GremlinOptimizer {
-
     private StudioConfiguration configuration;
     private Set<String> appendLimitSuffixes;
 
     public RuleGremlinOptimizer() {
         configuration = new StudioConfiguration();
-        appendLimitSuffixes = configuration.getAppendLimitSuffixes();
+        appendLimitSuffixes =
+                transformSuffixToRegExp(configuration.getAppendLimitSuffixes());
+    }
+
+    private Set<String> transformSuffixToRegExp(Set<String> suffixes) {
+        Set<String> regExpSuffixes = new HashSet<>();
+        for (String suffix : suffixes) {
+            suffix = suffix.replaceAll("\\.", "\\\\.");
+            if (suffix.contains("(STR)")) {
+                // Create regular expression with fun('...')
+                String regExpSuffix = suffix;
+                regExpSuffix = regExpSuffix.replaceAll("\\(", "\\\\(");
+                regExpSuffix = regExpSuffix.replaceAll("\\)", "\\\\)");
+                regExpSuffix =
+                        regExpSuffix.replaceAll("STR", "'[\\\\s\\\\S]+'");
+                regExpSuffix = "(" + regExpSuffix + ")$";
+                regExpSuffixes.add(regExpSuffix);
+
+                // Create regular expression with fun("...")
+                regExpSuffix = suffix;
+                regExpSuffix = regExpSuffix.replaceAll("\\(", "\\\\(");
+                regExpSuffix = regExpSuffix.replaceAll("\\)", "\\\\)");
+                regExpSuffix =
+                        regExpSuffix.replaceAll("STR", "\"[\\\\s\\\\S]+\"");
+                regExpSuffix = "(" + regExpSuffix + ")$";
+                regExpSuffixes.add(regExpSuffix);
+
+                continue;
+            }
+
+            if (suffix.contains("(NUM)")) {
+                String regExpSuffix = suffix;
+                regExpSuffix = regExpSuffix.replaceAll("\\(", "\\\\(");
+                regExpSuffix = regExpSuffix.replaceAll("\\)", "\\\\)");
+                regExpSuffix = regExpSuffix.replaceAll("NUM", "[\\\\d]+");
+                regExpSuffix = "(" + regExpSuffix + ")$";
+                regExpSuffixes.add(regExpSuffix);
+                continue;
+            }
+
+            if (suffix.contains("()")) {
+                String regExpSuffix = suffix;
+                regExpSuffix = regExpSuffix.replaceAll("\\(", "\\\\(");
+                regExpSuffix = regExpSuffix.replaceAll("\\)", "\\\\)");
+                regExpSuffix = "(" + regExpSuffix + ")$";
+                regExpSuffixes.add(regExpSuffix);
+                continue;
+            }
+        }
+        return regExpSuffixes;
     }
 
     /**
      * Add 'limit' to the end of gremlin statement to avoid OOM,
      * when the statement end up with the desired suffix string.
      *
-     * @param code.
+     * @param code  .
      * @param limit the value need be greater than 0.
      * @return
      */
     @Override
     public String limitOptimize(String code, Long limit) {
         for (String suffix : appendLimitSuffixes) {
-            if (code.endsWith(suffix)) {
+            Pattern p = Pattern.compile(suffix);
+            Matcher m = p.matcher(code);
+            while (m.find()) {
                 return code + ".limit(" + limit + ")";
             }
         }
@@ -63,4 +114,5 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
     public String limitOptimize(String code) {
         return limitOptimize(code, configuration.getDataLimit());
     }
+
 }
