@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
-import com.baidu.hugegraph.studio.gremlin.GremlinOptimizer;
-import com.baidu.hugegraph.studio.gremlin.RuleGremlinOptimizer;
 
 public class RuleGremlinOptimizerTest {
     StudioConfiguration conf = new StudioConfiguration();
