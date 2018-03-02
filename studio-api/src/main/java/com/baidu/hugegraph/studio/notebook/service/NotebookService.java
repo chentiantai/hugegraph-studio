@@ -43,6 +43,7 @@ import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.baidu.hugegraph.studio.notebook.model.vis.VisNode;
 import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +76,7 @@ import java.util.stream.Collectors;
 public class NotebookService {
     private static final Logger LOG =
             LoggerFactory.getLogger(NotebookService.class);
+    private static final int GREMLIN_MAX_IDS = 250;
 
     @Autowired
     private NotebookRepository notebookRepository;
@@ -655,36 +657,34 @@ public class NotebookService {
                 idList.add(vertex.id().toString());
             }
         }
-        String ids = StringUtils.join(idList, ",");
+        Lists.partition(idList, GREMLIN_MAX_IDS)
+                .stream()
+                .forEach(group -> {
+                    String ids = StringUtils.join(group, ",");
+                    /**
+                     * De-duplication by edgeId. Reserve the edges only if both srcVertexId
+                     * and tgtVertexId is a member of vertices.
+                     */
+                    String gremlin = String.format("g.V(%s).bothE().dedup()", ids);
 
+                    ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
 
+                    Iterator<Result> results = resultSet.iterator();
 
-
-        /**
-         * De-duplication by edgeId. Reserve the edges only if both srcVertexId
-         * and tgtVertexId is a member of vertices.
-         */
-        String gremlin = String.format("g.V(%s).bothE().dedup()", ids);
-
-        ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
-
-        Iterator<Result> results = resultSet.iterator();
-
-        results.forEachRemaining(r -> {
-            Edge edge = (Edge) r.getObject();
-            /**
-             * As the results is queried by 'g.V(id).bothE()', the
-             * source vertex of edge from results is in the set of
-             * vertexIds. Hence, just reserve the edge which that
-             * the target in the set of vertexIds.
-             */
-            if (vertexIds.contains(edge.target()) &&
-                vertexIds.contains(edge.source())) {
-                edges.add(edge);
-            }
-        });
-
-
+                    results.forEachRemaining(r -> {
+                        Edge edge = (Edge) r.getObject();
+                        /**
+                         * As the results is queried by 'g.V(id).bothE()', the
+                         * source vertex of edge from results is in the set of
+                         * vertexIds. Hence, just reserve the edge which that
+                         * the target in the set of vertexIds.
+                         */
+                        if (vertexIds.contains(edge.target()) &&
+                                vertexIds.contains(edge.source())) {
+                            edges.add(edge);
+                        }
+                    });
+                });
         return edges;
 
     }
@@ -705,14 +705,17 @@ public class NotebookService {
                 idList.add(vertexId.toString());
             }
         }
-        String ids = StringUtils.join(idList, ",");
-
-        String gremlin = String.format("g.V(%s)", ids);
-        ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
-        Iterator<Result> results = resultSet.iterator();
-        List<Vertex> finalVertices = vertices;
-        results.forEachRemaining(
-                vertex -> finalVertices.add((Vertex) vertex.getObject()));
+        Lists.partition(idList, GREMLIN_MAX_IDS)
+                .stream()
+                .forEach(group -> {
+                    String ids = StringUtils.join(group, ",");
+                    String gremlin = String.format("g.V(%s)", ids);
+                    ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
+                    Iterator<Result> results = resultSet.iterator();
+                    List<Vertex> finalVertices = vertices;
+                    results.forEachRemaining(
+                            vertex -> finalVertices.add((Vertex) vertex.getObject()));
+                });
         return vertices;
     }
 
