@@ -164,7 +164,7 @@ public class NotebookService {
      * Edit notebook response.
      *
      * @param notebookId The notebook id.
-     * @param notebook Tthe notebook.
+     * @param notebook The notebook.
      * @return The response.
      */
     @PUT
@@ -279,178 +279,6 @@ public class NotebookService {
     }
 
     /**
-     * The method is used for get a vertex's adjacency nodes when a graph is
-     * shown. The user can select any vertex which is interested in as a start
-     * point, add it's adjacency vertices & edges to current graph by executing
-     * the gremlin statement of 'g.V(id).bothE()'.
-     *
-     * After successful of the gremlin need to merge the current local query
-     * results to the notebook cell's result.
-     *
-     * Note: this method should be executed after @see executeNotebookCell
-     * (String, String) has been executed.
-     *
-     * @param notebookId The notebookId of current notebook.
-     * @param cellId The cellId of the current notebook.
-     * @param vertexId The id of vertex as a start point.
-     * @return The offset graph(vertices & edges).
-     */
-    @GET
-    @Path("{notebookId}/cells/{cellId}/gremlin")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response executeNotebookCellGremlin(
-            @PathParam("notebookId") String notebookId,
-            @PathParam("cellId") String cellId,
-            @QueryParam("vertexId") String vertexId,
-            @QueryParam("label") String label) {
-        Preconditions.checkArgument(notebookId != null && cellId != null &&
-                                    vertexId != null);
-        Preconditions.checkArgument(StringUtils.isNotBlank(label),
-                                    "parameter label is blank");
-
-        Notebook notebook = notebookRepository.getNotebook(notebookId);
-        Preconditions.checkArgument(notebook != null);
-
-        NotebookCell cell = notebook.getCellById(cellId);
-        Preconditions.checkArgument(cell != null &&
-                                    cellId.equals(cell.getId()));
-        // Only be executed with 'gremlin' mode
-        Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
-
-        Long startTime = System.currentTimeMillis();
-
-        com.baidu.hugegraph.studio.notebook.model.Result result =
-                cell.getResult();
-
-
-        /**
-         * This method should be executed after the method of @see
-         * executeNotebookCell(String,String). It must has a start
-         * point and the result must have vertices or edges.
-         */
-        Preconditions.checkArgument(result != null &&
-                                    result.getGraph() != null);
-
-        HugeClient hugeClient = new HugeClient(
-                                notebook.getConnection().getConnectionUri(),
-                                notebook.getConnection().getGraphName());
-
-        SchemaManager schema = hugeClient.schema();
-        VertexLabel vertexLabel = schema.getVertexLabel(label);
-
-        Object transformedVertexId = transformId(vertexId,vertexLabel);
-        String gremlin = createGremlin(transformedVertexId);
-
-
-        Set<Object> vertexIds = new HashSet<>();
-        Set<String> edgeIds = new HashSet<>();
-        List<Vertex> vertices = result.getGraph().getVertices();
-        List<Edge> edges = result.getGraph().getEdges();
-        vertices.stream().forEach(v -> vertexIds.add(v.id()));
-        edges.stream().forEach(e -> edgeIds.add(e.id()));
-
-
-        Preconditions.checkArgument(vertexIds.contains(transformedVertexId));
-
-        GremlinManager gremlinManager = hugeClient.gremlin();
-        ResultSet resultSet = gremlinManager.gremlin(gremlin).execute();
-        result.setData(resultSet.data());
-
-        Iterator<Result> iterator= resultSet.iterator();
-
-        com.baidu.hugegraph.studio.notebook.model.Result resultNew =
-                new com.baidu.hugegraph.studio.notebook.model.Result();
-        resultNew.setType(EDGE);
-
-        List<Edge> edgesNew = new ArrayList<>();
-        List<Vertex> verticesNew = new ArrayList<>();
-        iterator.forEachRemaining(
-                r -> {
-                    Edge e = (Edge) r.getObject();
-                    if (!edgeIds.contains(e.id())) {
-                        edgeIds.add(e.id());
-                        edgesNew.add(e);
-                    }
-                });
-        List<Vertex> verticesFromEdges = getVertexFromEdge(hugeClient, edgesNew);
-        if (verticesFromEdges != null) {
-            verticesFromEdges.stream().forEach(v -> {
-                if (!vertexIds.contains(v.id())) {
-                    vertexIds.add(v.id());
-                    verticesNew.add(v);
-                }
-            });
-        }
-
-        resultNew.setGraphVertices(verticesNew);
-        resultNew.setGraphEdges(edgesNew);
-        resultNew.setGroups(getSchemaVertexGroups(hugeClient));
-        // Save the current query result to cell.
-        vertices.addAll(verticesNew);
-        edges.addAll(edgesNew);
-        result.setGraphVertices(vertices);
-        result.setGraphEdges(edges);
-        result.setGroups(resultNew.getGraph().getGroups());
-        cell.setResult(result);
-        notebookRepository.editNotebookCell(notebookId, cell);
-
-        Long endTime = System.currentTimeMillis();
-        Long duration = endTime - startTime;
-        resultNew.setDuration(duration);
-
-        Response response = Response.status(200).entity(resultNew)
-                                    .build();
-        return response;
-    }
-
-
-    private Object transformId(String vertexId, VertexLabel vertexLabel){
-        Object transformedVertexId = vertexId;
-        switch (vertexLabel.idStrategy()) {
-            case AUTOMATIC:
-            case CUSTOMIZE_NUMBER:
-                try {
-                    transformedVertexId = Integer.valueOf(vertexId);
-                } catch (NumberFormatException ignore){
-                    try {
-                        transformedVertexId = Long.valueOf(vertexId);
-                    } catch (NumberFormatException e){
-                        throw new IllegalArgumentException(
-                                "The vertexId does no match with itself " +
-                                "idStrategy");
-                    }
-                }
-                break;
-            case PRIMARY_KEY:
-            case CUSTOMIZE_STRING:
-                break;
-            default:
-                throw new IllegalArgumentException(String.format(
-                        "The vertexLabel isStrategy %s is not supported",
-                        vertexLabel.idStrategy().name()));
-        }
-        return transformedVertexId;
-    }
-
-
-    private String createGremlin(Object transformedVertexId){
-        String gremlin;
-        if(transformedVertexId instanceof String){
-            String gremlinVertexId =
-                    StringUtils.replace(transformedVertexId.toString(), "'", "\\\\'");
-            gremlin = gremlinOptimizer.limitOptimize(
-                    String.format("g.V('%s').bothE()", gremlinVertexId));
-        }else {
-            gremlin = gremlinOptimizer.limitOptimize(
-                    String.format("g.V(%s).bothE()", transformedVertexId.toString()));
-        }
-        return gremlin;
-    }
-
-
-
-    /**
      * To execute the code (gremlin or markdown) in a cell of notebook.
      *
      * Return the original user input code if the cell language is markdown.
@@ -503,8 +331,8 @@ public class NotebookService {
 
             // Build HugeClient from the connection info from the notebook.
             HugeClient hugeClient = new HugeClient(
-                                    notebook.getConnection().getConnectionUri(),
-                                    notebook.getConnection().getGraphName());
+                    notebook.getConnection().getConnectionUri(),
+                    notebook.getConnection().getGraphName());
 
 
             GremlinManager gremlinManager = hugeClient.gremlin();
@@ -606,8 +434,175 @@ public class NotebookService {
         return response;
     }
 
-    private Map<String, VisNode> getSchemaVertexGroups(HugeClient hugeClient) {
+    /**
+     * The method is used for get a vertex's adjacency nodes when a graph is
+     * shown. The user can select any vertex which is interested in as a start
+     * point, add it's adjacency vertices & edges to current graph by executing
+     * the gremlin statement of 'g.V(id).bothE()'.
+     *
+     * After successful of the gremlin need to merge the current local query
+     * results to the notebook cell's result.
+     *
+     * Note: this method should be executed after @see executeNotebookCell
+     * (String, String) has been executed.
+     *
+     * @param notebookId The notebookId of current notebook.
+     * @param cellId The cellId of the current notebook.
+     * @param vertexId The id of vertex as a start point.
+     * @return The offset graph(vertices & edges).
+     */
+    @GET
+    @Path("{notebookId}/cells/{cellId}/gremlin")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response executeNotebookCellGremlin(
+            @PathParam("notebookId") String notebookId,
+            @PathParam("cellId") String cellId,
+            @QueryParam("vertexId") String vertexId,
+            @QueryParam("label") String label) {
+        Preconditions.checkArgument(notebookId != null && cellId != null &&
+                                    vertexId != null);
+        Preconditions.checkArgument(StringUtils.isNotBlank(label),
+                                    "parameter label is blank");
 
+        Notebook notebook = notebookRepository.getNotebook(notebookId);
+        Preconditions.checkArgument(notebook != null);
+
+        NotebookCell cell = notebook.getCellById(cellId);
+        Preconditions.checkArgument(cell != null &&
+                                    cellId.equals(cell.getId()));
+        // Only be executed with 'gremlin' mode
+        Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
+
+        Long startTime = System.currentTimeMillis();
+
+        com.baidu.hugegraph.studio.notebook.model.Result result =
+                cell.getResult();
+
+
+        /**
+         * This method should be executed after the method of @see
+         * executeNotebookCell(String,String). It must has a start
+         * point and the result must have vertices or edges.
+         */
+        Preconditions.checkArgument(result != null &&
+                                    result.getGraph() != null);
+
+        HugeClient hugeClient = new HugeClient(
+                                notebook.getConnection().getConnectionUri(),
+                                notebook.getConnection().getGraphName());
+
+        SchemaManager schema = hugeClient.schema();
+        VertexLabel vertexLabel = schema.getVertexLabel(label);
+
+        Object transformedId = transformId(vertexId,vertexLabel);
+        String gremlin = gremlinOptimizer.limitOptimize(
+                String.format("g.V(%s).bothE()", formatId(transformedId)));
+        LOG.info(gremlin);
+        Set<Object> vertexIds = new HashSet<>();
+        Set<String> edgeIds = new HashSet<>();
+        List<Vertex> vertices = result.getGraph().getVertices();
+        List<Edge> edges = result.getGraph().getEdges();
+        vertices.stream().forEach(v -> vertexIds.add(v.id()));
+        edges.stream().forEach(e -> edgeIds.add(e.id()));
+
+
+        Preconditions.checkArgument(vertexIds.contains(transformedId));
+
+        GremlinManager gremlinManager = hugeClient.gremlin();
+        ResultSet resultSet = gremlinManager.gremlin(gremlin).execute();
+        result.setData(resultSet.data());
+
+        Iterator<Result> iterator= resultSet.iterator();
+
+        com.baidu.hugegraph.studio.notebook.model.Result resultNew =
+                new com.baidu.hugegraph.studio.notebook.model.Result();
+        resultNew.setType(EDGE);
+
+        List<Edge> edgesNew = new ArrayList<>();
+        List<Vertex> verticesNew = new ArrayList<>();
+        iterator.forEachRemaining(
+                r -> {
+                    Edge e = (Edge) r.getObject();
+                    if (!edgeIds.contains(e.id())) {
+                        edgeIds.add(e.id());
+                        edgesNew.add(e);
+                    }
+                });
+        List<Vertex> verticesFromEdges = getVertexFromEdge(hugeClient, edgesNew);
+        if (verticesFromEdges != null) {
+            verticesFromEdges.stream().forEach(v -> {
+                if (!vertexIds.contains(v.id())) {
+                    vertexIds.add(v.id());
+                    verticesNew.add(v);
+                }
+            });
+        }
+
+        resultNew.setGraphVertices(verticesNew);
+        resultNew.setGraphEdges(edgesNew);
+        resultNew.setGroups(getSchemaVertexGroups(hugeClient));
+        // Save the current query result to cell.
+        vertices.addAll(verticesNew);
+        edges.addAll(edgesNew);
+        result.setGraphVertices(vertices);
+        result.setGraphEdges(edges);
+        result.setGroups(resultNew.getGraph().getGroups());
+        cell.setResult(result);
+        notebookRepository.editNotebookCell(notebookId, cell);
+
+        Long endTime = System.currentTimeMillis();
+        Long duration = endTime - startTime;
+        resultNew.setDuration(duration);
+
+        Response response = Response.status(200).entity(resultNew)
+                                    .build();
+        return response;
+    }
+
+
+    private Object transformId(String vertexId, VertexLabel vertexLabel){
+        Object transformedVertexId = vertexId;
+        switch (vertexLabel.idStrategy()) {
+            case AUTOMATIC:
+            case CUSTOMIZE_NUMBER:
+                try {
+                    transformedVertexId = Integer.valueOf(vertexId);
+                } catch (NumberFormatException ignore){
+                    try {
+                        transformedVertexId = Long.valueOf(vertexId);
+                    } catch (NumberFormatException e){
+                        throw new IllegalArgumentException(
+                                "The vertexId does no match with itself " +
+                                "idStrategy");
+                    }
+                }
+                break;
+            case PRIMARY_KEY:
+            case CUSTOMIZE_STRING:
+                break;
+            default:
+                throw new IllegalArgumentException(String.format(
+                        "The vertexLabel isStrategy %s is not supported",
+                        vertexLabel.idStrategy().name()));
+        }
+        return transformedVertexId;
+    }
+
+    private String formatId(Object id){
+        if(id instanceof String){
+            String transformedId = StringUtils.replace(
+                    id.toString(), "\\", "\\\\");
+            transformedId = StringUtils.replace(
+                    transformedId.toString(), "\"", "\\\"");
+            transformedId = StringUtils.replace(
+                    transformedId.toString(), "'", "\\'");
+            return String.format("'%s'",transformedId);
+        }
+        return id.toString();
+    }
+
+    private Map<String, VisNode> getSchemaVertexGroups(HugeClient hugeClient) {
         Map<String, VisNode> groups = new HashMap<>();
         List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
         for (VertexLabel vertexLabel : vertexLabels) {
@@ -619,8 +614,6 @@ public class NotebookService {
         }
         return groups;
     }
-
-
 
     private List<Vertex> getVertexFromEdge(HugeClient hugeClient,
                                            List<Edge> edges) {
@@ -650,13 +643,9 @@ public class NotebookService {
 
         List<String> idList = new ArrayList<>();
         for(Vertex vertex : vertices){
-            if(vertex.id() instanceof  String){
-                idList.add(String.format("'%s'", StringUtils.replace(
-                        vertex.id().toString(), "'", "\\\\'")));
-            } else {
-                idList.add(vertex.id().toString());
-            }
+            idList.add(formatId(vertex.id()));
         }
+
         Lists.partition(idList, GREMLIN_MAX_IDS)
                 .stream()
                 .forEach(group -> {
@@ -666,7 +655,7 @@ public class NotebookService {
                      * and tgtVertexId is a member of vertices.
                      */
                     String gremlin = String.format("g.V(%s).bothE().dedup()", ids);
-
+                    LOG.info(gremlin);
                     ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
 
                     Iterator<Result> results = resultSet.iterator();
@@ -680,7 +669,7 @@ public class NotebookService {
                          * the target in the set of vertexIds.
                          */
                         if (vertexIds.contains(edge.target()) &&
-                                vertexIds.contains(edge.source())) {
+                            vertexIds.contains(edge.source())) {
                             edges.add(edge);
                         }
                     });
@@ -698,18 +687,14 @@ public class NotebookService {
 
         List<String> idList = new ArrayList<>();
         for (Object vertexId : vertexIds) {
-            if (vertexId instanceof String) {
-                idList.add(String.format("'%s'", StringUtils.replace(
-                        vertexId.toString(), "'", "\\\\'")));
-            } else {
-                idList.add(vertexId.toString());
-            }
+            idList.add(formatId(vertexId));
         }
         Lists.partition(idList, GREMLIN_MAX_IDS)
                 .stream()
                 .forEach(group -> {
                     String ids = StringUtils.join(group, ",");
                     String gremlin = String.format("g.V(%s)", ids);
+                    LOG.info(gremlin);
                     ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
                     Iterator<Result> results = resultSet.iterator();
                     List<Vertex> finalVertices = vertices;
