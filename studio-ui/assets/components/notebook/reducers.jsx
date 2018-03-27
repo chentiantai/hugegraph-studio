@@ -1,8 +1,22 @@
-/**
- * @file Desciption:
- * @author huanghaiping(huanghaiping02@baidu.com)
- * Created on 17/6/5
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  */
+
 import {
     ADD_ITEM,
     SHOW_NOTEBOOK,
@@ -18,7 +32,7 @@ import {
 export function notebook(state = [], action) {
 
     switch (action.type) {
-        case ADD_ITEM:
+        case ADD_ITEM: {
             let arr = [];
             let isAdd = false;
             for (let i = 0; i < state.cells.length; i++) {
@@ -35,6 +49,7 @@ export function notebook(state = [], action) {
                 ...state,
                 cells: arr
             };
+        }
         case SHOW_NOTEBOOK:
             return action.notebook;
         case DELETE_ITEM:
@@ -79,7 +94,7 @@ export function notebook(state = [], action) {
                 )
             };
         }
-        case UPDATE_GRAPH : {
+        case UPDATE_GRAPH: {
             return {
                 ...state,
                 cells: state.cells.map(
@@ -112,7 +127,6 @@ export function notebook(state = [], action) {
     }
 
 }
-
 
 export function schema(state = null, action) {
     switch (action.type) {

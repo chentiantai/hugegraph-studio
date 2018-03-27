@@ -1,8 +1,22 @@
-/**
- * @file Desciption:
- * @author huanghaiping(huanghaiping02@baidu.com)
- * Created on 17/6/7
+/*
+ * Copyright 2017 HugeGraph Authors
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  */
+
 import React from 'react';
 
 
@@ -55,7 +69,7 @@ export  default class Input extends React.Component {
                            name={this.props.name}
                            value={value}
                            onChange={this.handleChange}
-                           onKeyPress={this.keyPress} />
+                           onKeyPress={this.keyPress}/>
                 </div>
             );
         else
@@ -66,16 +80,16 @@ export  default class Input extends React.Component {
                            name={this.props.name}
                            value={value}
                            onChange={this.handleChange}
-                           onKeyPress={this.keyPress} />
+                           onKeyPress={this.keyPress}/>
                     <div className="form-err-message">{this.state.message}</div>
                 </div>
             );
     }
 
 
-    keyPress(event){
-        if(event.key ==='Enter'){
-            if(this.props.onKeyPress!==undefined){
+    keyPress(event) {
+        if (event.key === 'Enter') {
+            if (this.props.onKeyPress !== undefined) {
                 this.props.onKeyPress();
             }
         }
@@ -88,7 +102,6 @@ export  default class Input extends React.Component {
         const validationResult = this.validateData(value);
         this.props.onChange(name, value, validationResult.flag);
     }
-
 
 
     validateData(value) {
