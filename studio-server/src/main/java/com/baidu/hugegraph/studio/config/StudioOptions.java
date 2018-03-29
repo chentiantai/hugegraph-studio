@@ -42,7 +42,7 @@ public class StudioOptions extends OptionHolder {
      *
      * @return the studio options
      */
-    public static StudioOptions Instance() {
+    public static StudioOptions instance() {
         if (instance == null) {
             synchronized (StudioOptions.class) {
                 if (instance == null) {

@@ -34,23 +34,17 @@ public class StudioConfiguration {
             LoggerFactory.getLogger(StudioConfiguration.class);
 
     static {
-        OptionSpace.register(StudioOptions.Instance());
+        OptionSpace.register("studio", StudioOptions.instance());
     }
 
     private HugeConfig config;
 
     public StudioConfiguration( String fileName ) {
-        try {
-            // hugestudio.sh : -Dstudio.home="$STUDIO_HOME"
-            String homeDir = System.getProperty("studio.home");
-            config = new HugeConfig(String.format("%s/conf/%s",
-                    homeDir, fileName));
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(String.format(
-                    "Caught exception while loading the studio configuration " +
-                            "from: %s", fileName), e);
-        }
-    }
+        // hugestudio.sh : -Dstudio.home="$STUDIO_HOME"
+        String homeDir = System.getProperty("studio.home");
+        config = new HugeConfig(String.format("%s/conf/%s",
+                                homeDir, fileName));
+}
 
     public int getHttpPort() {
         return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT).intValue();

@@ -37,34 +37,28 @@ public class StudioConfiguration {
             "hugestudio.properties";
 
     static {
-        OptionSpace.register(StudioApiOptions.Instance());
+        OptionSpace.register("studio-api", StudioApiOptions.instance());
     }
 
     private HugeConfig config = null;
 
     public StudioConfiguration() {
-        try {
-            if (System.getProperty("studio.home") != null) {
-                config = new HugeConfig(
-                        String.format("%s/conf/%s",
-                                      System.getProperty("studio.home"),
-                                      DEFAULT_CONFIGURATION_FILE));
-            } else {
-                URL confUrl = this.getClass().getClassLoader()
-                                  .getResource(DEFAULT_CONFIGURATION_FILE);
-                Preconditions.checkNotNull(confUrl);
-                config = new HugeConfig(confUrl.getFile());
-            }
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(String.format(
-                    "Caught exception while loading Studio configurations: %s",
-                    DEFAULT_CONFIGURATION_FILE), e);
+
+        if (System.getProperty("studio.home") != null) {
+            config = new HugeConfig(String.format("%s/conf/%s",
+                                    System.getProperty("studio.home"),
+                                    DEFAULT_CONFIGURATION_FILE));
+        } else {
+            URL confUrl = this.getClass().getClassLoader()
+                    .getResource(DEFAULT_CONFIGURATION_FILE);
+            Preconditions.checkNotNull(confUrl);
+            config = new HugeConfig(confUrl.getFile());
         }
     }
 
     public String getConnectionsDirectory() {
         return String.format("%s/%s", getBaseUserDataDirectory(),
-               this.config.get(StudioApiOptions.STUDIO_DATA_CONNECTIONS_DIR));
+                this.config.get(StudioApiOptions.STUDIO_DATA_CONNECTIONS_DIR));
     }
 
     public String getNotebooksDirectory() {

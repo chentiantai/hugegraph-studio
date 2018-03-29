@@ -43,7 +43,7 @@ public class StudioApiOptions extends OptionHolder {
      *
      * @return the studio api options
      */
-    public static StudioApiOptions Instance() {
+    public static StudioApiOptions instance() {
         if (instance == null) {
             synchronized (StudioApiOptions.class) {
                 if (instance == null) {
