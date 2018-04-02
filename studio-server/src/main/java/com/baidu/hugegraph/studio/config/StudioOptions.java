@@ -62,9 +62,9 @@ public class StudioOptions extends OptionHolder {
                     "server.baseDirectory",
                     "The base path of HugeStudio server.",
                     disallowEmpty(),
-                    StringUtils.isNoneEmpty(System.getProperty("studio.home"))
-                            ? System.getProperty("studio.home") :
-                            System.getProperty("user.dir")
+                    StringUtils.isNoneEmpty(System.getProperty("studio.home")) ?
+                                            System.getProperty("studio.home") :
+                                            System.getProperty("user.dir")
             );
 
     public static final ConfigOption<String> STUDIO_SERVER_UI_DIR =
@@ -105,6 +105,5 @@ public class StudioOptions extends OptionHolder {
                     "The http port of HugeStudio http server.",
                     positiveInt(),
                     8088
-
             );
 }

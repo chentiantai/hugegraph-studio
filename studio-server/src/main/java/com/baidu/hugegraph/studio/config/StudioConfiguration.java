@@ -39,9 +39,9 @@ public class StudioConfiguration {
 
     private HugeConfig config;
 
-    public StudioConfiguration( String fileName ) {
+    public StudioConfiguration(final String fileName) {
         // hugestudio.sh : -Dstudio.home="$STUDIO_HOME"
-        String homeDir = System.getProperty("studio.home");
+        final String homeDir = System.getProperty("studio.home");
         config = new HugeConfig(String.format("%s/conf/%s",
                                 homeDir, fileName));
 }
