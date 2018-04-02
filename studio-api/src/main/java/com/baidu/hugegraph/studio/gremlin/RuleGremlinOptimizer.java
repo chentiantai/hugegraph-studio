@@ -48,7 +48,7 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
         Map<String, Pattern> suffixPatterns = new HashMap<>();
         for (String suffix : suffixes) {
             suffix = suffix.replaceAll("\\.", "\\\\.");
-            if (suffix.contains("(STR)")) {
+            if (suffix.indexOf("(STR)") > -1) {
                 String regExpSuffix = transformSTRWithSingleQuotes(suffix);
                 suffixPatterns.put(regExpSuffix, Pattern.compile(regExpSuffix));
                 regExpSuffix = transformSTRWithDoubleQuotes(suffix);
@@ -56,13 +56,13 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
                 continue;
             }
 
-            if (suffix.contains("(NUM)")) {
+            if (suffix.indexOf("(NUM)") > -1) {
                 String regExpSuffix = transformNum(suffix);
                 suffixPatterns.put(regExpSuffix, Pattern.compile(regExpSuffix));
                 continue;
             }
 
-            if (suffix.contains("()")) {
+            if (suffix.indexOf("()") > -1) {
                 String regExpSuffix = suffix;
                 regExpSuffix = regExpSuffix.replaceAll("\\(", "\\\\(");
                 regExpSuffix = regExpSuffix.replaceAll("\\)", "\\\\)");
@@ -71,8 +71,8 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
                 continue;
             }
         }
-        return suffixPatterns;
 
+        return suffixPatterns;
     }
 
     /**
@@ -135,6 +135,7 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
                 return code + ".limit(" + limit + ")";
             }
         }
+
         return code;
     }
 
