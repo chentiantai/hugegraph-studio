@@ -52,8 +52,8 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
         }
 
         int errorCode = 0;
+        Response.StatusType status = null;
         String message;
-        Response.StatusType status;
         if (ex instanceof WebApplicationException) {
             LOG.debug("Returning HTTP error:", ex);
             status = ((WebApplicationException) ex).getResponse()
