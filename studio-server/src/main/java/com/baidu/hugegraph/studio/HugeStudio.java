@@ -58,8 +58,11 @@ public class HugeStudio {
      * @throws Exception the exception
      */
     public static void main(String[] args) throws Exception {
+
         StudioConfiguration configuration =
                 new StudioConfiguration(DEFAULT_CONFIGURATION_FILE);
+        validateStudioConfiguration(configuration);
+
         run(configuration);
         server.await();
     }
@@ -72,18 +75,6 @@ public class HugeStudio {
      */
     public static void run(StudioConfiguration configuration) throws Exception {
 
-        String address = configuration.getHttpBindAddress();
-        int port = configuration.getHttpPort();
-        validateHttpPort(address, port);
-
-        String baseDir = configuration.getServerBasePath();
-        String uiDir = String.format("%s/%s", baseDir,
-                                     configuration.getServerUIDirectory());
-        String apiWarFile = String.format("%s/%s", baseDir,
-                                          configuration.getServerWarDirectory());
-        validatePathExists(new File(uiDir));
-        validateFileExists(new File(apiWarFile));
-
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(configuration.getHttpPort());
 
@@ -94,7 +85,7 @@ public class HugeStudio {
         tomcat.setHostname(address);
 
         StandardContext ui = configureUi(tomcat, uiDir);
-        StandardContext api = configureWar(tomcat, apiWarFile, "/api");
+        StandardContext api = configureWarFile(tomcat, apiWarFile, "/api");
 
         tomcat.start();
 
@@ -118,13 +109,13 @@ public class HugeStudio {
 
         String upMessage = String.format("HugeStudio is now running on: " +
                                          "http://%s:%d\n", address, port);
-
         LOG.info(upMessage);
     }
 
 
     private static StandardContext configureUi(Tomcat tomcat, String uiLocation)
             throws ServletException {
+
         ErrorPage errorPage = new ErrorPage();
         errorPage.setErrorCode(404);
         errorPage.setLocation("/index.html");
@@ -138,8 +129,9 @@ public class HugeStudio {
         return context;
     }
 
-    private static StandardContext configureWar(Tomcat tomcat, String warFile,
-                                                String appBase)
+    private static StandardContext configureWarFile(Tomcat tomcat,
+                                                    final String warFile,
+                                                    final String appBase)
             throws ServletException, IOException {
 
         if (warFile != null && warFile.length() > 0) {
@@ -161,16 +153,23 @@ public class HugeStudio {
         return null;
     }
 
+    private static void validateHttpAddress(final String address) {
+        if (address == null || StringUtils.isBlank(address)) {
+            LOG.error("Can't start Studio, invalid http address");
+            System.exit(1);
+        }
+    }
+
     /**
      * To validate if the given http port is available or not. Exit if the port
      * is being used.
      */
-    private static void validateHttpPort(String httpBindAddress, int httpPort) {
-        try (ServerSocket socket = new ServerSocket(httpPort, 1,
-                                    InetAddress.getByName(httpBindAddress))) {
+    private static void validateHttpPort(final String address, final int port) {
+        try (ServerSocket socket = new ServerSocket(port, 1,
+                                    InetAddress.getByName(address))) {
         } catch (IOException ignored) {
             LOG.error(String.format("Can't start Studio on port %d: %s",
-                                    httpPort, ignored));
+                                    port, ignored));
             System.exit(1);
         }
     }
@@ -190,4 +189,21 @@ public class HugeStudio {
             System.exit(1);
         }
     }
+
+    private static void validateStudioConfiguration(StudioConfiguration
+                                                    configuration) {
+        final String address = configuration.getHttpBindAddress();
+        validateHttpAddress(address);
+
+        final int port = configuration.getHttpPort();
+        validateHttpPort(address, port);
+
+        final String baseDirectory = configuration.getServerBasePath();
+        String uiDirectory = String.format("%s/%s", baseDirectory,
+                                     configuration.getServerUIDirectory());
+
+        validatePathExists(new File(uiDirectory));
+        String apiWarFile = String.format("%s/%s", baseDirectory,
+                                          configuration.getServerWarDirectory());
+        validateFileExists(new File(apiWarFile));
 }
