@@ -101,9 +101,9 @@ public class FileNotebookRepository implements NotebookRepository {
                 writer.write(mapper.writeValueAsString(notebook));
              LOG.debug("Write Notebook file: {}", filePath);
         } catch (IOException ignored) {
-            LOG.error("Failed to write Notebook file: {} ", filePath, ignored);
+            LOG.error("Failed to write Notebook file: {}", filePath, ignored);
             throw new RuntimeException("Failed to write Notebook file: " +
-                                       filePath );
+                                       filePath);
         } finally {
             writeLock.unlock();
         }
@@ -126,7 +126,7 @@ public class FileNotebookRepository implements NotebookRepository {
             NotebookCell notebookCell = new NotebookCell();
             notebookCell.setId(UUID.randomUUID().toString());
             notebookCell.setLanguage("gremlin");
-            ViewSettings viewSettings=new ViewSettings();
+            ViewSettings viewSettings = new ViewSettings();
             viewSettings.setFullScreen(false);
             viewSettings.setView(true);
             notebookCell.setViewSettings(viewSettings);
@@ -139,7 +139,7 @@ public class FileNotebookRepository implements NotebookRepository {
     @Override
     public Notebook editNotebook(Notebook notebook) {
         Preconditions.checkNotNull(notebook);
-        // ensure notebookId is not empty.
+        // Ensure notebookId is not empty.
         Preconditions.checkArgument(
                 StringUtils.isNotEmpty(notebook.getName()) &&
                 StringUtils.isNotEmpty(notebook.getId()));
@@ -156,13 +156,13 @@ public class FileNotebookRepository implements NotebookRepository {
             Files.list(Paths.get(notebooksDataDirectory)).forEach(path -> {
                 if (Files.isRegularFile(path)) {
                     Notebook notebook = getNotebookByPath(path);
-                    if(notebook!=null){
+                    if (notebook != null){
                         notebooks.add(notebook);
                     }
                 }
             });
-        }catch (Exception ignored){
-                LOG.error("Failed to read file : {}", notebooksDataDirectory,
+        } catch (Exception ignored){
+                LOG.error("Failed to read file: {}", notebooksDataDirectory,
                           ignored);
         }
         return notebooks;
@@ -176,8 +176,8 @@ public class FileNotebookRepository implements NotebookRepository {
             FileUtils.forceDelete(FileUtils.getFile(notebooksDataDirectory,
                                                     notebookId));
         } catch (IOException e) {
-            LOG.error("Failed to remove file : {}", path, e);
-        }finally {
+            LOG.error("Failed to remove File: {}", path, e);
+        } finally {
             writeLock.unlock();
         }
     }
@@ -187,26 +187,28 @@ public class FileNotebookRepository implements NotebookRepository {
         String path = notebooksDataDirectory + "/" + notebookId;
         readLock.lock();
         try {
-            return mapper.readValue(Files.readAllBytes(Paths.get(path)),
-                                    Notebook.class);
+            byte[] notebookArray = Files.readAllBytes(Paths.get(path));
+            return mapper.readValue(notebookArray, Notebook.class);
         } catch (IOException e) {
-            LOG.error("Failed to read File : {}", path, e);
+            LOG.error("Failed to read File: {}", path, e);
         } finally {
             readLock.unlock();
         }
+
         return null;
     }
 
     public Notebook getNotebookByPath(Path path) {
         readLock.lock();
         try {
-            return mapper.readValue(Files.readAllBytes(path),
-                    Notebook.class);
+            byte[] notebookArray = Files.readAllBytes(path);
+            return mapper.readValue(notebookArray, Notebook.class);
         } catch (IOException e) {
-            LOG.error("Failed to read File : {}", path, e);
+            LOG.error("Failed to read File: {}", path, e);
         } finally {
             readLock.unlock();
         }
+
         return null;
     }
 
@@ -223,6 +225,7 @@ public class FileNotebookRepository implements NotebookRepository {
         notebook.setLastUsed(Instant.now().getEpochSecond());
         notebook.addCell(cell, index);
         writeNotebook(notebook);
+
         return cell;
     }
 
@@ -236,6 +239,7 @@ public class FileNotebookRepository implements NotebookRepository {
         notebook.setLastUsed(Instant.now().getEpochSecond());
         notebook.addCell(cell);
         writeNotebook(notebook);
+
         return cell;
     }
 
@@ -263,6 +267,7 @@ public class FileNotebookRepository implements NotebookRepository {
         notebook.setLastUsed(Instant.now().getEpochSecond());
         notebook.addCell(cellLocal);
         writeNotebook(notebook);
+
         return cellLocal;
     }
 
