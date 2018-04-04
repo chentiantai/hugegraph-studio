@@ -47,7 +47,6 @@ class AlertList extends React.Component {
     }
 }
 
-
 // Map Redux state to component props
 function mapStateToProps(state) {
     return {

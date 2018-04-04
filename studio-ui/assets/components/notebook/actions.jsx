@@ -21,7 +21,6 @@ import {alertMessage} from '../connection/actions';
 import {changeHeadMode} from '../actions';
 import {HTTPSTATUS} from '../httpstatus';
 
-
 export const ADD_ITEM = 'add_item';
 export const DELETE_ITEM = 'delete_item';
 export const SHOW_NOTEBOOK = 'show_notebook';
@@ -32,8 +31,8 @@ export const SHOW_SCHEMA = 'show_schema';
 export const SYCN_ITEM = 'sycn_item';
 export const UPDATE_GRAPH = 'update_graph';
 
-
 export function runMode(cell) {
+    console.log("update");
     return {
         type: RUN_MODE,
         cell
@@ -44,11 +43,9 @@ export function updateNoteBook(notebook) {
     // TODO updateNoteCard(notebook);
 }
 
-
 export function clearNotebookState() {
     return {
         type: CLEAR_NOTEBOOK_STATE
-
     };
 
 }
@@ -75,17 +72,14 @@ export function updateItemSuccess(data) {
     };
 }
 
-
 export function sycnItemState(data) {
     return {
         type: SYCN_ITEM,
         data
     };
-
 }
 
-
-//map to reducer
+// Map to reducer
 export function deleteItemSuccess(cellId) {
     return {
         type: DELETE_ITEM,
@@ -101,11 +95,13 @@ export function loadCells(notebookId) {
             .then(parseJSON)
             .then(data => {
                 dispatch(showCells(data));
-                let existFullScreenCell = data.cells.some(cell => cell.viewSettings.fullScreen);
+                let existFullScreenCell =
+                    data.cells.some(cell => cell.viewSettings.fullScreen);
                 dispatch(changeHeadMode({fullScreen: existFullScreenCell}));
             })
             .catch(err => {
-                dispatch(alertMessage('Load Cells Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Load Cells Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -113,9 +109,9 @@ export function loadCells(notebookId) {
 export function addItem(notebookId, position) {
     let myHeaders = new Headers();
     let initItem = {
-        'code': '',
-        'language': 'gremlin',
-        'viewSettings': {'fullScreen': false, 'view': true}
+        code: '',
+        language: 'gremlin',
+        viewSettings: {fullScreen: false, view: true}
     };
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells?position=' + position;
@@ -132,7 +128,8 @@ export function addItem(notebookId, position) {
                 dispatch(addItemSuccess(data, position));
             })
             .catch(err => {
-                dispatch(alertMessage('Add NotebookID Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Add NotebookID Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -156,7 +153,9 @@ export function deleteItem(notebookId, cellId) {
                 }
             })
             .catch(err => {
-                dispatch(alertMessage('Delete NotebookItem Fetch Exception:' + err, 'danger'));
+                dispatch(
+                    alertMessage('Delete NotebookItem Fetch Exception:' + err,
+                                 'danger'));
             });
     };
 }
@@ -178,8 +177,9 @@ export function updateItem(notebookId, itemId, cell) {
                 dispatch(updateItemSuccess(data));
             })
             .catch(err => {
-                console.log('Update NotebookItem Fetch Exception');
-                // dispatch(alertMessage('Update NotebookItem Fetch Exception:' + err, 'danger'));
+                dispatch(
+                    alertMessage('Update NotebookItem Fetch Exception:' + err,
+                                 'danger'));
             });
     };
 }
@@ -187,7 +187,8 @@ export function updateItem(notebookId, itemId, cell) {
 export function executeCell(notebookId, itemId, cell) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId + '/execute';
+    let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId +
+              '/execute';
     return dispatch => {
         let responseStatus = {
             status: 200,
@@ -205,7 +206,8 @@ export function executeCell(notebookId, itemId, cell) {
                 return response.json();
             })
             .then(response => {
-                if (responseStatus.status >= 200 && responseStatus.status < 300) {
+                if (responseStatus.status >= 200 &&
+                    responseStatus.status < 300) {
                     return response
                 } else {
                     let error = new Error(responseStatus.statusText);
@@ -225,9 +227,9 @@ export function executeCell(notebookId, itemId, cell) {
             })
             .catch(err => {
                 if (responseStatus.statusText === '') {
-                    responseStatus.statusText = HTTPSTATUS[responseStatus.status];
+                    responseStatus.statusText =
+                        HTTPSTATUS[responseStatus.status];
                 }
-
 
                 let newCell = {
                     ...cell,
@@ -243,7 +245,6 @@ export function executeCell(notebookId, itemId, cell) {
             });
     };
 }
-
 
 export function showSchema(connectionId) {
     let myHeaders = new Headers();
@@ -263,7 +264,8 @@ export function showSchema(connectionId) {
                     vertexLabels: []
                 }
                 dispatch(showSchemaSuccess(schemaView));
-                dispatch(alertMessage('Show Schema Fetch Exception:' + err, 'danger'));
+                dispatch(alertMessage('Show Schema Fetch Exception:' + err,
+                                      'danger'));
             });
     };
 }
@@ -275,7 +277,6 @@ export function showSchemaSuccess(data) {
     };
 }
 
-
 export function updateGraph(cellId, graph) {
     return {
         type: UPDATE_GRAPH,
@@ -283,7 +284,6 @@ export function updateGraph(cellId, graph) {
         graph
     };
 }
-
 
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
@@ -298,8 +298,3 @@ function checkStatus(response) {
 function parseJSON(response) {
     return response.json()
 }
-
-
-
-
-

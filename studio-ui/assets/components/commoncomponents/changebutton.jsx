@@ -20,6 +20,7 @@
 import React from 'react';
 
 export default class ChangeButton extends React.Component {
+
     constructor() {
         super();
     }
@@ -29,11 +30,13 @@ export default class ChangeButton extends React.Component {
     }
 
     render() {
-        let cssMode = this.props.cssFlag ? this.props.trueCss : this.props.falseCss;
+        let cssMode = this.props.cssFlag ?
+                      this.props.trueCss : this.props.falseCss;
         return (
-            <button type="button" className="btn btn-link"
+            <button type="button"
+                    className="btn btn-link"
                     onClick={this.onClick}>
-                <i className={cssMode} aria-hidden="true"></i>
+                <i className={cssMode} aria-hidden="true"/>
             </button>
         );
     }

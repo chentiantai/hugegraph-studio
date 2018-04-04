@@ -20,13 +20,15 @@
 import React from 'react';
 
 export default  class Code extends React.Component {
+
     constructor() {
         super();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         if (document.getElementById(this.props.id) !== null) {
-            document.getElementById(this.props.id).style.height = nextProps.height + 'px';
+            document.getElementById(this.props.id).style.height =
+                nextProps.height + 'px';
         }
         if (this.props.content === nextProps.content) {
             return false;
@@ -39,7 +41,6 @@ export default  class Code extends React.Component {
         return (
             <div style={{height: this.props.height + 'px'}}
                  className="code-content" id={this.props.id}>
-
             </div>
         );
     }

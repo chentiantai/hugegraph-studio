@@ -27,6 +27,7 @@ import {changeHeadMode} from './actions';
 import {withRouter} from 'react-router-dom';
 
 class Head extends React.Component {
+
     render() {
         return (
             <div>
@@ -34,16 +35,24 @@ class Head extends React.Component {
                         fluid={this.props.headMode.fullScreen}>
                     <Navbar.Header>
                         <Navbar.Brand>
-                            <Link to="/index"><img src="../images/logo.png"/></Link>
+                            <Link to="/index">
+                                <img src="../images/logo.png"/>
+                            </Link>
                         </Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav pullRight>
-                            <NavDropdown eventKey={1} title="setting" id="head-nav-dropdown">
-                                <MenuItem eventKey={1.1}><Link to="/index">notebooks</Link></MenuItem>
+                            <NavDropdown eventKey={1}
+                                         title="setting"
+                                         id="head-nav-dropdown">
+                                <MenuItem eventKey={1.1}>
+                                    <Link to="/index">notebooks</Link>
+                                </MenuItem>
                                 <MenuItem divider/>
-                                <MenuItem eventKey={1.2}><Link to="/connections">connections</Link></MenuItem>
+                                <MenuItem eventKey={1.2}>
+                                    <Link to="/connections">connections</Link>
+                                </MenuItem>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
@@ -52,7 +61,6 @@ class Head extends React.Component {
         );
     }
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {

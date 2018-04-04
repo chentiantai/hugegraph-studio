@@ -61,23 +61,32 @@ class NotebookCell extends React.Component {
 
     render() {
         let cell = this.props.cell;
-        let deleteBtnCss = this.props.canBeDelete ? 'btn btn-link' : 'btn btn-link  disabled';
-        let screenContainer = cell.viewSettings.fullScreen ? 'container-fluid' +
-            ' full-screen' : 'container';
-        let screenCol = cell.viewSettings.fullScreen ? 'col-md-12 full-screen-col-md-12' : 'col-md-12';
+        let deleteBtnCss = this.props.canBeDelete ?
+                           'btn btn-link' : 'btn btn-link  disabled';
+        let screenContainer = cell.viewSettings.fullScreen ?
+                              'container-fluid full-screen' : 'container';
+        let screenCol = cell.viewSettings.fullScreen ?
+                        'col-md-12 full-screen-col-md-12' : 'col-md-12';
         let display = cell.viewSettings.view ? 'block' : 'none';
         let panelHeight = this.computeHeight();
         panelHeight = cell.viewSettings.fullScreen ? panelHeight + 'px' : '1px';
-        let cardContentHeight = this.cardContentHeight(cell.viewSettings.fullScreen, cell.viewSettings.view);
+        let cardContentHeight =
+            this.cardContentHeight(cell.viewSettings.fullScreen,
+                                   cell.viewSettings.view);
         let cellResultClass = {
             'height': cardContentHeight,
-            'markdownHeight': cardContentHeight + cardContentToolbox + cardContentPadding
+            'markdownHeight': cardContentHeight + cardContentToolbox +
+                              cardContentPadding
         };
 
-        let deleteBtnDisplay = (cell.viewSettings.fullScreen || !cell.viewSettings.view ) ? 'none' : 'block';
+        let deleteBtnDisplay =
+            (cell.viewSettings.fullScreen || !cell.viewSettings.view ) ?
+            'none' : 'block';
 
 
-        let language = cell.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
+        let language = cell.language
+                           .toLowerCase()
+                           .replace(/[a-z]/, (L) => L.toUpperCase());
 
         return (
             <div className={screenContainer}>
@@ -89,25 +98,26 @@ class NotebookCell extends React.Component {
                                 <div className="card-header">
                                     <div className="pull-left"
                                          style={{display: display}}>
-                                        <DropDownMenu id={cell.id}
-                                                      initItem={language}
-                                                      menuItems={languageItem}
-                                                      onChange={this.changeMenu}>
+                                        <DropDownMenu
+                                            id={cell.id}
+                                            initItem={language}
+                                            menuItems={languageItem}
+                                            onChange={this.changeMenu}>
                                         </DropDownMenu>
                                     </div>
-                                    <div
-                                        className="btn-group btn-group-sm pull-right">
+                                    <div className="btn-group btn-group-sm
+                                                    pull-right">
                                         <button type="button"
-                                                style={{
-                                                    display: display
-                                                }}
+                                                style={{display: display}}
                                                 className="btn btn-link "
                                                 onClick={this.execute}>
                                             <i className="fa fa-play"
                                                aria-hidden="true"></i>
                                         </button>
                                         <ChangeButton
-                                            cssFlag={cell.viewSettings.fullScreen}
+                                            cssFlag={
+                                                cell.viewSettings.fullScreen
+                                            }
                                             trueCss="fa fa-compress"
                                             falseCss="fa fa-expand"
                                             onClick={this.fullScreenMode}/>
@@ -128,11 +138,7 @@ class NotebookCell extends React.Component {
                                     </div>
                                 </div>
 
-                                <div style={{
-                                    clear: 'both',
-                                    display: display
-                                }}></div>
-
+                                <div style={{clear: 'both', display: display}}/>
 
                                 <div className="card-editor"
                                      ref={el => this.cardEditor = el}
@@ -228,15 +234,16 @@ class NotebookCell extends React.Component {
     }
 
     computeHeight = () => {
-        let screenHeight = window.innerHeight || document.documentElement.clientHeight;
+        let screenHeight = window.innerHeight ||
+                           document.documentElement.clientHeight;
         let cellPanelHeight = screenHeight - headHeight;
         return cellPanelHeight;
     }
 
     cardContentHeight = (fullScreenMode, viewMode) => {
-        let cellPanelHeight = fullScreenMode ? this.computeHeight() : initPanelHeight;
+        let cellPanelHeight = fullScreenMode ?
+                              this.computeHeight() : initPanelHeight;
         let currentEditorHeight = cardEditorHeight;
-
 
         if (fullScreenMode) {
             if (viewMode) {
@@ -259,9 +266,7 @@ class NotebookCell extends React.Component {
         } else {
             return initCardContentHeight;
         }
-
     }
-
 
     viewMode = cssFlag => {
         let notebookId = this.props.notebookId;
@@ -298,10 +303,7 @@ class NotebookCell extends React.Component {
         this.props.updateCell(notebookId, cellId, cell);
         this.props.changeHeadMode({'fullScreen': cssFlag});
     }
-
-
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {
@@ -312,9 +314,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         changeHeadMode: mode => dispatch(changeHeadMode(mode)),
-        deleteCell: (notebookId, cellId) => dispatch(deleteItem(notebookId, cellId)),
-        updateCell: (notebookId, cellId, cell) => dispatch(updateItem(notebookId, cellId, cell)),
-        executeCell: (notebookId, cellId, cell) => dispatch(executeCell(notebookId, cellId, cell))
+        deleteCell: (notebookId, cellId) =>
+                     dispatch(deleteItem(notebookId, cellId)),
+        updateCell: (notebookId, cellId, cell) =>
+                     dispatch(updateItem(notebookId, cellId, cell)),
+        executeCell: (notebookId, cellId, cell) =>
+                      dispatch(executeCell(notebookId, cellId, cell))
     };
 }
 

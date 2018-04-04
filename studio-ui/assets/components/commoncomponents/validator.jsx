@@ -18,12 +18,13 @@
  */
 
 /**
- * data validator
+ * Data validator
  *
  * @param {value} p1 the value which need be verified
- * @return {Json Object} the result ,like {flag:true or false,message:'information ...'}
+ * @return {Json Object} the result ,
+ *         like {flag:true or false,message:'information ...'}
  */
-export var isNumber = (value, message = 'please input number') => {
+export var isNumber = (value, message = 'Please input number') => {
     let regex = /^\+?[1-9][0-9]*$/;
     const result = {
         flag: regex.test(value),
@@ -43,7 +44,6 @@ export var isNull = (value, message = 'Please enter a value') => {
     }
     return result;
 }
-
 
 export var isIp = (value, message = 'Please enter a host,like x.x.x.x') => {
     let regex = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/

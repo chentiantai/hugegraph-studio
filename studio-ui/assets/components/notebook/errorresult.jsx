@@ -30,9 +30,10 @@ export default class ErrorResult extends React.Component {
 
     render() {
         let display = this.state.showDetail ? 'block' : 'none';
-        let errorPanel = <div className="alert alert-danger err_msg">
-            <h5>{this.props.msg.title}</h5>
-        </div>;
+        let errorPanel =
+            <div className="alert alert-danger err_msg">
+                <h5>{this.props.msg.title}</h5>
+            </div>;
         let detailedMsg = this.props.msg.detailedMsg;
         let title_message = '';
         if (detailedMsg.message !== null) {
@@ -44,26 +45,27 @@ export default class ErrorResult extends React.Component {
             }
 
             title_message = innerMessage;
-
         } else {
             title_message = detailedMsg.message;
         }
 
         if (detailedMsg !== undefined) {
-            errorPanel = <div className="alert alert-danger err_msg">
-                <h5>{this.props.msg.title}</h5>
-                <div className="err_title">
-                    {title_message}
-                    <span className="label label-danger detail"
-                          onClick={this.showDetail}>Detail</span>
-                </div>
-                <div id={this.props.cellId + '_error'}
-                     className="detailed_err_msg"
-                     style={{display: display}}>
-                </div>
-            </div>;
+            errorPanel =
+                <div className="alert alert-danger err_msg">
+                    <h5>{this.props.msg.title}</h5>
+                    <div className="err_title">
+                        {title_message}
+                        <span className="label label-danger detail"
+                              onClick={this.showDetail}>
+                            Detail
+                        </span>
+                    </div>
+                    <div id={this.props.cellId + '_error'}
+                         className="detailed_err_msg"
+                         style={{display: display}}>
+                    </div>
+                </div>;
         }
-
 
         return (
             <div>
@@ -77,7 +79,6 @@ export default class ErrorResult extends React.Component {
             showDetail: !this.state.showDetail
         });
     }
-
 
     componentDidUpdate() {
         let detailedMsg = this.props.msg.detailedMsg;
@@ -106,9 +107,8 @@ export default class ErrorResult extends React.Component {
         document.getElementById(loadingId).style.display = 'none';
     }
 
-    // replace \n\t with blank
+    // Replace \n\t with blank
     formatMessage = (detailedMsg) => {
-
         let message = '';
         if (detailedMsg.message !== null) {
             message = detailedMsg.message;
@@ -118,15 +118,11 @@ export default class ErrorResult extends React.Component {
             message = message.replace(/\\n\\t/g, "==>");
         }
 
-
         try {
             JSON.parse(message);
         } catch (err) {
             message = {'message': message};
         }
         return message;
-
     }
-
-
 }

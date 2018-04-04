@@ -31,7 +31,6 @@ import Input from '../commoncomponents/input';
 import Select from '../commoncomponents/select';
 import {isNull} from '../commoncomponents/validator';
 
-
 class NoteCardModal extends React.Component {
     constructor(props) {
         super(props);
@@ -59,7 +58,6 @@ class NoteCardModal extends React.Component {
 
         this.state.noteCard[name] = value;
     }
-
 
     handleSelectChange = (name, value) => {
         this.state.noteCard[name] = value;
@@ -104,25 +102,23 @@ class NoteCardModal extends React.Component {
         }
     }
 
-
     loadConnections() {
         fetch('/api/v1/connections')
             .then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    console.error('Load Connection: Server Side Error；\r\nCode:' +
-                                  response.status);
+                    console.log('Load Connection: Server Side Error;\r\nCode:' +
+                                response.status);
                 }
             })
             .then(data => {
                 this.setState({connections: data});
             })
             .catch(err => {
-                console.error(err);
+                console.log(err);
             });
     }
-
 
     componentWillReceiveProps(nextProps) {
         this.setState({
@@ -135,53 +131,62 @@ class NoteCardModal extends React.Component {
     render() {
         let conId = this.state.noteCard.connectionId;
         let conLen = this.state.connections.length;
-        let selectValue = conId === '' && conLen > 0 ? this.state.connections[0].id : conId;
+        let selectValue = conId === '' && conLen > 0 ?
+                          this.state.connections[0].id : conId;
 
         return (
             <div>
                 <Modal isOpen={this.state.isOpen}>
                     <ModalHeader className="modal-header">
-                        <ModalClose
-                            onClick={() => this.closeModal()}/>
+                        <ModalClose onClick={() => this.closeModal()}/>
                         <h4 className="modal-title">{this.props.title} </h4>
                     </ModalHeader>
                     <ModalBody>
                         <form className="form-horizontal">
                             <input style={{display: 'none'}} type="text"/>
                             <div className="form-group">
-                                <label
-                                    className="col-sm-2 control-label">Name*</label>
-                                <Input className="col-sm-10" placeholder="Name"
+                                <label className="col-sm-2 control-label">
+                                    Name*
+                                </label>
+                                <Input className="col-sm-10"
+                                       placeholder="Name"
                                        name="name"
                                        validator={isNull}
                                        message="please enter the notebook name"
-                                       isValidateByForce={this.state.isValidateByForce}
+                                       isValidateByForce=
+                                           {this.state.isValidateByForce}
                                        value={this.state.noteCard.name}
                                        onChange={this.handleChange}
                                        onKeyPress={() => this.saveNoteCard()}/>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">Connection*</label>
+                                <label className="col-sm-2 control-label">
+                                    Connection*
+                                </label>
                                 <Select className="col-sm-10"
                                         name="connectionId"
                                         value={selectValue}
                                         options={
-                                            this.state.connections.map(connection =>
-                                                <option key={connection.id}
-                                                        value={connection.id}>{connection.name}</option>)
+                                            this.state.connections.map(conn =>
+                                                    <option key={conn.id}
+                                                            value={conn.id}>
+                                                        {conn.name}
+                                                    </option>
+                                            )
                                         }
-                                        onChange={this.handleSelectChange}
-                                />
+                                        onChange={this.handleSelectChange}/>
                             </div>
                         </form>
                     </ModalBody>
 
                     <ModalFooter className="modal-footer">
-                        <button type="button" className="btn btn-default"
+                        <button type="button"
+                                className="btn btn-default"
                                 onClick={() => this.closeModal()}>
                             Close
                         </button>
-                        <button type="button" className="btn btn-primary"
+                        <button type="button"
+                                className="btn btn-primary"
                                 onClick={() => this.saveNoteCard()}>
                             Save
                         </button>
@@ -192,16 +197,15 @@ class NoteCardModal extends React.Component {
     }
 
     componentDidUpdate() {
-        // close validation of input
+        // Close validation of input
         this.state.isValidateByForce = false;
     }
 
     componentDidMount() {
-        //there will be some problem
+        // There will be some problem
         this.loadConnections();
     }
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {

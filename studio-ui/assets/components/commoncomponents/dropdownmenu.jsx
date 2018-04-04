@@ -21,20 +21,19 @@ import React from 'react';
 import {Nav, NavDropdown, MenuItem} from 'react-bootstrap';
 
 export default class DropDownMenu extends React.Component {
+
     constructor() {
         super();
-        this.state = {
-            selectMenu: ''
-        };
+        this.state = {selectMenu: ''};
     }
-
 
     componentDidMount() {
 
         if (this.props.initItem !== undefined) {
             this.setState({selectMenu: this.props.initItem});
         } else {
-            if (this.props.menuItems !== undefined && this.props.menuItems.length > 0) {
+            if (this.props.menuItems !== undefined &&
+                this.props.menuItems.length > 0) {
                 this.setState({selectMenu: this.props.menuItems[0]});
             } else {
                 this.setState({selectMenu: ''});
@@ -52,7 +51,8 @@ export default class DropDownMenu extends React.Component {
             <MenuItem key={index} eventKey={item}>{item}</MenuItem>
         );
         let title = this.state.selectMenu;
-        let finTitle = title.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
+        let finTitle = title.toLowerCase()
+                            .replace(/[a-z]/, (L) => L.toUpperCase());
 
         return (
             <Nav bsStyle="pills" onSelect={this.handleSelect}>

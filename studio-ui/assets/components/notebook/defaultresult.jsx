@@ -20,6 +20,7 @@
 import React from 'react';
 
 export default class DefaultResult extends React.Component {
+
     render() {
         return null;
     }

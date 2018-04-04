@@ -120,67 +120,89 @@ class ConnectionModal extends React.Component {
             <div>
                 <Modal isOpen={isOpen}>
                     <ModalHeader className="modal-header">
-                        <ModalClose
-                            onClick={this.closeModal}/>
-                        <h4 className="modal-title">{this.state.title} </h4>
+                        <ModalClose onClick={this.closeModal}/>
+                        <h4 className="modal-title">{this.state.title}</h4>
                     </ModalHeader>
                     <ModalBody>
                         <form className="form-horizontal">
                             <div className="form-group">
-                                <label
-                                    className="col-sm-2 control-label">Name</label>
-                                <Input className="col-sm-10" placeholder="Name"
+                                <label className="col-sm-2 control-label">
+                                    Name
+                                </label>
+                                <Input className="col-sm-10"
+                                       placeholder="Name"
                                        name="name"
                                        validator={isNull}
                                        message="please enter the name"
-                                       isValidateByForce={this.state.isValidateByForce}
+                                       isValidateByForce=
+                                           {this.state.isValidateByForce}
                                        value={connection.name}
                                        onChange={this.handleChange}
-                                       onKeyPress={() => this.saveConnection()}/>
+                                       onKeyPress=
+                                           {() => this.saveConnection()}/>
                             </div>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">Graph</label>
+                                <label className="col-sm-2 control-label">
+                                    Graph
+                                </label>
                                 <Input className="col-sm-10"
-                                       placeholder="Graph Name" name="graphName"
+                                       placeholder="Graph Name"
+                                       name="graphName"
                                        validator={isNull}
-                                       isValidateByForce={this.state.isValidateByForce}
+                                       isValidateByForce=
+                                           {this.state.isValidateByForce}
                                        value={connection.graphName}
                                        onChange={this.handleChange}
-                                       onKeyPress={() => this.saveConnection()}/>
+                                       onKeyPress={() =>
+                                           this.saveConnection()}/>
                             </div>
                             <div className="form-group">
                                 <label
-                                    className="col-sm-2 control-label">Host</label>
+                                    className="col-sm-2 control-label">
+                                    Host
+                                </label>
                                 <Input className="col-sm-10"
-                                       placeholder="HugeGraph server ip/hostname (like 127.0.0.1)"
+                                       placeholder=
+                                           "HugeGraph server ip/hostname (like 127.0.0.1)"
                                        name="connectionHost"
                                        validator={isNull}
-                                       isValidateByForce={this.state.isValidateByForce}
+                                       isValidateByForce=
+                                           {this.state.isValidateByForce}
                                        value={connection.connectionHost}
                                        onChange={this.handleChange}
-                                       onKeyPress={() => this.saveConnection()}/>
+                                       onKeyPress={() =>
+                                                   this.saveConnection()}/>
                             </div>
                             <div className="form-group">
                                 <label
-                                    className="col-sm-2 control-label">Port</label>
-                                <Input className="col-sm-10" placeholder="HugeGraph server port (like 8080)"
+                                    className="col-sm-2 control-label">
+                                    Port
+                                </label>
+                                <Input className="col-sm-10"
+                                       placeholder=
+                                           "HugeGraph server port (like 8080)"
                                        name="port"
                                        validator={isNumber}
-                                       isValidateByForce={this.state.isValidateByForce}
+                                       isValidateByForce=
+                                           {this.state.isValidateByForce}
                                        value={connection.port}
                                        onChange={this.handleChange}
-                                       onKeyPress={() => this.saveConnection()}/>
+                                       onKeyPress={() =>
+                                                   this.saveConnection()}/>
                             </div>
                         </form>
                     </ModalBody>
 
                     <ModalFooter className="modal-footer">
-                        <button type="button" className="btn btn-default"
+                        <button type="button"
+                                className="btn btn-default"
                                 onClick={this.closeModal}>
                             Close
                         </button>
-                        <button type="button" className="btn btn-primary"
-                                onClick={() => this.saveConnection()}>Save
+                        <button type="button"
+                                className="btn btn-primary"
+                                onClick={() => this.saveConnection()}>
+                            Save
                         </button>
                     </ModalFooter>
                 </Modal>

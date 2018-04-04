@@ -19,16 +19,18 @@
 
 import React from 'react';
 
-
 const COMMON = 'common';
 const ERR = 'verificationFailed';
 
 export  default class Input extends React.Component {
+
     constructor(props) {
         super(props);
         // status:The status of component ,including COMMON,ERR
         // isChange:The component has been operated
-        // isValidateByForce:The component is triggered to validate by the another component
+
+        // isValidateByForce:The component is triggered to validate
+        // by the another component
         this.state = {
             status: COMMON,
             message: '',
@@ -40,7 +42,6 @@ export  default class Input extends React.Component {
         this.validateData = this.validateData.bind(this);
         this.keyPress = this.keyPress.bind(this);
     }
-
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.isValidateByForce === undefined) {
@@ -64,7 +65,8 @@ export  default class Input extends React.Component {
         if (this.state.status === COMMON)
             return (
                 <div className={this.props.className}>
-                    <input type="text" className="form-control"
+                    <input type="text"
+                           className="form-control"
                            placeholder={this.props.placeholder}
                            name={this.props.name}
                            value={value}
@@ -75,7 +77,8 @@ export  default class Input extends React.Component {
         else
             return (
                 <div className={this.props.className}>
-                    <input type="text" className="form-control has-error"
+                    <input type="text"
+                           className="form-control has-error"
                            placeholder={this.props.placeholder}
                            name={this.props.name}
                            value={value}
@@ -85,7 +88,6 @@ export  default class Input extends React.Component {
                 </div>
             );
     }
-
 
     keyPress(event) {
         if (event.key === 'Enter') {
@@ -102,7 +104,6 @@ export  default class Input extends React.Component {
         const validationResult = this.validateData(value);
         this.props.onChange(name, value, validationResult.flag);
     }
-
 
     validateData(value) {
         const validator = this.props.validator;
@@ -127,18 +128,19 @@ export  default class Input extends React.Component {
                     value: value
                 });
             } else {
-                if (!this.state.isChange)
+                if (!this.state.isChange) {
                     this.setState({
                         status: COMMON,
                         message: validation.message,
                         value: value
                     });
-                else
+                } else {
                     this.setState({
                         status: ERR,
                         message: validation.message,
                         value: value
                     });
+                }
             }
         }
         return validation;

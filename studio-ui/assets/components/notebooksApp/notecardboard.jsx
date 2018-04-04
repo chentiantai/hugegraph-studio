@@ -26,7 +26,6 @@ import {loadNoteCards} from './actions';
 import NoteCardModal from './notecardmodal';
 import {withRouter} from 'react-router-dom';
 
-
 class NoteCardBoard extends React.Component {
     constructor(props) {
         super(props);
@@ -126,6 +125,3 @@ export default  withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
 )(NoteCardBoard));
-
-
-

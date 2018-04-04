@@ -17,14 +17,12 @@
  * under the License.
  */
 
-
 import {
     ADD_NOTE_CARD_SUCCESS,
     SHOW_NOTE_CARDS,
     DELETE_NOTE_CARD_SUCCESS,
     UPDATE_NOTE_CARD_SUCCESS
 } from './actions';
-
 
 export function noteCards(state, action) {
     switch (action.type) {
@@ -53,4 +51,3 @@ export function noteCards(state, action) {
             return state;
     }
 }
-

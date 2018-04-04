@@ -21,8 +21,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {updateGraph} from './actions';
 
-
 class Graph extends React.Component {
+
     constructor() {
         super();
         this.state = {
@@ -34,7 +34,8 @@ class Graph extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (document.getElementById(this.props.id) !== null) {
-            document.getElementById(this.props.id).style.height = nextProps.height + 'px';
+            document.getElementById(this.props.id).style.height =
+                nextProps.height + 'px';
         }
         if (this.props.content === nextProps.content) {
             return false;
@@ -54,7 +55,8 @@ class Graph extends React.Component {
 
     componentDidUpdate() {
         let graph = this.props.content.graph;
-        if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
+        if (graph !== null && graph.vertices !== undefined &&
+            graph.edges !== undefined) {
             if(graph.groups == null){
                 graph.groups = {};
             }
@@ -65,15 +67,14 @@ class Graph extends React.Component {
 
     componentDidMount() {
         let graph = this.props.content.graph;
-        if (graph !== null && graph.vertices !== undefined && graph.edges !== undefined) {
+        if (graph !== null && graph.vertices !== undefined &&
+            graph.edges !== undefined) {
             if(graph.groups == null){
                 graph.groups = {};
             }
             this.drawGraph(graph.vertices, graph.edges, graph.groups);
-
         }
         this.loadDone();
-
     }
 
     drawGraph = (vertices, edges, groups) => {
@@ -82,14 +83,15 @@ class Graph extends React.Component {
 
         if (vertices !== null) {
             vertices.forEach(vertex => {
-                let title = '<div class="tooltips-label">' +
+                let title =
+                    '<div class="tooltips-label">' +
                     '<a class="round-red">●</a>&nbsp;' +
                     'label : ' + vertex.label + '</div>';
                 for (let key in vertex.properties) {
                     title = title +
-                        '<div>' +
-                        '<a class="round-gray">●</a>&nbsp;' +
-                        key + ' : ' + vertex.properties[key] + '</div>';
+                            '<div>' +
+                            '<a class="round-gray">●</a>&nbsp;' +
+                            key + ' : ' + vertex.properties[key] + '</div>';
                 }
 
                 this.state.graphNodes.add([{
@@ -104,14 +106,15 @@ class Graph extends React.Component {
 
         if (edges !== null) {
             edges.forEach(edge => {
-                let title = '<div class="tooltips-label">' +
+                let title =
+                    '<div class="tooltips-label">' +
                     '<a class="round-red">●</a>&nbsp;' +
                     'label : ' + edge.label + '</div>';
                 for (let key in edge.properties) {
                     title = title +
-                        '<div>' +
-                        '<a class="round-gray">●</a>&nbsp;' +
-                        key + ' : ' + edge.properties[key] + '</div>';
+                            '<div>' +
+                            '<a class="round-gray">●</a>&nbsp;' +
+                            key + ' : ' + edge.properties[key] + '</div>';
                 }
                 this.state.graphEdges.add([
                     {
@@ -130,9 +133,6 @@ class Graph extends React.Component {
             nodes: this.state.graphNodes,
             edges: this.state.graphEdges,
         };
-
-
-
 
         var options = {
             groups: groups,
@@ -196,7 +196,8 @@ class Graph extends React.Component {
             let myHeaders = new Headers();
             myHeaders.append('Content-Type', 'application/json');
             let url = '/api/v1/notebooks/' + this.props.notebookId + '/cells/' +
-                this.props.cellId + '/gremlin?vertexId=' + nodeId + '&label='+label;
+                      this.props.cellId + '/gremlin?vertexId=' + nodeId +
+                      '&label='+label;
             fetch(url, {method: 'GET', headers: myHeaders})
                 .then(response => this.checkStatus(response))
                 .then(response => this.parseJSON(response))
@@ -219,15 +220,16 @@ class Graph extends React.Component {
         try {
             if (vertices !== null) {
                 vertices.forEach(vertex => {
-                    let title = '<div class="tooltips-label">' +
+                    let title =
+                        '<div class="tooltips-label">' +
                         '<a class="round-red">●</a>&nbsp;' +
                         'label : ' + vertex.label + '</div>';
                     for (let key in vertex.properties) {
                         title = title +
-                            '<div> ' +
-                            '<a class="round-gray">●</a>&nbsp;' +
-                            key + ' : ' + vertex.properties[key] +
-                            '</div>';
+                                '<div> ' +
+                                '<a class="round-gray">●</a>&nbsp;' +
+                                key + ' : ' + vertex.properties[key] +
+                                '</div>';
                     }
 
                     this.state.graphNodes.add({
@@ -247,15 +249,16 @@ class Graph extends React.Component {
     addEdge = (edges) => {
         try {
             edges.forEach(edge => {
-                let title = '<div class="tooltips-label"> ' +
+                let title =
+                    '<div class="tooltips-label"> ' +
                     '<a class="round-red">●</a>&nbsp;' +
                     'label : ' + edge.label + '</div>';
                 for (let key in edge.properties) {
                     title = title +
-                        '<div>' +
-                        '<a class="round-gray">●</a>&nbsp;' +
-                        key + ' : ' + edge.properties[key] +
-                        '</div>';
+                            '<div>' +
+                            '<a class="round-gray">●</a>&nbsp;' +
+                            key + ' : ' + edge.properties[key] +
+                            '</div>';
                 }
                 this.state.graphEdges.add([
                     {

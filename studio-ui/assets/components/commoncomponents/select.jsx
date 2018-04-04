@@ -20,6 +20,7 @@
 import React from 'react';
 
 export  default class Select extends React.Component {
+
     constructor() {
         super();
         this.state = {value: ''};
@@ -39,7 +40,8 @@ export  default class Select extends React.Component {
     render() {
         return (
             <div className={this.props.className}>
-                <select type="text" className="form-control"
+                <select type="text"
+                        className="form-control"
                         name={this.props.name}
                         value={this.state.value}
                         onChange={this.handleSelectChange}>

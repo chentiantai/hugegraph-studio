@@ -20,6 +20,7 @@
 import React from 'react';
 
 export default class CardFooter extends React.Component {
+
     constructor() {
         super();
     }
@@ -31,7 +32,6 @@ export default class CardFooter extends React.Component {
             </div>
         );
     }
-
 
     showFooter = () => {
         if (this.props.result !== null) {
@@ -67,8 +67,6 @@ export default class CardFooter extends React.Component {
         } else {
             flag = false;
         }
-
         return flag;
     }
-
 }

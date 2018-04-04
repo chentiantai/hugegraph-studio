@@ -25,14 +25,16 @@ import assign from 'lodash.assign';
 
 const findParentNode = (parentClass, child) => {
     let parent = child.parentNode;
-    while (parent && (parent.className === undefined || parent.className.indexOf(parentClass) === -1)) {
+    while (parent && (parent.className === undefined ||
+                      parent.className.indexOf(parentClass) === -1)) {
         parent = parent.parentNode;
     }
     return parent;
 };
 
 @Radium
-class Modal extends React.Component {
+export default class Modal extends React.Component {
+
     static propTypes = {
         className: React.PropTypes.string,
         isOpen: React.PropTypes.bool.isRequired,
@@ -105,28 +107,34 @@ class Modal extends React.Component {
     handleBody = () => {
         let openModals = document.getElementsByClassName('modal-backdrop-open');
         if (openModals.length < 1) {
-            document.body.className = document.body.className.replace(/ ?modal-open/, '');
+            document.body.className = document.body.className
+                                              .replace(/ ?modal-open/, '');
         } else if (document.body.className.indexOf('modal-open') === -1) {
-            document.body.className += document.body.className.length ? ' modal-open' : 'modal-open';
+            document.body.className += document.body.className.length ?
+                                       ' modal-open' : 'modal-open';
         }
     };
 
     handleParent = () => {
-        let parentNode = findParentNode('modal-backdrop', ReactDOM.findDOMNode(this));
+        let parentNode = findParentNode('modal-backdrop',
+                                        ReactDOM.findDOMNode(this));
         if (parentNode) {
             let {isOpen} = this.props;
             if (isOpen) {
-                parentNode.className += parentNode.className.length ? ' children-open' : 'children-open';
+                parentNode.className += parentNode.className.length ?
+                                        ' children-open' : 'children-open';
                 parentNode.style.overflowY = 'hidden';
             } else {
-                parentNode.className = parentNode.className.replace(/ ?children-open/, '');
+                parentNode.className =
+                    parentNode.className.replace(/ ?children-open/, '');
                 parentNode.style.overflowY = 'auto';
             }
         }
     };
 
     render() {
-        let {className, isOpen, backdropStyles, size, dialogStyles, children} = this.props;
+        let {className, isOpen, backdropStyles, size, dialogStyles, children} =
+            this.props;
         let backDropClass = classnames(['modal-backdrop', className], {
             'modal-backdrop-open': isOpen
         }).trim();
@@ -151,13 +159,8 @@ class Modal extends React.Component {
         });
 
         dialogStyles = assign({
-            base: {
-                top: -600,
-                transition: 'top 0.4s'
-            },
-            open: {
-                top: 0
-            }
+            base: {top: -600, transition: 'top 0.4s'},
+            open: {top: 0}
         }, dialogStyles);
 
         return (
@@ -177,5 +180,3 @@ class Modal extends React.Component {
         );
     }
 }
-
-export default Modal;

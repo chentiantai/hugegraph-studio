@@ -20,6 +20,7 @@
 import React from 'react';
 
 export default  class NoData extends React.Component {
+
     constructor() {
         super();
         this.state = {
@@ -35,13 +36,16 @@ export default  class NoData extends React.Component {
                     <div className="err_title">
                         Return data is null...
                         <span className="label label-danger detail"
-                              onClick={this.showDetail}>Detail</span>
+                              onClick={this.showDetail}>
+                            Detail
+                        </span>
                     </div>
                     <div style={{
-                        height: this.props.height + 'px',
-                        display: display
-                    }}
-                         className="code-content" id={this.props.id}>
+                                    height: this.props.height + 'px',
+                                     display: display
+                                }}
+                         className="code-content"
+                         id={this.props.id}>
                     </div>
                 </div>
             </div>

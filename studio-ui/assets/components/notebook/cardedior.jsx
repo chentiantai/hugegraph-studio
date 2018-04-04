@@ -23,12 +23,12 @@ import {Gremlin, GremlinMode, MarkdownMode} from  './notebookcell';
 export default class CardEditor extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.code === nextProps.code && this.props.language == nextProps.language) {
+        if (this.props.code === nextProps.code &&
+            this.props.language == nextProps.language) {
             return false;
         } else {
             return true;
         }
-
     }
 
     render() {
@@ -40,7 +40,9 @@ export default class CardEditor extends React.Component {
     }
 
     componentDidUpdate() {
-        let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
+        let language = this.props.language
+                           .toLowerCase()
+                           .replace(/[a-z]/, (L) => L.toUpperCase());
         let mode = language === Gremlin ? GremlinMode : MarkdownMode;
         let editor = ace.edit(this.editor);
         editor.session.setMode(mode);
@@ -52,7 +54,9 @@ export default class CardEditor extends React.Component {
     }
 
     componentDidMount() {
-        let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
+        let language = this.props.language
+                           .toLowerCase()
+                           .replace(/[a-z]/, (L) => L.toUpperCase());
         let mode = language === Gremlin ? GremlinMode : MarkdownMode;
         let editor = ace.edit(this.editor);
         ace.require('ace/ext/old_ie');

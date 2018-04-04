@@ -25,6 +25,7 @@ import DefaultResult from './defaultresult';
 import {Gremlin, Markdown} from  './notebookcell';
 
 export default class CellResult extends React.Component {
+
     constructor() {
         super();
     }
@@ -39,13 +40,13 @@ export default class CellResult extends React.Component {
         );
     }
 
-
     showResult = () => {
         let resultPanel = null;
         let result = this.props.result;
-        let language = this.props.language.toLowerCase().replace(/[a-z]/, (L) => L.toUpperCase());
+        let language = this.props.language
+                           .toLowerCase()
+                           .replace(/[a-z]/, (L) => L.toUpperCase());
         let status = this.props.status;
-
         if ((status >= 200 || status <= 300) && result !== null) {
             switch (language) {
                 case Markdown: {
@@ -70,12 +71,13 @@ export default class CellResult extends React.Component {
                             defaultTabKey = this.props.viewSettings.viewType;
                         }
                     }
-                    resultPanel = <GremlinResult defaultTabKey={defaultTabKey}
-                                                 cellId={this.props.cellId}
-                                                 notebookId={this.props.notebookId}
-                                                 content={result}
-                                                 height={this.props.className.height}
-                                                 viewSettings={this.props.viewSettings}/>
+                    resultPanel =
+                        <GremlinResult defaultTabKey={defaultTabKey}
+                                       cellId={this.props.cellId}
+                                       notebookId={this.props.notebookId}
+                                       content={result}
+                                       height={this.props.className.height}
+                                       viewSettings={this.props.viewSettings}/>
                     break;
                 }
                 default:
@@ -83,17 +85,13 @@ export default class CellResult extends React.Component {
             }
         } else {
             if (status !== null && (status < 200 || status > 300)) {
-                resultPanel =
-                    <ErrorResult status={status}
-                                 msg={this.props.msg}
-                                 cellId={this.props.cellId}/>;
+                resultPanel = <ErrorResult status={status}
+                                           msg={this.props.msg}
+                                           cellId={this.props.cellId}/>
             } else {
-                resultPanel = <DefaultResult
-                    cellId={this.props.cellId}/>;
+                resultPanel = <DefaultResult cellId={this.props.cellId}/>
             }
         }
         return resultPanel;
     }
-
-
 }
