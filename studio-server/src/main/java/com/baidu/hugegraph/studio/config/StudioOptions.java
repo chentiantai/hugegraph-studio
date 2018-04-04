@@ -55,13 +55,13 @@ public class StudioOptions extends OptionHolder {
         return instance;
     }
 
-    // -Dstudio.home="$STUDIO_HOME" defined in hugestudio.sh
+    // hugestudio.sh -Dstudio.home="$STUDIO_HOME"
     public static final ConfigOption<String> STUDIO_SERVER_BASE_DIR =
             new ConfigOption<>(
                     "server.baseDirectory",
                     "The base path of HugeStudio server.",
                     disallowEmpty(),
-                    StringUtils.isNoneEmpty(System.getProperty("studio.home")) ?
+                    StringUtils.isNotBlank(System.getProperty("studio.home")) ?
                                             System.getProperty("studio.home") :
                                             System.getProperty("user.dir")
             );

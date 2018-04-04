@@ -38,11 +38,11 @@ public class StudioConfiguration {
     private HugeConfig config;
 
     public StudioConfiguration(final String fileName) {
-        // hugestudio.sh : -Dstudio.home="$STUDIO_HOME"
+        // hugestudio.sh -Dstudio.home="$STUDIO_HOME"
         final String homeDir = System.getProperty("studio.home");
         config = new HugeConfig(String.format("%s/conf/%s",
                                 homeDir, fileName));
-}
+    }
 
     public int getHttpPort() {
         return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT).intValue();
