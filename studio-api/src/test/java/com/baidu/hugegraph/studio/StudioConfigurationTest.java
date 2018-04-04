@@ -36,14 +36,13 @@ public class StudioConfigurationTest {
 
     @Test
     public void testConfiguration() {
-
+        String userHome = System.getProperty("user.home");
+        String path1 = userHome + "/.hugestudio";
+        String path2 = userHome + "/.hugestudio/connections";
+        String path3 = userHome + "/.hugestudio/notebooks";
         // FIXME: Why we define the path with '.' after '/'?
-        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio",
-                configuration.getBaseUserDataDirectory());
-        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/connections",
-                configuration.getConnectionsDirectory());
-        Assert.assertEquals(System.getProperty("user.home") + "/.hugestudio/notebooks",
-                configuration.getNotebooksDirectory());
-
+        Assert.assertEquals(path1, configuration.getBaseUserDataDirectory());
+        Assert.assertEquals(path2, configuration.getConnectionsDirectory());
+        Assert.assertEquals(path3, configuration.getNotebooksDirectory());
     }
 }

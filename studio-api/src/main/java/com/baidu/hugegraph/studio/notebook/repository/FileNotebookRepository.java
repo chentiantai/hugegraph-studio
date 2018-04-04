@@ -94,16 +94,15 @@ public class FileNotebookRepository implements NotebookRepository {
          * not throw runtime exception if write failed in this case?
          */
         String filePath = notebooksDataDirectory + "/" + notebook.getId();
-
         writeLock.lock();
         try (BufferedWriter writer =
              Files.newBufferedWriter(Paths.get(filePath))) {
                 writer.write(mapper.writeValueAsString(notebook));
              LOG.debug("Write Notebook file: {}", filePath);
-        } catch (IOException ignored) {
-            LOG.error("Failed to write Notebook file: {}", filePath, ignored);
-            throw new RuntimeException("Failed to write Notebook file: " +
-                                       filePath);
+        } catch (IOException e) {
+            LOG.error("Failed to write Notebook file: {}", filePath, e);
+            throw new RuntimeException(String.format(
+                      "Failed to write Notebook file: {}", filePath));
         } finally {
             writeLock.unlock();
         }
@@ -156,14 +155,13 @@ public class FileNotebookRepository implements NotebookRepository {
             Files.list(Paths.get(notebooksDataDirectory)).forEach(path -> {
                 if (Files.isRegularFile(path)) {
                     Notebook notebook = getNotebookByPath(path);
-                    if (notebook != null){
+                    if (notebook != null) {
                         notebooks.add(notebook);
                     }
                 }
             });
-        } catch (Exception ignored){
-                LOG.error("Failed to read file: {}", notebooksDataDirectory,
-                          ignored);
+        } catch (Exception e) {
+            LOG.error("Failed to read file: {}", notebooksDataDirectory, e);
         }
         return notebooks;
     }

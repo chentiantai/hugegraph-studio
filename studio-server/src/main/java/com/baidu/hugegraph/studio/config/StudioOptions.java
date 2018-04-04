@@ -55,7 +55,6 @@ public class StudioOptions extends OptionHolder {
         return instance;
     }
 
-
     // -Dstudio.home="$STUDIO_HOME" defined in hugestudio.sh
     public static final ConfigOption<String> STUDIO_SERVER_BASE_DIR =
             new ConfigOption<>(

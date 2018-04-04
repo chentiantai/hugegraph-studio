@@ -39,10 +39,12 @@ public final class ViewSettings {
         /**
          * Table view type.
          */
-        TABLE, /**
+        TABLE,
+        /**
          * Raw view type.
          */
-        RAW, /**
+        RAW,
+        /**
          * Graph view type.
          */
         GRAPH;

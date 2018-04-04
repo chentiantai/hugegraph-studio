@@ -26,7 +26,6 @@ import com.baidu.hugegraph.config.OptionHolder;
 import static com.baidu.hugegraph.config.OptionChecker.disallowEmpty;
 import static com.baidu.hugegraph.config.OptionChecker.rangeInt;
 
-
 /**
  * The type Studio api options.
  */
@@ -75,7 +74,6 @@ public class StudioApiOptions extends OptionHolder {
                     "The connections directory of HugeStudio's user data.",
                     disallowEmpty(),
                     "connections"
-
             );
 
     /**
@@ -87,7 +85,6 @@ public class StudioApiOptions extends OptionHolder {
                     "The notebooks directory of HugeStudio's user data.",
                     disallowEmpty(),
                     "notebooks"
-
             );
 
     /**
@@ -109,7 +106,8 @@ public class StudioApiOptions extends OptionHolder {
             new ConfigListOption<>(
                     "gremlins.append.limit.suffix",
                     false,
-                    "The suffixes of gremlin statement which should be appended limit()",
+                    "The suffixes of gremlin statement which should be " +
+                    "appended limit()",
                     disallowEmpty(),
                     String.class,
                     "V()", "E()"

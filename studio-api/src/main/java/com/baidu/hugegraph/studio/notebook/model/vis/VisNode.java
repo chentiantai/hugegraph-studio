@@ -16,6 +16,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
+
 package com.baidu.hugegraph.studio.notebook.model.vis;
 
 import java.util.Map;
@@ -26,17 +27,18 @@ import org.apache.commons.lang3.StringUtils;
  * The style of vertexLabel.
  */
 public class VisNode {
-    // shape
+
+    // Shape
     protected static final String VIS_SHAPE = "vis.shape";
 
-    // size
+    // Size
     protected static final String VIS_SIZE = "vis.size";
 
-    // scaling
+    // Scaling
     protected static final String SCALING_MIN = "vis.scaling.min";
     protected static final String SCALING_MAX = "vis.scaling.max";
 
-    // color
+    // Color
     protected static final String COLOR_BORDER = "vis.border";
     protected static final String COLOR_BACKGROUND = "vis.background";
     protected static final String COLOR_HIGHLIGHT_BORDER =
@@ -47,13 +49,13 @@ public class VisNode {
     protected static final String COLOR_HOVER_BACKGROUND =
             "vis.hover.background";
 
-    // font
+    // Font
     protected static final String FONT_COLOR = "vis.font.color";
     protected static final String FONT_SIZE = "vis.font.size";
     protected static final String FONT_FACE = "vis.font.face";
     protected static final String FONT_MULTI = "vis.font.multi";
 
-    // icon
+    // Icon
     protected static final String ICON_CODE = "vis.icon.code";
     protected static final String ICON_COLOR = "vis.icon.color";
     protected static final String ICON_SIZE = "vis.icon.size";
@@ -171,12 +173,3 @@ public class VisNode {
         this.scaling = scaling;
     }
 }
-
-
-
-
-
-
-
-
-

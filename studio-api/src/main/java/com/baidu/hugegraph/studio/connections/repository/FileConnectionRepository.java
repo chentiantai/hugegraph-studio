@@ -48,6 +48,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 @Repository("connectionRepository")
 public class FileConnectionRepository implements ConnectionRepository {
+
     private static final Logger LOG =
             LoggerFactory.getLogger(FileConnectionRepository.class);
 
@@ -71,7 +72,7 @@ public class FileConnectionRepository implements ConnectionRepository {
         connectionsDataDirectory = configuration.getConnectionsDirectory();
         Preconditions.checkNotNull(connectionsDataDirectory);
 
-        LOG.info("connectionsDataDirectory: " + connectionsDataDirectory);
+        LOG.info("connectionsDataDirectory: {}", connectionsDataDirectory);
         File dir = new File(connectionsDataDirectory);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -86,11 +87,11 @@ public class FileConnectionRepository implements ConnectionRepository {
         String filePath = connectionsDataDirectory + "/" + connection.getId();
         Path path = Paths.get(filePath);
         writeLock.lock();
-        try (BufferedWriter writer = Files.newBufferedWriter(path)){
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write(mapper.writeValueAsString(connection));
-            LOG.debug("Write connection file: " + filePath);
-        } catch (IOException ignored) {
-            LOG.error("Can't write file: " + filePath, ignored);
+            LOG.debug("Write connection file: {}", filePath);
+        } catch (IOException e) {
+            LOG.error("Can't write file: {}", filePath, e);
         }finally {
             writeLock.unlock();
         }
@@ -103,18 +104,17 @@ public class FileConnectionRepository implements ConnectionRepository {
             Files.list(Paths.get(connectionsDataDirectory))
                  .filter(Files::isRegularFile).forEach(path -> {
                     Connection connection = getConnectionByPath(path);
-                    if(connection!=null){
+                    if (connection != null) {
                         connections.add(connection);
                     }
                  });
-
             Collections.sort(connections, (conn1, conn2) ->
                     conn2.getLastModified().compareTo(conn1.getLastModified()));
-        } catch (IOException ignored) {
-            LOG.error("Can't read file: " + connectionsDataDirectory, ignored);
+        } catch (IOException e) {
+            LOG.error("Can't read file: {}", connectionsDataDirectory, e);
         } catch (NullPointerException e) {
             LOG.error("Can't sorting files. Some files may not have a " +
-                      "lastModified Field: " + connectionsDataDirectory, e);
+                      "lastModified Field: {}", connectionsDataDirectory, e);
         }
         return connections;
     }
@@ -147,12 +147,12 @@ public class FileConnectionRepository implements ConnectionRepository {
     public Connection get(String connectionId) {
         readLock.lock();
         try {
-            return mapper.readValue(Files.readAllBytes(
-                                    Paths.get(connectionsDataDirectory + "/" +
-                                    connectionId)), Connection.class);
+            String path = connectionsDataDirectory + "/" + connectionId;
+            return mapper.readValue(Files.readAllBytes(Paths.get(path)),
+                                    Connection.class);
         } catch (IOException e) {
-            LOG.error("Can't read connection file: " + connectionsDataDirectory +
-                      "/" + connectionId, e);
+            LOG.error("Can't read connection file: {}/{}" ,
+                      connectionsDataDirectory, connectionId, e);
         }finally {
             readLock.unlock();
         }
@@ -164,7 +164,7 @@ public class FileConnectionRepository implements ConnectionRepository {
         try {
             return mapper.readValue(Files.readAllBytes(path), Connection.class);
         } catch (IOException e) {
-            LOG.error("Failed to read connection file : {}", path, e);
+            LOG.error("Failed to read connection file: {}", path, e);
         }finally {
             readLock.unlock();
         }
@@ -178,8 +178,8 @@ public class FileConnectionRepository implements ConnectionRepository {
             FileUtils.forceDelete(FileUtils.getFile(connectionsDataDirectory,
                                   connectionId));
         } catch (IOException e) {
-            LOG.error("Can't remove connection file: " + connectionsDataDirectory +
-                      "/" + connectionId, e);
+            LOG.error("Can't remove connection file: {}/{}",
+                      connectionsDataDirectory, connectionId, e);
         }finally {
             writeLock.unlock();
         }

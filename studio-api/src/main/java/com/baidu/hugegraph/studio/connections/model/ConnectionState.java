@@ -23,11 +23,14 @@ package com.baidu.hugegraph.studio.connections.model;
  * The enum  Connection state.
  */
 public enum ConnectionState {
+
     /**
      * Open connection state.
      */
-    OPEN, /**
+    OPEN,
+
+    /**
      * Closed connection state.
      */
-    CLOSED;
+    CLOSED
 }

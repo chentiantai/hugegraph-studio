@@ -16,6 +16,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
+
 package com.baidu.hugegraph.studio.notebook.model.vis;
 
 import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.FONT_COLOR;
@@ -28,13 +29,13 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 public class Font {
+
     private String color = "#343434";
     private Integer size = 12;
     private String face = "arial";
     private Boolean multi = false;
 
     public Font() {
-
     }
 
     public Font(Map<String, Object> userData) {

@@ -23,6 +23,7 @@ package com.baidu.hugegraph.studio.common.errors;
  * The enum Error codes.
  */
 public enum ErrorCodes {
+
     /**
      * Graph not found error codes.
      */

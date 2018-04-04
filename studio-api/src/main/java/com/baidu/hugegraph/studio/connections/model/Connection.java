@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 
 /**
- * The Connection contain the information about hugeserver.
+ * The Connection contain the information about HugeGraph Server.
  * Huge Server host address, port and graph name is required.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -160,7 +160,7 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets connection uri.
      *
-     * @return the connection uri ,  http://{connectionHost}:{port}
+     * @return the connection uri, http://{connectionHost}:{port}
      */
     @JsonIgnore
     public String getConnectionUri() {

@@ -29,36 +29,47 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NotebookCell {
+
     /**
-     * Which view tab is show in front page?.
+     * Define which view tab is show in front page.
      */
     public enum DataViewType {
+
         /**
          * Table data view type.
          */
-        TABLE, /**
+        TABLE,
+
+        /**
          * Raw data view type.
          */
-        RAW, /**
+        RAW,
+
+        /**
          * Graph data view type.
          */
-        GRAPH;
+        GRAPH
     }
 
     /**
      * The enum Status.
      */
     public enum Status {
+
         /**
          * Success status.
          */
-        SUCCESS, /**
+        SUCCESS,
+
+        /**
          * Cancelled status.
          */
-        CANCELLED, /**
+        CANCELLED,
+
+        /**
          * Error status.
          */
-        ERROR;
+        ERROR
     }
 
     private String id;
@@ -69,7 +80,6 @@ public class NotebookCell {
     private String msg;
     private NotebookCell.DataViewType dataViewType;
     private ViewSettings viewSettings;
-
 
     /**
      * Instantiates a new Notebook cell.
@@ -90,7 +100,7 @@ public class NotebookCell {
                         @JsonProperty("language") String language,
                         @JsonProperty("result") Result result,
                         @JsonProperty("msg") String msg,
-                        @JsonProperty("dataViewType") NotebookCell.DataViewType dataViewType,
+                        @JsonProperty("dataViewType") DataViewType dataViewType,
                         @JsonProperty("viewSettings") ViewSettings viewSettings) {
         this.id = id;
         this.status = status;
@@ -256,16 +266,16 @@ public class NotebookCell {
         if (this == o) {
             return true;
         }
-        if ((o == null) || (getClass() != o.getClass())) {
+        if (o == null || !this.getClass().equals(o.getClass())) {
             return false;
         }
         NotebookCell that = (NotebookCell) o;
 
-        return that.id == null ? true : this.id != null ? this.id.equals(that.id) : false;
+        return (that.id == null && this.id == null) ||
+               (this.id != null && this.id.equals(that.id));
     }
 
     public int hashCode() {
         return this.id != null ? this.id.hashCode() : 0;
     }
 }
-

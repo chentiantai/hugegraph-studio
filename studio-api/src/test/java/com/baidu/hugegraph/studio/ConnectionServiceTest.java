@@ -22,7 +22,7 @@ import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.service.ConnectionService;
 
 /**
- * Created by huanghaiping02 on 17/8/31.
+ * Tests for ConnectionService.
  */
 public class ConnectionServiceTest extends JerseyTest {
 
@@ -39,62 +39,58 @@ public class ConnectionServiceTest extends JerseyTest {
 
     @Override
     protected DeploymentContext configureDeployment() {
-        return ServletDeploymentContext
-                .forServlet(new ServletContainer(new ConnectionServiceTest.ResourceRegister()))
-                .addListener(ContextLoaderListener.class)
-                .contextParam("contextConfigLocation",
-                        "classpath:applicationContext.xml")
-                .build();
+        String loaderLis = "contextConfigLocation";
+        String xmlPath = "classpath:applicationContext.xml";
+        return ServletDeploymentContext.forServlet(new ServletContainer(
+                                       new ConnectionServiceTest
+                                       .ResourceRegister()))
+                                       .addListener(ContextLoaderListener.class)
+                                       .contextParam(loaderLis, xmlPath).build();
     }
 
     @Test
-    public void testGetList(){
+    public void testGetList() {
         Response response = target("connections")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .get();
+                            .request(MediaType.APPLICATION_JSON_TYPE).get();
         List<Connection> connections = response.readEntity(
-                new GenericType<List<Connection>>() {
-                });
-        connections.forEach(connection -> System.out.println(connection.getName()));
+                                       new GenericType<List<Connection>>() {});
+
+        connections.forEach(connection ->
+                            System.out.println(connection.getName()));
         Assert.assertEquals(200, response.getStatus());
     }
 
-
     @Test
-    public void testCreateConnection(){
+    public void testCreateConnection() {
         Connection connection = new Connection();
         connection.setConnectionHost("127.0.0.1");
-        connection.setGraphName( "112" );
-        connection.setPort( 8080 );
-        connection.setName( "testCreateConnection" );
+        connection.setGraphName("112");
+        connection.setPort(8080);
+        connection.setName("testCreateConnection");
 
         Response response = target("connections")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .post( Entity.json(connection));
+                            .request(MediaType.APPLICATION_JSON_TYPE)
+                            .post(Entity.json(connection));
 
         Connection connection1 = response.readEntity(Connection.class);
         Assert.assertEquals(201, response.getStatus());
     }
 
-
     @Test
-    public void testEditConnection(){
+    public void testEditConnection() {
         String connectionId = "28e7cc2b-00b7-4492-a97d-eb382b018a07";
         Connection connection = new Connection();
         connection.setId(connectionId);
         connection.setConnectionHost("127.0.1.3");
         connection.setGraphName("hugegraph1");
-        connection.setPort( 8080 );
-        connection.setName( "testCreateConnection" );
+        connection.setPort(8080);
+        connection.setName("testCreateConnection");
 
         Response response = target("connections/"+connectionId)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .put(Entity.json(connection));
+                            .request(MediaType.APPLICATION_JSON_TYPE)
+                            .put(Entity.json(connection));
 
         Connection connection1 = response.readEntity(Connection.class);
         Assert.assertEquals(200, response.getStatus());
     }
-
-
-
 }

@@ -19,7 +19,7 @@ import com.baidu.hugegraph.studio.connections.model.Connection;
 import com.baidu.hugegraph.studio.connections.service.ConnectionService;
 
 /**
- * Created by huanghaiping02 on 17/8/31.
+ * Tests for JerseySpring.
  */
 public class JerseySpringDemoTest extends JerseyTest {
 
@@ -36,23 +36,25 @@ public class JerseySpringDemoTest extends JerseyTest {
 
     @Override
     protected DeploymentContext configureDeployment() {
-        return ServletDeploymentContext
-                .forServlet(new ServletContainer(new JerseySpringDemoTest.ResourceRegister()))
-                .addListener(ContextLoaderListener.class)
-                .contextParam("contextConfigLocation",
-                        "classpath:applicationContext.xml")
-                .build();
+        String confLoc = "contextConfigLocation";
+        String xmlPath = "classpath:applicationContext.xml";
+        return ServletDeploymentContext.forServlet(
+                                       new ServletContainer(
+                                       new JerseySpringDemoTest
+                                       .ResourceRegister()))
+                                       .addListener(ContextLoaderListener.class)
+                                       .contextParam(confLoc, xmlPath).build();
     }
 
     @Test
-    public void testGetList(){
+    public void testGetList() {
         Response response = target("connections")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .get();
+                            .request(MediaType.APPLICATION_JSON_TYPE).get();
         List<Connection> connections = response.readEntity(
-                new GenericType<List<Connection>>() {
-                });
-        connections.forEach(connection -> System.out.println(connection.getName()));
+                                       new GenericType<List<Connection>>() {});
+
+        connections.forEach(connection ->
+                            System.out.println(connection.getName()));
         Assert.assertEquals(200, response.getStatus());
     }
 

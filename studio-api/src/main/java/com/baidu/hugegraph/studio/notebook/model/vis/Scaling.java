@@ -16,6 +16,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
+
 package com.baidu.hugegraph.studio.notebook.model.vis;
 
 import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.SCALING_MAX;
@@ -24,6 +25,7 @@ import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.SCALING_MIN;
 import java.util.Map;
 
 public class Scaling {
+
     private Integer min = 10;
     private Integer max = 30;
 

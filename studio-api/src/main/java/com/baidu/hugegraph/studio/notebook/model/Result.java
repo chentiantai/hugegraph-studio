@@ -62,11 +62,10 @@ public class Result {
      * @param id       the id
      */
     @JsonCreator
-    public Result(
-            @JsonProperty("data") List<Object> data,
-            @JsonProperty("type") Result.Type type,
-            @JsonProperty("duration") Long duration,
-            @JsonProperty("id") String id) {
+    public Result(@JsonProperty("data") List<Object> data,
+                  @JsonProperty("type") Result.Type type,
+                  @JsonProperty("duration") Long duration,
+                  @JsonProperty("id") String id) {
         this.data = data;
         this.type = type;
         this.duration = duration;
@@ -146,9 +145,11 @@ public class Result {
     }
 
     /**
-     * Gets graph. when result type is VERTEX / EDGE / PATH ，
-     * web page can draw network graphic with javascript.
-     * To return vertices and edges list to meet the needs of network graphic drawing
+     * Gets graph. when result type is VERTEX / EDGE / PATH,web page can draw
+     * network graphic with javascript.
+     *
+     * To return vertices and edges list to meet the needs of network graphic
+     * drawing.
      *
      * @return the graph
      */
@@ -226,7 +227,6 @@ public class Result {
         OTHER
     }
 
-
     /**
      * The Graph class is used for contain Vertices & edges.
      */
@@ -242,12 +242,10 @@ public class Result {
         @JsonProperty
         private Map<String, VisNode> groups;
 
-
-
         /**
          * Instantiates a new Graph.
          */
-        public Graph(){
+        public Graph() {
 
         }
 
@@ -260,21 +258,20 @@ public class Result {
             return vertices;
         }
 
-
         /**
          * Sets vertices.
          *
          * @param vertices the vertices
          */
         public void setVertices(List<Vertex> vertices) {
-            if(vertices == null){
+            if (vertices == null) {
                 this.vertices = vertices;
-            }else {
-                // distinct using map
+            } else {
+                // Distinct using map
                 this.vertices = vertices.stream()
-                        .collect(toMap(Vertex::id, v -> v, (v1, v2) -> v1))
-                        .values().stream()
-                        .collect(Collectors.toList());
+                                        .collect(toMap(Vertex::id, v -> v,
+                                                (v1, v2) -> v1)).values()
+                                        .stream().collect(Collectors.toList());
             }
         }
 
@@ -294,9 +291,9 @@ public class Result {
          * @param edges the edges
          */
         public void setEdges(List<Edge> edges) {
-            if(edges == null){
+            if (edges == null) {
                 this.edges = edges;
-            }else{
+            } else {
                 this.edges = edges.stream()
                         .collect(toMap(Edge::id, e -> e, (e1, e2) -> e1))
                         .values().stream()

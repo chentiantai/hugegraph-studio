@@ -70,12 +70,14 @@ public class NotebookServiceTest extends JerseyTest {
 
     @Override
     protected DeploymentContext configureDeployment() {
-        return ServletDeploymentContext
-                .forServlet(new ServletContainer(new NotebookServiceTest.ResourceRegister()))
-                .addListener(ContextLoaderListener.class)
-                .contextParam("contextConfigLocation",
-                        "classpath:applicationContext.xml")
-                .build();
+        ServletContainer rc = new ServletContainer(new NotebookServiceTest
+                                                   .ResourceRegister());
+        String confloc = "contextConfigLocation";
+        String xmlPath = "classpath:applicationContext.xml";
+        return ServletDeploymentContext.forServlet(rc)
+                                       .addListener(ContextLoaderListener.class)
+                                       .contextParam(confloc, xmlPath)
+                                       .build();
     }
 
     @Before
@@ -90,9 +92,9 @@ public class NotebookServiceTest extends JerseyTest {
 
         notebook = response.readEntity(Notebook.class);
         notebookId = notebook.getId();
-        if(notebook.getCells().size()>0){
+        if (notebook.getCells().size()>0) {
             cellId = notebook.getCells().get(0).getId();
-        }else{
+        } else {
             cellId = this.addCell();
         }
 
@@ -107,8 +109,8 @@ public class NotebookServiceTest extends JerseyTest {
         viewSettings.setView( true );
         cell.setViewSettings(viewSettings);
 
-        Response response = target("notebooks/"+notebookId+"/cells")
-                            .queryParam( "position",1 )
+        Response response = target("notebooks/" + notebookId + "/cells")
+                            .queryParam("position", 1)
                             .request(MediaType.APPLICATION_JSON_TYPE)
                             .post(Entity.json(cell));
 
@@ -116,7 +118,6 @@ public class NotebookServiceTest extends JerseyTest {
         return notebookCell.getId();
 
     }
-
 
     @After
     public void after() {
@@ -127,60 +128,56 @@ public class NotebookServiceTest extends JerseyTest {
     }
 
     @Test
-    public void testGetNotebooks(){
+    public void testGetNotebooks() {
         Response response = target("notebooks")
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .get();
+                            .request(MediaType.APPLICATION_JSON_TYPE).get();
         List<Notebook> notebooks = response.readEntity(
-                new GenericType<List<Notebook>>() {
-                });
+                                   new GenericType<List<Notebook>>() {});
         notebooks.forEach(notebook -> System.out.println(notebook.getName()));
         Assert.assertEquals(200, response.getStatus());
     }
 
     @Test
-    public void testExecuteNotebookCellGremlin(){
+    public void testExecuteNotebookCellGremlin() {
         String vertexId="1:peter";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
         cell.setLanguage( "gremlin" );
 
         cell.setCode("g.V(2147483648)");
-        String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
+        String url = "notebooks/" + notebookId + "/cells/" + cellId + "/execute";
         System.out.println(url);
-        Response response = target(url)
-                            .request(MediaType.APPLICATION_JSON_TYPE)
-                            .put(Entity.json(cell));
+        Response response = target(url).request(MediaType.APPLICATION_JSON_TYPE)
+                                       .put(Entity.json(cell));
         System.out.println(response.readEntity(String.class));
 
-        url="notebooks/"+notebookId+"/cells/"+cellId+ "/gremlin";
+        url="notebooks/" + notebookId + "/cells/" + cellId + "/gremlin";
         System.out.println(url);
 
         Object vertexId1 = 2147483648L;
         response = target(url).queryParam( "vertexId",vertexId1)
                               .queryParam("label","software")
-                             .request(MediaType.APPLICATION_JSON_TYPE)
-                             .get();
-        System.out.println("ex:"+response.readEntity(String.class));
+                              .request(MediaType.APPLICATION_JSON_TYPE)
+                              .get();
+        System.out.println("ex: " + response.readEntity(String.class));
 
         Assert.assertEquals(200, response.getStatus());
     }
 
 
     @Test
-    public void testExecuteNotebookCell(){
+    public void testExecuteNotebookCell() {
         String code = "g.V()";
         // code = "schema.getVertexLabel(\"person2\").userData()";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
         cell.setLanguage( "gremlin" );
         cell.setCode(code);
-        String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
+        String url = "notebooks/" + notebookId + "/cells/" + cellId + "/execute";
         System.out.println(url);
 
-        Response response = target(url)
-                            .request(MediaType.APPLICATION_JSON_TYPE)
-                            .put(Entity.json(cell));
+        Response response = target(url).request(MediaType.APPLICATION_JSON_TYPE)
+                                       .put(Entity.json(cell));
         String result = response.readEntity(String.class);
         System.out.println(result);
         Assert.assertEquals(200, response.getStatus());
@@ -188,20 +185,18 @@ public class NotebookServiceTest extends JerseyTest {
 
 
     @Test
-    public void testExecuteGremlinWithNumberId(){
+    public void testExecuteGremlinWithNumberId() {
         String code = "g.V(123456)";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
         cell.setLanguage( "gremlin" );
         cell.setCode(code);
-        String url="notebooks/"+notebookId+"/cells/"+cellId+ "/execute";
+        String url = "notebooks/" + notebookId + "/cells/" + cellId + "/execute";
         System.out.println(url);
 
-        Response response = target(url)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .put(Entity.json(cell));
+        Response response = target(url).request(MediaType.APPLICATION_JSON_TYPE)
+                                       .put(Entity.json(cell));
         Assert.assertEquals(200, response.getStatus());
-
 
         code = "g.V('123456')";
         cell = new NotebookCell();
@@ -219,7 +214,7 @@ public class NotebookServiceTest extends JerseyTest {
     }
 
     @Test
-    public void testConcurrentEditNotebookCell(){
+    public void testConcurrentEditNotebookCell() {
         ExecutorService fixedThreadPool = Executors.newFixedThreadPool(25);
         for (int i = 0; i < 50; i++) {
             final int index = i;
@@ -238,7 +233,7 @@ public class NotebookServiceTest extends JerseyTest {
         }
     }
 
-    public void editNotebookCell(int index){
+    public void editNotebookCell(int index) {
         String code = "g.V('"+index+"')";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
@@ -247,13 +242,12 @@ public class NotebookServiceTest extends JerseyTest {
         String url="notebooks/"+notebookId+"/cells/"+cellId;
         System.out.println(url);
 
-        Response response = target(url)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .put(Entity.json(cell));
+        Response response = target(url).request(MediaType.APPLICATION_JSON_TYPE)
+                                       .put(Entity.json(cell));
     }
 
     @Test
-    public void testEditNotebookCell(){
+    public void testEditNotebookCell() {
         String code = "g.V()";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
@@ -262,9 +256,8 @@ public class NotebookServiceTest extends JerseyTest {
         String url="notebooks/"+notebookId+"/cells/"+cellId;
         System.out.println(url);
 
-        Response response = target(url)
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .put(Entity.json(cell));
+        Response response = target(url).request(MediaType.APPLICATION_JSON_TYPE)
+                                       .put(Entity.json(cell));
         Result result = response.readEntity(Result.class);
     }
 

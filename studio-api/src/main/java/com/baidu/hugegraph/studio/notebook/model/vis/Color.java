@@ -16,6 +16,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
+
 package com.baidu.hugegraph.studio.notebook.model.vis;
 
 import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.COLOR_BACKGROUND;
@@ -31,6 +32,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 public class Color {
+
     private String background = "#00ccff";
     private String border = "#00ccff";
     private Map<String, String> highlight;

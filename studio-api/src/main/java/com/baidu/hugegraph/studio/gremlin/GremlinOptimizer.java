@@ -23,6 +23,7 @@ package com.baidu.hugegraph.studio.gremlin;
  * The interface Gremlin code optimization.
  */
 public interface GremlinOptimizer {
+
     /**
      * Add limit rules for the code
      *

@@ -36,34 +36,35 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
     private static final Logger LOG =
             LogManager.getLogger(InternalExceptionMapper.class);
 
-    public Response toResponse(Throwable ex) {
-        Pair<Response.Status, StudioError> errorDetailsPair =
-                toErrorDetails(ex);
+    public Response toResponse(Throwable e) {
+        Pair<Response.Status, StudioError> errorDetailsPair = toErrorDetails(e);
 
-        return Response.status((Response.Status) errorDetailsPair.getLeft())
-                               .entity(errorDetailsPair.getRight())
-                               .type("application/json").build();
+        return Response.status(errorDetailsPair.getLeft())
+                       .entity(errorDetailsPair.getRight())
+                       .type("application/json")
+                       .build();
     }
 
-    public Pair<Response.Status, StudioError> toErrorDetails(Throwable ex) {
-        if (ex instanceof StudioError) {
-            StudioError error = (StudioError) ex;
-            return Pair.of(Response.Status.fromStatusCode(error.status()), error);
+    public Pair<Response.Status, StudioError> toErrorDetails(Throwable e) {
+        if (e instanceof StudioError) {
+            StudioError err = (StudioError) e;
+            return Pair.of(Response.Status.fromStatusCode(err.status()), err);
         }
 
         int errorCode = 0;
         Response.StatusType status = null;
         String message;
-        if (ex instanceof WebApplicationException) {
-            LOG.debug("Returning HTTP error:", ex);
-            status = ((WebApplicationException) ex).getResponse()
-                                                   .getStatusInfo();
+        if (e instanceof WebApplicationException) {
+            LOG.debug("Returning HTTP error: ", e);
+            status = ((WebApplicationException) e).getResponse()
+                                                  .getStatusInfo();
             message = status.getReasonPhrase();
         } else {
-            if (ex instanceof ResponseException) {
-                message = ex.getMessage();
-                switch (((ResponseException) ex).getResponseStatusCode()
-                                                .ordinal()) {
+            if (e instanceof ResponseException) {
+                message = e.getMessage();
+                // FIXME
+                switch (((ResponseException) e).getResponseStatusCode()
+                                               .ordinal()) {
                     case 1:
                         status = Response.Status.BAD_GATEWAY;
                         break;
@@ -79,20 +80,21 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
                         status = Response.Status.GATEWAY_TIMEOUT;
                         break;
                     default:
-                        status = Response.Status.fromStatusCode(
-                                        ((ResponseException) ex)
-                                        .getResponseStatusCode().getValue());
+                        status = Response.Status
+                                         .fromStatusCode(((ResponseException) e)
+                                         .getResponseStatusCode().getValue());
+                        break;
                 }
                 if (status == null) {
                     status = Response.Status.BAD_GATEWAY;
                 }
             } else {
-                if (ex instanceof CompletionException) {
-                    return toErrorDetails(ex.getCause());
+                if (e instanceof CompletionException) {
+                    return toErrorDetails(e.getCause());
                 }
-                LOG.error("Unknown internal server error: ", ex);
+                LOG.error("Unknown internal server error: ", e);
                 status = Response.Status.INTERNAL_SERVER_ERROR;
-                message = ex.getMessage();
+                message = e.getMessage();
             }
         }
         StudioError studioError = new StudioError(status.getStatusCode(),

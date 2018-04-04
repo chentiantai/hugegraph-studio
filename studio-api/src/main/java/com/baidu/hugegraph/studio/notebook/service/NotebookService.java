@@ -74,6 +74,7 @@ import java.util.stream.Collectors;
  */
 @Path("notebooks")
 public class NotebookService {
+
     private static final Logger LOG =
             LoggerFactory.getLogger(NotebookService.class);
     private static final int GREMLIN_MAX_IDS = 250;
@@ -99,8 +100,7 @@ public class NotebookService {
                     connectionRepository.get(notebook.getConnectionId());
             notebook.setConnection(connection);
         });
-        Response response = Response.status(200).entity(notebookList).build();
-        return response;
+        return Response.status(200).entity(notebookList).build();
     }
 
     /**
@@ -118,8 +118,7 @@ public class NotebookService {
         Connection connection =
                 connectionRepository.get(notebook.getConnectionId());
         notebook.setConnection(connection);
-        Response response = Response.status(200).entity(notebook).build();
-        return response;
+        return Response.status(200).entity(notebook).build();
     }
 
     /**
@@ -138,10 +137,9 @@ public class NotebookService {
         Connection connection =
                 connectionRepository.get(notebook.getConnectionId());
         notebook.setConnection(connection);
-        Response response = Response.status(201)
-                .entity(notebookRepository.createNotebook(notebook))
-                .build();
-        return response;
+        return Response.status(201)
+                       .entity(notebookRepository.createNotebook(notebook))
+                       .build();
     }
 
     /**
@@ -156,8 +154,7 @@ public class NotebookService {
     public Response deleteNotebook(@PathParam("notebookId") String notebookId) {
         Preconditions.checkArgument(StringUtils.isNotEmpty(notebookId));
         notebookRepository.deleteNotebook(notebookId);
-        Response response = Response.status(204).build();
-        return response;
+        return Response.status(204).build();
     }
 
     /**
@@ -194,8 +191,7 @@ public class NotebookService {
             notebookLocal.setConnection(connection);
         }
         notebook = notebookRepository.editNotebook(notebookLocal);
-        Response response = Response.status(200).entity(notebook).build();
-        return response;
+        return Response.status(200).entity(notebook).build();
     }
 
     /**
@@ -212,11 +208,10 @@ public class NotebookService {
     public Response getNotebookCell(@PathParam("notebookId") String notebookId,
                                     @PathParam("cellId") String cellId) {
         Preconditions.checkArgument(notebookId != null && cellId != null);
-        Response response = Response.status(201)
-                            .entity(notebookRepository
-                                    .getNotebookCell(notebookId, cellId))
-                            .build();
-        return response;
+        return Response.status(201)
+                       .entity(notebookRepository.getNotebookCell(notebookId,
+                                                                  cellId))
+                       .build();
     }
 
     /**
@@ -234,10 +229,10 @@ public class NotebookService {
     public Response addNotebookCell(@PathParam("notebookId") String notebookId,
                                     @QueryParam("position") Integer position,
                                     NotebookCell cell) {
-        Response response = Response.status(201)
-                                    .entity(notebookRepository.addCellToNotebook(notebookId, cell, position))
-                                    .build();
-        return response;
+        return Response.status(201)
+                       .entity(notebookRepository.addCellToNotebook(notebookId,
+                               cell, position))
+                       .build();
     }
 
     /**
@@ -253,8 +248,7 @@ public class NotebookService {
             @PathParam("notebookId") String notebookId,
             @PathParam("cellId") String cellId) {
         notebookRepository.deleteNotebookCell(notebookId, cellId);
-        Response response = Response.status(204).build();
-        return response;
+        return Response.status(204).build();
     }
 
     /**
@@ -272,10 +266,13 @@ public class NotebookService {
     public Response editNotebookCell(@PathParam("notebookId") String notebookId,
                                      @PathParam("cellId") String cellId,
                                      NotebookCell cell) {
-        Preconditions.checkArgument(cell != null && cellId.equals(cell.getId()));
-        Response response = Response.status(200).entity(notebookRepository
-                            .editNotebookCell(notebookId, cellId, cell)).build();
-        return response;
+        Preconditions.checkArgument(cell != null &&
+                                    cellId.equals(cell.getId()));
+        return Response.status(200)
+                       .entity(notebookRepository.editNotebookCell(notebookId,
+                                                                   cellId,
+                                                                   cell))
+                       .build();
     }
 
     /**
@@ -313,7 +310,7 @@ public class NotebookService {
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
 
-        /**
+        /*
          * Return the original user input if the code snippet language is
          * markdown and the markdown code will be rendered in HTML by React.
          */
@@ -334,10 +331,7 @@ public class NotebookService {
                     notebook.getConnection().getConnectionUri(),
                     notebook.getConnection().getGraphName());
 
-
             GremlinManager gremlinManager = hugeClient.gremlin();
-
-
 
             LOG.info(gremlinOptimizer.limitOptimize(cell.getCode()));
 
@@ -345,7 +339,7 @@ public class NotebookService {
             ResultSet resultSet = gremlinManager.gremlin(
                     gremlinOptimizer.limitOptimize(cell.getCode())).execute();
 
-            /**
+            /*
              * Gremlin result will be stored in two places, the original data is
              * saved as a List<Object>, another is translated into a graph or a
              * table object if possible.
@@ -355,17 +349,19 @@ public class NotebookService {
             List<Vertex> vertices = new ArrayList<>();
             List<Edge> edges = new ArrayList<>();
             Map<String, VisNode> groups = new HashMap<>();
-            List<com.baidu.hugegraph.structure.graph.Path> paths = new ArrayList<>();
-            if(!resultSet.iterator().hasNext()) {
+            List<com.baidu.hugegraph.structure.graph.Path> paths =
+                    new ArrayList<>();
+            if (!resultSet.iterator().hasNext()) {
                 result.setType(EMPTY);
             }
-            for (Iterator<Result> results = resultSet.iterator(); results.hasNext();) {
-                /**
+            for (Iterator<Result> results = resultSet.iterator();
+                 results.hasNext();) {
+                /*
                  * The result might be null, and the object must be got via
                  * Result.getObject method.
                  */
                 Result or = results.next();
-                if (or == null){
+                if (or == null) {
                     result.setType(EMPTY);
                 } else {
                     Object object = or.getObject();
@@ -391,7 +387,7 @@ public class NotebookService {
                 }
             }
 
-            /**
+            /*
              * When the results contains not only vertices\edges\paths, how to
              * deal with that?
              */
@@ -419,19 +415,16 @@ public class NotebookService {
             result.setGraphVertices(vertices);
             result.setGraphEdges(edges);
             result.setGroups(groups);
-
         }
 
         cell.setResult(result);
-
 
         Long endTime = System.currentTimeMillis();
         Long duration = endTime - startTime;
         result.setDuration(duration);
 
         notebookRepository.editNotebookCell(notebookId, cell);
-        Response response = Response.status(200).entity(result).build();
-        return response;
+        return Response.status(200).entity(result).build();
     }
 
     /**
@@ -479,8 +472,7 @@ public class NotebookService {
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 cell.getResult();
 
-
-        /**
+        /*
          * This method should be executed after the method of @see
          * executeNotebookCell(String,String). It must has a start
          * point and the result must have vertices or edges.
@@ -554,27 +546,24 @@ public class NotebookService {
         Long endTime = System.currentTimeMillis();
         Long duration = endTime - startTime;
         resultNew.setDuration(duration);
-
-        Response response = Response.status(200).entity(resultNew)
-                                    .build();
-        return response;
+        return Response.status(200).entity(resultNew).build();
     }
 
 
-    private Object transformId(String vertexId, VertexLabel vertexLabel){
+    private Object transformId(String vertexId, VertexLabel vertexLabel) {
         Object transformedVertexId = vertexId;
         switch (vertexLabel.idStrategy()) {
             case AUTOMATIC:
             case CUSTOMIZE_NUMBER:
                 try {
                     transformedVertexId = Integer.valueOf(vertexId);
-                } catch (NumberFormatException ignore){
+                } catch (NumberFormatException ignored) {
                     try {
                         transformedVertexId = Long.valueOf(vertexId);
-                    } catch (NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         throw new IllegalArgumentException(
-                                "The vertexId does no match with itself " +
-                                "idStrategy");
+                                  "The vertexId does no match with itself " +
+                                  "idStrategy");
                     }
                 }
                 break;
@@ -583,14 +572,14 @@ public class NotebookService {
                 break;
             default:
                 throw new IllegalArgumentException(String.format(
-                        "The vertexLabel isStrategy %s is not supported",
-                        vertexLabel.idStrategy().name()));
+                          "The vertexLabel isStrategy %s is not supported",
+                          vertexLabel.idStrategy().name()));
         }
         return transformedVertexId;
     }
 
-    private String formatId(Object id){
-        if(id instanceof String){
+    private String formatId(Object id) {
+        if (id instanceof String) {
             String transformedId = StringUtils.replace(
                     id.toString(), "\\", "\\\\");
             transformedId = StringUtils.replace(
@@ -642,7 +631,7 @@ public class NotebookService {
         vertices.stream().forEach(v -> vertexIds.add(v.id()));
 
         List<String> idList = new ArrayList<>();
-        for(Vertex vertex : vertices){
+        for (Vertex vertex : vertices) {
             idList.add(formatId(vertex.id()));
         }
 
@@ -650,7 +639,7 @@ public class NotebookService {
                 .stream()
                 .forEach(group -> {
                     String ids = StringUtils.join(group, ",");
-                    /**
+                    /*
                      * De-duplication by edgeId. Reserve the edges only if both srcVertexId
                      * and tgtVertexId is a member of vertices.
                      */
@@ -662,7 +651,7 @@ public class NotebookService {
 
                     results.forEachRemaining(r -> {
                         Edge edge = (Edge) r.getObject();
-                        /**
+                        /*
                          * As the results is queried by 'g.V(id).bothE()', the
                          * source vertex of edge from results is in the set of
                          * vertexIds. Hence, just reserve the edge which that
@@ -675,7 +664,6 @@ public class NotebookService {
                     });
                 });
         return edges;
-
     }
 
     private List<Vertex> getVertices(HugeClient hugeClient,
@@ -721,7 +709,6 @@ public class NotebookService {
                 Edge edge = (Edge) obj;
                 vertexIds.add(edge.source());
                 vertexIds.add(edge.target());
-
             }
         }));
         return getVertices(hugeClient,

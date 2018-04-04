@@ -25,10 +25,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * The type Studio error.
  */
 public class StudioError extends RuntimeException {
+
     /**
      * The Status.
      */
     public final int status;
+
     /**
      * The Code.
      */
@@ -67,9 +69,9 @@ public class StudioError extends RuntimeException {
      * @return the studio error
      */
     public static StudioError notFound(String resourceName, String id) {
-        return new StudioError(404, 0,
-                               String.format("%s \"%s\" does not exist.",
-                                             new Object[]{resourceName, id}));
+        return new StudioError(404, 0, String.format("Resource '%s' with id " +
+                                                     "'%s' does not exist.",
+                                                     resourceName, id));
     }
 
     /**
@@ -79,9 +81,8 @@ public class StudioError extends RuntimeException {
      * @return the studio error
      */
     public static StudioError notFound(String id) {
-        return new StudioError(404, 0,
-                               String.format("%s does not exist.",
-                                             new Object[]{id}));
+        return new StudioError(404, 0, String.format("Resource with id '%s' " +
+                                                     "does not exist.", id));
     }
 
     /**
@@ -93,10 +94,9 @@ public class StudioError extends RuntimeException {
      */
     public static StudioError conflict(String resourceName, String id) {
         return new StudioError(409, 0,
-                               String.format("Resource with name %s already " +
-                                             "exists and is associated with " +
-                                             "id \"%s\".",
-                                             new Object[]{resourceName, id}));
+                               String.format("Resource with name '%s' already" +
+                                             " exists and is associated with " +
+                                             "id '%s'.", resourceName, id));
     }
 
     /**

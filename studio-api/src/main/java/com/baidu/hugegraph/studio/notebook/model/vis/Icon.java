@@ -16,6 +16,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
+
 package com.baidu.hugegraph.studio.notebook.model.vis;
 
 import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.ICON_CODE;
@@ -27,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 public class Icon {
+
     private String face;
     private String code;
     private Integer size;
@@ -38,7 +40,6 @@ public class Icon {
 
     public Icon(String code) {
         this("FontAwesome", code, 50, "#2B7CE9");
-
     }
 
     public Icon(String face, String code, Integer size, String color) {

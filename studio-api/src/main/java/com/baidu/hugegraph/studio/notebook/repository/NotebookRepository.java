@@ -28,6 +28,7 @@ import java.util.List;
  * The interface Notebook repository.
  */
 public interface NotebookRepository {
+
     /**
      * Create notebook notebook.
      *
@@ -74,7 +75,8 @@ public interface NotebookRepository {
      * @param index      the index
      * @return the notebook cell
      */
-    NotebookCell addCellToNotebook(String notebookId, NotebookCell cell, Integer index);
+    NotebookCell addCellToNotebook(String notebookId, NotebookCell cell,
+                                   Integer index);
 
     /**
      * Edit notebook cell notebook cell.

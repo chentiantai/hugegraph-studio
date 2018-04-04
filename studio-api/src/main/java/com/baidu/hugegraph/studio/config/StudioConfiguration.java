@@ -23,7 +23,6 @@ import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
 import com.google.common.base.Preconditions;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -43,14 +42,14 @@ public class StudioConfiguration {
     private HugeConfig config = null;
 
     public StudioConfiguration() {
-
         if (System.getProperty("studio.home") != null) {
             config = new HugeConfig(String.format("%s/conf/%s",
                                     System.getProperty("studio.home"),
                                     DEFAULT_CONFIGURATION_FILE));
         } else {
-            URL confUrl = this.getClass().getClassLoader()
-                    .getResource(DEFAULT_CONFIGURATION_FILE);
+            URL confUrl = this.getClass()
+                              .getClassLoader()
+                              .getResource(DEFAULT_CONFIGURATION_FILE);
             Preconditions.checkNotNull(confUrl);
             config = new HugeConfig(confUrl.getFile());
         }
@@ -69,7 +68,7 @@ public class StudioConfiguration {
 
     public String getBaseUserDataDirectory() {
         String userDataDir = this.config.get(
-                StudioApiOptions.STUDIO_DATA_BASE_DIR);
+                             StudioApiOptions.STUDIO_DATA_BASE_DIR);
         if (StringUtils.isBlank(userDataDir)) {
             userDataDir = "~/.hugestudio";
         }
@@ -87,7 +86,7 @@ public class StudioConfiguration {
         if (gremlins == null || gremlins.size() == 0) {
             return new HashSet<>();
         }
-        Set<String> gremlinSet = new HashSet<>();
+        Set<String> gremlinSet = new HashSet<>(gremlins);
         for (String g : gremlins) {
             gremlinSet.add(g);
         }
@@ -97,9 +96,9 @@ public class StudioConfiguration {
     private String replaceHomeDirReferences(String confDir) {
         assert !confDir.isEmpty();
 
-        if (System.getProperty("user.home") != null) {
-            return confDir.replaceFirst("^~", System.getProperty("user.home"));
+        if (System.getProperty("user.home") == null) {
+            return confDir;
         }
-        return null;
+        return confDir.replaceFirst("^~", System.getProperty("user.home"));
     }
 }

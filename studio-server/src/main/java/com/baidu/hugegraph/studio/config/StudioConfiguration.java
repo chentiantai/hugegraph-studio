@@ -21,10 +21,8 @@ package com.baidu.hugegraph.studio.config;
 
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
-import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * The type Studio configuration.
