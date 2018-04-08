@@ -43,11 +43,9 @@ import java.net.ServerSocket;
  */
 public class HugeStudio {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(HugeStudio.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HugeStudio.class);
 
-    private static final String DEFAULT_CONFIGURATION_FILE =
-            "hugestudio.properties";
+    private static final String DEFAULT_CONFIG_FILE = "hugestudio.properties";
 
     // The embed tomcat server
     private static Server server;
@@ -60,7 +58,7 @@ public class HugeStudio {
     public static void main(String[] args) throws Exception {
 
         StudioConfiguration configuration =
-                new StudioConfiguration(DEFAULT_CONFIGURATION_FILE);
+                new StudioConfiguration(DEFAULT_CONFIG_FILE);
         run(configuration);
         server.await();
     }
@@ -68,25 +66,25 @@ public class HugeStudio {
     /**
      * Run tomcat with configuration
      *
-     * @param configuration the studio configuration
+     * @param config the studio configuration
      * @throws Exception the exception
      */
-    public static void run(StudioConfiguration configuration) throws Exception {
+    public static void run(StudioConfiguration config) throws Exception {
 
-        String address = configuration.getHttpBindAddress();
-        int port = configuration.getHttpPort();
+        String address = config.getHttpBindAddress();
+        int port = config.getHttpPort();
         validateHttpPort(address, port);
 
-        String baseDir = configuration.getServerBasePath();
+        String baseDir = config.getServerBasePath();
         String uiDir = String.format("%s/%s", baseDir,
-                                     configuration.getServerUIDirectory());
+                                     config.getServerUIDirectory());
         String apiWarFile = String.format("%s/%s", baseDir,
-                                          configuration.getServerWarDirectory());
+                                          config.getServerWarDirectory());
         validatePathExists(new File(uiDir));
         validateFileExists(new File(apiWarFile));
 
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(configuration.getHttpPort());
+        tomcat.setPort(config.getHttpPort());
 
         ProtocolHandler ph = tomcat.getConnector().getProtocolHandler();
         if (ph instanceof AbstractProtocol) {
@@ -105,15 +103,13 @@ public class HugeStudio {
         }
 
         if (!ui.getState().equals(LifecycleState.STARTED)) {
-            System.out.println();
-            System.out.println("Studio-ui failed to start. " +
-                               "Please check logs for details");
+            LOG.error("Studio-ui failed to start. " +
+                      "Please check logs for details");
             System.exit(1);
         }
         if (!api.getState().equals(LifecycleState.STARTED)) {
-            System.out.println();
-            System.out.println("Studio-api failed to start. " +
-                               "Please check logs for details");
+            LOG.error("Studio-api failed to start. " +
+                      "Please check logs for details");
             System.exit(1);
         }
 
@@ -166,11 +162,9 @@ public class HugeStudio {
      * To validate if the given http port is available or not. Exit if the port
      * is being used.
      */
-    private static void validateHttpPort(String httpBindAddress, int httpPort) {
-        ServerSocket socket = null;
-        try {
-            socket = new ServerSocket(httpPort, 1,
-                                      InetAddress.getByName(httpBindAddress));
+    private static void validateHttpPort(String addr, int httpPort) {
+        try (ServerSocket tmp = new ServerSocket(httpPort, 1,
+                                                 InetAddress.getByName(addr))) {
         } catch (IOException e) {
             LOG.error("Can't start Studio on port {}: {}", httpPort, e);
             System.exit(1);
