@@ -47,7 +47,6 @@ export function clearNotebookState() {
     return {
         type: CLEAR_NOTEBOOK_STATE
     };
-
 }
 
 export function showCells(data) {
