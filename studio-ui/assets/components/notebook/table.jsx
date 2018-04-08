@@ -20,12 +20,14 @@
 import React from 'react';
 
 export default  class TableResult extends React.Component {
+
     constructor() {
         super();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.content === nextProps.content && this.props.height === nextProps.height) {
+        if (this.props.content === nextProps.content &&
+            this.props.height === nextProps.height) {
             return false;
         } else {
             return true;
@@ -52,7 +54,9 @@ export default  class TableResult extends React.Component {
                                     <tr key={index}>
                                         <td>{vertex.id}</td>
                                         <td>{vertex.label}</td>
-                                        <td>{JSON.stringify(vertex.properties)}</td>
+                                        <td>
+                                            {JSON.stringify(vertex.properties)}
+                                        </td>
                                     </tr>
                                 )
                             }
@@ -80,7 +84,9 @@ export default  class TableResult extends React.Component {
                                         <td>{edge.label}</td>
                                         <td>{edge.outV}</td>
                                         <td>{edge.inV}</td>
-                                        <td>{JSON.stringify(edge.properties)}</td>
+                                        <td>
+                                            {JSON.stringify(edge.properties)}
+                                        </td>
                                     </tr>
                                 )
                             }
@@ -115,12 +121,16 @@ export default  class TableResult extends React.Component {
                             </tr>
                             {
                                 tableContent.map((obj, index) => {
-                                    let vertexName = obj.objects[0].id.split(':')[1];
+                                    let vertexName =
+                                        obj.objects[0].id.split(':')[1];
                                     let edgeLabel = obj.objects[1].label;
-                                    let pathResult = vertexName + '--' + edgeLabel;
-                                    return <tr key={index}>
-                                        <td>{pathResult}</td>
-                                    </tr>;
+                                    let pathResult =
+                                        vertexName + '--' + edgeLabel;
+                                    return (
+                                        <tr key={index}>
+                                            <td>{pathResult}</td>
+                                        </tr>
+                                    )
                                 })
                             }
                             </tbody>
@@ -140,10 +150,8 @@ export default  class TableResult extends React.Component {
         this.loadDone();
     }
 
-
     loadDone = () => {
         let loadingId = this.props.cellId + '_loading';
         document.getElementById(loadingId).style.display = 'none';
     }
 }
-

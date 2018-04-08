@@ -42,7 +42,8 @@ export default class NotebooksApp extends React.Component {
                     <Head/>
                     <Switch>
                         <Route path="/index" component={NoteCardBoard}/>
-                        <Route path="/connections" component={ConnectionsBoard}/>
+                        <Route path="/connections"
+                               component={ConnectionsBoard}/>
                         <Route path="/notebook/:id" component={NoteBookBoard}/>
                         <Route component={NoteCardBoard}/>
                     </Switch>

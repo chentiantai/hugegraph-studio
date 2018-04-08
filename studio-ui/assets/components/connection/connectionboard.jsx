@@ -26,8 +26,8 @@ import ConnectionModal from './connectionmodal';
 import AlertModal from '../commoncomponents/alertmodal';
 import {withRouter} from 'react-router-dom';
 
-
 class ConnectionsBoard extends React.Component {
+
     constructor() {
         super();
         this.state = {
@@ -83,12 +83,10 @@ class ConnectionsBoard extends React.Component {
                 confirm={() => this.confirmDelete(id)}
                 message='Do you want to delete this connection?'
             />
-
         );
         this.setState({
             alert: alert,
             isOpen: false
-
         });
     }
 
@@ -111,12 +109,10 @@ class ConnectionsBoard extends React.Component {
         const connections = this.props.connections;
         return (
             <div>
-
                 <StudioHead
                     display="block"
                     name="HugeGraph NoteBook Quick Start"/>
                 <div className="container">
-
                     <div className="row">
                         <div className="panel panel-default">
                             <div className="panel-body">
@@ -125,16 +121,20 @@ class ConnectionsBoard extends React.Component {
                                     <div className="connection-header">
                                         <button type="button"
                                                 className="btn btn-default"
-                                                onClick={() => this.openAddModal()}>
+                                                onClick={() =>
+                                                    this.openAddModal()}>
                                             <i className="fa fa-plus"
-                                               aria-hidden="true"><span>add</span></i>
+                                               aria-hidden="true">
+                                                <span>add</span>
+                                            </i>
                                         </button>
                                         <ConnectionModal
                                             connection={this.state.connection}
                                             isOpen={this.state.isOpen}
                                             operation={this.state.operation}
                                             title={this.state.title}
-                                            operationTime={this.state.operationTime}/>
+                                            operationTime=
+                                                {this.state.operationTime}/>
                                     </div>
                                 </div>
                                 <table className="table table-striped">
@@ -148,10 +148,19 @@ class ConnectionsBoard extends React.Component {
                                     </tr>
                                     {
                                         connections.map(connection =>
-                                            <Connection key={connection.id}
-                                                        connection={connection}
-                                                        deleteConnection={() => this.deleteConnection(connection.id)}
-                                                        editConnection={() => this.openUpdateModal(connection)}/>)
+                                            <Connection
+                                                key={connection.id}
+                                                connection={connection}
+                                                deleteConnection={() =>
+                                                    this.deleteConnection(
+                                                         connection.id)
+                                                }
+                                                editConnection={() =>
+                                                    this.openUpdateModal(
+                                                         connection)
+                                                }
+                                            />
+                                        )
                                     }
                                     </tbody>
                                 </table>
@@ -164,7 +173,6 @@ class ConnectionsBoard extends React.Component {
         );
     }
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {

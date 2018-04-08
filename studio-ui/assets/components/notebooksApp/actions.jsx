@@ -24,7 +24,6 @@ export const SHOW_NOTE_CARDS = 'show_note_cards';
 export const DELETE_NOTE_CARD_SUCCESS = 'delete_note_card_success';
 export const UPDATE_NOTE_CARD_SUCCESS = 'update_note_card_success';
 
-
 export function deleteNoteCard(id) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -72,14 +71,12 @@ export function loadNoteCards() {
     };
 }
 
-
 export function showNoteCards(noteCards) {
     return {
         type: SHOW_NOTE_CARDS,
         noteCards
     };
 }
-
 
 export function saveNoteCard(modalInfo) {
     return dispatch => {
@@ -90,7 +87,6 @@ export function saveNoteCard(modalInfo) {
         }
     };
 }
-
 
 export function updateNoteCard(noteCard) {
     let myHeaders = new Headers();
@@ -123,7 +119,6 @@ export function updateNoteCardSuccess(noteCard) {
     };
 }
 
-
 export function addNoteCard(noteCard) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -148,13 +143,13 @@ export function addNoteCard(noteCard) {
     };
 }
 
-
 export function addNoteCardSuccess(noteCard) {
     return {
         type: ADD_NOTE_CARD_SUCCESS,
         noteCard
     };
 }
+
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response
@@ -168,4 +163,3 @@ function checkStatus(response) {
 function parseJSON(response) {
     return response.json()
 }
-

@@ -22,7 +22,6 @@ import {showSchema} from './actions';
 import {connect} from 'react-redux';
 import {OverlayTrigger, ButtonToolbar, Popover} from 'react-bootstrap';
 
-
 export class Schema extends React.Component {
     constructor() {
         super();
@@ -38,47 +37,40 @@ export class Schema extends React.Component {
                             <h5>Vertex
                                 Labels({schemaResult.vertexLabels.length})</h5>
                             <div className="schema-box">
-                                <ButtonToolbar>
-                                    {
-                                        schemaResult.vertexLabels.map(
-                                            (vertexLabel, index) => {
-                                                let tooltip = <Popover
+                                <ButtonToolbar> {
+                                    schemaResult.vertexLabels.map(
+                                        (vertexLabel, index) => {
+                                            let tooltip =
+                                                <Popover
                                                     id="schema-tooltip"
                                                     title="VertexLabel">
-                                                    {
+                                                {
+                                                    <div>
                                                         <div>
-                                                            <div>
-                                                                <span
-                                                                    className="property_name_span">Name</span>:
-                                                                <span
-                                                                    className="property_value_span">{vertexLabel.name}</span>
-                                                            </div>
-                                                            <div>
-                                                                <span
-                                                                    className="property_name_span">Properties</span>:
-                                                                <span
-                                                                    className="property_value_span">{vertexLabel.properties.length === 0 ? '[ ]' : JSON.stringify(vertexLabel.properties)}</span>
-                                                            </div>
-                                                            <div>
-                                                                <span
-                                                                    className="property_name_span">PrimaryKeys</span>:
-                                                                <span
-                                                                    className="property_value_span">{vertexLabel.primary_keys.length === 0 ? '[ ]' : vertexLabel.primary_keys}</span>
-                                                            </div>
+                                                            <span className="property_name_span">Name</span>:
+                                                            <span className="property_value_span">{vertexLabel.name}</span>
                                                         </div>
-                                                    }
-                                                </Popover>;
-                                                return (
-                                                    <OverlayTrigger
-                                                        key={index}
-                                                        placement="bottom"
-                                                        overlay={tooltip}>
-                                                    <span
-                                                        className="label label-default schema-span"> {vertexLabel.name}</span>
-                                                    </OverlayTrigger>);
-                                            }
-                                        )
-                                    }
+                                                        <div>
+                                                            <span className="property_name_span">Properties</span>:
+                                                            <span className="property_value_span">{vertexLabel.properties.length === 0 ? '[ ]' : JSON.stringify(vertexLabel.properties)}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span className="property_name_span">PrimaryKeys</span>:
+                                                            <span className="property_value_span">{vertexLabel.primary_keys.length === 0 ? '[ ]' : vertexLabel.primary_keys}</span>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </Popover>
+                                            return (
+                                                <OverlayTrigger
+                                                    key={index}
+                                                    placement="bottom"
+                                                    overlay={tooltip}>
+                                                    <span className="label label-default schema-span"> {vertexLabel.name}</span>
+                                                </OverlayTrigger>)
+                                        }
+                                    )
+                                }
                                 </ButtonToolbar>
                             </div>
                         </div>
@@ -216,6 +208,7 @@ export class Schema extends React.Component {
         this.props.showSchema(connectionId);
     }
 }
+
 //Map Redux state to component props
 function mapStateToProps(state) {
     return {

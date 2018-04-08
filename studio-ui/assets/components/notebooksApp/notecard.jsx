@@ -23,7 +23,6 @@ import {connect} from 'react-redux';
 import TimeFormat from '../commoncomponents/time';
 import {withRouter,Link,Route} from 'react-router-dom';
 
-
 class NoteCard extends React.Component {
 
     del() {
@@ -34,11 +33,9 @@ class NoteCard extends React.Component {
         this.props.onUpdate(this.props.value);
     }
 
-
     render() {
         const noteCard = this.props.value;
         let noteCardName = noteCard.name;
-        let notebookUrl = 'notebook.html?id=' + noteCard.id + '&name=' + noteCardName;
 
         return (
             <div className="notebook-card">
@@ -50,44 +47,37 @@ class NoteCard extends React.Component {
                     </button>
                 </div>
                 <Link to={'/notebook/'+noteCard.id}>
-                <div className="notebook-card-info">
-                    <div className="notebook-card-title">
-                            {
-                                noteCardName
-                            }
-
+                    <div className="notebook-card-info">
+                        <div className="notebook-card-title">
+                                {noteCardName}
+                        </div>
+                        <div className="notebook-card-description">
+                            {noteCard.connection.name}
+                        </div>
                     </div>
-                    <div className="notebook-card-description">
-                        {
-                            noteCard.connection.name
-                        }
-                    </div>
-                </div>
                 </Link>
                 <div className="notebook-card-control">
-
                     <div className="notebook-card-createtime">
                         <TimeFormat timeFormat={noteCard.lastUsed}/>
                     </div>
 
                     <div className="notebook-card-operation">
-                        <button type="button" className="btn btn-link"
+                        <button type="button"
+                                className="btn btn-link"
                                 data-toggle="modal"
                                 data-target="#notebookCardModal"
                                 onClick={() => this.update()}>
-                    <span>
-                        <i className="fa fa-pencil-square-o"
-                           aria-hidden="true"></i>
-                    </span>
+                            <span>
+                                <i className="fa fa-pencil-square-o"
+                                   aria-hidden="true"></i>
+                            </span>
                         </button>
                     </div>
                 </div>
             </div>
-
         )
     }
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {
@@ -108,4 +98,3 @@ export default  withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
 )(NoteCard));
-

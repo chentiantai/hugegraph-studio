@@ -31,8 +31,8 @@ export const RAW = 'RAW';
 export const GRAPH = 'GRAPH';
 export const NODATA = 'NODATA';
 
-
 class GremlinResult extends React.Component {
+
     constructor() {
         super();
         this.state = {
@@ -40,7 +40,6 @@ class GremlinResult extends React.Component {
         }
 
         this.curTabs = [];
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,33 +50,41 @@ class GremlinResult extends React.Component {
     render() {
         let tabPanes = this.state.tabs.map((tab, index) => {
             if (tab.type === GRAPH) {
-                return <TabPane key={index}>
-                    <Graph id={this.props.cellId + '_graph'}
-                           content={this.props.content}
-                           height={this.props.height}
-                           cellId={this.props.cellId}
-                           notebookId={this.props.notebookId}/>
-                </TabPane>
+                return (
+                    <TabPane key={index}>
+                        <Graph id={this.props.cellId + '_graph'}
+                               content={this.props.content}
+                               height={this.props.height}
+                               cellId={this.props.cellId}
+                               notebookId={this.props.notebookId}/>
+                    </TabPane>
+                )
             } else if (tab.type === TABLE) {
-                return <TabPane key={index}>
-                    <TableResult content={this.props.content}
-                                 height={this.props.height}
-                                 cellId={this.props.cellId}/>
-                </TabPane>
+                return (
+                    <TabPane key={index}>
+                        <TableResult content={this.props.content}
+                                     height={this.props.height}
+                                     cellId={this.props.cellId}/>
+                    </TabPane>
+                )
             } else if (tab.type === NODATA) {
-                return <TabPane key={index}>
-                    <NoData id={this.props.cellId + '_code'}
-                            content={this.props.content}
-                            height={this.props.height}
-                            cellId={this.props.cellId}/>
-                </TabPane>
+                return (
+                    <TabPane key={index}>
+                        <NoData id={this.props.cellId + '_code'}
+                                content={this.props.content}
+                                height={this.props.height}
+                                cellId={this.props.cellId}/>
+                    </TabPane>
+                )
             } else {
-                return <TabPane key={index}>
-                    <Code id={this.props.cellId + '_code'}
-                          content={this.props.content}
-                          height={this.props.height}
-                          cellId={this.props.cellId}/>
-                </TabPane>
+                return (
+                    <TabPane key={index}>
+                        <Code id={this.props.cellId + '_code'}
+                              content={this.props.content}
+                              height={this.props.height}
+                              cellId={this.props.cellId}/>
+                    </TabPane>
+                )
             }
         });
 
@@ -95,7 +102,6 @@ class GremlinResult extends React.Component {
             this.loadDone();
         }
     }
-
 
     componentDidMount() {
         let tabs = this.getTabs(this.props.content, this.props.defaultTabKey);
@@ -118,7 +124,6 @@ class GremlinResult extends React.Component {
     onChangeTab = (type, tabs) => {
         let notebookId = this.props.notebookId;
         let cellId = this.props.cellId;
-
         this.curTabs = tabs;
 
         let cell = {
@@ -188,8 +193,7 @@ class GremlinResult extends React.Component {
                 nextTabs = [];
         }
 
-
-        // use the current tabs and the defaultTabKey to identify the nextTabs;
+        // Use the current tabs and the defaultTabKey to identify the nextTabs;
         // the current tabs keep the state of tabs now，which can be changed
         // by the function "onChangeTab"
         this.curTabs.forEach(curTab => {
@@ -202,7 +206,7 @@ class GremlinResult extends React.Component {
         });
 
 
-        // according the current selected tabKey to identify next default Tab;
+        // According the current selected tabKey to identify next default Tab;
         // details as follows:
         // (1) if defaultTabKey === 1 ,next default tab is nextTabs[0]
         // (2) if defaultTabKey !==1 and the new resultTabs contain this type
@@ -229,11 +233,9 @@ class GremlinResult extends React.Component {
                 }
             }
         }
-
         return nextTabs;
     }
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {
@@ -243,7 +245,8 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        updateCell: (notebookId, cellId, cell) => dispatch(updateItem(notebookId, cellId, cell))
+        updateCell: (notebookId, cellId, cell) =>
+            dispatch(updateItem(notebookId, cellId, cell))
     };
 }
 

@@ -32,62 +32,71 @@ export class Tabs extends React.Component {
         this.setState({tabs: nextProps.tabs});
     }
 
-
     render() {
         return (
             <div>
                 <div className="react-tabs">
                     <ul className="nav nav-pills">
-                        {this.state.tabs.map((tab, index) => {
-                                if (tab.isActive)
-                                    return <li className="active" key={index}>
-                                        <a onClick={() => this.onClick(tab.type)}>
-                                            <i className={tab.label}
-                                               aria-hidden="true"></i></a>
-                                    </li>
-                                else
-                                    return <li key={index}>
-                                        <a onClick={() => this.onClick(tab.type)}>
-                                            <i className={tab.label}
-                                               aria-hidden="true"></i></a>
-                                    </li>
-                            }
-                        )}
-
+                        {
+                            this.state.tabs.map((tab, index) => {
+                                if (tab.isActive) {
+                                    return (
+                                        <li className="active" key={index}>
+                                            <a onClick={() =>
+                                                this.onClick(tab.type)}>
+                                                <i className={tab.label}
+                                                   aria-hidden="true"/>
+                                            </a>
+                                        </li>
+                                    )
+                                } else {
+                                    return (
+                                        <li key={index}>
+                                            <a onClick={() =>
+                                                this.onClick(tab.type)}>
+                                                <i className={tab.label}
+                                                   aria-hidden="true"/>
+                                            </a>
+                                        </li>
+                                    )
+                                }
+                            })
+                        }
                     </ul>
                 </div>
                 <div className="tab-content">
-                    {this.props.children.map((child, index) => {
-                        let tabPane = null;
-                        let curTab = this.state.tabs[index];
-                        if (curTab.isActive) {
-                            tabPane =
-                                <div key={index} className="show">
-                                    {child}
-                                </div>
-                        } else {
-                            if (curTab.exist) {
+                    {
+                        this.props.children.map((child, index) => {
+                            let tabPane = null
+                            let curTab = this.state.tabs[index]
+                            if (curTab.isActive) {
                                 tabPane =
                                     <div key={index}
-                                         className="hidden">
+                                         className="show">
                                         {child}
                                     </div>
                             } else {
-                                tabPane = null;
+                                if (curTab.exist) {
+                                    tabPane =
+                                        <div key={index}
+                                             className="hidden">
+                                            {child}
+                                        </div>
+                                } else {
+                                    tabPane = null
+                                }
                             }
-                        }
-                        return tabPane;
-                    })}
+                            return tabPane
+                        })
+                    }
                 </div>
             </div>
         );
     }
 
-
     componentDidMount() {
         this.setState({tabs: this.props.tabs});
     }
-
 
     onClick = (type) => {
         let tabs = this.state.tabs.map(tab => {
@@ -108,6 +117,7 @@ export class Tabs extends React.Component {
 }
 
 export class TabPane extends React.Component {
+
     render() {
         return (
             <div>

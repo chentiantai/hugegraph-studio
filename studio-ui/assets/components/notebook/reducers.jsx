@@ -90,9 +90,12 @@ export function notebook(state = [], action) {
             return {
                 ...state,
                 cells: state.cells.map(
-                    cell => cell.id === action.cell.id ? {...cell, ...action.cell} : cell
+                    cell => cell.id === action.cell.id ? {
+                        ...cell,
+                        ...action.cell
+                    } : cell
                 )
-            };
+            }
         }
         case UPDATE_GRAPH: {
             return {
@@ -102,19 +105,23 @@ export function notebook(state = [], action) {
                         if (cell.id === action.cellId) {
                             if (cell.result.type === 'EDGE') {
                                 if (action.graph.edges !== null) {
-                                    action.graph.edges.forEach(e => cell.result.data.push(e));
+                                    action.graph.edges.forEach(
+                                        e => cell.result.data.push(e));
                                 }
                             } else if (cell.result.type === 'VERTEX') {
                                 if (action.graph.vertices !== null) {
-                                    action.graph.vertices.forEach(v => cell.result.data.push(v));
+                                    action.graph.vertices.forEach(
+                                        v => cell.result.data.push(v));
                                 }
                             }
 
                             if (action.graph.edges !== null) {
-                                action.graph.edges.forEach(e => cell.result.graph.edges.push(e));
+                                action.graph.edges.forEach(
+                                    e => cell.result.graph.edges.push(e));
                             }
                             if (action.graph.vertices !== null) {
-                                action.graph.vertices.forEach(v => cell.result.graph.vertices.push(v));
+                                action.graph.vertices.forEach(
+                                    v => cell.result.graph.vertices.push(v));
                             }
                         }
                         return cell;
@@ -125,7 +132,6 @@ export function notebook(state = [], action) {
         default:
             return state;
     }
-
 }
 
 export function schema(state = null, action) {
@@ -136,7 +142,3 @@ export function schema(state = null, action) {
             return state;
     }
 }
-
-
-
-

@@ -37,13 +37,13 @@ export function alerts(state = {items: [], lastKey: -1}, action) {
         case ALERT_HIDE:
             return {
                 ...state,
-                items: state.items.filter(item => (item.key !== action.payload.key))
+                items: state.items
+                            .filter(item => (item.key !== action.payload.key))
             };
         default:
             return state;
     }
 }
-
 
 export function connections(state = [], action) {
     switch (action.type) {

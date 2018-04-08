@@ -60,19 +60,23 @@ class NotebookBoard extends React.Component {
                     connection={this.props.notebook.connection}/>
                 {
                     this.props.notebook.cells.map(cell => {
-                            let display = existFullScreenCell ?
-                                (cell.viewSettings.fullScreen ? 'block' : 'none') : 'block';
+                        let display = existFullScreenCell ?
+                                      (cell.viewSettings.fullScreen ?
+                                       'block' : 'none') : 'block'
 
-                            return <div key={cell.id} style={{display: display}}>
+                        return (
+                            <div key={cell.id}
+                                 style={{display: display}}>
                                 <NotebookCell cell={cell}
-                                              notebookId={this.props.match.params.id}
+                                              notebookId=
+                                                  {this.props.match.params.id}
                                               canBeDelete={canBeDelete}/>
 
                                 <NoteBookItemAdd cellId={cell.id}
                                                  display={addDisplay}
                                                  onClick={this.addItem}/>
-                            </div>;
-                        }
+                            </div>
+                        )}
                     )
                 }
             </div>
@@ -131,7 +135,7 @@ class NoteBookItemAdd extends React.Component {
                                         className="btn btn-default"
                                         onClick={this.onClick}>
                                     <i className="fa fa-plus"
-                                       aria-hidden="true"></i>
+                                       aria-hidden="true"/>
                                 </button>
                             </div>
                         </div>
@@ -152,9 +156,11 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
     return {
-        addItem: (notebookId, position) => dispatch(addItem(notebookId, position)),
+        addItem: (notebookId, position) =>
+                  dispatch(addItem(notebookId, position)),
         loadCells: notebookId => dispatch(loadCells(notebookId)),
-        deleteItem: (notebookId, cellId) => dispatch(deleteItem(notebookId, cellId)),
+        deleteItem: (notebookId, cellId) =>
+                     dispatch(deleteItem(notebookId, cellId)),
         clearNotebookState: () => dispatch(clearNotebookState()),
         updateNoteBook: notebook => dispatch(updateNoteBook(notebook))
     };

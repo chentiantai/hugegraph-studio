@@ -79,9 +79,10 @@ export function updateConnection(connection) {
                 dispatch(alertMessage('Update Connection Success', 'success'));
             })
             .catch(err => {
-                dispatch(alertMessage('Update Connection Fetch Exception:' + err,
-                                      'danger'));
-
+                dispatch(
+                    alertMessage('Update Connection Fetch Exception:' + err,
+                                 'danger')
+                );
             });
     };
 }
@@ -149,7 +150,7 @@ export function deleteConnection(id) {
                 method: 'DELETE'
             })
             .then(response => {
-                // avoid the case : when the response is null
+                // Avoid the case : when the response is null
                 if (response.status > 400)
                     return response.json();
                 else
@@ -200,8 +201,8 @@ export function alertHide(key) {
 }
 
 export function alertMessage(messageText, messageType, delay = 1000) {
-    let msgContent = 'messageText must be string type and messageType must' +
-                     ' be either [%s, %s, %s, %s]';
+    let msgContent = 'messageText must be string type and messageType must ' +
+                     'be either [%s, %s, %s, %s]';
     let msgType = ['success', 'warning', 'danger', 'info'];
     return (dispatch, getState) => {
         if (typeof messageText === 'string' &&

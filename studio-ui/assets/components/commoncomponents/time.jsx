@@ -21,6 +21,7 @@ import React from 'react';
 import Time from 'react-time';
 
 export  default class TimeFormat extends React.Component {
+
     constructor() {
         super();
     }

@@ -62,4 +62,3 @@ function headMode(state = {}, action) {
             return state;
     }
 }
-

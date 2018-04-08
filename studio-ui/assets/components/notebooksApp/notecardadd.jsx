@@ -21,7 +21,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {alertMessage, loadConnections} from '../connection/actions';
 
-
 export class NoteCardAdd extends React.Component {
     constructor() {
         super();
@@ -32,7 +31,7 @@ export class NoteCardAdd extends React.Component {
             <div className="notebook-card" onClick={() => this.addNoteCard()}>
                 <div className="notebook-card-add">
                     <button type="button" className="btn btn-link">
-                        <i className="fa fa-plus fa-4x" aria-hidden="true"></i>
+                        <i className="fa fa-plus fa-4x" aria-hidden="true"/>
                     </button>
                 </div>
             </div>
@@ -46,14 +45,12 @@ export class NoteCardAdd extends React.Component {
     addNoteCard() {
         if (this.props.connections.length === 0) {
             this.props.alertMessage('There is not any connections, please' +
-                ' create a connection firstly.', 'warning');
+                                    ' create a connection firstly.', 'warning');
         } else {
             this.props.onClick();
         }
     }
-
 }
-
 
 // Map Redux state to component props
 function mapStateToProps(state) {
