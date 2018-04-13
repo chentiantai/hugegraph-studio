@@ -62,21 +62,16 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
         } else {
             if (e instanceof ResponseException) {
                 message = e.getMessage();
-                // FIXME
-                switch (((ResponseException) e).getResponseStatusCode()
-                                               .ordinal()) {
-                    case 1:
-                        status = Response.Status.BAD_GATEWAY;
-                        break;
-                    case 2:
+                switch (((ResponseException) e).getResponseStatusCode()) {
+                    case REQUEST_ERROR_MALFORMED_REQUEST:
+                    case REQUEST_ERROR_INVALID_REQUEST_ARGUMENTS:
                         status = Response.Status.BAD_REQUEST;
-                        errorCode = ErrorCodes.ServerSerializationError();
                         break;
-                    case 3:
-                        status = Response.Status.BAD_REQUEST;
-                        errorCode = ErrorCodes.ScriptEvaluationError();
+                    case SERVER_ERROR_SCRIPT_EVALUATION:
+                    case SERVER_ERROR_SERIALIZATION:
+                        status = Response.Status.INTERNAL_SERVER_ERROR;
                         break;
-                    case 4:
+                    case SERVER_ERROR_TIMEOUT:
                         status = Response.Status.GATEWAY_TIMEOUT;
                         break;
                     default:
@@ -84,9 +79,6 @@ public class InternalExceptionMapper implements ExceptionMapper<Throwable> {
                                          .fromStatusCode(((ResponseException) e)
                                          .getResponseStatusCode().getValue());
                         break;
-                }
-                if (status == null) {
-                    status = Response.Status.BAD_GATEWAY;
                 }
             } else {
                 if (e instanceof CompletionException) {
