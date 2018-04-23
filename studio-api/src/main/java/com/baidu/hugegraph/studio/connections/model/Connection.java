@@ -40,11 +40,11 @@ public class Connection implements Comparable<Connection> {
     @JsonProperty("port")
     private int port;
 
-    @JsonProperty("graphName")
-    private String graphName;
+    @JsonProperty("graph")
+    private String graph;
 
-    @JsonProperty("connectionHost")
-    private String connectionHost;
+    @JsonProperty("host")
+    private String host;
 
     @JsonProperty("lastModified")
     private Long lastModified;
@@ -108,17 +108,17 @@ public class Connection implements Comparable<Connection> {
      *
      * @return the graph name.
      */
-    public String getGraphName() {
-        return graphName;
+    public String getGraph() {
+        return graph;
     }
 
     /**
      * Sets graph name.
      *
-     * @param graphName the graph name.
+     * @param graph the graph name.
      */
-    public void setGraphName(String graphName) {
-        this.graphName = graphName;
+    public void setGraph(String graph) {
+        this.graph = graph;
     }
 
     /**
@@ -127,16 +127,16 @@ public class Connection implements Comparable<Connection> {
      * @return the connection host.
      */
     public String getConnectionHost() {
-        return connectionHost;
+        return host;
     }
 
     /**
      * Sets connection host.
      *
-     * @param connectionHost the connection host.
+     * @param host the connection host.
      */
-    public void setConnectionHost(String connectionHost) {
-        this.connectionHost = connectionHost;
+    public void setConnectionHost(String host) {
+        this.host = host;
     }
 
     /**
@@ -160,12 +160,12 @@ public class Connection implements Comparable<Connection> {
     /**
      * Gets connection uri.
      *
-     * @return the connection uri, http://{connectionHost}:{port}
+     * @return the connection uri, http://{host}:{port}
      */
     @JsonIgnore
     public String getConnectionUri() {
-        Preconditions.checkNotNull(connectionHost);
-        return String.format("http://%s:%d", connectionHost, port);
+        Preconditions.checkNotNull(host);
+        return String.format("http://%s:%d", host, port);
     }
 
     /**

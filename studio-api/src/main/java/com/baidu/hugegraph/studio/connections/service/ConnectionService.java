@@ -173,7 +173,7 @@ public class ConnectionService {
                                     .build();
         try {
             new HugeClient(connection.getConnectionUri(),
-                           connection.getGraphName());
+                           connection.getGraph());
         } catch (ServerException e) {
             response = Response.status(e.status())
                                .entity(ConnectionState.CLOSED)
@@ -199,7 +199,7 @@ public class ConnectionService {
         Preconditions.checkArgument(connection.getId().equals(connectionId));
 
         HugeClient client = new HugeClient(connection.getConnectionUri(),
-                                           connection.getGraphName());
+                                           connection.getGraph());
         Map<String, List> schemas = new HashMap<>();
         List<PropertyKey> propertyKeys = client.schema().getPropertyKeys();
         List<VertexLabel> vertexLabels = client.schema().getVertexLabels();

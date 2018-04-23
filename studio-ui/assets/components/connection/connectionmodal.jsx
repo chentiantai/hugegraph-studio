@@ -40,8 +40,8 @@ class ConnectionModal extends React.Component {
             connection: {
                 id: '',
                 name: '',
-                graphName: '',
-                connectionHost: '',
+                graph: '',
+                host: '',
                 port: ''
             },
             title: '',
@@ -49,8 +49,8 @@ class ConnectionModal extends React.Component {
         };
         this.validation = {
             name: true,
-            graphName: true,
-            connectionHost: true,
+            graph: true,
+            host: true,
             port: true
         };
     }
@@ -79,8 +79,8 @@ class ConnectionModal extends React.Component {
                     operation: this.props.operation,
                     connection: {
                         name: this.state.connection.name,
-                        graphName: this.state.connection.graphName,
-                        connectionHost: this.state.connection.connectionHost,
+                        graph: this.state.connection.graph,
+                        host: this.state.connection.host,
                         port: this.state.connection.port
                     }
                 }
@@ -147,11 +147,11 @@ class ConnectionModal extends React.Component {
                                 </label>
                                 <Input className="col-sm-10"
                                        placeholder="Graph Name"
-                                       name="graphName"
+                                       name="graph"
                                        validator={isNull}
                                        isValidateByForce=
                                            {this.state.isValidateByForce}
-                                       value={connection.graphName}
+                                       value={connection.graph}
                                        onChange={this.handleChange}
                                        onKeyPress={() =>
                                            this.saveConnection()}/>
@@ -164,11 +164,11 @@ class ConnectionModal extends React.Component {
                                 <Input className="col-sm-10"
                                        placeholder=
                                            "HugeGraph server ip/hostname (like 127.0.0.1)"
-                                       name="connectionHost"
+                                       name="host"
                                        validator={isNull}
                                        isValidateByForce=
                                            {this.state.isValidateByForce}
-                                       value={connection.connectionHost}
+                                       value={connection.host}
                                        onChange={this.handleChange}
                                        onKeyPress={() =>
                                                    this.saveConnection()}/>

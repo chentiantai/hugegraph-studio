@@ -26,8 +26,8 @@ export  default class Connection extends React.Component {
         return (
             <tr>
                 <td>{connection.name}</td>
-                <td>{connection.graphName}</td>
-                <td>{connection.connectionHost}</td>
+                <td>{connection.graph}</td>
+                <td>{connection.host}</td>
                 <td>{connection.port}</td>
                 <td>
                     <button type="button"

@@ -37,8 +37,8 @@ class ConnectionsBoard extends React.Component {
             connection: {
                 id: '',
                 name: '',
-                graphName: '',
-                connectionHost: '',
+                graph: '',
+                host: '',
                 port: ''
             },
             operation: 'add',
@@ -57,8 +57,8 @@ class ConnectionsBoard extends React.Component {
             connection: {
                 id: '',
                 name: '',
-                graphName: '',
-                connectionHost: '',
+                graph: '',
+                host: '',
                 port: ''
             },
             operation: 'add',

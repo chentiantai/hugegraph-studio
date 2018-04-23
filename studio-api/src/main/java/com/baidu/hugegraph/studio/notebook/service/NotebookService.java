@@ -329,7 +329,7 @@ public class NotebookService {
             // Build HugeClient from the connection info from the notebook.
             HugeClient hugeClient = new HugeClient(
                     notebook.getConnection().getConnectionUri(),
-                    notebook.getConnection().getGraphName());
+                    notebook.getConnection().getGraph());
 
             GremlinManager gremlinManager = hugeClient.gremlin();
 
@@ -482,7 +482,7 @@ public class NotebookService {
 
         HugeClient hugeClient = new HugeClient(
                                 notebook.getConnection().getConnectionUri(),
-                                notebook.getConnection().getGraphName());
+                                notebook.getConnection().getGraph());
 
         SchemaManager schema = hugeClient.schema();
         VertexLabel vertexLabel = schema.getVertexLabel(label);

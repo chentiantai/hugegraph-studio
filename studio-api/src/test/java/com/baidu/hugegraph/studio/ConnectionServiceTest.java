@@ -64,7 +64,7 @@ public class ConnectionServiceTest extends JerseyTest {
     public void testCreateConnection() {
         Connection connection = new Connection();
         connection.setConnectionHost("127.0.0.1");
-        connection.setGraphName("112");
+        connection.setGraph("112");
         connection.setPort(8080);
         connection.setName("testCreateConnection");
 
@@ -82,7 +82,7 @@ public class ConnectionServiceTest extends JerseyTest {
         Connection connection = new Connection();
         connection.setId(connectionId);
         connection.setConnectionHost("127.0.1.3");
-        connection.setGraphName("hugegraph1");
+        connection.setGraph("hugegraph1");
         connection.setPort(8080);
         connection.setName("testCreateConnection");
 
