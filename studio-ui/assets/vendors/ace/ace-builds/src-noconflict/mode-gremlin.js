@@ -1,4 +1,4 @@
-ace.define("ace/mode/doc_comment_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/doc_comment_highlight_rules", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text_highlight_rules"], function (require, exports, module) {
     "use strict";
 
     var oop = require("../lib/oop");
@@ -793,26 +793,29 @@ ace.define("ace/mode/gremlin_highlight_rules",["require","exports","module","ace
 
     var GremlinHighlightRules = function () {
         var keywords = (
-            "g|V|E|has|open|close|inV|inE|out|outV|outE|label|edgeLabel|vertexLabel|store|next|addVertex|" +
+            "g|V|E|has|open|close|inV|inE|out|outV|outE|label|store|next|addVertex|clazz|" +
             "limit|traversal|withBulk|values|schema|except|ifNotExist|addEdge|addVertex|property|io|" +
-            "propertyKey|VertexEdge|filter|loops|readGraph|tree|properties|graph|value|bothE|addV|where|" +
-            "both|is|path|it|get|from|to|select|otherV|within|inside|outside|withSack|bothV|without"
+            "filter|loops|readGraph|tree|properties|graph|value|bothE|addV|where|hidden|bothV|without" +
+            "both|is|path|it|get|from|to|select|otherV|within|inside|outside|withSack"
         );
 
         var buildinFunctions = (
-            "coin|count|coalesce|createIndex|hasLabel|create|append|eliminate|remove|rebuildIndex|constant|" +
-            "isDirected|desc|rebuildIndex|inject|profile|simplePath|eq|neq|gt|gte|lt|lte|queryType|indexFields|" +
-            "frequency|singleTime|multiTimes|link|links|sortKeys|type|in|on|by|secondary|drop|search|makeEdgeLabel|" +
-            "cyclicPath|hasKey|match|sack|aggregate|between|baseType|baseValue|indexType|rebuild|apend|eliminate|" +
-            "choose|remove|aggregate|iterate|lte|dedup|identity|groupCount|until|barrier|fold|unfold|makeIndexLabel|" +
-            "makeVertexLabel|makePropertyKey|sideEffect|hasNext|toList|toSet|cap|option|branch|choose|repeat|emit|order|" +
-            "mean|withComputer|subgraph|getObjectsAtDepth|hasValue|hasNot|hasId"
+            "targetLabel|sourceLabel|indexLabel|indexLabels|edgeLabel|vertexLabel|propertyKey|getPropertyKey|" +
+            "getVertexLabel|getEdgeLabel|getIndexLabel|getPropertyKeys|getVertexLabels|getEdgeLabels|getIndexLabels|" +
+            "coin|count|coalesce|createIndex|hasLabel|getLabelId|create|build|append|eliminate|remove|rebuildIndex|" +
+            "constant|isDirected|desc|inject|profile|simplePath|eq|neq|gt|gte|lt|lte|queryType|indexFields|frequency|" +
+            "links|type|in|on|by|checkDataType|checkValue|validValue|secondary|drop|search|makeEdgeLabel|cyclicPath|" +
+            "hasKey|match|sack|aggregate|between|baseType|baseValue|indexType|rebuild|choose|aggregate|iterate|lte|dedup|" +
+            "identity|groupCount|until|barrier|fold|unfold|schemaId|checkName|makeIndexLabel|makeVertexLabel|makePropertyKey|" +
+            "sideEffect|hasNext|toList|toSet|cap|option|branch|choose|repeat|emit|order|mean|withComputer|subgraph|" +
+            "getObjectsAtDepth|hasValue|hasNot|hasId|nullableKey|nullableKeys|sortKeys|link|singleTime|multiTimes|" +
+            "enableLabelIndex|userdata|checkExist|linkWithLabel|directed|idStrategy|primaryKeys|primaryKey"
         );
 
         var dataTypes = (
-            "int|numeric|decimal|date|varchar|char|bigint|float|double|bit|binary|text|set|timestamp|toString|" +
+            "int|numeric|decimal|date|varchar|char|bigint|float|double|bit|binary|text|set|timestamp|toString|primitive|" +
             "money|real|number|integer|asInt|asText|dataType|cardinality|asText|asInt|asTimestamp|flatMap|valueMap|" +
-            "asByte|asBlob|asDouble|asFloat|asLong|valueSingle|asBoolean|valueList|valueSet|asUuid|null|Infinity|NaN|undefined"
+            "asByte|asBlob|asDouble|asDate|asFloat|asLong|valueSingle|asBoolean|valueList|valueSet|asUuid|null|Infinity|NaN|undefined"
         );
 
         var keywordMapper = this.createKeywordMapper({
