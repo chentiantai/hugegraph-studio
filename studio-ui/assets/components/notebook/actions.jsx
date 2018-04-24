@@ -251,21 +251,21 @@ export function showSchema(connectionId) {
     let url = '/api/v1/connections/' + connectionId + '/schema';
     return dispatch => {
         return fetch(url)
-            .then(checkStatus)
             .then(parseJSON)
             .then(data => {
-                dispatch(showSchemaSuccess(data));
-            })
-            .catch(err => {
-                let schemaView = {
-                    edgeLabels: [],
-                    propertyKeys: [],
-                    vertexLabels: []
+                if (data.status >= 200 && data.status < 300) {
+                    dispatch(showSchemaSuccess(data));
+                } else {
+                    let schemaView = {
+                        edgeLabels: [],
+                        propertyKeys: [],
+                        vertexLabels: []
+                    }
+                    dispatch(showSchemaSuccess(schemaView));
+                    dispatch(alertMessage('Show Schema Fetch Exception: ' +
+                                          data.message, 'danger'));
                 }
-                dispatch(showSchemaSuccess(schemaView));
-                dispatch(alertMessage('Show Schema Fetch Exception:' + err,
-                                      'danger'));
-            });
+            })
     };
 }
 
