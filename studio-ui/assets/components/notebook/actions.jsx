@@ -32,11 +32,11 @@ export const SYCN_ITEM = 'sycn_item';
 export const UPDATE_GRAPH = 'update_graph';
 
 export function runMode(cell) {
-    console.log("update");
+    console.log('update');
     return {
         type: RUN_MODE,
         cell
-    }
+    };
 }
 
 export function updateNoteBook(notebook) {
@@ -67,13 +67,6 @@ export function addItemSuccess(data, position) {
 export function updateItemSuccess(data) {
     return {
         type: UPDATE_ITEM,
-        data
-    };
-}
-
-export function sycnItemState(data) {
-    return {
-        type: SYCN_ITEM,
         data
     };
 }
@@ -115,8 +108,8 @@ export function addItem(notebookId, position) {
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells?position=' + position;
     return dispatch => {
-        return fetch(url,
-            {
+        return fetch(
+            url, {
                 method: 'POST',
                 body: JSON.stringify(initItem),
                 headers: myHeaders
@@ -138,17 +131,14 @@ export function deleteItem(notebookId, cellId) {
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells/' + cellId;
     return dispatch => {
-        return fetch(url,
-            {
-                method: 'DELETE'
-            })
+        return fetch(url, {method: 'DELETE', headers: myHeaders})
             .then(response => {
                 if (response.status >= 200 && response.status < 300) {
                     dispatch(deleteItemSuccess(cellId));
                 } else {
                     let error = new Error(response.statusText);
                     error.status = response.status;
-                    throw error
+                    throw error;
                 }
             })
             .catch(err => {
@@ -164,8 +154,8 @@ export function updateItem(notebookId, itemId, cell) {
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/notebooks/' + notebookId + '/cells/' + itemId;
     return dispatch => {
-        return fetch(url,
-            {
+        return fetch(
+            url, {
                 method: 'PUT',
                 body: JSON.stringify(cell),
                 headers: myHeaders
@@ -192,8 +182,9 @@ export function executeCell(notebookId, itemId, cell) {
         let responseStatus = {
             status: 200,
             statusText: 'ok'
-        }
-        return fetch(url,
+        };
+        return fetch(
+            url,
             {
                 method: 'PUT',
                 body: JSON.stringify(cell),
@@ -207,11 +198,11 @@ export function executeCell(notebookId, itemId, cell) {
             .then(response => {
                 if (responseStatus.status >= 200 &&
                     responseStatus.status < 300) {
-                    return response
+                    return response;
                 } else {
                     let error = new Error(responseStatus.statusText);
                     error.response = response;
-                    throw error
+                    throw error;
                 }
             })
             .then(data => {
@@ -221,7 +212,7 @@ export function executeCell(notebookId, itemId, cell) {
                     status: 200,
                     msg: 'ok',
                     result: data
-                }
+                };
                 dispatch(runMode(newCell));
             })
             .catch(err => {
@@ -239,7 +230,7 @@ export function executeCell(notebookId, itemId, cell) {
                         detailedMsg: err.response
                     },
                     result: null
-                }
+                };
                 dispatch(runMode(newCell));
             });
     };
@@ -249,23 +240,36 @@ export function showSchema(connectionId) {
     let myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     let url = '/api/v1/connections/' + connectionId + '/schema';
+
     return dispatch => {
-        return fetch(url)
-            .then(parseJSON)
-            .then(data => {
-                if (data.status >= 200 && data.status < 300) {
-                    dispatch(showSchemaSuccess(data));
-                } else {
-                    let schemaView = {
-                        edgeLabels: [],
-                        propertyKeys: [],
-                        vertexLabels: []
+        return fetch(url, {headers: myHeaders})
+            .then((response) => {
+                const contentType = response.headers.get('content-type');
+                if (response.status >= 200 && response.status < 300) {
+                    if (contentType &&
+                        contentType.indexOf('application/json') !== -1) {
+                        return response.json();
                     }
-                    dispatch(showSchemaSuccess(schemaView));
-                    dispatch(alertMessage('Show Schema Fetch Exception: ' +
-                                          data.message, 'danger'));
+                    return response.text();
                 }
+                if (response.status === 404) {
+                    return Promise.reject({message: 'not found'});
+                }
+                return response.json().then(r => Promise.reject(r));
             })
+            .then(data => {
+                dispatch(showSchemaSuccess(data));
+            })
+            .catch(err => {
+                let schemaView = {
+                    edgeLabels: [],
+                    propertyKeys: [],
+                    vertexLabels: []
+                };
+                dispatch(showSchemaSuccess(schemaView));
+                dispatch(alertMessage('Show Schema Fetch Exception: ' +
+                                      err.message, 'danger'));
+            });
     };
 }
 
@@ -286,14 +290,14 @@ export function updateGraph(cellId, graph) {
 
 function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
-        return response
+        return response;
     } else {
         let error = new Error(response.statusText);
         error.status = response.status;
-        throw error
+        throw error;
     }
 }
 
 function parseJSON(response) {
-    return response.json()
+    return response.json();
 }

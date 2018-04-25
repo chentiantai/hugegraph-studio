@@ -39,7 +39,7 @@ export default class StudioHead extends React.Component {
                    'HugeGraph Notebook Quick Start' : this.props.name;
         let headRight = this.props.connection === undefined ? null :
                         <div className="header-control-right">
-                            <div className="graph">
+                            <div className="studio-header-button">
                                 <i className="fa fa-database"
                                    aria-hidden="true"></i>
                                 &nbsp;{this.props.connection.graph}
