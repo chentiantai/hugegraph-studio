@@ -110,36 +110,52 @@ export default  class TableResult extends React.Component {
                         </table>
                     </div>
                 );
-            case 'PATH':
+            case 'PATH': {
                 return (
                     <div style={{height: this.props.height + 'px'}}
                          className="code-content">
-                        <table className="table table-bordered table-striped">
-                            <tbody>
-                            <tr className="info">
-                                <th>path</th>
-                            </tr>
-                            {
-                                tableContent.map((obj, index) => {
-                                    let vertexName =
-                                        obj.objects[0].id.split(':')[1];
-                                    let edgeLabel = obj.objects[1].label;
-                                    let pathResult =
-                                        vertexName + '--' + edgeLabel;
-                                    return (
-                                        <tr key={index}>
-                                            <td>{pathResult}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            </tbody>
-                        </table>
+                        {
+                            this.createPathTable(tableContent)
+                        }
                     </div>
                 );
+            }
             default :
                 return (<div></div>);
         }
+    }
+
+    createPathTable = (tableContent) => {
+        console.log(tableContent);
+        return (
+            <table className="table table-bordered table-striped">
+                <tbody>
+                <tr className="info">
+                    <th>path</th>
+                </tr>
+                {
+                    tableContent.map((path, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>
+                                    {this.createPathTdContent(path.objects)}
+                                </td>
+                            </tr>);
+                    })
+                }
+                </tbody>
+            </table>
+        );
+    };
+    createPathTdContent = (objects) => {
+        return (
+            objects.map((obj, index) => {
+               return (
+                   <span key={index} className="label label-default path_value">
+                       {obj.id !== undefined ? obj.id : obj}
+                   </span>
+               );
+            }));
     }
 
     componentDidUpdate() {
