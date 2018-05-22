@@ -168,7 +168,7 @@ public class NotebookServiceTest extends JerseyTest {
     @Test
     public void testExecuteNotebookCell() {
         String code = "g.V()";
-        // code = "schema.getVertexLabel(\"person2\").userData()";
+        // code = "schema.getVertexLabel(\"person2\").userdata()";
         NotebookCell cell = new NotebookCell();
         cell.setId(cellId);
         cell.setLanguage( "gremlin" );

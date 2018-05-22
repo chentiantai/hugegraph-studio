@@ -5,20 +5,25 @@ body {
 }
 
 .navbar {
-    min-height: 28px;
+    min-height: 34px;
     border-radius: 0;
     margin-bottom: 0;
-    background: #3071a9;
+    background: #385380;
 }
 
 .navbar-inverse {
-    border-color: #3071a9;
+    border-color: #385380;
     color: #fff;
+    height: 36px;
 }
 
 .navbar-brand {
     padding: 2px 5px;
-    height: 28px;
+    height: 34px;
+}
+
+.navbar-right > .dropdown {
+    height: 35px;
 }
 
 .navbar-nav > li > a {
@@ -28,6 +33,7 @@ body {
 
 .navbar-inverse .navbar-nav > li:hover {
     background-color: #000;
+    height: 35px;
 }
 
 .navbar-inverse .navbar-nav > li > a {

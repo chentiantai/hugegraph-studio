@@ -20,6 +20,7 @@
 package com.baidu.hugegraph.studio;
 
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +28,12 @@ import org.junit.Test;
 public class StudioConfigurationTest {
 
     private StudioConfiguration configuration;
+
     @Before
     public void setUp() throws Exception {
         String basedir = System.getProperty("user.dir");
         System.setProperty("studio.conf.dir", basedir + "/conf");
-        configuration = new StudioConfiguration();
+        configuration = StudioConfiguration.getInstance();
     }
 
     @Test
@@ -44,5 +46,10 @@ public class StudioConfigurationTest {
         Assert.assertEquals(path1, configuration.getBaseUserDataDirectory());
         Assert.assertEquals(path2, configuration.getConnectionsDirectory());
         Assert.assertEquals(path3, configuration.getNotebooksDirectory());
+    }
+
+    @Test
+    public void testGetColors() {
+        configuration.getVertexVisColor();
     }
 }

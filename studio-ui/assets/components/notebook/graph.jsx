@@ -60,7 +60,7 @@ class Graph extends React.Component {
             if(graph.groups == null){
                 graph.groups = {};
             }
-            this.drawGraph(graph.vertices, graph.edges, graph.groups);
+            this.drawGraph(graph.vertices, graph.edges, graph.styles);
         }
         this.loadDone();
     }
@@ -72,12 +72,15 @@ class Graph extends React.Component {
             if(graph.groups == null){
                 graph.groups = {};
             }
-            this.drawGraph(graph.vertices, graph.edges, graph.groups);
+            this.drawGraph(graph.vertices, graph.edges, graph.styles);
         }
         this.loadDone();
     }
 
-    drawGraph = (vertices, edges, groups) => {
+    drawGraph = (vertices, edges, styles) => {
+        console.log(styles.groups);
+        console.log(styles.font);
+
         this.state.graphNodes = new vis.DataSet();
         this.state.graphEdges = new vis.DataSet();
 
@@ -134,8 +137,10 @@ class Graph extends React.Component {
             edges: this.state.graphEdges,
         };
 
+        console.log(styles.edgeFont)
+
         var options = {
-            groups: groups,
+            groups: styles.groups,
             autoResize: true,
             width: '100%',
             interaction: {
@@ -144,7 +149,7 @@ class Graph extends React.Component {
                 zoomView: true
             },
             nodes: {
-                font: {size: 12},
+                font: styles.font,
                 scaling: {
                     min: 10,
                     max: 30
@@ -163,11 +168,9 @@ class Graph extends React.Component {
                 smooth: {
                     type: 'dynamic'
                 },
-                font: {
-                    size: 8
-                },
+                font: styles.edgeFont,
                 arrows: 'to',
-                color: {highlight: '#fb6a02', hover: '#ec3112'},
+                color: styles.edgeColor,
             },
             physics: {
                 maxVelocity: 50,

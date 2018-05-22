@@ -94,17 +94,17 @@ export default  class TableResult extends React.Component {
                         </table>
                     </div>
                 );
-            case 'NUMBER':
+            case 'SINGLE':
                 return (
                     <div style={{height: this.props.height + 'px'}}
                          className="code-content">
                         <table className="table table-bordered table-striped">
                             <tbody>
                             <tr className="info">
-                                <th>count</th>
+                                <th>Result</th>
                             </tr>
                             <tr>
-                                <td>{tableContent}</td>
+                                <td>{JSON.stringify(tableContent)}</td>
                             </tr>
                             </tbody>
                         </table>

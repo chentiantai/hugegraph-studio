@@ -139,7 +139,7 @@ class GremlinResult extends React.Component {
     getTabs = (content, defaultTabKey) => {
         let nextTabs = [];
         switch (content.type) {
-            case 'NUMBER':
+            case 'SINGLE':
                 nextTabs = [{
                     type: TABLE,
                     isActive: false,

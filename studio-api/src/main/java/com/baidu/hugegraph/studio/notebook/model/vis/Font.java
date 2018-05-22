@@ -19,76 +19,115 @@
 
 package com.baidu.hugegraph.studio.notebook.model.vis;
 
-import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.FONT_COLOR;
-import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.FONT_FACE;
-import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.FONT_MULTI;
-import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.FONT_SIZE;
-
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class Font {
 
-    private String color = "#343434";
-    private Integer size = 12;
-    private String face = "arial";
-    private Boolean multi = false;
+    // Font
+    protected static final String FONT_COLOR = "vis.font.color";
+    protected static final String FONT_SIZE = "vis.font.size";
+    protected static final String FONT_FACE = "vis.font.face";
+    protected static final String FONT_MULTI = "vis.font.multi";
+
+    private String color;
+    private Integer size;
+    private String face;
+    private Boolean multi;
 
     public Font() {
+
     }
 
-    public Font(Map<String, Object> userData) {
-        Number size = (Number) userData.get(FONT_SIZE);
-        if (size != null) {
-            this.size = size.intValue();
+    private Font(Builder builder) {
+        color = builder.color;
+        size = builder.size;
+        face = builder.face;
+        multi = builder.multi;
+    }
+
+    public static class Builder {
+        private String color = "#343434";
+        private Integer size = 12;
+        private String face = "arial";
+        private Boolean multi = false;
+
+
+        public Builder() {
+
         }
 
-        String color = (String) userData.get(FONT_COLOR);
-        if (!StringUtils.isBlank(color)) {
+
+        public Builder(Map<String, Object> userData) {
+            Object fontSize = userData.get(FONT_SIZE);
+            if (fontSize instanceof Number) {
+                Number size = (Number) fontSize;
+                if (size != null) {
+                    this.size = size.intValue();
+                }
+            }
+
+            Object fontColor = userData.get(FONT_COLOR);
+            if (fontColor instanceof String &&
+                StringUtils.isNotBlank((String) fontColor)) {
+                this.color = (String) fontColor;
+            }
+
+            Object fontFace = userData.get(FONT_FACE);
+            if (fontFace instanceof String &&
+                StringUtils.isNotBlank((String) fontFace)) {
+                this.face = (String) fontFace;
+            }
+
+            Object fontMulti = userData.get(FONT_MULTI);
+            if (fontMulti instanceof Boolean) {
+                Boolean multi = (Boolean) fontMulti;
+                if (multi != null) {
+                    this.multi = multi;
+                }
+            }
+        }
+
+        public Font build() {
+            return new Font(this);
+        }
+
+        public Builder color(String color) {
             this.color = color;
+            return this;
         }
 
-        String face = (String) userData.get(FONT_FACE);
-        if (!StringUtils.isBlank(face)) {
+        public Builder size(Integer size) {
+            this.size = size;
+            return this;
+        }
+
+        public Builder face(String face) {
             this.face = face;
+            return this;
         }
 
-        Boolean multi = (Boolean) userData.get(FONT_MULTI);
-        if (multi != null) {
+        public Builder multi(Boolean multi) {
             this.multi = multi;
+            return this;
         }
+
     }
 
     public String getColor() {
         return color;
     }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
-
     public Integer getSize() {
         return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
     }
 
     public String getFace() {
         return face;
     }
 
-    public void setFace(String face) {
-        this.face = face;
-    }
-
     public Boolean getMulti() {
         return multi;
     }
 
-    public void setMulti(Boolean multi) {
-        this.multi = multi;
-    }
 }

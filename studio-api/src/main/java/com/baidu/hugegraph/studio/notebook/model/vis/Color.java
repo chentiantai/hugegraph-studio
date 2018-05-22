@@ -31,65 +31,116 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.baidu.hugegraph.studio.config.NodeColorOption;
+
 public class Color {
 
-    private String background = "#00ccff";
-    private String border = "#00ccff";
+    private static final String DEFAULT = "default";
+    private static final String HOVER = "hover";
+    private static final String HIGHLIGHT = "highlight";
+
+    private static final String DEFAULT_BACKGROUND_COLOR = "#00ccff";
+    private static final String DEFAULT_BORDER_COLOR = "#00ccff";
+    private static final String BACKGROUND = "background";
+    private static final String BORDER = "border";
+
+    private String background;
+    private String border;
     private Map<String, String> highlight;
     private Map<String, String> hover;
 
     public Color() {
-        this("#00ccff", "#00ccff", new HashMap<>(), new HashMap<>());
     }
 
-    public Color(String background, String border,
-                 Map<String, String> highlight,
-                 Map<String, String> hover) {
-        this.background = background;
-        this.border = border;
-        this.highlight = highlight;
-        this.hover = hover;
+    public Color(Builder builder) {
+        this.background = builder.background;
+        this.border = builder.border;
+        this.highlight = builder.highlight;
+        this.hover = builder.hover;
     }
 
-    public Color(Map<String, Object> userData) {
-        this.highlight = new HashMap<>();
-        this.highlight.put("background", "#fb6a02");
-        this.highlight.put("border", "#fb6a02");
-        this.hover = new HashMap<>();
-        this.hover.put("background", "#ec3112");
-        this.hover.put("border", "#ec3112");
+    public static class Builder {
+        private String background = DEFAULT_BACKGROUND_COLOR;
+        private String border = DEFAULT_BORDER_COLOR;
+        private Map<String, String> highlight = new HashMap<>();
+        private Map<String, String> hover = new HashMap<>();
 
-        String border = (String) userData.get(COLOR_BORDER);
-        if (!StringUtils.isBlank(border)) {
-            this.border = border;
+        public Builder(Map<String, Object> userData,
+                       NodeColorOption colorOption) {
+            Map<String, String> curColorOption = colorOption.getColor();
+            this.background = curColorOption.get(DEFAULT);
+            this.border = curColorOption.get(DEFAULT);
+            this.highlight = new HashMap<>();
+            this.highlight.put(BACKGROUND, curColorOption.get(HIGHLIGHT));
+            this.highlight.put(BORDER, curColorOption.get(HIGHLIGHT));
+            this.hover = new HashMap<>();
+            this.hover.put(BACKGROUND, curColorOption.get(HOVER));
+            this.hover.put(BORDER, curColorOption.get(HOVER));
+
+            Object border = userData.get(COLOR_BORDER);
+
+            if (border instanceof String &&
+                !StringUtils.isBlank((String) border)) {
+                this.border = (String) border;
+            }
+
+            Object background = userData.get(COLOR_BACKGROUND);
+            if (background instanceof String &&
+                StringUtils.isNotBlank((String) background)) {
+                this.background = (String) background;
+            }
+
+            Object highlightBorder = userData.get(COLOR_HIGHLIGHT_BORDER);
+            if (highlightBorder instanceof String &&
+                StringUtils.isNotBlank((String) highlightBorder)) {
+                this.highlight.replace(BORDER, (String) highlightBorder);
+            }
+
+            Object highlightBackground =
+                    userData.get(COLOR_HIGHLIGHT_BACKGROUND);
+            if (highlightBackground instanceof String &&
+                StringUtils.isNotBlank((String) highlightBackground)) {
+                this.highlight
+                        .replace(BACKGROUND, (String) highlightBackground);
+            }
+
+            Object hoverBorder = userData.get(COLOR_HOVER_BORDER);
+            if (hoverBorder instanceof String &&
+                StringUtils.isNotBlank((String) hoverBorder)) {
+                this.hover.replace(BORDER, (String) hoverBorder);
+            }
+
+            Object hoverBackground = userData.get(COLOR_HOVER_BACKGROUND);
+            if (hoverBackground instanceof String &&
+                StringUtils.isNotBlank((String) hoverBackground)) {
+                this.hover.replace(BACKGROUND, (String) hoverBackground);
+            }
         }
 
-        String background = (String) userData.get(COLOR_BACKGROUND);
-        if (!StringUtils.isBlank(background)) {
+        public Color build() {
+            return new Color(this);
+        }
+
+        public Builder background(String background) {
             this.background = background;
+            return this;
         }
 
-        String highlightBorder = (String) userData.get(COLOR_HIGHLIGHT_BORDER);
-        if (!StringUtils.isBlank(highlightBorder)) {
-            this.highlight.replace("border", highlightBorder);
+        public Builder border(String border) {
+            this.border = border;
+            return this;
         }
 
-        String highlightBackground =
-                (String) userData.get(COLOR_HIGHLIGHT_BACKGROUND);
-        if (!StringUtils.isBlank(highlightBackground)) {
-            this.highlight.replace("background", highlightBackground);
+        public Builder highlight(Map<String, String> highlight) {
+            this.highlight = highlight;
+            return this;
         }
 
-        String hoverBorder = (String) userData.get(COLOR_HOVER_BORDER);
-        if (!StringUtils.isBlank(hoverBorder)) {
-            this.hover.replace("border", hoverBorder);
-
+        public Builder hover(Map<String, String> hover) {
+            this.hover = hover;
+            return this;
         }
 
-        String hoverBackground = (String) userData.get(COLOR_HOVER_BACKGROUND);
-        if (!StringUtils.isBlank(hoverBackground)) {
-            this.hover.replace("background", hoverBackground);
-        }
     }
 
     public String getBorder() {

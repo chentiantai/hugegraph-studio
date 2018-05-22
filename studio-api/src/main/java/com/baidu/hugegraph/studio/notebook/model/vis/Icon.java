@@ -22,10 +22,12 @@ package com.baidu.hugegraph.studio.notebook.model.vis;
 import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.ICON_CODE;
 import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.ICON_COLOR;
 import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.ICON_SIZE;
+import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.VIS_SHAPE;
 
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+
 
 public class Icon {
 
@@ -35,36 +37,71 @@ public class Icon {
     private String color;
 
     public Icon() {
-        this("FontAwesome", "\uf111", 50, "#2B7CE9");
+
     }
 
-    public Icon(String code) {
-        this("FontAwesome", code, 50, "#2B7CE9");
+    public Icon(Builder builder) {
+        this.face = builder.face;
+        this.code = builder.code;
+        this.size = builder.size;
+        this.color = builder.color;
     }
 
-    public Icon(String face, String code, Integer size, String color) {
-        this.face = face;
-        this.code = code;
-        this.size = size;
-        this.color = color;
-    }
+    public static class Builder {
+        private String face = "FontAwesome";
+        private String code = "\uf111";
+        private Integer size = 50;
+        private String color = "#2B7CE9";
 
-    public Icon(Map<String, Object> userData) {
-        this();
-        String iconCode = (String) userData.get(ICON_CODE);
-        if (!StringUtils.isBlank(iconCode)) {
-            this.code = iconCode;
+        public Builder(Map<String, Object> userData) {
+            Object shape = userData.get(VIS_SHAPE);
+            if (shape instanceof String) {
+                String shapeStr = (String) shape;
+                if (shapeStr.equals("icon")) {
+                    Object iconCode = userData.get(ICON_CODE);
+                    if (iconCode instanceof String &&
+                        StringUtils.isNotBlank((String) iconCode)) {
+                        this.code = (String) iconCode;
+                    }
+
+                    Object iconColor = userData.get(ICON_COLOR);
+                    if (iconColor instanceof String &&
+                        StringUtils.isNotBlank((String) iconColor)) {
+                        this.color = (String) iconColor;
+                    }
+
+                    Object iconSize = userData.get(ICON_SIZE);
+                    if (iconSize instanceof Number) {
+                        this.size = ((Number) iconSize).intValue();
+                    }
+                }
+            }
         }
 
-        String iconColor = (String) userData.get(ICON_COLOR);
-        if (!StringUtils.isBlank(iconColor)) {
-            this.color = iconColor;
+        public Icon build() {
+            return new Icon(this);
         }
 
-        Number iconSize = (Number) userData.get(ICON_SIZE);
-        if (iconSize != null) {
-            this.size = iconSize.intValue();
+        public Builder face(String face) {
+            this.face = face;
+            return this;
         }
+
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public Builder size(Integer size) {
+            this.size = size;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
     }
 
     public String getFace() {

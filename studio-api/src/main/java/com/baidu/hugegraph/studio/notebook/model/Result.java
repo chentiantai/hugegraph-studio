@@ -178,8 +178,8 @@ public class Result {
     }
 
 
-    public void setGroups(Map<String,VisNode> groups) {
-        this.graph.setGroups(groups);
+    public void setStyles(Map<String, Object> styles) {
+        this.graph.setStyles(styles);
     }
 
     /**
@@ -217,6 +217,12 @@ public class Result {
         NUMBER,
 
         /**
+         * Single type including number,string,boolean.
+         */
+        SINGLE,
+
+
+        /**
          * Markdown type.
          */
         MARKDOWN,
@@ -240,7 +246,7 @@ public class Result {
         private List<Edge> edges;
 
         @JsonProperty
-        private Map<String, VisNode> groups;
+        private Map<String, Object> styles;
 
         /**
          * Instantiates a new Graph.
@@ -302,13 +308,12 @@ public class Result {
             }
         }
 
-        public Map<String, VisNode> getGroups() {
-            return groups;
+        public Map<String, Object> getStyles() {
+            return styles;
         }
 
-        public void setGroups(
-                Map<String, VisNode> groups) {
-            this.groups = groups;
+        public void setStyles(Map<String, Object> styles) {
+            this.styles = styles;
         }
     }
 }

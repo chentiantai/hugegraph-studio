@@ -24,30 +24,55 @@ import static com.baidu.hugegraph.studio.notebook.model.vis.VisNode.SCALING_MIN;
 
 import java.util.Map;
 
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
+
 public class Scaling {
 
     private Integer min = 10;
     private Integer max = 30;
 
-    public Scaling(Map<String, Object> userData) {
-        Number min = (Number) userData.get(SCALING_MIN);
-        if (min != null) {
-            this.min = min.intValue();
-        }
-
-        Number max = (Number) userData.get(SCALING_MAX);
-        if (max != null) {
-            this.max = max.intValue();
-        }
-    }
-
-    public Scaling(Integer min, Integer max) {
-        this.min = min;
-        this.max = max;
-    }
-
     public Scaling() {
-        this(10, 30);
+
+    }
+
+    public Scaling(Builder builder) {
+        this.min = builder.min;
+        this.max = builder.max;
+    }
+
+    public static class Builder {
+        private Integer min = 10;
+        private Integer max = 30;
+
+        public Builder(StudioConfiguration conf, Map<String, Object> userData) {
+            this.min = conf.getVertexMinSize();
+            this.max = conf.getVertexMaxSize();
+
+            Object min = userData.get(SCALING_MIN);
+            if (min instanceof Number) {
+                this.min = ((Number) min).intValue();
+            }
+
+            Object max = userData.get(SCALING_MAX);
+            if (max instanceof Number) {
+                this.min = ((Number) max).intValue();
+            }
+        }
+
+        public Scaling build() {
+            return new Scaling(this);
+        }
+
+        public Builder min(Integer min) {
+            this.min = min;
+            return this;
+        }
+
+        public Builder max(Integer max) {
+            this.max = max;
+            return this;
+        }
+
     }
 
     public Integer getMin() {

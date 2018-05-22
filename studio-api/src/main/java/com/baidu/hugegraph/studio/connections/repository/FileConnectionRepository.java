@@ -19,26 +19,30 @@
 
 package com.baidu.hugegraph.studio.connections.repository;
 
-import com.baidu.hugegraph.studio.config.StudioConfiguration;
-import com.baidu.hugegraph.studio.connections.model.Connection;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Preconditions;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
+import com.baidu.hugegraph.studio.connections.model.Connection;
+import com.baidu.hugegraph.util.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
 
 /**
  * The type File connection repository.
@@ -49,8 +53,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Repository("connectionRepository")
 public class FileConnectionRepository implements ConnectionRepository {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(FileConnectionRepository.class);
+    private static final Logger LOG = Log.logger(FileConnectionRepository.class);
 
     private final ObjectMapper mapper = new ObjectMapper();
     private StudioConfiguration configuration;
@@ -68,7 +71,7 @@ public class FileConnectionRepository implements ConnectionRepository {
     }
 
     private void initConnectionRepository() {
-        configuration = new StudioConfiguration();
+        configuration = StudioConfiguration.getInstance();
         connectionsDataDirectory = configuration.getConnectionsDirectory();
         Preconditions.checkNotNull(connectionsDataDirectory);
 

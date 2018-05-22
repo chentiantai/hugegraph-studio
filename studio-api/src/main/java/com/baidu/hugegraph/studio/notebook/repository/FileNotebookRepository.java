@@ -19,18 +19,6 @@
 
 package com.baidu.hugegraph.studio.notebook.repository;
 
-import com.baidu.hugegraph.studio.config.StudioConfiguration;
-import com.baidu.hugegraph.studio.notebook.model.Notebook;
-import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
-import com.baidu.hugegraph.studio.notebook.model.ViewSettings;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Preconditions;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +33,19 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
+import com.baidu.hugegraph.studio.notebook.model.Notebook;
+import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
+import com.baidu.hugegraph.studio.notebook.model.ViewSettings;
+import com.baidu.hugegraph.util.Log;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
+
 /**
  * The type File notebook repository.
  *
@@ -54,8 +55,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Repository("notebookRepository")
 public class FileNotebookRepository implements NotebookRepository {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(FileNotebookRepository.class);
+    private static final Logger LOG = Log.logger(FileNotebookRepository.class);
 
     private final ObjectMapper mapper = new ObjectMapper();
     private StudioConfiguration configuration;
@@ -73,7 +73,7 @@ public class FileNotebookRepository implements NotebookRepository {
     }
 
     private void initNotebookRepository() {
-        configuration = new StudioConfiguration();
+        configuration = StudioConfiguration.getInstance();
         notebooksDataDirectory = configuration.getNotebooksDirectory();
         Preconditions.checkNotNull(notebooksDataDirectory);
 

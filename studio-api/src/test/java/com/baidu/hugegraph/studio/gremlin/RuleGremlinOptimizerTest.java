@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.baidu.hugegraph.studio.config.StudioConfiguration;
 
 public class RuleGremlinOptimizerTest {
-    StudioConfiguration conf = new StudioConfiguration();
+    StudioConfiguration conf = StudioConfiguration.getInstance();
     String limit = ".limit(" + conf.getDataLimit() + ")";
 
     @Test

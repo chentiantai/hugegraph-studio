@@ -19,17 +19,18 @@
 
 package com.baidu.hugegraph.studio.config;
 
+import org.slf4j.Logger;
+
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.config.OptionSpace;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.baidu.hugegraph.util.Log;
 
 /**
  * The type Studio configuration.
  */
 public class StudioConfiguration {
-    private static final Logger LOG =
-            LoggerFactory.getLogger(StudioConfiguration.class);
+
+    private static final Logger LOG = Log.logger(StudioConfiguration.class);
 
     static {
         OptionSpace.register("studio", StudioOptions.instance());
@@ -45,7 +46,7 @@ public class StudioConfiguration {
     }
 
     public int getHttpPort() {
-        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT).intValue();
+        return this.config.get(StudioOptions.STUDIO_SERVER_HTTP_PORT);
     }
 
     public String getHttpBindAddress() {

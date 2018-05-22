@@ -19,35 +19,23 @@
 
 package com.baidu.hugegraph.studio.notebook.service;
 
+import static com.baidu.hugegraph.studio.notebook.model.Result.Type;
 import static com.baidu.hugegraph.studio.notebook.model.Result.Type.EDGE;
 import static com.baidu.hugegraph.studio.notebook.model.Result.Type.EMPTY;
 import static com.baidu.hugegraph.studio.notebook.model.Result.Type.MARKDOWN;
-import static com.baidu.hugegraph.studio.notebook.model.Result.Type.NUMBER;
 import static com.baidu.hugegraph.studio.notebook.model.Result.Type.OTHER;
 import static com.baidu.hugegraph.studio.notebook.model.Result.Type.PATH;
+import static com.baidu.hugegraph.studio.notebook.model.Result.Type.SINGLE;
 import static com.baidu.hugegraph.studio.notebook.model.Result.Type.VERTEX;
 
-import com.baidu.hugegraph.driver.GremlinManager;
-import com.baidu.hugegraph.driver.HugeClient;
-import com.baidu.hugegraph.driver.SchemaManager;
-import com.baidu.hugegraph.structure.graph.Edge;
-import com.baidu.hugegraph.structure.graph.Vertex;
-import com.baidu.hugegraph.structure.gremlin.Result;
-import com.baidu.hugegraph.structure.gremlin.ResultSet;
-import com.baidu.hugegraph.structure.schema.VertexLabel;
-import com.baidu.hugegraph.studio.connections.model.Connection;
-import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
-import com.baidu.hugegraph.studio.gremlin.GremlinOptimizer;
-import com.baidu.hugegraph.studio.notebook.model.Notebook;
-import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
-import com.baidu.hugegraph.studio.notebook.model.vis.VisNode;
-import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -60,14 +48,34 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.baidu.hugegraph.driver.GremlinManager;
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.driver.SchemaManager;
+import com.baidu.hugegraph.structure.graph.Edge;
+import com.baidu.hugegraph.structure.graph.Vertex;
+import com.baidu.hugegraph.structure.gremlin.Result;
+import com.baidu.hugegraph.structure.gremlin.ResultSet;
+import com.baidu.hugegraph.structure.schema.VertexLabel;
+import com.baidu.hugegraph.studio.config.NodeColorOption;
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
+import com.baidu.hugegraph.studio.connections.model.Connection;
+import com.baidu.hugegraph.studio.connections.repository.ConnectionRepository;
+import com.baidu.hugegraph.studio.gremlin.GremlinOptimizer;
+import com.baidu.hugegraph.studio.notebook.model.Notebook;
+import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
+import com.baidu.hugegraph.studio.notebook.model.vis.EdgeColor;
+import com.baidu.hugegraph.studio.notebook.model.vis.Font;
+import com.baidu.hugegraph.studio.notebook.model.vis.VisNode;
+import com.baidu.hugegraph.studio.notebook.repository.NotebookRepository;
+import com.baidu.hugegraph.util.Log;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 /**
  * Notebook service for Jersey Restful Api
@@ -75,8 +83,7 @@ import java.util.stream.Collectors;
 @Path("notebooks")
 public class NotebookService {
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(NotebookService.class);
+    private static final Logger LOG = Log.logger(NotebookService.class);
     private static final int GREMLIN_MAX_IDS = 250;
 
     @Autowired
@@ -85,6 +92,8 @@ public class NotebookService {
     private ConnectionRepository connectionRepository;
     @Autowired
     private GremlinOptimizer gremlinOptimizer;
+
+    private final StudioConfiguration conf = StudioConfiguration.getInstance();
 
     /**
      * Gets notebooks.
@@ -319,6 +328,8 @@ public class NotebookService {
                 {
                     add(cell.getCode());
                 }
+
+
             });
             result.setType(MARKDOWN);
         }
@@ -348,42 +359,35 @@ public class NotebookService {
 
             List<Vertex> vertices = new ArrayList<>();
             List<Edge> edges = new ArrayList<>();
-            Map<String, VisNode> groups = new HashMap<>();
+            Map<String, Object> styles = new HashMap<>();
             List<com.baidu.hugegraph.structure.graph.Path> paths =
                     new ArrayList<>();
             if (!resultSet.iterator().hasNext()) {
                 result.setType(EMPTY);
             }
+
+            result.setType(getResultType(resultSet));
+
             for (Iterator<Result> results = resultSet.iterator();
-                 results.hasNext();) {
+                 results.hasNext(); ) {
                 /*
                  * The result might be null, and the object must be got via
                  * Result.getObject method.
                  */
                 Result or = results.next();
                 if (or == null) {
-                    result.setType(EMPTY);
-                } else {
-                    Object object = or.getObject();
-                    if (object instanceof Vertex) {
-                        result.setType(VERTEX);
-                        // Convert Object to Vertex ;
-                        vertices.add((Vertex) object);
-                    } else if (object instanceof Edge) {
-                        result.setType(EDGE);
-                        // Convert Object to Edge ;
-                        edges.add((Edge) object);
-                    } else if (object instanceof
-                            com.baidu.hugegraph.structure.graph.Path) {
-                        result.setType(PATH);
-                        //convert Object to Path
-                        paths.add((com.baidu.hugegraph.structure.graph.Path)
-                                          object);
-                    } else if (object instanceof Integer) {
-                        result.setType(NUMBER);
-                    } else {
-                        result.setType(OTHER);
-                    }
+                    continue;
+                }
+                Object object = or.getObject();
+                if (object instanceof Vertex) {
+                    vertices.add((Vertex) object);
+                } else if (object instanceof Edge) {
+                    edges.add((Edge) object);
+                } else if (object instanceof
+                           com.baidu.hugegraph.structure.graph.Path) {
+                    //convert Object to Path
+                    paths.add((com.baidu.hugegraph.structure.graph.Path)
+                               object);
                 }
             }
 
@@ -396,17 +400,17 @@ public class NotebookService {
                     // Extract vertices from paths ;
                     vertices = getVertexFromPath(hugeClient, paths);
                     edges = getEdgeFromVertex(hugeClient, vertices);
-                    groups = getSchemaVertexGroups(hugeClient);
+                    styles = getGraphStyles(hugeClient);
                     break;
                 case VERTEX:
                     // Extract edges from vertex ;
                     edges = getEdgeFromVertex(hugeClient, vertices);
-                    groups = getSchemaVertexGroups(hugeClient);
+                    styles = getGraphStyles(hugeClient);
                     break;
                 case EDGE:
                     // Extract vertices from edges ;
                     vertices = getVertexFromEdge(hugeClient, edges);
-                    groups = getSchemaVertexGroups(hugeClient);
+                    styles = getGraphStyles(hugeClient);
                     break;
                 default:
                     break;
@@ -414,7 +418,7 @@ public class NotebookService {
 
             result.setGraphVertices(vertices);
             result.setGraphEdges(edges);
-            result.setGroups(groups);
+            result.setStyles(styles);
         }
 
         cell.setResult(result);
@@ -426,6 +430,33 @@ public class NotebookService {
         notebookRepository.editNotebookCell(notebookId, cell);
         return Response.status(200).entity(result).build();
     }
+
+    private Type getResultType(ResultSet resultSet) {
+        Type type = EMPTY;
+        for (Iterator<Result> results = resultSet.iterator();
+             results.hasNext(); ) {
+            Result or = results.next();
+            Object object = or.getObject();
+            if (object instanceof Vertex) {
+                type = VERTEX;
+            } else if (object instanceof Edge) {
+                type = EDGE;
+            } else if (object instanceof
+                    com.baidu.hugegraph.structure.graph.Path) {
+                type = PATH;
+            } else if (object instanceof Number ||
+                       object instanceof String ||
+                       object instanceof Boolean) {
+                if (type == EMPTY) {
+                    type = SINGLE;
+                }
+            } else {
+                type = OTHER;
+            }
+        }
+        return type;
+    }
+
 
     /**
      * The method is used for get a vertex's adjacency nodes when a graph is
@@ -533,13 +564,13 @@ public class NotebookService {
 
         resultNew.setGraphVertices(verticesNew);
         resultNew.setGraphEdges(edgesNew);
-        resultNew.setGroups(getSchemaVertexGroups(hugeClient));
+        resultNew.setStyles(getGraphStyles(hugeClient));
         // Save the current query result to cell.
         vertices.addAll(verticesNew);
         edges.addAll(edgesNew);
         result.setGraphVertices(vertices);
         result.setGraphEdges(edges);
-        result.setGroups(resultNew.getGraph().getGroups());
+        result.setStyles(resultNew.getGraph().getStyles());
         cell.setResult(result);
         notebookRepository.editNotebookCell(notebookId, cell);
 
@@ -591,17 +622,35 @@ public class NotebookService {
         return id.toString();
     }
 
-    private Map<String, VisNode> getSchemaVertexGroups(HugeClient hugeClient) {
+    private Map<String, Object> getGraphStyles(HugeClient hugeClient) {
+
         Map<String, VisNode> groups = new HashMap<>();
+        NodeColorOption colorOption =
+                new NodeColorOption(StudioConfiguration.getInstance()
+                                                       .getVertexVisColor());
         List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
         for (VertexLabel vertexLabel : vertexLabels) {
-            if (vertexLabel.userData() != null &&
-                !vertexLabel.userData().isEmpty()) {
+            if (vertexLabel.userdata() != null &&
+                !vertexLabel.userdata().isEmpty()) {
                 groups.put(vertexLabel.name(),
-                           new VisNode(vertexLabel.userData()));
+                           new VisNode(vertexLabel.userdata(), colorOption));
+            } else {
+                groups.put(vertexLabel.name(), new VisNode(colorOption));
             }
         }
-        return groups;
+
+        Font vertexFont = new Font.Builder().size(conf.getVertexFontSize())
+                                            .color(conf.getVertexFontColor())
+                                            .build();
+        Font edgeFont = new Font.Builder().size(conf.getEdgeFontSize())
+                                          .color(conf.getEdgeFontColor())
+                                          .build();
+        return ImmutableMap.of(
+                "groups", groups,
+                "font", vertexFont,
+                "edgeColor", new EdgeColor.Builder(conf).build(),
+                "edgeFont", edgeFont
+        );
     }
 
     private List<Vertex> getVertexFromEdge(HugeClient hugeClient,

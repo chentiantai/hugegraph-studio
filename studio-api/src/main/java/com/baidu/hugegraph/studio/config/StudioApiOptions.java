@@ -24,6 +24,7 @@ import com.baidu.hugegraph.config.ConfigOption;
 import com.baidu.hugegraph.config.OptionHolder;
 
 import static com.baidu.hugegraph.config.OptionChecker.disallowEmpty;
+import static com.baidu.hugegraph.config.OptionChecker.positiveInt;
 import static com.baidu.hugegraph.config.OptionChecker.rangeInt;
 
 /**
@@ -55,9 +56,9 @@ public class StudioApiOptions extends OptionHolder {
     }
 
     /**
-     * The constant STUDIO_DATA_BASE_DIR.
+     * The constant DATA_BASE_DIR.
      */
-    public static final ConfigOption<String> STUDIO_DATA_BASE_DIR =
+    public static final ConfigOption<String> DATA_BASE_DIR =
             new ConfigOption<>(
                     "userData.baseDirectory",
                     "The base directory of HugeStudio's user data.",
@@ -66,9 +67,9 @@ public class StudioApiOptions extends OptionHolder {
             );
 
     /**
-     * The constant STUDIO_DATA_CONNECTIONS_DIR.
+     * The constant DATA_CONNECTIONS_DIR.
      */
-    public static final ConfigOption<String> STUDIO_DATA_CONNECTIONS_DIR =
+    public static final ConfigOption<String> DATA_CONNECTIONS_DIR =
             new ConfigOption<>(
                     "userData.connectionsDirectory",
                     "The connections directory of HugeStudio's user data.",
@@ -77,9 +78,9 @@ public class StudioApiOptions extends OptionHolder {
             );
 
     /**
-     * The constant STUDIO_DATA_NOTEBOOKS_DIR.
+     * The constant DATA_NOTEBOOKS_DIR.
      */
-    public static final ConfigOption<String> STUDIO_DATA_NOTEBOOKS_DIR =
+    public static final ConfigOption<String> DATA_NOTEBOOKS_DIR =
             new ConfigOption<>(
                     "userData.notebooksDirectory",
                     "The notebooks directory of HugeStudio's user data.",
@@ -90,7 +91,7 @@ public class StudioApiOptions extends OptionHolder {
     /**
      * The constant STUDIO_DATA_Vertex_Edge_Limit.
      */
-    public static final ConfigOption<Long> STUDIO_DATA_LIMIT =
+    public static final ConfigOption<Long> DATA_LIMIT =
             new ConfigOption<>(
                     "studioData.limit",
                     "MAX_SIZE for the data render in web.",
@@ -112,4 +113,161 @@ public class StudioApiOptions extends OptionHolder {
                     String.class,
                     "V()", "E()"
             );
+
+    /**
+     * The constant VERTEX_VIS_FONT_COLOR.
+     */
+    public static final ConfigOption<String> VERTEX_VIS_FONT_COLOR =
+            new ConfigOption<>(
+                    "vertex.vis.font.color",
+                    false,
+                    "The vertex font color",
+                    disallowEmpty(),
+                    String.class,
+                    "#343434"
+            );
+
+    /**
+     * The constant VERTEX_VIS_FONT_COLOR.
+     */
+    public static final ConfigOption<Integer> VERTEX_VIS_FONT_SIZE =
+            new ConfigOption<>(
+                    "vertex.vis.font.size",
+                    false,
+                    "The vertex font size",
+                    positiveInt(),
+                    Integer.class,
+                    12);
+
+    /**
+     * The constant VERTEX_VIS_COLOR.
+     */
+    public static final ConfigOption<String> VERTEX_VIS_COLOR =
+            new ConfigOption<>(
+                    "vertex.vis.color",
+                    false,
+                    "The vertex background color",
+                    disallowEmpty(),
+                    String.class,
+                    "[{\"common\":\"#00ccff\",\"hover\":\"#ec3112\"," +
+                    "\"highlight\":\"#fb6a02\"}]"
+            );
+
+    /**
+     * The constant VERTEX_VIS_SHAPE.
+     */
+    public static final ConfigOption<String> VERTEX_VIS_SHAPE =
+            new ConfigOption<>(
+                    "vertex.vis.shape",
+                    false,
+                    "The vertex shape",
+                    disallowEmpty(),
+                    String.class,
+                    "dot"
+            );
+
+    /**
+     * The constant VERTEX_VIS_SIZE.
+     */
+    public static final ConfigOption<Integer> VERTEX_VIS_SIZE =
+            new ConfigOption<>(
+                    "vertex.vis.size",
+                    false,
+                    "The vertex size",
+                    positiveInt(),
+                    Integer.class,
+                    25
+            );
+
+    /**
+     * The constant VERTEX_SCALING_MAX_SIZE.
+     */
+    public static final ConfigOption<Integer> VERTEX_SCALING_MAX_SIZE =
+            new ConfigOption<>(
+                    "vertex.vis.scaling.max",
+                    false,
+                    "The vertex max size",
+                    positiveInt(),
+                    Integer.class,
+                    30
+            );
+
+    /**
+     * The constant VERTEX_SCALING_MIN_SIZE.
+     */
+    public static final ConfigOption<Integer> VERTEX_SCALING_MIN_SIZE =
+            new ConfigOption<>(
+                    "vertex.vis.scaling.min",
+                    false,
+                    "The vertex min size",
+                    positiveInt(),
+                    Integer.class,
+                    25
+            );
+
+    /**
+     * The constant EDGE_VIS_COLOR_DEFAULT.
+     */
+    public static final ConfigOption<String> EDGE_VIS_COLOR_DEFAULT =
+            new ConfigOption<>(
+                    "edge.vis.color.default",
+                    false,
+                    "The edge default color",
+                    disallowEmpty(),
+                    String.class,
+                    "#808080"
+            );
+
+    /**
+     * The constant EDGE_VIS_COLOR_HOVER.
+     */
+    public static final ConfigOption<String> EDGE_VIS_COLOR_HOVER =
+            new ConfigOption<>(
+                    "edge.vis.color.hover",
+                    false,
+                    "The edge hover color",
+                    disallowEmpty(),
+                    String.class,
+                    "#808080"
+            );
+
+    /**
+     * The constant EDGE_VIS_COLOR_HIGHT.
+     */
+    public static final ConfigOption<String> EDGE_VIS_COLOR_HIGHLIGHT =
+            new ConfigOption<>(
+                    "edge.vis.color.highlight",
+                    false,
+                    "The edge highlight color",
+                    disallowEmpty(),
+                    String.class,
+                    "#808080"
+            );
+
+    /**
+     * The constant EDGE_VIS_FONT_COLOR.
+     */
+    public static final ConfigOption<String> EDGE_VIS_FONT_COLOR =
+            new ConfigOption<>(
+                    "edge.vis.font.color",
+                    false,
+                    "The edge font color",
+                    disallowEmpty(),
+                    String.class,
+                    "#33333"
+            );
+
+    /**
+     * The constant VERTEX_SCALING_MIN_SIZE.
+     */
+    public static final ConfigOption<Integer> EDGE_VIS_FONT_SIZE =
+            new ConfigOption<>(
+                    "edge.vis.font.size",
+                    false,
+                    "The edge font size",
+                    positiveInt(),
+                    Integer.class,
+                    12
+            );
+
 }

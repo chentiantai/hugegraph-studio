@@ -39,7 +39,7 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
     private Map<String, Pattern> suffixPatterns;
 
     public RuleGremlinOptimizer() {
-        configuration = new StudioConfiguration();
+        configuration = StudioConfiguration.getInstance();
         suffixPatterns = transformSuffixToRegExpPattern(
                          configuration.getAppendLimitSuffixes());
     }

@@ -19,7 +19,13 @@
 
 package com.baidu.hugegraph.studio;
 
-import com.baidu.hugegraph.studio.config.StudioConfiguration;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+
+import javax.servlet.ServletException;
+
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.Server;
@@ -30,20 +36,16 @@ import org.apache.coyote.ProtocolHandler;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
+import com.baidu.hugegraph.util.Log;
 
 /**
  * The Bootstrap of HugeStudio.
  */
 public class HugeStudio {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HugeStudio.class);
+    private static final Logger LOG = Log.logger(HugeStudio.class);
 
     private static final String DEFAULT_CONFIG_FILE = "hugestudio.properties";
 

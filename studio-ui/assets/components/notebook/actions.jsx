@@ -32,7 +32,6 @@ export const SYCN_ITEM = 'sycn_item';
 export const UPDATE_GRAPH = 'update_graph';
 
 export function runMode(cell) {
-    console.log('update');
     return {
         type: RUN_MODE,
         cell

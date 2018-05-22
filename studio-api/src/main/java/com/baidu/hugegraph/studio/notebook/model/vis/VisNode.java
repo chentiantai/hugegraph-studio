@@ -21,7 +21,11 @@ package com.baidu.hugegraph.studio.notebook.model.vis;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import com.baidu.hugegraph.studio.config.NodeColorOption;
+import com.baidu.hugegraph.studio.config.StudioConfiguration;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jersey.repackaged.com.google.common.collect.ImmutableMap;
 
 /**
  * The style of vertexLabel.
@@ -49,12 +53,6 @@ public class VisNode {
     protected static final String COLOR_HOVER_BACKGROUND =
             "vis.hover.background";
 
-    // Font
-    protected static final String FONT_COLOR = "vis.font.color";
-    protected static final String FONT_SIZE = "vis.font.size";
-    protected static final String FONT_FACE = "vis.font.face";
-    protected static final String FONT_MULTI = "vis.font.multi";
-
     // Icon
     protected static final String ICON_CODE = "vis.icon.code";
     protected static final String ICON_COLOR = "vis.icon.color";
@@ -62,67 +60,49 @@ public class VisNode {
 
     private String shape;
     private Integer size;
-    private Font font;
+
+    @JsonProperty
     private Color color;
+    @JsonProperty
     private Icon icon;
+    @JsonProperty
     private Scaling scaling;
 
     public VisNode() {
-        this("dot", 20, new Font(), new Color(), new Icon(), new Scaling());
     }
 
-    public VisNode(String shape) {
-        this(shape, 20, new Font(), new Color(), new Icon(), new Scaling());
-
-    }
-
-    public VisNode(String shape, Icon icon) {
-        this(shape, 20, new Font(), new Color(), icon, new Scaling());
-
-    }
-
-    public VisNode(String shape, Integer size, Font font, Color color,
-                   Icon icon, Scaling scaling) {
+    public VisNode(String shape, Integer size, Color color, Icon icon,
+                   Scaling scaling) {
         this.shape = shape;
         this.size = size;
-        this.font = font;
         this.color = color;
         this.icon = icon;
         this.scaling = scaling;
     }
 
-    public VisNode(Map<String, Object> userData) {
-        this();
-        transformUserDataToVisNode(userData);
+    public VisNode(NodeColorOption colorOption) {
+        this(ImmutableMap.of(), colorOption);
     }
 
-    private VisNode transformUserDataToVisNode(Map<String, Object> userData) {
+    public VisNode(Map<String, Object> userData, NodeColorOption colorOption) {
+        this(StudioConfiguration.getInstance().getVertexShape(),
+             StudioConfiguration.getInstance().getVertexSize(),
+             new Color.Builder(userData, colorOption).build(),
+             new Icon.Builder(userData).build(),
+             new Scaling.Builder(StudioConfiguration.getInstance(), userData)
+                     .build());
 
-        // size
-        Number size = (Number) userData.get(VIS_SIZE);
-        if (size != null) {
-            this.size = size.intValue();
+        // Size
+        Object size = userData.get(VIS_SIZE);
+        if (size instanceof Number) {
+            this.size = ((Number) size).intValue();
         }
 
-        // color
-        this.color = new Color(userData);
-
-        // font
-        this.font = new Font(userData);
-
-        // icon
-        String shape = (String) userData.get(VIS_SHAPE);
-        if (!StringUtils.isBlank(shape)) {
-            this.shape = shape;
+        // Shape
+        Object shape = userData.get(VIS_SHAPE);
+        if (shape instanceof String) {
+            this.shape = (String) shape;
         }
-        if (shape != null && shape.equals("icon")) {
-            this.icon = new Icon(userData);
-        }
-
-        // scaling
-        this.scaling = new Scaling(userData);
-
-        return this;
     }
 
     public String getShape() {
@@ -131,14 +111,6 @@ public class VisNode {
 
     public void setShape(String shape) {
         this.shape = shape;
-    }
-
-    public Font getFont() {
-        return font;
-    }
-
-    public void setFont(Font font) {
-        this.font = font;
     }
 
     public Color getColor() {
