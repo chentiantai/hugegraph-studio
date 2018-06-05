@@ -611,12 +611,11 @@ public class NotebookService {
 
     private String formatId(Object id) {
         if (id instanceof String) {
-            String transformedId = StringUtils.replace(
-                    id.toString(), "\\", "\\\\");
-            transformedId = StringUtils.replace(
-                    transformedId.toString(), "\"", "\\\"");
-            transformedId = StringUtils.replace(
-                    transformedId.toString(), "'", "\\'");
+            String transformedId = StringUtils.replace(id.toString(),
+                                                       "\\", "\\\\");
+            transformedId = StringUtils.replace(transformedId, "\"", "\\\"");
+            transformedId = StringUtils.replace(transformedId, "'", "\\'");
+            transformedId = StringUtils.replace(transformedId, "\n", "\\n");
             return String.format("'%s'",transformedId);
         }
         return id.toString();
