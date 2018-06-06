@@ -64,9 +64,8 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
             }
 
             if (suffix.indexOf("()") > -1) {
-                String regExpSuffix = suffix;
-                regExpSuffix.replaceAll("\\(", "\\\\(")
-                            .replaceAll("\\)", "\\\\)");
+                String regExpSuffix = suffix.replaceAll("\\(", "\\\\(")
+                                            .replaceAll("\\)", "\\\\)");
                 regExpSuffix = String.format("(%s)$", regExpSuffix);
                 suffixPatterns.put(regExpSuffix, Pattern.compile(regExpSuffix));
                 continue;
@@ -82,10 +81,9 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
      * @return regular expression suffix
      */
     private String transformSTRWithSingleQuotes(String suffix) {
-        String regExpSuffix = suffix;
-        regExpSuffix.replaceAll("\\(", "\\\\(")
-                    .replaceAll("\\)", "\\\\)")
-                    .replaceAll("STR", "'[\\\\s\\\\S]+'");
+        String regExpSuffix = suffix.replaceAll("\\(", "\\\\(")
+                                    .replaceAll("\\)", "\\\\)")
+                                    .replaceAll("STR", "'[\\\\s\\\\S]+'");
         regExpSuffix = String.format("(%s)$", regExpSuffix);
         return regExpSuffix;
     }
@@ -97,10 +95,9 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
      * @return regular expression suffix
      */
     private String transformSTRWithDoubleQuotes(String suffix) {
-        String regExpSuffix = suffix;
-        regExpSuffix.replaceAll("\\(", "\\\\(")
-                    .replaceAll("\\)", "\\\\)")
-                    .replaceAll("STR", "\"[\\\\s\\\\S]+\"");
+        String regExpSuffix = suffix.replaceAll("\\(", "\\\\(")
+                                    .replaceAll("\\)", "\\\\)")
+                                    .replaceAll("STR", "\"[\\\\s\\\\S]+\"");
         regExpSuffix = String.format("(%s)$", regExpSuffix);
         return regExpSuffix;
     }
@@ -112,10 +109,9 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
      * @return regular expression suffix
      */
     private String transformNum(String suffix) {
-        String regExpSuffix = suffix;
-        regExpSuffix.replaceAll("\\(", "\\\\(")
-                    .replaceAll("\\)", "\\\\)")
-                    .replaceAll("NUM", "[\\\\d]+");
+        String regExpSuffix = suffix.replaceAll("\\(", "\\\\(")
+                                    .replaceAll("\\)", "\\\\)")
+                                    .replaceAll("NUM", "[\\\\d]+");
         regExpSuffix = String.format("(%s)$", regExpSuffix);
         return regExpSuffix;
     }

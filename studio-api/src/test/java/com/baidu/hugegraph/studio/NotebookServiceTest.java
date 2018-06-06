@@ -260,8 +260,6 @@ public class NotebookServiceTest extends JerseyTest {
                                        .put(Entity.json(cell));
         Result result = response.readEntity(Result.class);
     }
-
-
 }
 
 

@@ -39,6 +39,13 @@ public class RuleGremlinOptimizerTest {
         System.out.println(gNew);
         Assert.assertEquals("g.V().hasLabel('123agb').p()", gNew);
 
+        gOld = "g.V()";
+        System.out.println();
+        System.out.println(gOld);
+        gNew = gremlinOptimizer.limitOptimize(gOld, limit);
+        System.out.println(gNew);
+        Assert.assertEquals("g.V().limit(100)", gNew);
+
         gOld = "g.V().hasLabel('123agb')";
         System.out.println();
         System.out.println(gOld);
@@ -75,13 +82,6 @@ public class RuleGremlinOptimizerTest {
         System.out.println(gNew);
         Assert.assertEquals("g.V().hasLabel(123).limit(100)", gNew);
 
-        gOld = "g.V()";
-        System.out.println();
-        System.out.println(gOld);
-        gNew = gremlinOptimizer.limitOptimize(gOld, limit);
-        System.out.println(gNew);
-        Assert.assertEquals("g.V().limit(100)", gNew);
-
         gOld = "g.V().bothE()";
         System.out.println();
         System.out.println(gOld);
@@ -89,5 +89,11 @@ public class RuleGremlinOptimizerTest {
         System.out.println(gNew);
         Assert.assertEquals("g.V().bothE()", gNew);
 
+        gOld = "g.V().bothE() \\n";
+        System.out.println();
+        System.out.println(gOld);
+        gNew = gremlinOptimizer.limitOptimize(gOld, limit);
+        System.out.println(gNew);
+        Assert.assertEquals("g.V().bothE() \\n", gNew);
     }
 }

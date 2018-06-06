@@ -57,7 +57,4 @@ public class JerseySpringDemoTest extends JerseyTest {
                             System.out.println(connection.getName()));
         Assert.assertEquals(200, response.getStatus());
     }
-
-
-
 }

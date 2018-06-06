@@ -111,7 +111,7 @@ public class StudioApiOptions extends OptionHolder {
                     "appended limit()",
                     disallowEmpty(),
                     String.class,
-                    "V()", "E()"
+                    ".V()", ".E()"
             );
 
     /**
