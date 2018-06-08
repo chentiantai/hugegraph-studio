@@ -29,6 +29,8 @@ import static com.baidu.hugegraph.studio.notebook.model.Result.Type.SINGLE;
 import static com.baidu.hugegraph.studio.notebook.model.Result.Type.VERTEX;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -628,6 +630,13 @@ public class NotebookService {
                 new NodeColorOption(StudioConfiguration.getInstance()
                                                        .getVertexVisColor());
         List<VertexLabel> vertexLabels = hugeClient.schema().getVertexLabels();
+        Collections.sort(vertexLabels, new Comparator<VertexLabel>() {
+            @Override
+            public int compare(VertexLabel o1, VertexLabel o2) {
+                return o1.name().compareTo(o2.name());
+            }
+        });
+
         for (VertexLabel vertexLabel : vertexLabels) {
             if (vertexLabel.userdata() != null &&
                 !vertexLabel.userdata().isEmpty()) {

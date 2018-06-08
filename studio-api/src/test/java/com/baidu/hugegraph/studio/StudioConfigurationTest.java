@@ -50,6 +50,13 @@ public class StudioConfigurationTest {
 
     @Test
     public void testGetColors() {
-        configuration.getVertexVisColor();
+        for (int i = 0; i < 15; i++) {
+            Assert.assertEquals("#ED5736",
+                                configuration.getVertexVisColor().get(0)
+                                             .get("default"));
+            Assert.assertEquals("#48C0A3",
+                                configuration.getVertexVisColor().get(1)
+                                             .get("default"));
+        }
     }
 }

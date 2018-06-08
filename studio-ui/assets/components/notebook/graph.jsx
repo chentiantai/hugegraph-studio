@@ -78,9 +78,6 @@ class Graph extends React.Component {
     }
 
     drawGraph = (vertices, edges, styles) => {
-        console.log(styles.groups);
-        console.log(styles.font);
-
         this.state.graphNodes = new vis.DataSet();
         this.state.graphEdges = new vis.DataSet();
 
@@ -136,8 +133,6 @@ class Graph extends React.Component {
             nodes: this.state.graphNodes,
             edges: this.state.graphEdges,
         };
-
-        console.log(styles.edgeFont)
 
         var options = {
             groups: styles.groups,
