@@ -20,8 +20,17 @@
 package com.baidu.hugegraph.studio.notebook.repository;
 
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,6 +53,7 @@ import com.baidu.hugegraph.studio.notebook.model.NotebookCell;
 import com.baidu.hugegraph.studio.notebook.model.ViewSettings;
 import com.baidu.hugegraph.util.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 
 /**
@@ -95,10 +105,15 @@ public class FileNotebookRepository implements NotebookRepository {
          */
         String filePath = notebooksDataDirectory + "/" + notebook.getId();
         writeLock.lock();
-        try (BufferedWriter writer =
-             Files.newBufferedWriter(Paths.get(filePath))) {
-                writer.write(mapper.writeValueAsString(notebook));
-             LOG.debug("Write Notebook file: {}", filePath);
+        try (OutputStream os = new FileOutputStream(filePath);
+             DataOutputStream out = new DataOutputStream(os)) {
+            String summary = mapper.writeValueAsString(notebook.summary());
+            out.writeUTF(summary);
+            byte[] all = mapper.writeValueAsString(notebook)
+                               .getBytes(Charsets.UTF_8);
+            out.writeInt(all.length);
+            out.write(all);
+            LOG.debug("Write Notebook file: {}", filePath);
         } catch (IOException e) {
             LOG.error("Failed to write Notebook file: {}", filePath, e);
             throw new RuntimeException(String.format(
@@ -154,7 +169,7 @@ public class FileNotebookRepository implements NotebookRepository {
         try {
             Files.list(Paths.get(notebooksDataDirectory)).forEach(path -> {
                 if (Files.isRegularFile(path)) {
-                    Notebook notebook = getNotebookByPath(path);
+                    Notebook notebook = getNotebookByPath(path, false);
                     if (notebook != null) {
                         notebooks.add(notebook);
                     }
@@ -183,24 +198,23 @@ public class FileNotebookRepository implements NotebookRepository {
     @Override
     public Notebook getNotebook(String notebookId) {
         String path = notebooksDataDirectory + "/" + notebookId;
-        readLock.lock();
-        try {
-            byte[] notebookArray = Files.readAllBytes(Paths.get(path));
-            return mapper.readValue(notebookArray, Notebook.class);
-        } catch (IOException e) {
-            LOG.error("Failed to read File: {}", path, e);
-        } finally {
-            readLock.unlock();
-        }
-
-        return null;
+        return this.getNotebookByPath(Paths.get(path), true);
     }
 
-    public Notebook getNotebookByPath(Path path) {
+    public Notebook getNotebookByPath(Path path, boolean all) {
         readLock.lock();
-        try {
-            byte[] notebookArray = Files.readAllBytes(path);
-            return mapper.readValue(notebookArray, Notebook.class);
+        try (InputStream is = new FileInputStream(path.toFile());
+             DataInputStream input = new DataInputStream(is)) {
+            String summary = input.readUTF();
+            if (!all) {
+                return mapper.readValue(summary, Notebook.class);
+            } else {
+                int len = input.readInt();
+                byte[] bytes = new byte[len];
+                LOG.info("Read total data: {} bytes", len);
+                input.readFully(bytes);
+                return mapper.readValue(bytes, Notebook.class);
+            }
         } catch (IOException e) {
             LOG.error("Failed to read File: {}", path, e);
         } finally {

@@ -20,11 +20,14 @@
 package com.baidu.hugegraph.studio.notebook.model;
 
 import com.baidu.hugegraph.studio.connections.model.Connection;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -60,6 +63,14 @@ public class Notebook {
      * Instantiates a new Notebook.
      */
     public Notebook() {
+    }
+
+    public Map<String, Object> summary() {
+        return ImmutableMap.of("id", this.id,
+                               "connectionId", this.connectionId,
+                               "name", this.name,
+                               "created", this.created,
+                               "lastUsed", this.lastUsed);
     }
 
     /**
