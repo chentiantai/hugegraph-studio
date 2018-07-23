@@ -31,7 +31,7 @@ public interface GremlinOptimizer {
      * @param limit the value need be greater than 0
      * @return the code added limit rule
      */
-    String limitOptimize(String code, Long limit);
+    String limitOptimize(String code, int limit);
 
     /**
      * Add limit rules for the code, the limit value is 100 by default.

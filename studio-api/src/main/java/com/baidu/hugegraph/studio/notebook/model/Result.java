@@ -50,28 +50,14 @@ public class Result {
     @JsonProperty("duration")
     private Long duration = null;
 
+    @JsonProperty("showNum")
+    private int showNum = 0;
+
+    @JsonProperty("message")
+    private String message;
+
     @JsonProperty("graph")
     private Graph graph;
-
-    /**
-     * Instantiates a new Result.
-     *
-     * @param data     the data
-     * @param type     the type
-     * @param duration the duration
-     * @param id       the id
-     */
-    @JsonCreator
-    public Result(@JsonProperty("data") List<Object> data,
-                  @JsonProperty("type") Result.Type type,
-                  @JsonProperty("duration") Long duration,
-                  @JsonProperty("id") String id) {
-        this.data = data;
-        this.type = type;
-        this.duration = duration;
-        this.id = id;
-        this.graph = new Graph();
-    }
 
     /**
      * Instantiates a new Result.
@@ -142,6 +128,22 @@ public class Result {
      */
     public void setDuration(Long duration) {
         this.duration = duration;
+    }
+
+    public int getShowNum() {
+        return showNum;
+    }
+
+    public void setShowNum(int showNum) {
+        this.showNum = showNum;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /**

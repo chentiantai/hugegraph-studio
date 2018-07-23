@@ -88,6 +88,11 @@ public class NotebookService {
     private static final Logger LOG = Log.logger(NotebookService.class);
     private static final int GREMLIN_MAX_IDS = 250;
 
+    // The max number of one vertex related edge.
+    // Vis can deal with about 200 edges.
+    private static final int MAX_EDGES_PER_VERTEX = 200;
+
+
     @Autowired
     private NotebookRepository notebookRepository;
     @Autowired
@@ -316,7 +321,7 @@ public class NotebookService {
 
         NotebookCell cell =
                 notebookRepository.editNotebookCell(notebookId, cellId, newCell);
-        Long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
 
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 new com.baidu.hugegraph.studio.notebook.model.Result();
@@ -330,8 +335,6 @@ public class NotebookService {
                 {
                     add(cell.getCode());
                 }
-
-
             });
             result.setType(MARKDOWN);
         }
@@ -346,11 +349,15 @@ public class NotebookService {
 
             GremlinManager gremlinManager = hugeClient.gremlin();
 
-            LOG.info(gremlinOptimizer.limitOptimize(cell.getCode()));
+            int limit = conf.getLimitData();
+            // To know whether has more record,
+            // so add "limit(limit+1)" after code.
+            String limitCode =
+                    gremlinOptimizer.limitOptimize(cell.getCode(), limit + 1);
+            LOG.info(limitCode);
 
             // Execute gremlin by HugeClient.
-            ResultSet resultSet = gremlinManager.gremlin(
-                    gremlinOptimizer.limitOptimize(cell.getCode())).execute();
+            ResultSet resultSet = gremlinManager.gremlin(limitCode).execute();
 
             /*
              * Gremlin result will be stored in two places, the original data is
@@ -368,10 +375,12 @@ public class NotebookService {
                 result.setType(EMPTY);
             }
 
-            result.setType(getResultType(resultSet));
+            result.setType(getResultType(resultSet, limit));
+            int count = 0;
 
             for (Iterator<Result> results = resultSet.iterator();
                  results.hasNext(); ) {
+
                 /*
                  * The result might be null, and the object must be got via
                  * Result.getObject method.
@@ -390,6 +399,9 @@ public class NotebookService {
                     //convert Object to Path
                     paths.add((com.baidu.hugegraph.structure.graph.Path)
                                object);
+                }
+                if (++count >= limit) {
+                    break;
                 }
             }
 
@@ -421,22 +433,30 @@ public class NotebookService {
             result.setGraphVertices(vertices);
             result.setGraphEdges(edges);
             result.setStyles(styles);
+            result.setShowNum(count);
+            String message = "";
+            if (count < resultSet.size()) {
+                message = String.format("Partial %s records are shown!", count);
+            }
+            result.setMessage(message);
         }
 
-        cell.setResult(result);
 
-        Long endTime = System.currentTimeMillis();
-        Long duration = endTime - startTime;
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
         result.setDuration(duration);
+        cell.setResult(result);
 
         notebookRepository.editNotebookCell(notebookId, cell);
         return Response.status(200).entity(result).build();
     }
 
-    private Type getResultType(ResultSet resultSet) {
+    private Type getResultType(ResultSet resultSet, int limit) {
+        int i = 0;
         Type type = EMPTY;
         for (Iterator<Result> results = resultSet.iterator();
              results.hasNext(); ) {
+
             Result or = results.next();
             Object object = or.getObject();
             if (object instanceof Vertex) {
@@ -454,6 +474,9 @@ public class NotebookService {
                 }
             } else {
                 type = OTHER;
+            }
+            if (++i >= limit) {
+                break;
             }
         }
         return type;
@@ -500,7 +523,7 @@ public class NotebookService {
         // Only be executed with 'gremlin' mode
         Preconditions.checkArgument(cell.getLanguage().equals("gremlin"));
 
-        Long startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
 
         com.baidu.hugegraph.studio.notebook.model.Result result =
                 cell.getResult();
@@ -520,22 +543,31 @@ public class NotebookService {
         SchemaManager schema = hugeClient.schema();
         VertexLabel vertexLabel = schema.getVertexLabel(label);
 
-        Object transformedId = transformId(vertexId,vertexLabel);
-        String gremlin = gremlinOptimizer.limitOptimize(
-                String.format("g.V(%s).bothE()", formatId(transformedId)));
-        LOG.info(gremlin);
+        Object transformedVertexId = transformId(vertexId, vertexLabel);
+
+        // To know whether has more record,
+        // so add "limit(limit+1)" after code.
+        int limit = MAX_EDGES_PER_VERTEX + 1;
+        String code = gremlinOptimizer.limitOptimize(
+                String.format("g.V(%s).bothE()", formatId(transformedVertexId)),
+                limit);
+        LOG.info(code);
         Set<Object> vertexIds = new HashSet<>();
-        Set<String> edgeIds = new HashSet<>();
+        Set<String> visitedEdgeIds = new HashSet<>();
         List<Vertex> vertices = result.getGraph().getVertices();
         List<Edge> edges = result.getGraph().getEdges();
         vertices.stream().forEach(v -> vertexIds.add(v.id()));
-        edges.stream().forEach(e -> edgeIds.add(e.id()));
+        edges.stream().forEach(e -> {
+            if (e.source().equals(transformedVertexId) ||
+                e.target().equals(transformedVertexId)) {
+                visitedEdgeIds.add(e.id());
+            }
+        });
 
-
-        Preconditions.checkArgument(vertexIds.contains(transformedId));
+        Preconditions.checkArgument(vertexIds.contains(transformedVertexId));
 
         GremlinManager gremlinManager = hugeClient.gremlin();
-        ResultSet resultSet = gremlinManager.gremlin(gremlin).execute();
+        ResultSet resultSet = gremlinManager.gremlin(code).execute();
         result.setData(resultSet.data());
 
         Iterator<Result> iterator= resultSet.iterator();
@@ -546,15 +578,36 @@ public class NotebookService {
 
         List<Edge> edgesNew = new ArrayList<>();
         List<Vertex> verticesNew = new ArrayList<>();
-        iterator.forEachRemaining(
-                r -> {
-                    Edge e = (Edge) r.getObject();
-                    if (!edgeIds.contains(e.id())) {
-                        edgeIds.add(e.id());
-                        edgesNew.add(e);
-                    }
-                });
-        List<Vertex> verticesFromEdges = getVertexFromEdge(hugeClient, edgesNew);
+
+        String message = "";
+        while (iterator.hasNext()) {
+            Edge e = iterator.next().getEdge();
+            if (visitedEdgeIds.contains(e.id())) {
+                continue;
+            }
+            if (edgesNew.size() > conf.getLimitEdgeIncrement()) {
+                message = String.format("%s edges increase, but more edges" +
+                                        "aren't shown.", edgesNew.size());
+                break;
+            }
+            if (visitedEdgeIds.size() > MAX_EDGES_PER_VERTEX) {
+                message = String.format("There are more than %s edges and " +
+                                        "not all are shown!",
+                                        MAX_EDGES_PER_VERTEX);
+                break;
+            }
+            if (edges.size() + edgesNew.size() > conf.getLimitEdgeTotal()) {
+                message = String.format("There are more than %s edges and " +
+                                        "not all are shown!",
+                                        conf.getLimitEdgeTotal());
+                break;
+            }
+            visitedEdgeIds.add(e.id());
+            edgesNew.add(e);
+        }
+
+        List<Vertex> verticesFromEdges =
+                getVertexFromEdge(hugeClient, edgesNew);
         if (verticesFromEdges != null) {
             verticesFromEdges.stream().forEach(v -> {
                 if (!vertexIds.contains(v.id())) {
@@ -564,9 +617,7 @@ public class NotebookService {
             });
         }
 
-        resultNew.setGraphVertices(verticesNew);
-        resultNew.setGraphEdges(edgesNew);
-        resultNew.setStyles(getGraphStyles(hugeClient));
+
         // Save the current query result to cell.
         vertices.addAll(verticesNew);
         edges.addAll(edgesNew);
@@ -576,9 +627,13 @@ public class NotebookService {
         cell.setResult(result);
         notebookRepository.editNotebookCell(notebookId, cell);
 
-        Long endTime = System.currentTimeMillis();
-        Long duration = endTime - startTime;
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+        resultNew.setGraphVertices(verticesNew);
+        resultNew.setGraphEdges(edgesNew);
+        resultNew.setStyles(getGraphStyles(hugeClient));
         resultNew.setDuration(duration);
+        resultNew.setMessage(message);
         return Response.status(200).entity(resultNew).build();
     }
 
@@ -613,12 +668,12 @@ public class NotebookService {
 
     private String formatId(Object id) {
         if (id instanceof String) {
-            String transformedId = StringUtils.replace(id.toString(),
-                                                       "\\", "\\\\");
+            String transformedId =
+                    StringUtils.replace(id.toString(), "\\", "\\\\");
             transformedId = StringUtils.replace(transformedId, "\"", "\\\"");
             transformedId = StringUtils.replace(transformedId, "'", "\\'");
             transformedId = StringUtils.replace(transformedId, "\n", "\\n");
-            return String.format("'%s'",transformedId);
+            return String.format("'%s'", transformedId);
         }
         return id.toString();
     }
@@ -697,28 +752,55 @@ public class NotebookService {
                 .forEach(group -> {
                     String ids = StringUtils.join(group, ",");
                     /*
-                     * De-duplication by edgeId. Reserve the edges only if both srcVertexId
-                     * and tgtVertexId is a member of vertices.
+                     * De-duplication by edgeId. Reserve the edges only if both
+                     * srcVertexId and tgtVertexId is a member of vertices.
                      */
-                    String gremlin = String.format("g.V(%s).bothE().dedup()", ids);
-                    LOG.info(gremlin);
-                    ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
+                    String code = String.format("g.V(%s).bothE().dedup()" +
+                                                ".limit(800000)", ids);
+                    LOG.info(code);
+                    ResultSet resultSet =
+                            hugeClient.gremlin().gremlin(code).execute();
 
-                    Iterator<Result> results = resultSet.iterator();
+                    Iterator<Result> resultIterator = resultSet.iterator();
 
-                    results.forEachRemaining(r -> {
-                        Edge edge = (Edge) r.getObject();
+                    Map<Object, Integer> edgesNumPerVertex = new HashMap<>();
+
+                    while (resultIterator.hasNext()) {
+                        Edge edge = resultIterator.next().getEdge();
                         /*
                          * As the results is queried by 'g.V(id).bothE()', the
                          * source vertex of edge from results is in the set of
                          * vertexIds. Hence, just reserve the edge which that
                          * the target in the set of vertexIds.
                          */
-                        if (vertexIds.contains(edge.target()) &&
-                            vertexIds.contains(edge.source())) {
+                        Object target = edge.target();
+                        Object source = edge.source();
+                        if (vertexIds.contains(target) &&
+                            vertexIds.contains(source)) {
+                            Integer count = edgesNumPerVertex.get(source);
+                            if (count == null) {
+                                count = 0;
+                            }
+                            edgesNumPerVertex.put(source, count++);
+                            if (count > MAX_EDGES_PER_VERTEX) {
+                                break;
+                            }
+
+                            count = edgesNumPerVertex.get(target);
+                            if (count == null) {
+                                count = 0;
+                            }
+                            edgesNumPerVertex.put(target, count++);
+                            if (count > MAX_EDGES_PER_VERTEX) {
+                                break;
+                            }
+
                             edges.add(edge);
+                            if (edges.size() >= conf.getLimitEdgeTotal()) {
+                                break;
+                            }
                         }
-                    });
+                    }
                 });
         return edges;
     }
@@ -740,7 +822,8 @@ public class NotebookService {
                     String ids = StringUtils.join(group, ",");
                     String gremlin = String.format("g.V(%s)", ids);
                     LOG.info(gremlin);
-                    ResultSet resultSet = hugeClient.gremlin().gremlin(gremlin).execute();
+                    ResultSet resultSet =
+                            hugeClient.gremlin().gremlin(gremlin).execute();
                     Iterator<Result> results = resultSet.iterator();
                     List<Vertex> finalVertices = vertices;
                     results.forEachRemaining(

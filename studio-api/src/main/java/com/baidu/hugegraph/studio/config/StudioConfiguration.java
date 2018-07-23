@@ -86,8 +86,17 @@ public class StudioConfiguration {
         return replaceHomeDirReferences(userDataDir);
     }
 
-    public Long getDataLimit() {
-        return this.config.get(StudioApiOptions.DATA_LIMIT);
+    public int getLimitData() {
+        return this.config.get(StudioApiOptions.SHOW_LIMIT_DATA);
+    }
+
+
+    public int getLimitEdgeTotal() {
+        return this.config.get(StudioApiOptions.SHOW_LIMIT_EDGE_TOTAL);
+    }
+
+    public int getLimitEdgeIncrement() {
+        return this.config.get(StudioApiOptions.SHOW_LIMIT_EDGE_INCREMENT);
     }
 
     public List<Map<String, String>> getVertexVisColor() {

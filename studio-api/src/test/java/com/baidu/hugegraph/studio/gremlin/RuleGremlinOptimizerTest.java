@@ -7,7 +7,7 @@ import com.baidu.hugegraph.studio.config.StudioConfiguration;
 
 public class RuleGremlinOptimizerTest {
     StudioConfiguration conf = StudioConfiguration.getInstance();
-    String limit = ".limit(" + conf.getDataLimit() + ")";
+    String limit = ".limit(" + conf.getLimitData() + ")";
 
     @Test
     public void testLimitOptimize() {
@@ -29,7 +29,7 @@ public class RuleGremlinOptimizerTest {
 
     @Test
     public void testMatchGremlin() {
-        long limit = 100L;
+        int limit = 100;
         GremlinOptimizer gremlinOptimizer = new RuleGremlinOptimizer();
 
         String gOld = "g.V().hasLabel('123agb').p()";

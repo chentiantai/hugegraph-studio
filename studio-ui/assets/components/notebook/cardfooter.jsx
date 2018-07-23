@@ -39,7 +39,9 @@ export default class CardFooter extends React.Component {
                 return (
                     <div>
                         Real-time Success.
-                        Duration {this.props.result.duration * 1.0 / 1000} s
+                        Duration {this.props.result.duration * 1.0 / 1000} s.
+                        &nbsp;
+                        {this.props.result.message}
                     </div>
                 );
             } else {

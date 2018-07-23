@@ -125,7 +125,7 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
      * @return
      */
     @Override
-    public String limitOptimize(String code, Long limit) {
+    public String limitOptimize(String code, int limit) {
         for (Pattern p : suffixPatterns.values()) {
             Matcher m = p.matcher(code);
             if (m.find()) {
@@ -138,6 +138,6 @@ public class RuleGremlinOptimizer implements GremlinOptimizer {
 
     @Override
     public String limitOptimize(String code) {
-        return limitOptimize(code, configuration.getDataLimit());
+        return limitOptimize(code, configuration.getLimitData());
     }
 }

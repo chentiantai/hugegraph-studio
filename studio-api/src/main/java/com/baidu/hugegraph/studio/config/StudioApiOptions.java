@@ -88,16 +88,30 @@ public class StudioApiOptions extends OptionHolder {
                     "notebooks"
             );
 
-    /**
-     * The constant STUDIO_DATA_Vertex_Edge_Limit.
-     */
-    public static final ConfigOption<Long> DATA_LIMIT =
+    public static final ConfigOption<Integer> SHOW_LIMIT_DATA =
             new ConfigOption<>(
-                    "studioData.limit",
+                    "show.limit.data",
                     "MAX_SIZE for the data render in web.",
-                    rangeInt(1L, 10000000000L),
-                    100L
+                    rangeInt(1, 10000),
+                    100
             );
+
+    public static final ConfigOption<Integer> SHOW_LIMIT_EDGE_TOTAL =
+            new ConfigOption<>(
+                    "show.limit.edge.total",
+                    "MAX_SIZE for the edge render in web.",
+                    rangeInt(1, 10000),
+                    100
+            );
+
+    public static final ConfigOption<Integer> SHOW_LIMIT_EDGE_INCREMENT =
+            new ConfigOption<>(
+                    "show.limit.edge.increment",
+                    "MAX_SIZE for the edge increment render in web.",
+                    rangeInt(1, 200),
+                    50
+            );
+
 
     /**
      * The constant GREMLIN_EXCLUDE_LIMIT.
