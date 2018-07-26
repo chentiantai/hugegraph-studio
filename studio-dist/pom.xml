@@ -4,7 +4,7 @@
     <parent>
         <artifactId>hugegraph-studio</artifactId>
         <groupId>com.baidu.hugegraph</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,8 +17,7 @@
     <properties>
         <top.level.basedir>${project.basedir}/..</top.level.basedir>
         <assembly.dir>${project.basedir}/src/assembly</assembly.dir>
-        <assembly.descriptor.dir>${assembly.dir}/descriptor
-        </assembly.descriptor.dir>
+        <assembly.descriptor.dir>${assembly.dir}/descriptor</assembly.descriptor.dir>
         <assembly.static.dir>${assembly.dir}/static</assembly.static.dir>
         <studio-ui.dir>${top.level.basedir}/studio-ui</studio-ui.dir>
         <shell-executable>bash</shell-executable>
