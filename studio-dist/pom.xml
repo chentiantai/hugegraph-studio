@@ -96,8 +96,7 @@
                             <tasks>
                                 <echo file="${top.level.basedir}/dist.sh">
                                     cd ${studio-ui.dir}
-                                    npm install
-                                    npm run build
+                                    npm install &amp;&amp; npm run build || exit 1
                                     rm -f ${top.level.basedir}/dist.sh
 
                                     rm -rf \
@@ -116,7 +115,7 @@
                                     ${top.level.basedir}/${final.name}/ui
 
                                     echo
-                                    echo "latest studio-ui is ok...."
+                                    echo "Build studio ok."
                                     echo
 
                                     cd ..
