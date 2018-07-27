@@ -12,7 +12,7 @@ HugeStudio is an interactive developer’s tool for HugeGraph, a graphical IDE b
 
 ## Learn More
 
-[The project homepage](http://hugegraph.baidu.com/quickstart/hugestudio.html) contains more information about HugeStudio.
+[The project homepage](https://hugegraph.github.io/hugegraph-doc/quickstart/hugegraph-studio.html) contains more information about HugeStudio.
 
 ## Get Started
 
