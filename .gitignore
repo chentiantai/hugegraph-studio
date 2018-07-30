@@ -27,3 +27,4 @@ logs/
 hugestudio-release-*
 studio-server/bin
 studio-server/repo
+studio-ui

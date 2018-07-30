@@ -86,19 +86,21 @@ done
 # Get standard environment variables
 PRGDIR=`dirname "$PRG"`
 
-
 # Only set STUDIO_HOME if not already set
 if [ "x$STUDIO_HOME" = "x" ]; then
     STUDIO_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
 fi
 
-
+BIN="${STUDIO_HOME}/bin"
+CONF="${STUDIO_HOME}/conf"
+LIB="${STUDIO_HOME}/lib"
+. ${BIN}/util.sh
 
 # Ensure that any user defined CLASSPATH variables are not used on startup,
 # but allow them to be specified in studio-env.sh, in rare case when it is needed.
 CLASSPATH=
-if [ -f "${STUDIO_HOME}/bin/studio-env.sh" ]; then
-  . "${STUDIO_HOME}/bin/studio-env.sh"
+if [ -f "${BIN}/studio-env.sh" ]; then
+    . "${BIN}/studio-env.sh"
 fi
 
 # Use JAVA_HOME if set, otherwise look for java in PATH
@@ -122,18 +124,20 @@ if [ -z $JAVA ] ; then
     exit 1;
 fi
 
+STUDIO_PORT=`read_property "$CONF/hugestudio.properties" "server.httpPort"`
+check_port "$STUDIO_PORT"
+
 # Xmx needs to be set so that it is big enough to cache all the vertexes in the run
 export JVM_OPTS="$JVM_OPTS -Xmx10g"
 
-
 # add additional jars to the classpath if the lib directory exists
-if [ -d "$STUDIO_HOME"/lib ]; then
-   STUDIO_CLASSPATH=${STUDIO_CLASSPATH}:${STUDIO_HOME}'/lib/*'
+if [ -d "${LIB}" ]; then
+   STUDIO_CLASSPATH=${STUDIO_CLASSPATH}:${LIB}'/*'
 fi
 # add conf to the classpath if the conf directory exists
 # avoid to set /conf/*
-if [ -d "$STUDIO_HOME"/conf ]; then
-    STUDIO_CLASSPATH=${STUDIO_CLASSPATH}:${STUDIO_HOME}'/conf'
+if [ -d "${CONF}" ]; then
+    STUDIO_CLASSPATH=${STUDIO_CLASSPATH}:${CONF}
 fi
 
 export STUDIO_CLASSPATH=${STUDIO_CLASSPATH}:${CLASSPATH}
@@ -170,7 +174,3 @@ fi
 # echo "$JAVA" $JVM_OPTS -Dapp.name="$STUDIO_APP_NAME" $MAIN_CLASS "$@"
 
 exec "$JAVA" $JVM_OPTS -Dstudio.home="$STUDIO_HOME" -Dapp.name="$STUDIO_APP_NAME" $MAIN_CLASS "$@"
-
-
-
-
