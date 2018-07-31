@@ -17,7 +17,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <release.name>hugestudio-release</release.name>
+        <release.name>hugegraph-studio</release.name>
         <final.name>${release.name}-${project.version}</final.name>
         <spring.version>4.1.5.RELEASE</spring.version>
         <tinkerpop.version>3.2.5</tinkerpop.version>

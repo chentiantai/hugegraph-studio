@@ -24,7 +24,7 @@ node_modules
 studio-api/logs/
 lib/
 logs/
-hugestudio-release-*
+hugegraph-studio-*
 studio-server/bin
 studio-server/repo
 studio-ui

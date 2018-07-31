@@ -121,7 +121,7 @@
                                     cd ..
                                     tar -zcvf \
                                     ${top.level.basedir}/${final.name}.tar.gz \
-                                    ${final.name}
+                                    ${final.name} || exit 1
                                     rm -f ${top.level.basedir}/dist.sh
                                     echo
                                     echo "HugeStudio dist tar.gz available at:
